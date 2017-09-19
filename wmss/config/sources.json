@@ -1,0 +1,26 @@
+{
+  "datasources": {
+    "source1": {
+      "active": "true",
+      "type": "database",
+      "storage": "postgresql",
+      "port": "5432",
+      "host": "dev-postgis.uni-muenster.de",
+      "repository": "wmss",
+      "version": "9.5",
+      "user": "jones",
+      "password": "pa$$w0rd"
+    },
+    "source2": {
+      "active": "false",
+      "type": "triplestore",
+      "storage": "graphdb",
+      "port": "7200",
+      "host": "linkeddata.uni-muenster.de",
+      "repository": "wwu",
+      "version": "8",
+      "user": "",
+      "password": ""
+    }
+  }
+}

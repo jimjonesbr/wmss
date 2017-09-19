@@ -1,0 +1,6 @@
+{
+  "port": 8295,
+  "service": "wmss",
+  "timeout": 5000
+  "admin": "jim.jones@uni-muenster.de"
+}
