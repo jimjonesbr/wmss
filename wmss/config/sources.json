@@ -1,6 +1,6 @@
 {
-  "datasources": {
-    "source1": {
+    "datasource": {
+      "id": "postgres_wwu",
       "active": "true",
       "type": "database",
       "storage": "postgresql",
@@ -11,7 +11,8 @@
       "user": "jones",
       "password": "pa$$w0rd"
     },
-    "source2": {
+    "datasource": {
+      "id": "graphdb_wwu",
       "active": "false",
       "type": "triplestore",
       "storage": "graphdb",
@@ -21,6 +22,5 @@
       "version": "8",
       "user": "",
       "password": ""
-    }
   }
 }
