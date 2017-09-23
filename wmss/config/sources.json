@@ -1,5 +1,5 @@
 {
-    "datasource": {
+    "datasource": [{
       "id": "postgres_wwu",
       "active": "true",
       "type": "database",
@@ -10,8 +10,7 @@
       "version": "9.5",
       "user": "jones",
       "password": "pa$$w0rd"
-    },
-    "datasource": {
+    },{
       "id": "graphdb_wwu",
       "active": "false",
       "type": "triplestore",
@@ -22,5 +21,6 @@
       "version": "8",
       "user": "",
       "password": ""
-  }
+    }
+  ]
 }

@@ -21,6 +21,6 @@ public class MusicScore {
 	private String creationDateFrom = "";
 	private String creationDateTo = "";
 		
-	
+	//Criar classes para possbilitar gerar lista de partituras disponiveis. Assim o metodo fica generico pra SQL e SPARQL result sets.
 	
 }
