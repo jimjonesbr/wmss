@@ -1,7 +1,11 @@
 package de.wwu.wmss.core;
 
 import java.io.FileReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -14,10 +18,12 @@ public class SystemSettings {
 	private static String title;
 	private static int timeout;
 	private static String contact;
-
+	private static String defaultProtocol;
+	private static String startup;
 	private static Logger logger = Logger.getLogger("System Settings");
-	public static ArrayList<DataSource> sourcesList = new ArrayList<DataSource>();
-
+	public static ArrayList<DataSource> sourceList = new ArrayList<DataSource>();
+	public static ArrayList<String> versions = new ArrayList<String>();
+	
 	public static void main(String[] args) {
 
 		loadDataSources();
@@ -34,18 +40,27 @@ public class SystemSettings {
 
 			JSONObject jsonObject = (JSONObject) obj;
 
+			versions.add("1.0");
+			versions.add("1.1");
+			
 			port = Integer.parseInt(jsonObject.get("port").toString());
 			timeout = Integer.parseInt(jsonObject.get("timeout").toString());
 			service = jsonObject.get("service").toString();
 			contact = jsonObject.get("contact").toString();
 			title = jsonObject.get("title").toString();
-
+			defaultProtocol= jsonObject.get("defaultProtocol").toString();
+			
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			Date date = new Date();
+			startup = dateFormat.format(date); //2016/11/16 12:08:43
+			
 			logger.info("Title: " + title);
+			logger.info("Default Protocol Version: " + defaultProtocol);
 			logger.info("Port: " + port);
+			logger.info("Application Startup: " + startup);
 			logger.info("Service Name: " + service);
 			logger.info("Time-out: " + timeout + "ms");
 			logger.info("System Administrator: " + contact);
-
 
 		} catch (Exception e) {
 
@@ -87,7 +102,7 @@ public class SystemSettings {
 				ds.setUser(record.get("user").toString());
 				ds.setPassword(record.get("password").toString());
 
-				sourcesList.add(ds);            	
+				sourceList.add(ds);            	
 			}
 
 
@@ -125,6 +140,10 @@ public class SystemSettings {
 
 	public static String getContact() {
 		return contact;
+	}
+
+	public static String getStartup() {
+		return startup;
 	}
 
 

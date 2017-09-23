@@ -3,5 +3,6 @@
   "service": "wmss",
   "timeout": "5000",
   "contact": "jim.jones@uni-muenster.de",
-  "title": "Web Music Score Service - University of Münster"
+  "title": "Web Music Score Service - University of Münster",
+  "defaultProtocol": "1.0"
 }
