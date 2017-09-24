@@ -24,13 +24,8 @@ public class PostgreSQLConnector {
 			Statement st = con.createStatement();
 			rs = st.executeQuery(SQL);
 			
-			while (rs.next())
-			{
-			    
-			    System.out.println(rs.getString("score_name"));
-			}
-			rs.close();
-			st.close();
+			//rs.close();
+			//st.close();
 			
 			
 		} catch (SQLException e) {

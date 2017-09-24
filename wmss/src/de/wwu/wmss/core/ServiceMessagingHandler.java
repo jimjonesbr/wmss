@@ -88,15 +88,16 @@ public class ServiceMessagingHandler {
 		
 		ArrayList<MusicScore> listScores = new ArrayList<MusicScore>();
 		
+		ScoreList scoreList = new ScoreList();
+		
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		JSONObject scr = new JSONObject();
+		
 		try {
 			
-			listScores = FactoryWMSS.getScoreList(parameterList);
-			
-			if(listScores == null ){
-				
-				
-				
-			}
+			//listScores = FactoryWMSS.getScoreList(parameterList);			
+			scoreList = FactoryWMSS.getScoreList(parameterList);
+			scr.put("repositories", scoreList);
 			
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -104,7 +105,7 @@ public class ServiceMessagingHandler {
 		
 		
 		//TODO gerar JSON
-		return "empty";
+		return gson.toJson(scr);
 		
 	}
 	

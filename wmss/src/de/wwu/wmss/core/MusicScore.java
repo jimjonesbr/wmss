@@ -4,11 +4,12 @@ import java.util.ArrayList;
 
 public class MusicScore {
 
-	private String identifier;
+	private int identifier;
 	private String source;
 	private String title;
 	private String composer;
-	private String group;
+	private String groupDescription;
+	private String groupId;
 	private String tonalityTonic;
 	private String tonalityMode;
 	private String creationDate;
@@ -27,12 +28,12 @@ public class MusicScore {
 	}
 
 
-	public String getIdentifier() {
+	public int getIdentifier() {
 		return identifier;
 	}
 
 
-	public void setIdentifier(String identifier) {
+	public void setIdentifier(int identifier) {
 		this.identifier = identifier;
 	}
 
@@ -65,17 +66,6 @@ public class MusicScore {
 	public void setComposer(String composer) {
 		this.composer = composer;
 	}
-
-
-	public String getGroup() {
-		return group;
-	}
-
-
-	public void setGroup(String group) {
-		this.group = group;
-	}
-
 
 	public String getTonalityTonic() {
 		return tonalityTonic;
@@ -140,7 +130,29 @@ public class MusicScore {
 	public ArrayList<Person> getPersons() {
 		return persons;
 	}
+
+
+	public String getGroupDescription() {
+		return groupDescription;
+	}
+
+
+	public void setGroupDescription(String groupDescription) {
+		this.groupDescription = groupDescription;
+	}
+
+
+	public String getGroupId() {
+		return groupId;
+	}
+
+
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
+	}
 		
+	
+	
 }
 
 
