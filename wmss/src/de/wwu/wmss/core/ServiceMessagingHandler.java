@@ -1,10 +1,15 @@
 package de.wwu.wmss.core;
 
+import java.util.ArrayList;
+import java.util.Enumeration;
+
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import de.wwu.wmss.factory.FactoryWMSS;
 
 public class ServiceMessagingHandler {
 
@@ -32,15 +37,16 @@ public class ServiceMessagingHandler {
 		
 		JSONObject serviceDescription = new JSONObject();
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		
-		serviceDescription.put("sources", SystemSettings.sourceList.size());
+				
 		serviceDescription.put("type", "ServiceDescriptionReport");
 		serviceDescription.put("service", SystemSettings.getService());
 		serviceDescription.put("port", SystemSettings.getPort());
+		serviceDescription.put("version", SystemSettings.getServiceVersion());
 		serviceDescription.put("timeout", SystemSettings.getTimeout());
 		serviceDescription.put("contact", SystemSettings.getAdmin());
 		serviceDescription.put("title", SystemSettings.getTitle());
 		serviceDescription.put("startup", SystemSettings.getStartup());
+		serviceDescription.put("supportedProtocols", SystemSettings.getVersion());
 		
 		JSONObject environment = new JSONObject();
 		
@@ -48,22 +54,9 @@ public class ServiceMessagingHandler {
 		environment.put("java", System.getProperty("java.version"));
 		environment.put("os", System.getProperty("os.name").toString() + " " + 
 				   System.getProperty("os.version").toString() + " (" + 
-				   System.getProperty("os.arch").toString()+")");
-		
+				   System.getProperty("os.arch").toString()+")");		
 		serviceDescription.put("environment", environment);
-		
-		JSONArray supportArray = new JSONArray();
-		
-		
-		for (int i = 0; i < SystemSettings.versions.size(); i++) {
-		
-			JSONObject support = new JSONObject();
-			support.put("version", SystemSettings.versions.get(i));	
-			supportArray.add(support);
-		}
 				
-		serviceDescription.put("supportedProtocols", supportArray);
-		
 		JSONArray dsArray = new JSONArray();
 		
 		for (int i = 0; i < SystemSettings.sourceList.size(); i++) {
@@ -90,5 +83,36 @@ public class ServiceMessagingHandler {
 		return gson.toJson(serviceDescription);
 		
 	}
+	
+	public static String getScoreList(Enumeration<String> parameterList){
+		
+		ArrayList<MusicScore> listScores = new ArrayList<MusicScore>();
+		
+		try {
+			
+			listScores = FactoryWMSS.getScoreList(parameterList);
+			
+			if(listScores == null ){
+				
+				
+				
+			}
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		
+		
+		//TODO gerar JSON
+		return "empty";
+		
+	}
+	
+	public static String getScore(Enumeration<String> parameterList){
+		
+		return null;
+		
+	}
+	
 	
 }

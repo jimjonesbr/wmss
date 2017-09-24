@@ -20,9 +20,10 @@ public class SystemSettings {
 	private static String contact;
 	private static String defaultProtocol;
 	private static String startup;
+	private static String serviceVersion;
 	private static Logger logger = Logger.getLogger("System Settings");
 	public static ArrayList<DataSource> sourceList = new ArrayList<DataSource>();
-	public static ArrayList<String> versions = new ArrayList<String>();
+	public static ArrayList<String> protocolVersions = new ArrayList<String>();
 	
 	public static void main(String[] args) {
 
@@ -40,8 +41,10 @@ public class SystemSettings {
 
 			JSONObject jsonObject = (JSONObject) obj;
 
-			versions.add("1.0");
-			versions.add("1.1");
+			protocolVersions.add("1.0");
+			protocolVersions.add("1.1");
+			//TODO Create versioning system
+			serviceVersion = "Dev-0.0.1";
 			
 			port = Integer.parseInt(jsonObject.get("port").toString());
 			timeout = Integer.parseInt(jsonObject.get("timeout").toString());
@@ -52,15 +55,17 @@ public class SystemSettings {
 			
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			Date date = new Date();
-			startup = dateFormat.format(date); //2016/11/16 12:08:43
+			startup = dateFormat.format(date); 
 			
-			logger.info("Title: " + title);
-			logger.info("Default Protocol Version: " + defaultProtocol);
-			logger.info("Port: " + port);
-			logger.info("Application Startup: " + startup);
-			logger.info("Service Name: " + service);
-			logger.info("Time-out: " + timeout + "ms");
-			logger.info("System Administrator: " + contact);
+			logger.info("\n\n" + title + "\n" +
+						"Service Name: " + service + "\n" +
+						"Default Protocol: " + defaultProtocol + "\n" +
+						"WMSS Version: " + serviceVersion + "\n" +
+					    "Port: " + port + "\n" +
+						"Application Startup: " + startup + "\n" +
+						
+						"Time-out: " + timeout + "ms" + "\n" +
+						"System Administrator: " + contact  + "\n");
 
 		} catch (Exception e) {
 
@@ -144,6 +149,14 @@ public class SystemSettings {
 
 	public static String getStartup() {
 		return startup;
+	}
+
+	public static ArrayList<String> getVersion() {
+		return protocolVersions;
+	}
+
+	public static String getServiceVersion() {
+		return serviceVersion;
 	}
 
 
