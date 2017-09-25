@@ -12,7 +12,7 @@
       "password": "postgres"
     },{
       "id": "graphdb_wwu",
-      "active": "false",
+      "active": "true",
       "type": "triplestore",
       "storage": "graphdb",
       "port": "7200",

@@ -11,8 +11,9 @@ public class ScoreList {
 	public ScoreList() {
 		super();
 		scoreLists = new ArrayList<ArrayList<MusicScore>>(); 
-		// TODO Auto-generated constructor stub
+
 	}
+
 	public String getSourceId() {
 		return sourceId;
 	}

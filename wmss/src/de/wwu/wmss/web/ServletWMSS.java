@@ -2,12 +2,15 @@ package de.wwu.wmss.web;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
+
+import de.wwu.wmss.core.RequestParameter;
 import de.wwu.wmss.core.ServiceMessagingHandler;
 import de.wwu.wmss.core.SystemSettings;
 import de.wwu.wmss.core.Util;
@@ -24,7 +27,8 @@ public class ServletWMSS extends HttpServlet
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{    	
 		Enumeration<String> listParameters = request.getParameterNames();
-
+		ArrayList<RequestParameter> parametersList = new ArrayList<RequestParameter>(); 
+		
 		logger.info("Query String -> "+request.getQueryString());
 		
 		String identifier = "";
@@ -53,45 +57,117 @@ public class ServletWMSS extends HttpServlet
 		while(listParameters.hasMoreElements() ) {
 
 			String parameter = (String) listParameters.nextElement();
+			RequestParameter req = new RequestParameter();
 		
 			if (parameter.toLowerCase().equals("request")) {
-				requestType=request.getParameter(parameter).toLowerCase();    			
+				requestType=request.getParameter(parameter).toLowerCase();
+				req.setRequest("requestType");
+				req.setValue(request.getParameter(parameter).toLowerCase());
 			} else if (parameter.toLowerCase().equals("format")) {
-				format=request.getParameter(parameter).toLowerCase(); 
+				
+				format=request.getParameter(parameter).toLowerCase();
+				req.setRequest("format");
+				req.setValue(request.getParameter(parameter).toLowerCase());
+				
 			} else if (parameter.toLowerCase().equals("group")) {
-				group=request.getParameter(parameter).toLowerCase(); 
+				
+				group=request.getParameter(parameter).toLowerCase();
+				req.setRequest("group");
+				req.setValue(request.getParameter(parameter).toLowerCase());
+
 			} else if (parameter.toLowerCase().equals("person")) {
-				person=request.getParameter(parameter).toLowerCase(); 
+				
+				person=request.getParameter(parameter).toLowerCase();
+				req.setRequest("person");
+				req.setValue(request.getParameter(parameter).toLowerCase());
+
 			} else if (parameter.toLowerCase().equals("personrole")) {
-				personRole=request.getParameter(parameter).toLowerCase(); 
+				
+				personRole=request.getParameter(parameter).toLowerCase();
+				req.setRequest("personRole");
+				req.setValue(request.getParameter(parameter).toLowerCase());
+
 			} else if (parameter.toLowerCase().equals("performancemedium")) {
-				performanceMedium=request.getParameter(parameter).toLowerCase(); 
+				
+				performanceMedium=request.getParameter(parameter).toLowerCase();
+				req.setRequest("performanceMedium");
+				req.setValue(request.getParameter(parameter).toLowerCase());
+
 			} else if (parameter.toLowerCase().equals("performancemediumtype")) {
-				performanceMediumType=request.getParameter(parameter).toLowerCase(); 
+				
+				performanceMediumType=request.getParameter(parameter).toLowerCase();
+				req.setRequest("performanceMediumType");
+				req.setValue(request.getParameter(parameter).toLowerCase());
+
 			} else if (parameter.toLowerCase().equals("solo")) {
-				solo=request.getParameter(parameter).toLowerCase(); 
+				
+				solo=request.getParameter(parameter).toLowerCase();
+				req.setRequest("solo");
+				req.setValue(request.getParameter(parameter).toLowerCase());
+
 			} else if (parameter.toLowerCase().equals("tonalitytonic")) {
-				tonalityTonic=request.getParameter(parameter).toLowerCase(); 
+				
+				tonalityTonic=request.getParameter(parameter).toLowerCase();
+				req.setRequest("tonalityTonic");
+				req.setValue(request.getParameter(parameter).toLowerCase());
+
 			} else if (parameter.toLowerCase().equals("tonalitymode")) {
-				tonalityMode=request.getParameter(parameter).toLowerCase(); 
+				
+				tonalityMode=request.getParameter(parameter).toLowerCase();
+				req.setRequest("tonalityMode");
+				req.setValue(request.getParameter(parameter).toLowerCase());
+
 			} else if (parameter.toLowerCase().equals("tempo")) {
-				tempo=request.getParameter(parameter).toLowerCase(); 
+				
+				tempo=request.getParameter(parameter).toLowerCase();
+				req.setRequest("tempo");
+				req.setValue(request.getParameter(parameter).toLowerCase());
+
 			} else if (parameter.toLowerCase().equals("creationdate")) {
-				creationDate=request.getParameter(parameter).toLowerCase(); 
+				
+				creationDate=request.getParameter(parameter).toLowerCase();
+				req.setRequest("creationDate");
+				req.setValue(request.getParameter(parameter).toLowerCase());
+
 			} else if (parameter.toLowerCase().equals("creationdatefrom")) {
-				creationDateFrom=request.getParameter(parameter).toLowerCase(); 
+				
+				creationDateFrom=request.getParameter(parameter).toLowerCase();
+				req.setRequest("creationDateFrom");
+				req.setValue(request.getParameter(parameter).toLowerCase());
+
 			} else if (parameter.toLowerCase().equals("creationdateto")) {
-				creationDateTo=request.getParameter(parameter).toLowerCase(); 
+				
+				creationDateTo=request.getParameter(parameter).toLowerCase();
+				req.setRequest("creationDateTo");
+				req.setValue(request.getParameter(parameter).toLowerCase());
+
 			} else if (parameter.toLowerCase().equals("melody")) {
-				melody=request.getParameter(parameter).toLowerCase(); 
+				
+				melody=request.getParameter(parameter).toLowerCase();
+				req.setRequest("melody");
+				req.setValue(request.getParameter(parameter).toLowerCase());
+
 			} else if (parameter.toLowerCase().equals("identifier")) {
-				identifier=request.getParameter(parameter).toLowerCase(); 
+				
+				identifier=request.getParameter(parameter).toLowerCase();
+				req.setRequest("identifier");
+				req.setValue(request.getParameter(parameter).toLowerCase());
+
 			} else if (parameter.toLowerCase().equals("version")) {
-				version=request.getParameter(parameter).toLowerCase(); 
+				
+				version=request.getParameter(parameter).toLowerCase();
+				req.setRequest("vesion");
+				req.setValue(request.getParameter(parameter).toLowerCase());
+
 			} else if (parameter.toLowerCase().equals("source")) {
-				source=request.getParameter(parameter).toLowerCase(); 
+				
+				source=request.getParameter(parameter).toLowerCase();
+				req.setRequest("source");
+				req.setValue(request.getParameter(parameter).toLowerCase());
+
 			} 
 
+			parametersList.add(req);
 		}
 
 		boolean validSource = false;
@@ -226,7 +302,7 @@ public class ServletWMSS extends HttpServlet
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getScoreList(listParameters));
+			response.getWriter().println(ServiceMessagingHandler.getScoreList(parametersList));
 
 			
 			//TODO create search for scores based on all search criteria
