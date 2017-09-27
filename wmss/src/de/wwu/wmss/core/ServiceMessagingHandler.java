@@ -2,13 +2,9 @@ package de.wwu.wmss.core;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
-
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.junit.experimental.theories.ParameterSupplier;
-import org.omg.PortableServer.RequestProcessingPolicyOperations;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -114,15 +110,16 @@ public class ServiceMessagingHandler {
 
 				if(source.equals(SystemSettings.sourceList.get(i).getId()) || source.equals("")){
 
-					listScores = FactoryWMSS.getScoreList(parameterList,SystemSettings.sourceList.get(i));
+					listScores = FactoryWMSS.getScoreList(parameterList, SystemSettings.sourceList.get(i));
 
 					JSONObject repo = new JSONObject();
-					repo.put("sourceId", SystemSettings.sourceList.get(i).getId());
-					repo.put("sourceType", SystemSettings.sourceList.get(i).getType());
-					repo.put("sourceStorage", SystemSettings.sourceList.get(i).getStorage());
-					repo.put("repositorySize", listScores.size());
+					repo.put("identifier", SystemSettings.sourceList.get(i).getId());
+					repo.put("host", SystemSettings.sourceList.get(i).getHost());
+					repo.put("version", SystemSettings.sourceList.get(i).getVersion());
+					repo.put("type", SystemSettings.sourceList.get(i).getType());
+					repo.put("storage", SystemSettings.sourceList.get(i).getStorage());
+					repo.put("size", listScores.size());
 					repo.put("scores", listScores);
-
 
 					repoArray.add(repo);
 
@@ -131,7 +128,8 @@ public class ServiceMessagingHandler {
 
 			}
 
-			result.put("repositories", repoArray);
+			result.put("datasources", repoArray);
+			result.put("size", repoArray.size());
 
 		} catch (Exception e) {
 			logger.error(e.getMessage());

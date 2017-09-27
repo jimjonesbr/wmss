@@ -4,9 +4,19 @@ import java.util.ArrayList;
 
 public class Movement {
 
-	private String identifier;
+	private int identifier;
 	private String title;	
 	private String tempo;
+	
+	public int getIdentifier() {
+		return identifier;
+	}
+
+	public void setIdentifier(int identifier) {
+		this.identifier = identifier;
+	}
+
+
 	private ArrayList<PerformanceMedium> performanceMediumList;
 	
 	public Movement() {
@@ -38,13 +48,7 @@ public class Movement {
 		this.performanceMediumList = performanceMediumList;
 	}
 
-	public String getIdentifier() {
-		return identifier;
-	}
 
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
-	}
 
 	
 }
