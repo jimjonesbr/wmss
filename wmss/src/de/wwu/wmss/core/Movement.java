@@ -7,6 +7,8 @@ public class Movement {
 	private int identifier;
 	private String title;	
 	private String tempo;
+	private int scoreId;
+	
 	
 	public int getIdentifier() {
 		return identifier;
@@ -46,6 +48,14 @@ public class Movement {
 
 	public void setPerformanceMediumList(ArrayList<PerformanceMedium> performanceMediumList) {
 		this.performanceMediumList = performanceMediumList;
+	}
+
+	public int getScoreId() {
+		return scoreId;
+	}
+
+	public void setScoreId(int scoreId) {
+		this.scoreId = scoreId;
 	}
 
 

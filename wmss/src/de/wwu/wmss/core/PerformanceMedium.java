@@ -6,6 +6,11 @@ public class PerformanceMedium {
 	private String typeClassification;
 	private String mediumDescription;
 	private String mediumClassification;
+	private String mediumScoreDescription;	
+	private int movementId;
+	private int scoreId;
+	
+	
 	private boolean solo;
 	
 	public PerformanceMedium() {
@@ -50,6 +55,30 @@ public class PerformanceMedium {
 
 	public void setSolo(boolean solo) {
 		this.solo = solo;
+	}
+
+	public int getMovementId() {
+		return movementId;
+	}
+
+	public void setMovementId(int movementId) {
+		this.movementId = movementId;
+	}
+
+	public int getScoreId() {
+		return scoreId;
+	}
+
+	public void setScoreId(int scoreId) {
+		this.scoreId = scoreId;
+	}
+
+	public String getMediumScoreDescription() {
+		return mediumScoreDescription;
+	}
+
+	public void setMediumScoreDescription(String mediumScoreDescription) {
+		this.mediumScoreDescription = mediumScoreDescription;
 	}
 
 	

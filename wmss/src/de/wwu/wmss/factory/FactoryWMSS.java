@@ -7,6 +7,8 @@ import de.wwu.wmss.connectors.PostgreSQLConnector;
 import de.wwu.wmss.core.DataSource;
 import de.wwu.wmss.core.Movement;
 import de.wwu.wmss.core.MusicScore;
+import de.wwu.wmss.core.PerformanceMedium;
+import de.wwu.wmss.core.Person;
 import de.wwu.wmss.core.RequestParameter;
 
 public class FactoryWMSS {
@@ -19,37 +21,39 @@ public class FactoryWMSS {
 		//TODO add where clause statements
 
 
-		ArrayList<MusicScore> result = new ArrayList<MusicScore>();
+		ArrayList<MusicScore> scoreList = new ArrayList<MusicScore>();
 		ArrayList<Movement> movementList = new ArrayList<Movement>();
+		ArrayList<PerformanceMedium> mediumList = new ArrayList<PerformanceMedium>();
+		ArrayList<Person> personList = new ArrayList<Person>();
 
 		try {
 
 			if (dataSource.getStorage().equals("postgresql")){
 
-				String SQL = "SELECT grp.*,	" +
-						"scr.*, per.*, rol.*, doctype.*, movmed.*, mov.* " + 	
+				String SQL = "SELECT grp.*,	scr.*, per.*, rol.*, doctype.*, med.*, movmed.*,  medtype.*, mov.* " + 	
 						"FROM wmss_scores scr " +
 						"JOIN wmss_score_movements mov ON scr.score_id = mov.score_id " + 
 						"JOIN wmss_movement_performance_medium movmed ON mov.movement_id = movmed.movement_id AND movmed.score_id = scr.score_id " + 
 						"JOIN wmss_performance_medium med ON movmed.performance_medium_id = med.performance_medium_id " +
+						"JOIN wmss_performance_medium_type medtype ON med.performance_medium_type_id = medtype.performance_medium_type_id " +
 						"JOIN wmss_score_persons scrper ON scrper.score_id = scr.score_id  " +
 						"JOIN wmss_persons per ON per.person_id = scrper.person_id  " +
 						"JOIN wmss_roles rol ON rol.role_id = scrper.role_id " +
 						"JOIN wmss_groups grp ON grp.group_id = scr.group_id " +
 						"JOIN wmss_document doc ON doc.score_id = scr.score_id " +
 						"JOIN wmss_document_type doctype ON doctype.document_type_id = doc.document_type_id "
-						+ "-- where scr.score_id = 16";	
+						+ " --where scr.score_id in (15, 16)";	
 
 				ResultSet rs = PostgreSQLConnector.executeQuery(SQL, dataSource);
 
 
-				while (rs.next())
-				{
+				while (rs.next()){
+
 					boolean scoreAdded = false;
 
-					for (int j = 0; j < result.size(); j++) {
+					for (int j = 0; j < scoreList.size(); j++) {
 
-						if(result.get(j).getIdentifier() == rs.getInt("score_id")){
+						if(scoreList.get(j).getIdentifier() == rs.getInt("score_id")){
 							scoreAdded = true;
 						}
 
@@ -68,53 +72,150 @@ public class FactoryWMSS {
 					mov.setIdentifier(rs.getInt("movement_id"));
 					mov.setTitle(rs.getString("score_movement_description"));
 					mov.setTempo(rs.getString("movement_tempo"));
+					mov.setScoreId(rs.getInt("score_id"));
 
-					rec.getMovements().add(mov);
-					
-					
-					
-					//TODO begin not working!
-//					for (int i = 0; i < result.size(); i++) {
-//
-//						if(result.get(i).getIdentifier() == rs.getInt("score_id")){
-//
-//							if(result.get(i).getMovements().size()==0){
-//
-//								rec.getMovements().add(mov);
-//
-//							} else {
-//
-//								for (int j = 0; j < result.get(i).getMovements().size(); j++) {
-//
-//									if(result.get(i).getMovements().get(j).getIdentifier() != rs.getInt("movement_id")){
-//
-//										rec.getMovements().add(mov);
-//										
-//									}
-//
-//								}
-//							}
-//						}
-//
-//					}
-					// END not working
+					movementList.add(mov);
 
+					PerformanceMedium med = new PerformanceMedium();
+					med.setMediumClassification(rs.getString("performance_medium_id"));
+					med.setMediumDescription(rs.getString("performance_medium_description"));
+					med.setTypeDescription(rs.getString("performance_medium_type_description"));
+					med.setMovementId(rs.getInt("movement_id"));
+					med.setScoreId(rs.getInt("score_id"));
+					med.setSolo(rs.getBoolean("movement_performance_medium_solo"));
+					med.setMediumScoreDescription(rs.getString("movement_performance_medium_description"));
 
+					mediumList.add(med);
 
+					Person per = new Person();					
+					per.setName(rs.getString("person_name"));
+					per.setRole(rs.getString("role_description"));
+					per.setScore_id(rs.getInt("score_id"));
 
-					//;
-
+					personList.add(per);
 
 					if(scoreAdded == false){
 
-						result.add(rec);
+						scoreList.add(rec);
 
 					} 
 
+				}
 
+				/**
+				 * Selecting and adding movements that belong to a music score
+				 */
+
+				for (int i = 0; i < scoreList.size(); i++) {
+
+					for (int j = 0; j < movementList.size(); j++) {						
+
+						if(scoreList.get(i).getIdentifier() == movementList.get(j).getScoreId()){
+
+							boolean movementAdded = false;
+
+							for (int k = 0; k < scoreList.get(i).getMovements().size(); k++) {
+
+								if(scoreList.get(i).getMovements().get(k).getScoreId() == movementList.get(j).getScoreId() &&
+										scoreList.get(i).getMovements().get(k).getTitle().equals(movementList.get(j).getTitle())){
+
+									movementAdded = true;
+								}
+
+							}
+
+							if(!movementAdded) {
+
+								scoreList.get(i).getMovements().add(movementList.get(j));
+
+							}
+
+						}
+
+					}
 
 
 				}
+
+
+				/**
+				 * Selecting and adding performance medium that belong to a movement
+				 */
+				for (int i = 0; i < scoreList.size(); i++) {
+
+					for (int j = 0; j < scoreList.get(i).getMovements().size(); j++) {
+
+						for (int k = 0; k < mediumList.size(); k++) {
+
+							boolean mediumAdded = false;
+
+							if(scoreList.get(i).getIdentifier() == mediumList.get(k).getScoreId()  &&
+									scoreList.get(i).getMovements().get(j).getIdentifier() == mediumList.get(k).getMovementId()){
+
+								for (int l = 0; l < scoreList.get(i).getMovements().get(j).getPerformanceMediumList().size(); l++) {
+
+									if(scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getScoreId() == mediumList.get(k).getScoreId() &&
+											scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMovementId() == mediumList.get(k).getMovementId() &&
+											scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediumScoreDescription().equals(mediumList.get(k).getMediumScoreDescription())){
+
+										mediumAdded = true;
+
+									} 
+
+								}
+
+								if(!mediumAdded) {scoreList.get(i).getMovements().get(j).getPerformanceMediumList().add(mediumList.get(k));}
+
+
+							}
+						}
+
+
+
+					}
+
+				}
+
+
+				/**
+				 * Selecting and adding persons that belong to a music score
+				 */
+
+				for (int i = 0; i < scoreList.size(); i++) {
+
+
+					for (int j = 0; j < personList.size(); j++) {
+
+						boolean personAdded = false;
+
+						for (int k = 0; k < scoreList.get(i).getPersons().size(); k++) {
+
+							if(scoreList.get(i).getPersons().get(k).getName().equals(personList.get(j).getName()) &&
+							   scoreList.get(i).getPersons().get(k).getScore_id() == personList.get(j).getScore_id()){
+
+								personAdded = true;
+
+							}
+
+						}
+
+						if(scoreList.get(i).getIdentifier() == personList.get(j).getScore_id()){
+
+							if(!personAdded){	
+								
+								scoreList.get(i).getPersons().add(personList.get(j));
+								
+							}
+
+						}
+
+					}
+
+
+				}
+
+
+
 
 				rs.close();
 
@@ -136,7 +237,7 @@ public class FactoryWMSS {
 
 
 
-		return result;
+		return scoreList;
 	}
 
 }
