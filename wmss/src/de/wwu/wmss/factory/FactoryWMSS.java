@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import de.wwu.wmss.connectors.PostgreSQLConnector;
 import de.wwu.wmss.core.DataSource;
+import de.wwu.wmss.core.Format;
 import de.wwu.wmss.core.Movement;
 import de.wwu.wmss.core.MusicScore;
 import de.wwu.wmss.core.PerformanceMedium;
@@ -53,7 +54,7 @@ public class FactoryWMSS {
 
 					for (int j = 0; j < scoreList.size(); j++) {
 
-						if(scoreList.get(j).getIdentifier() == rs.getInt("score_id")){
+						if(scoreList.get(j).getScoreIdentifier() == rs.getInt("score_id")){
 							scoreAdded = true;
 						}
 
@@ -61,7 +62,7 @@ public class FactoryWMSS {
 
 					MusicScore rec = new MusicScore();
 
-					rec.setIdentifier(rs.getInt("score_id"));
+					rec.setScoreIdentifier(rs.getInt("score_id"));
 					rec.setTitle(rs.getString("score_name"));;
 					rec.setTonalityMode(rs.getString("score_tonality_mode"));;
 					rec.setTonalityTonic(rs.getString("score_tonality_note"));;
@@ -69,7 +70,7 @@ public class FactoryWMSS {
 					rec.setGroupDescription(rs.getString("group_description"));
 
 					Movement mov = new Movement();					
-					mov.setIdentifier(rs.getInt("movement_id"));
+					mov.setMovementIdentifier(rs.getInt("movement_id"));
 					mov.setTitle(rs.getString("score_movement_description"));
 					mov.setTempo(rs.getString("movement_tempo"));
 					mov.setScoreId(rs.getInt("score_id"));
@@ -90,9 +91,14 @@ public class FactoryWMSS {
 					Person per = new Person();					
 					per.setName(rs.getString("person_name"));
 					per.setRole(rs.getString("role_description"));
-					per.setScore_id(rs.getInt("score_id"));
+					per.setScoreId(rs.getInt("score_id"));
 
 					personList.add(per);
+					
+					Format frm = new Format();
+					
+					frm.setFormatId(rs.getInt("document_type_id"));
+					frm.setFormatDescription(rs.getString("document_type_description"));
 
 					if(scoreAdded == false){
 
@@ -110,7 +116,7 @@ public class FactoryWMSS {
 
 					for (int j = 0; j < movementList.size(); j++) {						
 
-						if(scoreList.get(i).getIdentifier() == movementList.get(j).getScoreId()){
+						if(scoreList.get(i).getScoreIdentifier() == movementList.get(j).getScoreId()){
 
 							boolean movementAdded = false;
 
@@ -149,14 +155,14 @@ public class FactoryWMSS {
 
 							boolean mediumAdded = false;
 
-							if(scoreList.get(i).getIdentifier() == mediumList.get(k).getScoreId()  &&
-									scoreList.get(i).getMovements().get(j).getIdentifier() == mediumList.get(k).getMovementId()){
+							if(scoreList.get(i).getScoreIdentifier() == mediumList.get(k).getScoreId()  &&
+							   scoreList.get(i).getMovements().get(j).getMovementIdentifier() == mediumList.get(k).getMovementId()){
 
 								for (int l = 0; l < scoreList.get(i).getMovements().get(j).getPerformanceMediumList().size(); l++) {
 
 									if(scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getScoreId() == mediumList.get(k).getScoreId() &&
-											scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMovementId() == mediumList.get(k).getMovementId() &&
-											scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediumScoreDescription().equals(mediumList.get(k).getMediumScoreDescription())){
+									   scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMovementId() == mediumList.get(k).getMovementId() &&
+									   scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediumScoreDescription().equals(mediumList.get(k).getMediumScoreDescription())){
 
 										mediumAdded = true;
 
@@ -191,7 +197,7 @@ public class FactoryWMSS {
 						for (int k = 0; k < scoreList.get(i).getPersons().size(); k++) {
 
 							if(scoreList.get(i).getPersons().get(k).getName().equals(personList.get(j).getName()) &&
-							   scoreList.get(i).getPersons().get(k).getScore_id() == personList.get(j).getScore_id()){
+							   scoreList.get(i).getPersons().get(k).getScoreId() == personList.get(j).getScoreId()){
 
 								personAdded = true;
 
@@ -199,7 +205,7 @@ public class FactoryWMSS {
 
 						}
 
-						if(scoreList.get(i).getIdentifier() == personList.get(j).getScore_id()){
+						if(scoreList.get(i).getScoreIdentifier() == personList.get(j).getScoreId()){
 
 							if(!personAdded){	
 								
@@ -225,7 +231,8 @@ public class FactoryWMSS {
 
 		} catch (Exception e) {
 
-			logger.error(e.getMessage());
+			//logger.err(e.printStackTrace());
+			e.printStackTrace();
 		}
 
 

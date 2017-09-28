@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class MusicScore {
 
-	private int identifier;
+	private int scoreIdentifier;
 	private String source;
 	private String title;
 	private String composer;
@@ -28,13 +28,13 @@ public class MusicScore {
 	}
 
 
-	public int getIdentifier() {
-		return identifier;
+	public int getScoreIdentifier() {
+		return scoreIdentifier;
 	}
 
 
-	public void setIdentifier(int identifier) {
-		this.identifier = identifier;
+	public void setScoreIdentifier(int identifier) {
+		this.scoreIdentifier = identifier;
 	}
 
 

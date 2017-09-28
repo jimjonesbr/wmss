@@ -4,18 +4,18 @@ import java.util.ArrayList;
 
 public class Movement {
 
-	private int identifier;
+	private int movementIdentifier;
 	private String title;	
 	private String tempo;
 	private int scoreId;
 	
 	
-	public int getIdentifier() {
-		return identifier;
+	public int getMovementIdentifier() {
+		return movementIdentifier;
 	}
 
-	public void setIdentifier(int identifier) {
-		this.identifier = identifier;
+	public void setMovementIdentifier(int identifier) {
+		this.movementIdentifier = identifier;
 	}
 
 

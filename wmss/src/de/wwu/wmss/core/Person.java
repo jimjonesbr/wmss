@@ -4,7 +4,7 @@ public class Person {
 
 	private String name;
 	private String role;
-	private int score_id; 
+	private int scoreId; 
 
 	public Person() {
 		super();
@@ -22,11 +22,11 @@ public class Person {
 	public void setRole(String role) {
 		this.role = role;
 	}
-	public int getScore_id() {
-		return score_id;
+	public int getScoreId() {
+		return scoreId;
 	}
-	public void setScore_id(int score_id) {
-		this.score_id = score_id;
+	public void setScoreId(int score_id) {
+		this.scoreId = score_id;
 	}
 	
 	
