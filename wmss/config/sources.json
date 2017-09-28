@@ -5,7 +5,7 @@
       "type": "database",
       "storage": "postgresql",
       "port": "5432",
-      "host": "dev-postgis.uni-muenster.de",
+      "host": "localhost",
       "repository": "wmss",
       "version": "9.5",
       "user": "postgres",

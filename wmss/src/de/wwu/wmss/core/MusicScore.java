@@ -16,14 +16,14 @@ public class MusicScore {
 	private String creationDateFrom;
 	private String creationDateTo;
 	private ArrayList<Movement> movements;
-	private ArrayList<String> formats;
+	private ArrayList<Format> formats;
 	private ArrayList<Person> persons;
 	
 	public MusicScore() {
 		super();
 		
 		this.movements = new ArrayList<Movement>();
-		this.formats = new ArrayList<String>();
+		this.formats = new ArrayList<Format>();
 		this.persons = new ArrayList<Person>();
 	}
 
@@ -122,7 +122,7 @@ public class MusicScore {
 	}
 
 
-	public ArrayList<String> getFormats() {
+	public ArrayList<Format> getFormats() {
 		return formats;
 	}
 

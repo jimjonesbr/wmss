@@ -26,6 +26,7 @@ public class FactoryWMSS {
 		ArrayList<Movement> movementList = new ArrayList<Movement>();
 		ArrayList<PerformanceMedium> mediumList = new ArrayList<PerformanceMedium>();
 		ArrayList<Person> personList = new ArrayList<Person>();
+		ArrayList<Format> formatList = new ArrayList<Format>();
 
 		try {
 
@@ -94,11 +95,13 @@ public class FactoryWMSS {
 					per.setScoreId(rs.getInt("score_id"));
 
 					personList.add(per);
-					
+
 					Format frm = new Format();
-					
 					frm.setFormatId(rs.getInt("document_type_id"));
 					frm.setFormatDescription(rs.getString("document_type_description"));
+					frm.setScoreId(rs.getInt("score_id"));
+
+					formatList.add(frm);
 
 					if(scoreAdded == false){
 
@@ -156,13 +159,13 @@ public class FactoryWMSS {
 							boolean mediumAdded = false;
 
 							if(scoreList.get(i).getScoreIdentifier() == mediumList.get(k).getScoreId()  &&
-							   scoreList.get(i).getMovements().get(j).getMovementIdentifier() == mediumList.get(k).getMovementId()){
+									scoreList.get(i).getMovements().get(j).getMovementIdentifier() == mediumList.get(k).getMovementId()){
 
 								for (int l = 0; l < scoreList.get(i).getMovements().get(j).getPerformanceMediumList().size(); l++) {
 
 									if(scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getScoreId() == mediumList.get(k).getScoreId() &&
-									   scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMovementId() == mediumList.get(k).getMovementId() &&
-									   scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediumScoreDescription().equals(mediumList.get(k).getMediumScoreDescription())){
+											scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMovementId() == mediumList.get(k).getMovementId() &&
+											scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediumScoreDescription().equals(mediumList.get(k).getMediumScoreDescription())){
 
 										mediumAdded = true;
 
@@ -197,7 +200,7 @@ public class FactoryWMSS {
 						for (int k = 0; k < scoreList.get(i).getPersons().size(); k++) {
 
 							if(scoreList.get(i).getPersons().get(k).getName().equals(personList.get(j).getName()) &&
-							   scoreList.get(i).getPersons().get(k).getScoreId() == personList.get(j).getScoreId()){
+									scoreList.get(i).getPersons().get(k).getScoreId() == personList.get(j).getScoreId()){
 
 								personAdded = true;
 
@@ -208,9 +211,9 @@ public class FactoryWMSS {
 						if(scoreList.get(i).getScoreIdentifier() == personList.get(j).getScoreId()){
 
 							if(!personAdded){	
-								
+
 								scoreList.get(i).getPersons().add(personList.get(j));
-								
+
 							}
 
 						}
@@ -222,6 +225,29 @@ public class FactoryWMSS {
 
 
 
+				for (int i = 0; i < scoreList.size(); i++) {
+
+					for (int j = 0; j < formatList.size(); j++) {
+
+						boolean formatAdded = false;
+
+						for (int k = 0; k < scoreList.get(k).getFormats().size(); k++) {
+
+							if(scoreList.get(i).getScoreIdentifier() == formatList.get(k).getScoreId() &&
+									scoreList.get(i).getFormats().get(k).getFormatId() == formatList.get(j).getFormatId()){
+
+								formatAdded = true;
+							}
+
+						} 
+
+
+
+						//scoreList.get(i).getFormats().add(formatList.get(j));
+
+					}
+
+				}
 
 				rs.close();
 
