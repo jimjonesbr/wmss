@@ -12,8 +12,8 @@ import org.apache.log4j.Logger;
 
 import de.wwu.wmss.core.RequestParameter;
 import de.wwu.wmss.core.ServiceMessagingHandler;
-import de.wwu.wmss.core.SystemSettings;
 import de.wwu.wmss.core.Util;
+import de.wwu.wmss.settings.SystemSettings;
 
 public class ServletWMSS extends HttpServlet
 {

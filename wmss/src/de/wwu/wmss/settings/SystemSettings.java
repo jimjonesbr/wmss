@@ -1,4 +1,4 @@
-package de.wwu.wmss.core;
+package de.wwu.wmss.settings;
 
 import java.io.FileReader;
 import java.text.DateFormat;
@@ -10,6 +10,8 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+
+import de.wwu.wmss.core.DataSource;
 
 public class SystemSettings {
 

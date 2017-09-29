@@ -4,7 +4,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
-import de.wwu.wmss.core.SystemSettings;
+import de.wwu.wmss.settings.SystemSettings;
 
 public class Start {
 

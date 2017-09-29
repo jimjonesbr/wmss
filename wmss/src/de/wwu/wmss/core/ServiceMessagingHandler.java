@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import de.wwu.wmss.factory.FactoryWMSS;
+import de.wwu.wmss.settings.SystemSettings;
 
 public class ServiceMessagingHandler {
 

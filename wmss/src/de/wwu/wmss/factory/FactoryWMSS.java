@@ -231,19 +231,30 @@ public class FactoryWMSS {
 
 						boolean formatAdded = false;
 
-						for (int k = 0; k < scoreList.get(k).getFormats().size(); k++) {
+						//						System.out.println(formatList.get(j).getScoreId());
+						for (int k = 0; k < scoreList.get(i).getFormats().size(); k++) {
 
-							if(scoreList.get(i).getScoreIdentifier() == formatList.get(k).getScoreId() &&
-									scoreList.get(i).getFormats().get(k).getFormatId() == formatList.get(j).getFormatId()){
+
+							if(formatList.get(j).getScoreId() == scoreList.get(i).getFormats().get(k).getScoreId() &&
+							   formatList.get(j).getFormatId() == scoreList.get(i).getFormats().get(k).getFormatId()){
 
 								formatAdded = true;
+
+								//System.out.println("DEBUG: " + formatList.get(j).getScoreId() + " - "  + scoreList.get(i).getFormats().get(k).getScoreId());
+							}							
+
+						}
+
+						if(scoreList.get(i).getScoreIdentifier() == formatList.get(j).getScoreId()){
+								
+							if(!formatAdded){
+								
+								scoreList.get(i).getFormats().add(formatList.get(j));
+								
 							}
+							
 
-						} 
-
-
-
-						//scoreList.get(i).getFormats().add(formatList.get(j));
+						}
 
 					}
 
