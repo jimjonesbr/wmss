@@ -111,6 +111,9 @@ public class FactoryWMSS {
 
 				}
 
+				rs.close();
+				
+				
 				/**
 				 * Selecting and adding movements that belong to a music score
 				 */
@@ -224,14 +227,12 @@ public class FactoryWMSS {
 				}
 
 
-
 				for (int i = 0; i < scoreList.size(); i++) {
 
 					for (int j = 0; j < formatList.size(); j++) {
 
 						boolean formatAdded = false;
 
-						//						System.out.println(formatList.get(j).getScoreId());
 						for (int k = 0; k < scoreList.get(i).getFormats().size(); k++) {
 
 
@@ -239,8 +240,7 @@ public class FactoryWMSS {
 							   formatList.get(j).getFormatId() == scoreList.get(i).getFormats().get(k).getFormatId()){
 
 								formatAdded = true;
-
-								//System.out.println("DEBUG: " + formatList.get(j).getScoreId() + " - "  + scoreList.get(i).getFormats().get(k).getScoreId());
+								
 							}							
 
 						}
@@ -260,7 +260,7 @@ public class FactoryWMSS {
 
 				}
 
-				rs.close();
+				
 
 			}
 
@@ -268,7 +268,7 @@ public class FactoryWMSS {
 
 		} catch (Exception e) {
 
-			//logger.err(e.printStackTrace());
+			logger.error("Unexpected error ocurred at the PostgreSQL connector.");
 			e.printStackTrace();
 		}
 

@@ -55,6 +55,8 @@ public class SystemSettings {
 			title = jsonObject.get("title").toString();
 			defaultProtocol= jsonObject.get("defaultProtocol").toString();
 			
+			//TODO create capability with all possible filters
+			
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			Date date = new Date();
 			startup = dateFormat.format(date); 

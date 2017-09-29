@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import de.wwu.wmss.core.RequestParameter;
-import de.wwu.wmss.core.ServiceMessagingHandler;
 import de.wwu.wmss.core.Util;
+import de.wwu.wmss.factory.ServiceMessagingHandler;
 import de.wwu.wmss.settings.SystemSettings;
 
 public class ServletWMSS extends HttpServlet
@@ -191,6 +191,9 @@ public class ServletWMSS extends HttpServlet
 			validSource = true;
 		}
 
+		
+		//TODO create an error message for invalid parameters. Currently they are being only ignored.
+		
 		if(requestType.equals("")){
 
 			response.setContentType("text/javascript");
@@ -291,7 +294,6 @@ public class ServletWMSS extends HttpServlet
 				response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0008", "No identifier provided for GetScore request."));
 
 			} else {
-
 				
 				//TODO create search for score based on identifier
 
@@ -304,7 +306,7 @@ public class ServletWMSS extends HttpServlet
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.getWriter().println(ServiceMessagingHandler.getScoreList(parametersList));
 
-			
+			//TODO create validation of filter capabilities based on the sources.json document
 			//TODO create search for scores based on all search criteria
 
 		}

@@ -1,4 +1,4 @@
-package de.wwu.wmss.core;
+package de.wwu.wmss.factory;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -8,7 +8,8 @@ import org.json.simple.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import de.wwu.wmss.factory.FactoryWMSS;
+import de.wwu.wmss.core.MusicScore;
+import de.wwu.wmss.core.RequestParameter;
 import de.wwu.wmss.settings.SystemSettings;
 
 public class ServiceMessagingHandler {

@@ -9,7 +9,27 @@
       "repository": "wmss",
       "version": "9.5",
       "user": "postgres",
-      "password": "postgres"
+      "password": "postgres",
+      "filterCapabilities": [
+            {
+              "melody": false,
+              "group": true,
+              "person": true,
+              "personRole": true,
+              "performanceMedium": true,
+              "performanceMediumType": true,
+              "solo": true,
+              "tonalityTonic": true,
+              "tonalityMode": true,
+              "tempo": true,
+              "creationDate": true,
+              "creationDateFrom": true,
+              "creationDateTo": true,
+              "source": true,
+              "identifier": true,
+              "format": true              
+            }
+          ]
     },{
       "id": "graphdb_wwu",
       "active": "true",
@@ -20,7 +40,28 @@
       "repository": "wwu",
       "version": "8",
       "user": "",
-      "password": ""
+      "password": "",
+            "filterCapabilities": [
+            {
+              "melody": true,
+              "group": true,
+              "person": true,
+              "personRole": true,
+              "performanceMedium": true,
+              "performanceMediumType": true,
+              "solo": true,
+              "tonalityTonic": true,
+              "tonalityMode": true,
+              "tempo": true,
+              "creationDate": true,
+              "creationDateFrom": true,
+              "creationDateTo": true,
+              "source": true,
+              "identifier": true,
+              "format": true              
+            }
+          ]
+      
     }
   ]
 }
