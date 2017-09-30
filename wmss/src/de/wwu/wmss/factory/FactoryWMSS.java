@@ -11,16 +11,13 @@ import de.wwu.wmss.core.MusicScore;
 import de.wwu.wmss.core.PerformanceMedium;
 import de.wwu.wmss.core.Person;
 import de.wwu.wmss.core.RequestParameter;
+import de.wwu.wmss.settings.SystemSettings;
 
 public class FactoryWMSS {
 
 	private static Logger logger = Logger.getLogger("Factory-WMSS");
 
 	public static ArrayList<MusicScore> getScoreList(ArrayList<RequestParameter> parameters, DataSource dataSource){
-
-
-		//TODO add where clause statements
-
 
 		ArrayList<MusicScore> scoreList = new ArrayList<MusicScore>();
 		ArrayList<Movement> movementList = new ArrayList<Movement>();
@@ -55,7 +52,7 @@ public class FactoryWMSS {
 
 					for (int j = 0; j < scoreList.size(); j++) {
 
-						if(scoreList.get(j).getScoreIdentifier() == rs.getInt("score_id")){
+						if(scoreList.get(j).getScoreIdentifier().equals(rs.getString("score_id"))){
 							scoreAdded = true;
 						}
 
@@ -63,7 +60,7 @@ public class FactoryWMSS {
 
 					MusicScore rec = new MusicScore();
 
-					rec.setScoreIdentifier(rs.getInt("score_id"));
+					rec.setScoreIdentifier(rs.getString("score_id"));
 					rec.setCreationDateFrom(rs.getInt("score_creation_date_min"));
 					rec.setCreationDateTo(rs.getInt("score_creation_date_max"));
 					rec.setTitle(rs.getString("score_name"));;
@@ -73,10 +70,10 @@ public class FactoryWMSS {
 					rec.setGroupDescription(rs.getString("group_description"));
 
 					Movement mov = new Movement();					
-					mov.setMovementIdentifier(rs.getInt("movement_id"));
+					mov.setMovementIdentifier(rs.getString("movement_id"));
 					mov.setTitle(rs.getString("score_movement_description"));
 					mov.setTempo(rs.getString("movement_tempo"));
-					mov.setScoreId(rs.getInt("score_id"));
+					mov.setScoreId(rs.getString("score_id"));
 
 					movementList.add(mov);
 
@@ -84,8 +81,8 @@ public class FactoryWMSS {
 					med.setMediumClassification(rs.getString("performance_medium_id"));
 					med.setMediumDescription(rs.getString("performance_medium_description"));
 					med.setTypeDescription(rs.getString("performance_medium_type_description"));
-					med.setMovementId(rs.getInt("movement_id"));
-					med.setScoreId(rs.getInt("score_id"));
+					med.setMovementId(rs.getString("movement_id"));
+					med.setScoreId(rs.getString("score_id"));
 					med.setSolo(rs.getBoolean("movement_performance_medium_solo"));
 					med.setMediumScoreDescription(rs.getString("movement_performance_medium_description"));
 
@@ -94,14 +91,14 @@ public class FactoryWMSS {
 					Person per = new Person();					
 					per.setName(rs.getString("person_name"));
 					per.setRole(rs.getString("role_description"));
-					per.setScoreId(rs.getInt("score_id"));
+					per.setScoreId(rs.getString("score_id"));
 
 					personList.add(per);
 
 					Format frm = new Format();
-					frm.setFormatId(rs.getInt("document_type_id"));
+					frm.setFormatId(rs.getString("document_type_id"));
 					frm.setFormatDescription(rs.getString("document_type_description"));
-					frm.setScoreId(rs.getInt("score_id"));
+					frm.setScoreId(rs.getString("score_id"));
 
 					formatList.add(frm);
 
@@ -114,155 +111,7 @@ public class FactoryWMSS {
 				}
 
 				rs.close();
-				
-				
-				/**
-				 * Selecting and adding movements that belong to a music score
-				 */
 
-				for (int i = 0; i < scoreList.size(); i++) {
-
-					for (int j = 0; j < movementList.size(); j++) {						
-
-						if(scoreList.get(i).getScoreIdentifier() == movementList.get(j).getScoreId()){
-
-							boolean movementAdded = false;
-
-							for (int k = 0; k < scoreList.get(i).getMovements().size(); k++) {
-
-								if(scoreList.get(i).getMovements().get(k).getScoreId() == movementList.get(j).getScoreId() &&
-										scoreList.get(i).getMovements().get(k).getTitle().equals(movementList.get(j).getTitle())){
-
-									movementAdded = true;
-								}
-
-							}
-
-							if(!movementAdded) {
-
-								scoreList.get(i).getMovements().add(movementList.get(j));
-
-							}
-
-						}
-
-					}
-
-
-				}
-
-
-				/**
-				 * Selecting and adding performance medium that belong to a movement
-				 */
-				for (int i = 0; i < scoreList.size(); i++) {
-
-					for (int j = 0; j < scoreList.get(i).getMovements().size(); j++) {
-
-						for (int k = 0; k < mediumList.size(); k++) {
-
-							boolean mediumAdded = false;
-
-							if(scoreList.get(i).getScoreIdentifier() == mediumList.get(k).getScoreId()  &&
-									scoreList.get(i).getMovements().get(j).getMovementIdentifier() == mediumList.get(k).getMovementId()){
-
-								for (int l = 0; l < scoreList.get(i).getMovements().get(j).getPerformanceMediumList().size(); l++) {
-
-									if(scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getScoreId() == mediumList.get(k).getScoreId() &&
-											scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMovementId() == mediumList.get(k).getMovementId() &&
-											scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediumScoreDescription().equals(mediumList.get(k).getMediumScoreDescription())){
-
-										mediumAdded = true;
-
-									} 
-
-								}
-
-								if(!mediumAdded) {scoreList.get(i).getMovements().get(j).getPerformanceMediumList().add(mediumList.get(k));}
-
-
-							}
-						}
-
-
-
-					}
-
-				}
-
-
-				/**
-				 * Selecting and adding persons that belong to a music score
-				 */
-
-				for (int i = 0; i < scoreList.size(); i++) {
-
-
-					for (int j = 0; j < personList.size(); j++) {
-
-						boolean personAdded = false;
-
-						for (int k = 0; k < scoreList.get(i).getPersons().size(); k++) {
-
-							if(scoreList.get(i).getPersons().get(k).getName().equals(personList.get(j).getName()) &&
-									scoreList.get(i).getPersons().get(k).getScoreId() == personList.get(j).getScoreId()){
-
-								personAdded = true;
-
-							}
-
-						}
-
-						if(scoreList.get(i).getScoreIdentifier() == personList.get(j).getScoreId()){
-
-							if(!personAdded){	
-
-								scoreList.get(i).getPersons().add(personList.get(j));
-
-							}
-
-						}
-
-					}
-
-
-				}
-
-
-				for (int i = 0; i < scoreList.size(); i++) {
-
-					for (int j = 0; j < formatList.size(); j++) {
-
-						boolean formatAdded = false;
-
-						for (int k = 0; k < scoreList.get(i).getFormats().size(); k++) {
-
-
-							if(formatList.get(j).getScoreId() == scoreList.get(i).getFormats().get(k).getScoreId() &&
-							   formatList.get(j).getFormatId() == scoreList.get(i).getFormats().get(k).getFormatId()){
-
-								formatAdded = true;
-								
-							}							
-
-						}
-
-						if(scoreList.get(i).getScoreIdentifier() == formatList.get(j).getScoreId()){
-								
-							if(!formatAdded){
-								
-								scoreList.get(i).getFormats().add(formatList.get(j));
-								
-							}
-							
-
-						}
-
-					}
-
-				}
-
-				
 
 			}
 
@@ -275,6 +124,165 @@ public class FactoryWMSS {
 		}
 
 
+		
+		
+
+		/**
+		 * Selecting and adding movements that belong to a music score
+		 */
+
+		for (int i = 0; i < scoreList.size(); i++) {
+
+			for (int j = 0; j < movementList.size(); j++) {						
+
+				if(scoreList.get(i).getScoreIdentifier().equals(movementList.get(j).getScoreId())){
+
+					boolean movementAdded = false;
+
+					for (int k = 0; k < scoreList.get(i).getMovements().size(); k++) {
+
+						if(scoreList.get(i).getMovements().get(k).getScoreId().equals(movementList.get(j).getScoreId()) &&
+						   scoreList.get(i).getMovements().get(k).getTitle().equals(movementList.get(j).getTitle())){
+
+							movementAdded = true;
+						}
+
+					}
+
+					if(!movementAdded) {
+
+						scoreList.get(i).getMovements().add(movementList.get(j));
+
+					}
+
+				}
+
+			}
+
+
+		}
+
+
+		/**
+		 * Selecting and adding performance medium that belong to a movement
+		 */
+		for (int i = 0; i < scoreList.size(); i++) {
+
+			for (int j = 0; j < scoreList.get(i).getMovements().size(); j++) {
+
+				for (int k = 0; k < mediumList.size(); k++) {
+
+					boolean mediumAdded = false;
+
+					if(scoreList.get(i).getScoreIdentifier().equals(mediumList.get(k).getScoreId())  &&
+					   scoreList.get(i).getMovements().get(j).getMovementIdentifier().equals(mediumList.get(k).getMovementId())){
+
+						for (int l = 0; l < scoreList.get(i).getMovements().get(j).getPerformanceMediumList().size(); l++) {
+
+							if(scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getScoreId().equals(mediumList.get(k).getScoreId()) &&
+							   scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMovementId().equals(mediumList.get(k).getMovementId()) &&
+							   scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediumScoreDescription().equals(mediumList.get(k).getMediumScoreDescription())){
+
+								mediumAdded = true;
+
+							} 
+
+						}
+
+						if(!mediumAdded) {scoreList.get(i).getMovements().get(j).getPerformanceMediumList().add(mediumList.get(k));}
+
+
+					}
+				}
+
+
+
+			}
+
+		}
+
+
+		/**
+		 * Selecting and adding persons that belong to a music score
+		 */
+
+		for (int i = 0; i < scoreList.size(); i++) {
+
+
+			for (int j = 0; j < personList.size(); j++) {
+
+				boolean personAdded = false;
+
+				for (int k = 0; k < scoreList.get(i).getPersons().size(); k++) {
+
+					if(scoreList.get(i).getPersons().get(k).getName().equals(personList.get(j).getName()) &&
+							scoreList.get(i).getPersons().get(k).getScoreId().equals(personList.get(j).getScoreId())){
+
+						personAdded = true;
+
+					}
+
+				}
+
+				if(scoreList.get(i).getScoreIdentifier().equals(personList.get(j).getScoreId())){
+
+					if(!personAdded){	
+
+						scoreList.get(i).getPersons().add(personList.get(j));
+
+					}
+
+				}
+
+			}
+
+
+		}
+
+
+		for (int i = 0; i < scoreList.size(); i++) {
+
+			for (int j = 0; j < formatList.size(); j++) {
+
+				boolean formatAdded = false;
+
+				for (int k = 0; k < scoreList.get(i).getFormats().size(); k++) {
+
+
+					if(formatList.get(j).getScoreId().equals(scoreList.get(i).getFormats().get(k).getScoreId()) &&
+							formatList.get(j).getFormatId().equals(scoreList.get(i).getFormats().get(k).getFormatId())){
+
+						formatAdded = true;
+
+					}							
+
+				}
+
+				if(scoreList.get(i).getScoreIdentifier().equals(formatList.get(j).getScoreId())){
+
+					if(!formatAdded){
+
+						scoreList.get(i).getFormats().add(formatList.get(j));
+
+					}
+
+
+				}
+
+			}
+
+		}
+
+
+		for (int i = 0; i < scoreList.size(); i++) {
+			
+			scoreList.get(i).setScoreIdentifier(dataSource.getId() + ":" + scoreList.get(i).getScoreIdentifier());
+			
+		}
+
+		
+		
+
 		if (dataSource.getStorage().equals("graphdb")){
 
 
@@ -284,6 +292,83 @@ public class FactoryWMSS {
 
 
 		return scoreList;
+	}
+	
+	
+	public static String getScore(ArrayList<RequestParameter> parameters){
+		
+		String result = "";
+		String scoreId = "";
+		String format = "";
+		
+		String dataSourceId = "";
+		DataSource dataSource = new DataSource();
+		
+		for (int i = 0; i < parameters.size(); i++) {
+			
+			
+			
+			if(parameters.get(i).getRequest().equals("identifier")){
+				
+				dataSourceId = parameters.get(i).getValue().split(":")[0];
+				scoreId = parameters.get(i).getValue().split(":")[1];
+				
+			}
+			
+			if(parameters.get(i).getRequest().equals("format")){
+				
+				format = parameters.get(i).getValue();
+				
+			}
+			
+		}
+		
+		
+		for (int i = 0; i < SystemSettings.sourceList.size(); i++) {
+		
+			if(SystemSettings.sourceList.get(i).getId().equals(dataSourceId)){
+				
+				dataSource = SystemSettings.sourceList.get(i); 
+				
+			}
+			
+		}
+		
+		
+		try {
+
+			if (dataSource.getStorage().equals("postgresql")){
+
+				String SQL = "SELECT score_document FROM wmss_document WHERE score_id = '" + scoreId + "' ";	
+				
+				if(!format.equals("")){
+				
+					SQL = SQL + "AND document_type_id = '" + format + "'";
+					
+				}
+				
+				ResultSet rs = PostgreSQLConnector.executeQuery(SQL, dataSource);
+
+				while (rs.next()){
+					
+					result = rs.getString("score_document");
+					
+				}
+				
+				rs.close();
+
+			}
+
+
+
+		} catch (Exception e) {
+
+			logger.error("Unexpected error ocurred at the PostgreSQL connector (GetScore request).");
+			e.printStackTrace();
+		}
+		
+		return result;
+		
 	}
 
 }

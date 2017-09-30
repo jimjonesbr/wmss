@@ -7,8 +7,8 @@ public class PerformanceMedium {
 	private String mediumDescription;
 	private String mediumClassification;
 	private String mediumScoreDescription;	
-	private int movementId;
-	private int scoreId;
+	private String movementId;
+	private String scoreId;
 	
 	
 	private boolean solo;
@@ -57,19 +57,19 @@ public class PerformanceMedium {
 		this.solo = solo;
 	}
 
-	public int getMovementId() {
+	public String getMovementId() {
 		return movementId;
 	}
 
-	public void setMovementId(int movementId) {
+	public void setMovementId(String movementId) {
 		this.movementId = movementId;
 	}
 
-	public int getScoreId() {
+	public String getScoreId() {
 		return scoreId;
 	}
 
-	public void setScoreId(int scoreId) {
+	public void setScoreId(String scoreId) {
 		this.scoreId = scoreId;
 	}
 

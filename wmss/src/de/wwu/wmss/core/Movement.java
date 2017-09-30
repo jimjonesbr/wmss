@@ -4,17 +4,17 @@ import java.util.ArrayList;
 
 public class Movement {
 
-	private int movementIdentifier;
+	private String movementIdentifier;
 	private String title;	
 	private String tempo;
-	private int scoreId;
+	private String scoreId;
 	
 	
-	public int getMovementIdentifier() {
+	public String getMovementIdentifier() {
 		return movementIdentifier;
 	}
 
-	public void setMovementIdentifier(int identifier) {
+	public void setMovementIdentifier(String identifier) {
 		this.movementIdentifier = identifier;
 	}
 
@@ -50,11 +50,11 @@ public class Movement {
 		this.performanceMediumList = performanceMediumList;
 	}
 
-	public int getScoreId() {
+	public String getScoreId() {
 		return scoreId;
 	}
 
-	public void setScoreId(int scoreId) {
+	public void setScoreId(String scoreId) {
 		this.scoreId = scoreId;
 	}
 

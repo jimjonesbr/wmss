@@ -2,18 +2,18 @@ package de.wwu.wmss.core;
 
 public class Format {
 
-	private int formatId;
+	private String formatId;
 	private String formatDescription;
-	private int scoreId;
+	private String scoreId;
 	
 	public Format() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public int getFormatId() {
+	public String getFormatId() {
 		return formatId;
 	}
-	public void setFormatId(int formatId) {
+	public void setFormatId(String formatId) {
 		this.formatId = formatId;
 	}
 	public String getFormatDescription() {
@@ -22,10 +22,10 @@ public class Format {
 	public void setFormatDescription(String formatDescription) {
 		this.formatDescription = formatDescription;
 	}
-	public int getScoreId() {
+	public String getScoreId() {
 		return scoreId;
 	}
-	public void setScoreId(int scoreId) {
+	public void setScoreId(String scoreId) {
 		this.scoreId = scoreId;
 	}
 

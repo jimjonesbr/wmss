@@ -131,6 +131,7 @@ public class ServiceMessagingHandler {
 			}
 
 			result.put("datasources", repoArray);
+			result.put("type", "ScoreListReport");
 			result.put("size", repoArray.size());
 
 		} catch (Exception e) {
@@ -141,9 +142,11 @@ public class ServiceMessagingHandler {
 
 	}
 
-	public static String getScore(Enumeration<String> parameterList){
+	public static String getScore(ArrayList<RequestParameter> parameterList){
 
-		return null;
+		//TODO load datasource values to use as parameter for getScore.
+		
+		return FactoryWMSS.getScore(parameterList);
 
 	}
 

@@ -49,6 +49,7 @@ public class ServletWMSS extends HttpServlet
 		String creationDateTo = "";
 		String melody = "";
 		String source = "";
+		String score = "";
 
 		response.addHeader("Access-Control-Allow-Origin","*");
 		response.addHeader("Access-Control-Allow-Methods","GET,POST");
@@ -165,7 +166,13 @@ public class ServletWMSS extends HttpServlet
 				req.setRequest("source");
 				req.setValue(request.getParameter(parameter).toLowerCase());
 
-			} 
+			} else if (parameter.toLowerCase().equals("score")) {
+				
+				score=request.getParameter(parameter).toLowerCase();
+				req.setRequest("score");
+				req.setValue(request.getParameter(parameter).toLowerCase());
+
+			}
 
 			parametersList.add(req);
 		}
@@ -192,7 +199,7 @@ public class ServletWMSS extends HttpServlet
 		}
 
 		
-		//TODO create an error message for invalid parameters. Currently they are being only ignored.
+		
 		
 		if(requestType.equals("")){
 
@@ -295,7 +302,11 @@ public class ServletWMSS extends HttpServlet
 
 			} else {
 				
-				//TODO create search for score based on identifier
+				
+				response.setContentType("text/xml");
+				response.setStatus(HttpServletResponse.SC_OK);
+				response.getWriter().println(ServiceMessagingHandler.getScore(parametersList));
+
 
 			}
 
@@ -306,6 +317,7 @@ public class ServletWMSS extends HttpServlet
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.getWriter().println(ServiceMessagingHandler.getScoreList(parametersList));
 
+			//TODO create an error message for invalid parameters. Currently they are being only ignored.
 			//TODO change value of active data source to boolean. Currently text
 			//TODO create validation of filter capabilities based on the sources.json document
 			//TODO create search for scores based on all search criteria
