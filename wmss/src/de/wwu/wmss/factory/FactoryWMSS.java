@@ -64,6 +64,8 @@ public class FactoryWMSS {
 					MusicScore rec = new MusicScore();
 
 					rec.setScoreIdentifier(rs.getInt("score_id"));
+					rec.setCreationDateFrom(rs.getInt("score_creation_date_min"));
+					rec.setCreationDateTo(rs.getInt("score_creation_date_max"));
 					rec.setTitle(rs.getString("score_name"));;
 					rec.setTonalityMode(rs.getString("score_tonality_mode"));;
 					rec.setTonalityTonic(rs.getString("score_tonality_note"));;

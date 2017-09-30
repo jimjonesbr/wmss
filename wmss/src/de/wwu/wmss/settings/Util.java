@@ -1,4 +1,4 @@
-package de.wwu.wmss.core;
+package de.wwu.wmss.settings;
 
 import java.io.File;
 import java.io.IOException;

@@ -12,9 +12,9 @@ public class MusicScore {
 	private String groupId;
 	private String tonalityTonic;
 	private String tonalityMode;
-	private String creationDate;
-	private String creationDateFrom;
-	private String creationDateTo;
+	
+	private int creationDateFrom;
+	private int creationDateTo;
 	private ArrayList<Movement> movements;
 	private ArrayList<Format> formats;
 	private ArrayList<Person> persons;
@@ -87,32 +87,22 @@ public class MusicScore {
 	}
 
 
-	public String getCreationDate() {
-		return creationDate;
-	}
-
-
-	public void setCreationDate(String creationDate) {
-		this.creationDate = creationDate;
-	}
-
-
-	public String getCreationDateFrom() {
+	public int getCreationDateFrom() {
 		return creationDateFrom;
 	}
 
 
-	public void setCreationDateFrom(String creationDateFrom) {
+	public void setCreationDateFrom(int creationDateFrom) {
 		this.creationDateFrom = creationDateFrom;
 	}
 
 
-	public String getCreationDateTo() {
+	public int getCreationDateTo() {
 		return creationDateTo;
 	}
 
 
-	public void setCreationDateTo(String creationDateTo) {
+	public void setCreationDateTo(int creationDateTo) {
 		this.creationDateTo = creationDateTo;
 	}
 

@@ -23,6 +23,7 @@ public class SystemSettings {
 	private static String defaultProtocol;
 	private static String startup;
 	private static String serviceVersion;
+	private static int logPreview;
 	private static Logger logger = Logger.getLogger("System Settings");
 	public static ArrayList<DataSource> sourceList = new ArrayList<DataSource>();
 	public static ArrayList<String> protocolVersions = new ArrayList<String>();
@@ -54,6 +55,7 @@ public class SystemSettings {
 			contact = jsonObject.get("contact").toString();
 			title = jsonObject.get("title").toString();
 			defaultProtocol= jsonObject.get("defaultProtocol").toString();
+			logPreview= Integer.parseInt(jsonObject.get("logpreview").toString());
 			
 			//TODO create capability with all possible filters
 			
@@ -161,6 +163,10 @@ public class SystemSettings {
 
 	public static String getServiceVersion() {
 		return serviceVersion;
+	}
+
+	public static int getLogPreview() {
+		return logPreview;
 	}
 
 

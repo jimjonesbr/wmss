@@ -1,7 +1,7 @@
 {
     "datasource": [{
       "id": "postgres_wwu",
-      "active": "true",
+      "active": true,
       "type": "database",
       "storage": "postgresql",
       "port": "5432",
@@ -22,9 +22,9 @@
               "tonalityTonic": true,
               "tonalityMode": true,
               "tempo": true,
-              "creationDate": true,
-              "creationDateFrom": true,
-              "creationDateTo": true,
+              "creationDate": false,
+              "creationDateFrom": false,
+              "creationDateTo": false,
               "source": true,
               "identifier": true,
               "format": true              
@@ -32,7 +32,7 @@
           ]
     },{
       "id": "graphdb_wwu",
-      "active": "true",
+      "active": false,
       "type": "triplestore",
       "storage": "graphdb",
       "port": "7200",

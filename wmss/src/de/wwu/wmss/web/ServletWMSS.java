@@ -11,9 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import de.wwu.wmss.core.RequestParameter;
-import de.wwu.wmss.core.Util;
 import de.wwu.wmss.factory.ServiceMessagingHandler;
 import de.wwu.wmss.settings.SystemSettings;
+import de.wwu.wmss.settings.Util;
 
 public class ServletWMSS extends HttpServlet
 {
@@ -275,7 +275,7 @@ public class ServletWMSS extends HttpServlet
 			
 			response.setContentType("text/plain");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(Util.loadFileTail(new File("logs/system.log"), 1000));
+			response.getWriter().println(Util.loadFileTail(new File("logs/system.log"), SystemSettings.getLogPreview()));
 			
 
 		} else if (requestType.equals("describeservice")) {
@@ -306,6 +306,7 @@ public class ServletWMSS extends HttpServlet
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.getWriter().println(ServiceMessagingHandler.getScoreList(parametersList));
 
+			//TODO change value of active data source to boolean. Currently text
 			//TODO create validation of filter capabilities based on the sources.json document
 			//TODO create search for scores based on all search criteria
 
