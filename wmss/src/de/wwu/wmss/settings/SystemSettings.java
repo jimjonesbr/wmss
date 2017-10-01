@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -12,6 +13,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import de.wwu.wmss.core.DataSource;
+import de.wwu.wmss.core.FilterCapability;
 
 public class SystemSettings {
 
@@ -27,7 +29,7 @@ public class SystemSettings {
 	private static Logger logger = Logger.getLogger("System Settings");
 	public static ArrayList<DataSource> sourceList = new ArrayList<DataSource>();
 	public static ArrayList<String> protocolVersions = new ArrayList<String>();
-	
+
 	public static void main(String[] args) {
 
 		loadDataSources();
@@ -40,7 +42,7 @@ public class SystemSettings {
 
 		try {
 
-			Object obj = parser.parse(new FileReader("config/settings.json"));
+			Object obj = parser.parse(new FileReader("config/settings.wmss"));
 
 			JSONObject jsonObject = (JSONObject) obj;
 
@@ -48,7 +50,7 @@ public class SystemSettings {
 			protocolVersions.add("1.1");
 			//TODO Create versioning system
 			serviceVersion = "Dev-0.0.1";
-			
+
 			port = Integer.parseInt(jsonObject.get("port").toString());
 			timeout = Integer.parseInt(jsonObject.get("timeout").toString());
 			service = jsonObject.get("service").toString();
@@ -56,22 +58,20 @@ public class SystemSettings {
 			title = jsonObject.get("title").toString();
 			defaultProtocol= jsonObject.get("defaultProtocol").toString();
 			logPreview= Integer.parseInt(jsonObject.get("logpreview").toString());
-			
-			//TODO create capability with all possible filters
-			
+
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			Date date = new Date();
 			startup = dateFormat.format(date); 
-			
+
 			logger.info("\n\n" + title + "\n" +
-						"Service Name: " + service + "\n" +
-						"Default Protocol: " + defaultProtocol + "\n" +
-						"WMSS Version: " + serviceVersion + "\n" +
-					    "Port: " + port + "\n" +
-						"Application Startup: " + startup + "\n" +
-						
-						"Time-out: " + timeout + "ms" + "\n" +
-						"System Administrator: " + contact  + "\n");
+					"Service Name: " + service + "\n" +
+					"Default Protocol: " + defaultProtocol + "\n" +
+					"WMSS Version: " + serviceVersion + "\n" +
+					"Port: " + port + "\n" +
+					"Application Startup: " + startup + "\n" +
+
+					"Time-out: " + timeout + "ms" + "\n" +
+					"System Administrator: " + contact  + "\n");
 
 		} catch (Exception e) {
 
@@ -87,7 +87,7 @@ public class SystemSettings {
 
 		try {
 
-			Object obj = parser.parse(new FileReader("config/sources.json"));
+			Object obj = parser.parse(new FileReader("config/sources.wmss"));
 			JSONObject jsonObject = (JSONObject) obj;
 			JSONArray sourcesArray = (JSONArray) jsonObject.get("datasource");
 
@@ -112,6 +112,27 @@ public class SystemSettings {
 				ds.setVersion(record.get("version").toString());
 				ds.setUser(record.get("user").toString());
 				ds.setPassword(record.get("password").toString());
+
+				JSONArray filterArray = (JSONArray) record.get("filterCapabilities");
+
+				for (int j = 0; j < filterArray.size(); j++) {
+
+					JSONObject filterObject = (JSONObject) filterArray.get(j);
+					
+					FilterCapability fil = new FilterCapability();
+					fil.setFilter("melody");
+					fil.setEnabled((boolean)filterObject.get("melody"));
+					ds.getFilters().add(fil);
+					
+					fil.setFilter("solo");
+					fil.setEnabled((boolean)filterObject.get("solo"));
+					ds.getFilters().add(fil);
+					
+				}
+
+
+				//TODO filter capabilities at sources.json
+
 
 				sourceList.add(ds);            	
 			}

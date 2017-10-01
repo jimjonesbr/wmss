@@ -1,4 +1,8 @@
-﻿DROP TABLE IF EXISTS wmss_movement_performance_medium;
+﻿-- Author: Jones
+-- Comments: This script creates the WMSS data model.
+
+
+DROP TABLE IF EXISTS wmss_movement_performance_medium;
 DROP TABLE IF EXISTS wmss_score_persons;
 DROP TABLE IF EXISTS wmss_persons;
 DROP TABLE IF EXISTS wmss_roles;
@@ -139,19 +143,22 @@ CONSTRAINT medium_pkey PRIMARY KEY (performance_medium_id)
 
 -- wmss_group
 
-
 CREATE TABLE wmss_groups (
 group_id INTEGER,
 group_description VARCHAR,
 CONSTRAINT group_pkey PRIMARY KEY (group_id) 
 );
 
+INSERT INTO wmss_groups (group_id,group_description) VALUES (0,'Default');
 INSERT INTO wmss_groups (group_id,group_description) VALUES (1,'MEI Examples');
 
 -- wmss_scores
 
+DROP SEQUENCE IF EXISTS seq_scores;
+CREATE SEQUENCE seq_scores START WITH 1;
+
 CREATE TABLE wmss_scores (
-score_id SERIAL,
+score_id VARCHAR,
 score_name VARCHAR,
 score_tonality_note VARCHAR,
 score_tonality_mode VARCHAR,
@@ -165,26 +172,26 @@ CONSTRAINT score_pkey PRIMARY KEY (score_id)
 -- wmss_document_type
 
 CREATE TABLE wmss_document_type (
-document_type_id INTEGER,
+document_type_id VARCHAR,
 document_type_description VARCHAR,
 CONSTRAINT document_type_pkey PRIMARY KEY (document_type_id) 
 );
 
-INSERT INTO wmss_document_type (document_type_id,document_type_description) VALUES (1,'MEI');
-INSERT INTO wmss_document_type (document_type_id,document_type_description) VALUES (2,'MusicXML');
+INSERT INTO wmss_document_type (document_type_id,document_type_description) VALUES ('mei','MEI - Music Encoding Initiative');
+INSERT INTO wmss_document_type (document_type_id,document_type_description) VALUES ('musicxml','MusicXML');
 
 -- wmss_document
 
 CREATE TABLE wmss_document (
-score_id INTEGER REFERENCES wmss_scores(score_id),
+score_id VARCHAR REFERENCES wmss_scores(score_id),
 score_document XML,
-document_type_id INTEGER REFERENCES wmss_document_type (document_type_id)
+document_type_id VARCHAR REFERENCES wmss_document_type (document_type_id)
 );
 
 -- wmss_score_movements
 
 CREATE TABLE wmss_score_movements (
-score_id INTEGER REFERENCES wmss_scores(score_id),
+score_id VARCHAR REFERENCES wmss_scores(score_id),
 movement_id VARCHAR,
 score_movement_description VARCHAR,
 movement_tempo VARCHAR,
@@ -195,7 +202,7 @@ CONSTRAINT movements_pkey PRIMARY KEY (movement_id,score_id)
 
 CREATE TABLE wmss_movement_performance_medium (
 movement_id VARCHAR,
-score_id INTEGER REFERENCES wmss_scores(score_id), 
+score_id VARCHAR REFERENCES wmss_scores(score_id), 
 local_performance_medium_id VARCHAR,
 performance_medium_id VARCHAR REFERENCES wmss_performance_medium (performance_medium_id),
 movement_performance_medium_description VARCHAR,
@@ -238,7 +245,7 @@ CONSTRAINT persons_pkey PRIMARY KEY (person_id)
 CREATE TABLE wmss_score_persons (
 role_id INTEGER REFERENCES wmss_roles (role_id),
 person_id INTEGER REFERENCES wmss_persons (person_id),
-score_id INTEGER REFERENCES wmss_scores (score_id)
+score_id VARCHAR REFERENCES wmss_scores (score_id)
 );
 
 

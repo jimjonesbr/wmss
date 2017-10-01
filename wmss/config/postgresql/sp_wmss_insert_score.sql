@@ -1,9 +1,9 @@
-﻿
--- Author: Jones
--- Parameter: none
--- Comments: This function parses all benelux records in the enr_katalogxml table and stores them at ulb_benelux. 
+﻿-- Author: Jones
+-- Parameter: 1) Path to the XML file
+--	      2) File type (MEI or MusicXML)
+--	      3) Group where the scores should be added. Default: 0 
+-- Comments: This function loads either MEI or MusicXML files and stores in the database according to the WMSS data model.
 
---drop function wmss_insert_score(varchar,varchar)
 CREATE OR REPLACE FUNCTION public.wmss_insert_score(score_path VARCHAR, score_type VARCHAR, group_id INTEGER) RETURNS CHARACTER VARYING AS $BODY$
 
 DECLARE i RECORD;
@@ -89,12 +89,12 @@ BEGIN
 
 		IF ARRAY_LENGTH(movement_id_array, 1) IS NULL THEN movement_id_array = ARRAY['1']; END IF;
 
-		INSERT INTO wmss_scores (score_name, group_id, score_tonality_note, score_tonality_mode, score_creation_date_min, score_creation_date_max) 
-                VALUES (score_title,group_id, tonality_note, tonality_mode, score_date_min, score_date_max);
+		INSERT INTO wmss_scores (score_id, score_name, group_id, score_tonality_note, score_tonality_mode, score_creation_date_min, score_creation_date_max) 
+                VALUES (nextval('seq_scores'), score_title,group_id, tonality_note, tonality_mode, score_date_min, score_date_max);
 
 		main_id := (SELECT MAX(score_id) FROM wmss_scores WHERE score_name = score_title);
 
-		INSERT INTO wmss_document (score_id,score_document,document_type_id) VALUES (main_id, score_file,1);
+		INSERT INTO wmss_document (score_id,score_document,document_type_id) VALUES (main_id, score_file,'mei');
 		
 
 		-- Parsing persons info (composers, arrangers, lyricists, etc..)

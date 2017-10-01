@@ -1,5 +1,7 @@
 package de.wwu.wmss.core;
 
+import java.util.ArrayList;
+
 public class DataSource {
 
 	private String id;
@@ -12,10 +14,13 @@ public class DataSource {
 	private String version;
 	private String user;
 	private String password;
+	private ArrayList<FilterCapability> filters;
 	
 	public DataSource() {
 
 		super();
+		filters = new ArrayList<FilterCapability>();
+		
 
 	}
 	public String getId() {
@@ -77,6 +82,9 @@ public class DataSource {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public ArrayList<FilterCapability> getFilters() {
+		return filters;
 	}
 	
 	

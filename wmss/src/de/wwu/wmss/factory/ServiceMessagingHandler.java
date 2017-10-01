@@ -1,13 +1,11 @@
 package de.wwu.wmss.factory;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import de.wwu.wmss.core.MusicScore;
 import de.wwu.wmss.core.RequestParameter;
 import de.wwu.wmss.settings.SystemSettings;
@@ -73,8 +71,7 @@ public class ServiceMessagingHandler {
 			ds.put("repository", SystemSettings.sourceList.get(i).getRepository());
 			ds.put("version", SystemSettings.sourceList.get(i).getVersion());
 			ds.put("user", SystemSettings.sourceList.get(i).getUser());
-			//ds.put("password", SystemSettings.sourcesList.get(i).getPassword());
-
+			ds.put("filterCapabilities", SystemSettings.sourceList.get(i).getFilters());
 			dsArray.add(ds);
 		}
 
@@ -103,7 +100,6 @@ public class ServiceMessagingHandler {
 
 
 		try {
-
 
 			JSONArray repoArray = new JSONArray();
 
@@ -143,8 +139,6 @@ public class ServiceMessagingHandler {
 	}
 
 	public static String getScore(ArrayList<RequestParameter> parameterList){
-
-		//TODO load datasource values to use as parameter for getScore.
 		
 		return FactoryWMSS.getScore(parameterList);
 

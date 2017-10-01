@@ -229,27 +229,27 @@ public class ServletWMSS extends HttpServlet
 			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0004", "Invalid mode [" + tonalityMode + "]."));
 
 		} else if (!tonalityTonic.equals("a") && 
-				!tonalityTonic.equals("aflat") && 
-				!tonalityTonic.equals("asharp") && 
-				!tonalityTonic.equals("b") &&
-				!tonalityTonic.equals("bflat") &&
-				!tonalityTonic.equals("bsharp") &&
-				!tonalityTonic.equals("c") &&
-				!tonalityTonic.equals("cflat") &&
-				!tonalityTonic.equals("csharp") &&
-				!tonalityTonic.equals("d") &&
-				!tonalityTonic.equals("dflat") &&
-				!tonalityTonic.equals("dsharp") &&
-				!tonalityTonic.equals("e") &&
-				!tonalityTonic.equals("eflat") &&
-				!tonalityTonic.equals("esharp") &&
-				!tonalityTonic.equals("f") &&
-				!tonalityTonic.equals("fflat") &&
-				!tonalityTonic.equals("fsharp") &&
-				!tonalityTonic.equals("g") &&
-				!tonalityTonic.equals("gflat") &&
-				!tonalityTonic.equals("gsharp") &&
-				!tonalityTonic.equals("") 
+					!tonalityTonic.equals("aflat") && 
+					!tonalityTonic.equals("asharp") && 
+					!tonalityTonic.equals("b") &&
+					!tonalityTonic.equals("bflat") &&
+					!tonalityTonic.equals("bsharp") &&
+					!tonalityTonic.equals("c") &&
+					!tonalityTonic.equals("cflat") &&
+					!tonalityTonic.equals("csharp") &&
+					!tonalityTonic.equals("d") &&
+					!tonalityTonic.equals("dflat") &&
+					!tonalityTonic.equals("dsharp") &&
+					!tonalityTonic.equals("e") &&
+					!tonalityTonic.equals("eflat") &&
+					!tonalityTonic.equals("esharp") &&
+					!tonalityTonic.equals("f") &&
+					!tonalityTonic.equals("fflat") &&
+					!tonalityTonic.equals("fsharp") &&
+					!tonalityTonic.equals("g") &&
+					!tonalityTonic.equals("gflat") &&
+					!tonalityTonic.equals("gsharp") &&
+					!tonalityTonic.equals("") 
 				){
 
 
@@ -301,13 +301,11 @@ public class ServletWMSS extends HttpServlet
 				response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0008", "No identifier provided for GetScore request."));
 
 			} else {
-				
-				
+						
 				response.setContentType("text/xml");
 				response.setStatus(HttpServletResponse.SC_OK);
 				response.getWriter().println(ServiceMessagingHandler.getScore(parametersList));
-
-
+				
 			}
 
 
@@ -318,7 +316,6 @@ public class ServletWMSS extends HttpServlet
 			response.getWriter().println(ServiceMessagingHandler.getScoreList(parametersList));
 
 			//TODO create an error message for invalid parameters. Currently they are being only ignored.
-			//TODO change value of active data source to boolean. Currently text
 			//TODO create validation of filter capabilities based on the sources.json document
 			//TODO create search for scores based on all search criteria
 
