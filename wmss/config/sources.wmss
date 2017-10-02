@@ -5,12 +5,12 @@
       "type": "database",
       "storage": "postgresql",
       "port": "5432",
-      "host": "localhost",
+      "host": "dev-postgis.uni-muenster.de",
       "repository": "wmss",
       "version": "9.5",
       "user": "postgres",
       "password": "postgres",
-      "filterCapabilities": [
+      "filterCapabilities": 
             {
               "melody": false,
               "group": true,
@@ -29,7 +29,7 @@
               "identifier": true,
               "format": true              
             }
-          ]
+          
     },{
       "id": "graphdb_wwu",
       "active": false,
@@ -41,7 +41,7 @@
       "version": "8",
       "user": "",
       "password": "",
-            "filterCapabilities": [
+            "filterCapabilities": 
             {
               "melody": true,
               "group": true,
@@ -60,7 +60,7 @@
               "identifier": true,
               "format": true              
             }
-          ]
+          
       
     }
   ]

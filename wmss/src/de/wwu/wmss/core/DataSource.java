@@ -14,15 +14,15 @@ public class DataSource {
 	private String version;
 	private String user;
 	private String password;
-	private ArrayList<FilterCapability> filters;
+	private FilterCapability filters;
 	
 	public DataSource() {
 
 		super();
-		filters = new ArrayList<FilterCapability>();
+		this.filters = new FilterCapability();
 		
-
 	}
+	
 	public String getId() {
 		return id;
 	}
@@ -83,9 +83,9 @@ public class DataSource {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public ArrayList<FilterCapability> getFilters() {
+
+	public FilterCapability getFilters() {
 		return filters;
 	}
-	
 	
 }

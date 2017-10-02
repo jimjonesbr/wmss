@@ -62,7 +62,7 @@ public class ServletWMSS extends HttpServlet
 		
 			if (parameter.toLowerCase().equals("request")) {
 				requestType=request.getParameter(parameter).toLowerCase();
-				req.setRequest("requestType");
+				req.setRequest("requesttype");
 				req.setValue(request.getParameter(parameter).toLowerCase());
 			} else if (parameter.toLowerCase().equals("format")) {
 				
@@ -85,19 +85,19 @@ public class ServletWMSS extends HttpServlet
 			} else if (parameter.toLowerCase().equals("personrole")) {
 				
 				personRole=request.getParameter(parameter).toLowerCase();
-				req.setRequest("personRole");
+				req.setRequest("personrole");
 				req.setValue(request.getParameter(parameter).toLowerCase());
 
 			} else if (parameter.toLowerCase().equals("performancemedium")) {
 				
 				performanceMedium=request.getParameter(parameter).toLowerCase();
-				req.setRequest("performanceMedium");
+				req.setRequest("performancemedium");
 				req.setValue(request.getParameter(parameter).toLowerCase());
 
 			} else if (parameter.toLowerCase().equals("performancemediumtype")) {
 				
 				performanceMediumType=request.getParameter(parameter).toLowerCase();
-				req.setRequest("performanceMediumType");
+				req.setRequest("performancemediumType");
 				req.setValue(request.getParameter(parameter).toLowerCase());
 
 			} else if (parameter.toLowerCase().equals("solo")) {
@@ -109,13 +109,13 @@ public class ServletWMSS extends HttpServlet
 			} else if (parameter.toLowerCase().equals("tonalitytonic")) {
 				
 				tonalityTonic=request.getParameter(parameter).toLowerCase();
-				req.setRequest("tonalityTonic");
+				req.setRequest("tonalitytonic");
 				req.setValue(request.getParameter(parameter).toLowerCase());
 
 			} else if (parameter.toLowerCase().equals("tonalitymode")) {
 				
 				tonalityMode=request.getParameter(parameter).toLowerCase();
-				req.setRequest("tonalityMode");
+				req.setRequest("tonalitymode");
 				req.setValue(request.getParameter(parameter).toLowerCase());
 
 			} else if (parameter.toLowerCase().equals("tempo")) {
@@ -127,19 +127,19 @@ public class ServletWMSS extends HttpServlet
 			} else if (parameter.toLowerCase().equals("creationdate")) {
 				
 				creationDate=request.getParameter(parameter).toLowerCase();
-				req.setRequest("creationDate");
+				req.setRequest("creationdate");
 				req.setValue(request.getParameter(parameter).toLowerCase());
 
 			} else if (parameter.toLowerCase().equals("creationdatefrom")) {
 				
 				creationDateFrom=request.getParameter(parameter).toLowerCase();
-				req.setRequest("creationDateFrom");
+				req.setRequest("creationdatefrom");
 				req.setValue(request.getParameter(parameter).toLowerCase());
 
 			} else if (parameter.toLowerCase().equals("creationdateto")) {
 				
 				creationDateTo=request.getParameter(parameter).toLowerCase();
-				req.setRequest("creationDateTo");
+				req.setRequest("creationdateto");
 				req.setValue(request.getParameter(parameter).toLowerCase());
 
 			} else if (parameter.toLowerCase().equals("melody")) {
@@ -205,7 +205,7 @@ public class ServletWMSS extends HttpServlet
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0001", "No request type provided"));
+			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0001", "No request type provided","Provide one of the following request types: ListScores, GetScores, Checklog, DescribeService."));
 
 		} else if (!requestType.equals("listscores") 
 				&& !requestType.equals("getscore")
@@ -214,19 +214,19 @@ public class ServletWMSS extends HttpServlet
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0002", "Invalid request parameter [" + requestType + "]."));
+			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0002", "Invalid request parameter [" + requestType + "].","Provide one of the following request types: ListScores, GetScores, Checklog, DescribeService."));
 
 		} else if (!format.equals("mei") && !format.equals("musicxml") && !format.equals("") ){
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0003", "Invalid document format [" + format + "]."));
+			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0003", "Invalid document format [" + format + "].",""));
 
 		} else if (!tonalityMode.equals("minor") && !tonalityMode.equals("major") && !tonalityMode.equals("") ){
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0004", "Invalid mode [" + tonalityMode + "]."));
+			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0004", "Invalid mode [" + tonalityMode + "].","Provide one of the tonality modes: 'minor' or 'major'"));
 
 		} else if (!tonalityTonic.equals("a") && 
 					!tonalityTonic.equals("aflat") && 
@@ -255,7 +255,7 @@ public class ServletWMSS extends HttpServlet
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0005", "Invalid tonic [" + tonalityTonic + "]."));
+			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0005", "Invalid tonic [" + tonalityTonic + "].","[TBW]"));
 
 		} else if (!solo.equals("true") &&
 				!solo.equals("false") &&
@@ -263,20 +263,20 @@ public class ServletWMSS extends HttpServlet
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0006", "Invalid boolean value for 'solo' parameter [" + solo + "]."));
+			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0006", "Invalid boolean value for 'solo' parameter [" + solo + "].","The 'solo' filter required a boolean value ('true' or 'false')."));
 
 		} else if (!version.equals("") &&
 				!SystemSettings.protocolVersions.contains(version.toString())){
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0007", "Invalid protocol version [" + version+ "]."));
+			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0007", "Invalid protocol version [" + version+ "].","Check the 'Service Description Report' for more information on the supported WMSS protocols."));
 
 		} else if (!validSource) {
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0009", "Invalid data source [" + source + "]."));
+			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0009", "Invalid data source [" + source + "].","The provided data source cannot be found. Check the 'Service Description Report' for more information on the available data sources."));
 
 		} else if (requestType.equals("checklog")) {
 			
@@ -298,7 +298,7 @@ public class ServletWMSS extends HttpServlet
 
 				response.setContentType("text/javascript");
 				response.setStatus(HttpServletResponse.SC_OK);
-				response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0008", "No identifier provided for GetScore request."));
+				response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0008", "No identifier provided for GetScore request.","The GetScore request expects a valid score identifier."));
 
 			} else {
 						

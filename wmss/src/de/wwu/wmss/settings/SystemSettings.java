@@ -5,8 +5,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
-
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -113,26 +111,23 @@ public class SystemSettings {
 				ds.setUser(record.get("user").toString());
 				ds.setPassword(record.get("password").toString());
 
-				JSONArray filterArray = (JSONArray) record.get("filterCapabilities");
-
-				for (int j = 0; j < filterArray.size(); j++) {
-
-					JSONObject filterObject = (JSONObject) filterArray.get(j);
-					
-					FilterCapability fil = new FilterCapability();
-					fil.setFilter("melody");
-					fil.setEnabled((boolean)filterObject.get("melody"));
-					ds.getFilters().add(fil);
-					
-					fil.setFilter("solo");
-					fil.setEnabled((boolean)filterObject.get("solo"));
-					ds.getFilters().add(fil);
-					
-				}
-
-
-				//TODO filter capabilities at sources.json
-
+				JSONObject filters = (JSONObject) record.get("filterCapabilities");
+				
+				ds.getFilters().setMelody((boolean)filters.get("melody"));
+				ds.getFilters().setGroup((boolean)filters.get("group"));
+				ds.getFilters().setPersonRole((boolean)filters.get("personRole"));
+				ds.getFilters().setPerformanceMedium((boolean)filters.get("performanceMedium"));
+				ds.getFilters().setPerformanceMediumType((boolean)filters.get("performanceMediumType"));
+				ds.getFilters().setSolo((boolean)filters.get("solo"));
+				ds.getFilters().setTonalityTonic((boolean)filters.get("tonalityTonic"));
+				ds.getFilters().setTonalityMode((boolean)filters.get("tonalityMode"));
+				ds.getFilters().setTempo((boolean)filters.get("tempo"));
+				ds.getFilters().setCreationDateFrom((boolean)filters.get("creationDateFrom"));
+				ds.getFilters().setCreationDateTo((boolean)filters.get("creationDateTo"));
+				ds.getFilters().setSource((boolean)filters.get("source"));
+				ds.getFilters().setIdentifier((boolean)filters.get("identifier"));
+				ds.getFilters().setFormat((boolean)filters.get("format"));
+				
 
 				sourceList.add(ds);            	
 			}

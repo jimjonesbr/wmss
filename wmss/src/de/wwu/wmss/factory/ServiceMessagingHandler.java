@@ -1,11 +1,14 @@
 package de.wwu.wmss.factory;
 
+import java.time.temporal.IsoFields;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import de.wwu.wmss.core.DataSource;
+import de.wwu.wmss.core.Filter;
 import de.wwu.wmss.core.MusicScore;
 import de.wwu.wmss.core.RequestParameter;
 import de.wwu.wmss.settings.SystemSettings;
@@ -15,7 +18,7 @@ public class ServiceMessagingHandler {
 	private static Logger logger = Logger.getLogger("ServiceExceptionHandler");
 
 	@SuppressWarnings("unchecked")
-	public static String getServiceExceptionReport(String errorCode, String errorMessage){
+	public static String getServiceExceptionReport(String errorCode, String errorMessage, String hint){
 
 
 		JSONObject exceptionReport = new JSONObject();
@@ -24,6 +27,7 @@ public class ServiceMessagingHandler {
 		exceptionReport.put("type", "ExceptionReport");
 		exceptionReport.put("code", errorCode);
 		exceptionReport.put("message", errorMessage);
+		exceptionReport.put("hint", hint);
 
 		logger.error(errorCode + ": " + errorMessage);
 
@@ -85,64 +89,213 @@ public class ServiceMessagingHandler {
 	public static String getScoreList(ArrayList<RequestParameter> parameterList){
 
 		ArrayList<MusicScore> listScores = new ArrayList<MusicScore>();
-		JSONObject result = new JSONObject();	
+		JSONObject listScoresJSON = new JSONObject();
+		String result = "";
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		String source = "";
 
-		for (int i = 0; i < parameterList.size(); i++) {
+		for (int k = 0; k < parameterList.size(); k++) {
 
-			if(parameterList.get(i).getRequest().equals("source")){
+			if(parameterList.get(k).getRequest().equals("source")){
 
-				source = parameterList.get(i).getValue();
+				if(parameterList.get(k).getValue().equals("")){
+
+					result = getServiceExceptionReport("E0009", "Invalid data source (empty)","Either provide a valid data source or remove the 'source' parameter to list scores from all active data sources.");
+
+				} else {
+
+					source = parameterList.get(k).getValue();
+
+				}
+
 			}
 
 		}
 
 
-		try {
+		Filter fil = new Filter();
 
-			JSONArray repoArray = new JSONArray();
+		if(!source.equals("")){
 
-			for (int i = 0; i < SystemSettings.sourceList.size(); i++) {
+			for (int j = 0; j < SystemSettings.sourceList.size(); j++) {
 
+				if(source.equals(SystemSettings.sourceList.get(j).getId())){
 
-				if(source.equals(SystemSettings.sourceList.get(i).getId()) || source.equals("")){
-
-					listScores = FactoryWMSS.getScoreList(parameterList, SystemSettings.sourceList.get(i));
-
-					JSONObject repo = new JSONObject();
-					repo.put("identifier", SystemSettings.sourceList.get(i).getId());
-					repo.put("host", SystemSettings.sourceList.get(i).getHost());
-					repo.put("version", SystemSettings.sourceList.get(i).getVersion());
-					repo.put("type", SystemSettings.sourceList.get(i).getType());
-					repo.put("storage", SystemSettings.sourceList.get(i).getStorage());
-					repo.put("size", listScores.size());
-					repo.put("scores", listScores);
-
-					repoArray.add(repo);
+					fil = filtersSupported(SystemSettings.sourceList.get(j), parameterList);
 
 				}
 
 
 			}
 
-			result.put("datasources", repoArray);
-			result.put("type", "ScoreListReport");
-			result.put("size", repoArray.size());
-
-		} catch (Exception e) {
-			logger.error(e.getMessage());
 		}
 
-		return gson.toJson(result);
+		if(fil.isEnabled()){
+
+			try {
+
+				JSONArray repoArray = new JSONArray();
+
+
+				for (int i = 0; i < SystemSettings.sourceList.size(); i++) {
+
+
+					if(source.equals(SystemSettings.sourceList.get(i).getId()) || source.equals("")){
+
+						listScores = FactoryWMSS.getScoreList(parameterList, SystemSettings.sourceList.get(i));
+
+						JSONObject repo = new JSONObject();
+						repo.put("identifier", SystemSettings.sourceList.get(i).getId());
+						repo.put("host", SystemSettings.sourceList.get(i).getHost());
+						repo.put("version", SystemSettings.sourceList.get(i).getVersion());
+						repo.put("type", SystemSettings.sourceList.get(i).getType());
+						repo.put("storage", SystemSettings.sourceList.get(i).getStorage());
+						repo.put("size", listScores.size());
+						repo.put("scores", listScores);
+
+						repoArray.add(repo);
+
+
+					}
+				}
+
+
+				listScoresJSON.put("datasources", repoArray);
+				listScoresJSON.put("type", "ScoreListReport");
+				listScoresJSON.put("size", repoArray.size());
+
+				result = gson.toJson(listScoresJSON);
+
+
+			} catch (Exception e) {
+				logger.error("Unexpected error at the ListScores request: " + e.getMessage());
+			}
+		} else {
+			
+			result = getServiceExceptionReport("E0011", "Unsupported filter [" + fil.getFilter() + "]","Check the 'Service Description Report' for more information on which filters are enabled in each data source.");
+		}
+
+		return result;
 
 	}
 
 	public static String getScore(ArrayList<RequestParameter> parameterList){
-		
+
 		return FactoryWMSS.getScore(parameterList);
 
 	}
 
+	private static Filter filtersSupported(DataSource ds, ArrayList<RequestParameter> prm){
+
+		Filter result = new Filter();
+		result.setValue(true);
+
+		for (int i = 0; i < prm.size(); i++) {
+
+			if(prm.get(i).getRequest().equals("melody") && !ds.getFilters().isMelodyEnabled()) {
+				
+				result.setFilter("melody");
+				result.setValue(false);
+				
+			}
+			
+			if(prm.get(i).getRequest().equals("group") && !ds.getFilters().isGroupEnabled() )	{
+			
+				result.setFilter("group");
+				result.setValue(false);
+				
+			}
+			
+			if(prm.get(i).getRequest().equals("personrole") && !ds.getFilters().isPersonRoleEnabled() )	{
+				
+				result.setFilter("personRole");
+				result.setValue(false);
+				
+			}
+			
+			if(prm.get(i).getRequest().equals("performancemedium") && !ds.getFilters().isPerformanceMediumEnabled() )	{
+				
+				result.setFilter("performanceMedium");
+				result.setValue(false);
+				
+			}
+			
+			if(prm.get(i).getRequest().equals("performancemediumtype") && !ds.getFilters().isPerformanceMediumTypeEnabled() )	{
+			
+				result.setFilter("performanceMediumType");
+				result.setValue(false);
+				
+			}
+			
+			if(prm.get(i).getRequest().equals("solo") && !ds.getFilters().isSoloEnabled())	{
+				
+				result.setFilter("solo");
+				result.setValue(false);
+				
+			}
+			
+			if(prm.get(i).getRequest().equals("tonalitytonic") && !ds.getFilters().isTonalityTonicEnabled() )	{
+				
+				result.setFilter("tonalityTonic");
+				result.setValue(false);
+				
+			}
+			
+			if(prm.get(i).getRequest().equals("tonalitymode") && !ds.getFilters().isTonalityModeEnabled() )	{
+			
+				result.setFilter("tonalityMode");
+				result.setValue(false);
+				
+			}
+			
+			if(prm.get(i).getRequest().equals("tempo") && !ds.getFilters().isTempoEnabled() )	{
+				
+				result.setFilter("tempo");
+				result.setValue(false);
+				
+			}
+						
+			if(prm.get(i).getRequest().equals("creationdatefrom") && !ds.getFilters().isCreationDateFromEnabled() )	{
+			
+				result.setFilter("creationDateFrom");
+				result.setValue(false);
+			}
+			
+			if(prm.get(i).getRequest().equals("creationdateto") && !ds.getFilters().isCreationDateToEnabled() )	{
+				
+				result.setFilter("creationDateTo");
+				result.setValue(false);
+				
+			}
+			
+			if(prm.get(i).getRequest().equals("source") && !ds.getFilters().isSourceEnabled() )	{
+				
+				result.setFilter("source");
+				result.setValue(false);
+				
+			}
+			
+			if(prm.get(i).getRequest().equals("identifier") && !ds.getFilters().isIdentifierEnabled() )	{
+				
+				result.setFilter("identifier");
+				result.setValue(false);
+				
+			}
+			
+			if(prm.get(i).getRequest().equals("format") && !ds.getFilters().isFormatEnabled() )	{
+				
+				result.setFilter("format");
+				result.setValue(false);
+				
+			}
+
+			System.out.println(prm.get(i).getRequest() + " > " + prm.get(i).getValue());
+			
+		}
+
+		return result;
+
+	}
+	
 
 }

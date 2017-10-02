@@ -14,6 +14,9 @@ DROP TABLE IF EXISTS wmss_score_movements;
 DROP TABLE IF EXISTS wmss_scores;
 DROP TABLE IF EXISTS wmss_document_type ;
 DROP TABLE IF EXISTS wmss_groups;
+DROP SEQUENCE IF EXISTS seq_scores;
+CREATE SEQUENCE seq_scores START WITH 1;
+
 -- wmss_languages
 
 CREATE TABLE wmss_languages (
@@ -154,8 +157,6 @@ INSERT INTO wmss_groups (group_id,group_description) VALUES (1,'MEI Examples');
 
 -- wmss_scores
 
-DROP SEQUENCE IF EXISTS seq_scores;
-CREATE SEQUENCE seq_scores START WITH 1;
 
 CREATE TABLE wmss_scores (
 score_id VARCHAR,

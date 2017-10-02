@@ -119,7 +119,7 @@ public class FactoryWMSS {
 
 		} catch (Exception e) {
 
-			logger.error("Unexpected error ocurred at the PostgreSQL connector.");
+			logger.error("Unexpected error ocurred at the PostgreSQL data crawler.");
 			e.printStackTrace();
 		}
 
