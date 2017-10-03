@@ -67,6 +67,7 @@ public class ServiceMessagingHandler {
 			JSONObject ds = new JSONObject();
 
 			ds.put("id", SystemSettings.sourceList.get(i).getId());
+			ds.put("info", SystemSettings.sourceList.get(i).getInfo());
 			ds.put("active", SystemSettings.sourceList.get(i).isActive());
 			ds.put("type", SystemSettings.sourceList.get(i).getType());
 			ds.put("storage", SystemSettings.sourceList.get(i).getStorage());
@@ -93,11 +94,15 @@ public class ServiceMessagingHandler {
 		String result = "";
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		String source = "";
+		Filter fil = new Filter();
+		boolean isGlobalRequest = true;
 
 		for (int k = 0; k < parameterList.size(); k++) {
 
 			if(parameterList.get(k).getRequest().equals("source")){
 
+				isGlobalRequest = false;
+				
 				if(parameterList.get(k).getValue().equals("")){
 
 					result = getServiceExceptionReport("E0009", "Invalid data source (empty)","Either provide a valid data source or remove the 'source' parameter to list scores from all active data sources.");
@@ -113,7 +118,7 @@ public class ServiceMessagingHandler {
 		}
 
 
-		Filter fil = new Filter();
+		
 
 		if(!source.equals("")){
 
@@ -128,9 +133,10 @@ public class ServiceMessagingHandler {
 
 			}
 
-		}
+		} 
+		
 
-		if(fil.isEnabled()){
+		if(fil.isEnabled() || isGlobalRequest){
 
 			try {
 
@@ -170,6 +176,7 @@ public class ServiceMessagingHandler {
 			} catch (Exception e) {
 				logger.error("Unexpected error at the ListScores request: " + e.getMessage());
 			}
+			
 		} else {
 			
 			result = getServiceExceptionReport("E0011", "Unsupported filter [" + fil.getFilter() + "]","Check the 'Service Description Report' for more information on which filters are enabled in each data source.");

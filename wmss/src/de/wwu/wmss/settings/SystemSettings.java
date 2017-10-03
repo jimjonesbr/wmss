@@ -103,6 +103,7 @@ public class SystemSettings {
 				}
 
 				ds.setType(record.get("type").toString());
+				ds.setInfo(record.get("info").toString());
 				ds.setStorage(record.get("storage").toString());
 				ds.setPort(Integer.parseInt(record.get("port").toString()));
 				ds.setHost(record.get("host").toString());

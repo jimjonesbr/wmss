@@ -1,11 +1,12 @@
 {
     "datasource": [{
       "id": "postgres_wwu",
+	  "info": "Test PostgreSQL repository.",
       "active": true,
       "type": "database",
       "storage": "postgresql",
       "port": "5432",
-      "host": "dev-postgis.uni-muenster.de",
+      "host": "localhost",
       "repository": "wmss",
       "version": "9.5",
       "user": "postgres",
@@ -32,6 +33,7 @@
           
     },{
       "id": "graphdb_wwu",
+      "info": "Test GraphDB repository.",
       "active": false,
       "type": "triplestore",
       "storage": "graphdb",

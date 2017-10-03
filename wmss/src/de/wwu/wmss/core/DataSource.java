@@ -14,6 +14,7 @@ public class DataSource {
 	private String version;
 	private String user;
 	private String password;
+	private String info;
 	private FilterCapability filters;
 	
 	public DataSource() {
@@ -87,5 +88,14 @@ public class DataSource {
 	public FilterCapability getFilters() {
 		return filters;
 	}
+
+	public String getInfo() {
+		return info;
+	}
+
+	public void setInfo(String info) {
+		this.info = info;
+	}
+
 	
 }
