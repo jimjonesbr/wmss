@@ -279,7 +279,9 @@ eb-w-0/e-w-0
 | unknown  | 0  |
 
 
-The Scores List Report is provided as JSON and is structured as follows:
+
+
+The __Score List Report__ is provided as JSON and is structured as follows:
 
 ```json
 {
