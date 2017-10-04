@@ -41,7 +41,7 @@ public class FactoryWMSS {
 						"JOIN wmss_groups grp ON grp.group_id = scr.group_id " +
 						"JOIN wmss_document doc ON doc.score_id = scr.score_id " +
 						"JOIN wmss_document_type doctype ON doctype.document_type_id = doc.document_type_id "
-						+ " --where scr.score_id in (15, 16)";	
+						+ "limit 1";	
 
 				ResultSet rs = PostgreSQLConnector.executeQuery(SQL, dataSource);
 
