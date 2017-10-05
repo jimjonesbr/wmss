@@ -10,7 +10,9 @@ The Web Music Score Service (WMSS) provides an interface allowing requests for m
 - [Configuring WMSS](#configuring)
 - [Requests](#requests)
   - [DescribeService](#service)
+    - [Service Description Document](#servicedocument)
   - [ListScores](#listscores)
+    - [Score List Document](#listdocument)  
   - [GetScore](#getscore)
   - [Logging](#logging)
   
@@ -38,7 +40,7 @@ The WMSS communication protocol is based on the following HTTP requests:
  http://localhost:8295/wmss?request=DescribeService
  ```
  
- The __Service Description Report__ is provided as JSON and is structured as follows:
+ The [__Service Description Document__](https://github.com/jimjonesbr/wmss/blob/master/README.md#servicedocument) is provided as JSON and is structured as follows:
  
 ```json
 {
@@ -105,7 +107,7 @@ The WMSS communication protocol is based on the following HTTP requests:
  
  #### Data Source
  
- Constraints the __Score List Report__ to a specific data source:
+ Constraints the __Score List Document__ to a specific data source:
  
   ```http
  http://localhost:8295/wmss?request=ListScores&source=postgres_wwu
@@ -121,7 +123,7 @@ In WMSS it is possible to add records to groups, so that specific collections ca
 
 #### Persons
 
-Filters out from the __Score List Report__ all records containing specific persons and roles. For instance, a request to list all scores from the person "Elgar" as a "Composer" is enconded like this:
+Filters out from the __Score List Document__ all records containing specific persons and roles. For instance, a request to list all scores from the person "Elgar" as a "Composer" is enconded like this:
 
 ```http
  http://localhost:8295/wmss?request=ListScores&person=Elgar&personRole=Composer
@@ -142,7 +144,7 @@ The __personRole__ parameter may contain the following values:
 
 #### Performance Medium
 
-Filters out from the __Score List Report__ all records containing specific performance mediums. For instance, a request to list all scores containing cello voices can be enconded like this:
+Filters out from the __Score List Document__ all records containing specific performance mediums. For instance, a request to list all scores containing cello voices can be enconded like this:
 
  ```http
  http://localhost:8295/wmss?request=ListScores&performanceMedium=sc
@@ -295,7 +297,7 @@ eb-w-0/e-w-0
 
 
 
-The __Score List Report__ is provided as JSON and is structured as follows:
+The [__Score List Document__](https://github.com/jimjonesbr/wmss/blob/master/README.md#listdocument) is provided as JSON and is structured as follows:
 
 ```json
 {
