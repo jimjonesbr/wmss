@@ -195,19 +195,18 @@ To constraint the search for the given performance medium to only mediums, use t
 Listing all records containing voices written for bowed string instruments:
  
  ```http
- http://localhost:8295/wmss?request=ListScores&performanceMediumType=StringsBowed
+ http://localhost:8295/wmss?request=ListScores&performanceMediumType=stb
 ```
 
-The performanceMediumType parameters expects the following values:
+The performanceMediumType parameter expects the following codes:
 
-* Brass
-* Electronic
-* Keyboard
-* Percussion
-* StringsBowed
-* StringsPlucked
-* Voices
-* Woodwinds
+| code|medium type| code|medium type|
+|:-:|:-:|:-:|:-:|
+|bra|Brass|stb|Strings, bowed|
+|ele|Electronic|stl|Stringd, plucked|
+|key|Keyboard|voi|Voices|
+|per|Percussion|wwi|Woodwinds|
+
 
 #### Tonalities
 
