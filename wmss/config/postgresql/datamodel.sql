@@ -32,116 +32,116 @@ INSERT INTO wmss_languages (language_id,language_description) VALUES ('br','Potu
 -- wwms_performance_medium_type
 
 CREATE TABLE wmss_performance_medium_type (
-performance_medium_type_id INTEGER,
+performance_medium_type_id VARCHAR,
 performance_medium_type_description VARCHAR,
 CONSTRAINT medium_type_pkey PRIMARY KEY (performance_medium_type_id) 
 );
 
 
-INSERT INTO wmss_performance_medium_type (performance_medium_type_description, performance_medium_type_id) VALUES ('Brass',1);
-INSERT INTO wmss_performance_medium_type (performance_medium_type_description, performance_medium_type_id) VALUES ('Electronic', 2);
-INSERT INTO wmss_performance_medium_type (performance_medium_type_description, performance_medium_type_id) VALUES ('Keyboard', 3);
-INSERT INTO wmss_performance_medium_type (performance_medium_type_description, performance_medium_type_id) VALUES ('Percussion', 4);
-INSERT INTO wmss_performance_medium_type (performance_medium_type_description, performance_medium_type_id) VALUES ('Strings, bowed', 5);
-INSERT INTO wmss_performance_medium_type (performance_medium_type_description, performance_medium_type_id) VALUES ('Strings, plucked', 6);
-INSERT INTO wmss_performance_medium_type (performance_medium_type_description, performance_medium_type_id) VALUES ('Voices', 7);
-INSERT INTO wmss_performance_medium_type (performance_medium_type_description, performance_medium_type_id) VALUES ('Woodwinds', 8);
-INSERT INTO wmss_performance_medium_type (performance_medium_type_description, performance_medium_type_id) VALUES ('Unspecified instruments', 9);
-INSERT INTO wmss_performance_medium_type (performance_medium_type_description, performance_medium_type_id) VALUES ('Unknown', 10);
+INSERT INTO wmss_performance_medium_type (performance_medium_type_description, performance_medium_type_id) VALUES ('Brass','bra');
+INSERT INTO wmss_performance_medium_type (performance_medium_type_description, performance_medium_type_id) VALUES ('Electronic', 'ele');
+INSERT INTO wmss_performance_medium_type (performance_medium_type_description, performance_medium_type_id) VALUES ('Keyboard', 'key');
+INSERT INTO wmss_performance_medium_type (performance_medium_type_description, performance_medium_type_id) VALUES ('Percussion', 'per');
+INSERT INTO wmss_performance_medium_type (performance_medium_type_description, performance_medium_type_id) VALUES ('Strings, bowed', 'stb');
+INSERT INTO wmss_performance_medium_type (performance_medium_type_description, performance_medium_type_id) VALUES ('Strings, plucked', 'stl');
+INSERT INTO wmss_performance_medium_type (performance_medium_type_description, performance_medium_type_id) VALUES ('Voices', 'voi');
+INSERT INTO wmss_performance_medium_type (performance_medium_type_description, performance_medium_type_id) VALUES ('Woodwinds', 'wwi');
+INSERT INTO wmss_performance_medium_type (performance_medium_type_description, performance_medium_type_id) VALUES ('Unspecified instruments', 'uns');
+INSERT INTO wmss_performance_medium_type (performance_medium_type_description, performance_medium_type_id) VALUES ('Unknown', 'unk');
 
 
 -- wmss_performance_medium
 
 CREATE TABLE wmss_performance_medium (
 performance_medium_id VARCHAR,
-performance_medium_type_id INTEGER REFERENCES wmss_performance_medium_type (performance_medium_type_id),
+performance_medium_type_id VARCHAR REFERENCES wmss_performance_medium_type (performance_medium_type_id),
 performance_medium_description VARCHAR,
 language_id VARCHAR REFERENCES wmss_languages (language_id),
 CONSTRAINT medium_pkey PRIMARY KEY (performance_medium_id) 
 );
 
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('ba',1,'Horn','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('bb',1,'Trumpet','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('bc',1,'Cornet','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('bd',1,'Trombone','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('be',1,'Tuba','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('bf',1,'Baritone','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('bn',1,'Unspecified','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('bu',1,'Unknown','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('by',1,'Ethnic','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('bz',1,'Other','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('ea',2,'Synthesizer','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('eb',2,'Tape','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('ec',2,'Computer','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('ed',2,'Ondes Martinot','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('en',2,'Unspecified','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('eu',2,'Unknown','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('ez',2,'Other','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('ka',3,'Piano','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('kb',3,'Organ','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('kc',3,'Harpsichord','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('kd',3,'Clavichord','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('ke',3,'Continuo','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('kf',3,'Celeste','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('kn',3,'Unspecified','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('ku',3,'Unknown','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('ky',3,'Ethnic','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('kz',3,'Other','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('pa',4,'Timpani','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('pb',4,'Xylophone','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('pc',4,'Marimba','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('pd',4,'Drum','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('pn',4,'Unspecified','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('pu',4,'Unknown','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('py',4,'Ethnic','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('pz',4,'Other','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('sa',5,'Violin','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('sb',5,'Viola','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('sc',5,'Violoncello','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('sd',5,'Double bass','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('se',5,'Viol','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('sf',5,'Viola d`amore','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('sg',5,'Viola da gamba','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('sn',5,'Unspecified','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('su',5,'Unknown','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('sy',5,'Ethnic','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('sz',5,'Other','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('ta',6,'Harp','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('tb',6,'Guitar','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('tc',6,'Lute','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('td',6,'Mandolin','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('tn',6,'Unspecified','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('tu',6,'Unknown','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('ty',6,'Ethnic','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('tz',6,'Other','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('va',7,'Soprano','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('vb',7,'Mezzo Soprano','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('vc',7,'Alto','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('vd',7,'Tenor','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('ve',7,'Baritone','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('vf',7,'Bass','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('vg',7,'Counter tenor','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('vh',7,'High voice','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('vi',7,'Medium voice','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('vj',7,'Low voice','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('vn',7,'Unspecified','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('vu',7,'Unknown','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('vy',7,'Ethnic','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('wa',8,'Flute','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('wb',8,'Oboe','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('wc',8,'Clarinet','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('wd',8,'Bassoon','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('we',8,'Piccolo','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('wf',8,'English horn','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('wg',8,'Bass clarinet','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('wh',8,'Recorder','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('wi',8,'Saxophone','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('wn',8,'Unspecified','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('wu',8,'Unknown','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('wy',8,'Ethnic','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('wz',8,'Other','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('zn',9,'Unspecified instruments','en');
- INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('zu',10,'Unknown','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('ba','bra','Horn','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('bb','bra','Trumpet','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('bc','bra','Cornet','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('bd','bra','Trombone','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('be','bra','Tuba','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('bf','bra','Baritone','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('bn','bra','Unspecified','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('bu','bra','Unknown','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('by','bra','Ethnic','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('bz','bra','Other','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('ea','ele','Synthesizer','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('eb','ele','Tape','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('ec','ele','Computer','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('ed','ele','Ondes Martinot','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('en','ele','Unspecified','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('eu','ele','Unknown','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('ez','ele','Other','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('ka','key','Piano','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('kb','key','Organ','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('kc','key','Harpsichord','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('kd','key','Clavichord','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('ke','key','Continuo','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('kf','key','Celeste','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('kn','key','Unspecified','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('ku','key','Unknown','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('ky','key','Ethnic','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('kz','key','Other','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('pa','per','Timpani','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('pb','per','Xylophone','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('pc','per','Marimba','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('pd','per','Drum','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('pn','per','Unspecified','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('pu','per','Unknown','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('py','per','Ethnic','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('pz','per','Other','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('sa','stb','Violin','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('sb','stb','Viola','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('sc','stb','Violoncello','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('sd','stb','Double bass','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('se','stb','Viol','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('sf','stb','Viola d`amore','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('sg','stb','Viola da gamba','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('sn','stb','Unspecified','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('su','stb','Unknown','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('sy','stb','Ethnic','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('sz','stb','Other','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('ta','stl','Harp','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('tb','stl','Guitar','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('tc','stl','Lute','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('td','stl','Mandolin','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('tn','stl','Unspecified','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('tu','stl','Unknown','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('ty','stl','Ethnic','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('tz','stl','Other','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('va','voi','Soprano','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('vb','voi','Mezzo Soprano','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('vc','voi','Alto','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('vd','voi','Tenor','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('ve','voi','Baritone','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('vf','voi','Bass','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('vg','voi','Counter tenor','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('vh','voi','High voice','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('vi','voi','Medium voice','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('vj','voi','Low voice','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('vn','voi','Unspecified','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('vu','voi','Unknown','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('vy','voi','Ethnic','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('wa','wwi','Flute','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('wb','wwi','Oboe','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('wc','wwi','Clarinet','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('wd','wwi','Bassoon','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('we','wwi','Piccolo','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('wf','wwi','English horn','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('wg','wwi','Bass clarinet','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('wh','wwi','Recorder','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('wi','wwi','Saxophone','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('wn','wwi','Unspecified','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('wu','wwi','Unknown','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('wy','wwi','Ethnic','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('wz','wwi','Other','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('zn','uns','Unspecified instruments','en');
+ INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('zu','unk','Unknown','en');
 
 
 -- wmss_group

@@ -70,6 +70,30 @@ public class FactoryWMSS {
 					
 						filters.add(" movmed.movement_performance_medium_solo = " + parameters.get(i).getValue() +  " ");
 						
+					} else if(parameters.get(i).getRequest().equals("tonalitytonic")){
+					
+						filters.add(" LOWER(scr.score_tonality_note) = '" + parameters.get(i).getValue() +  "' ");
+						
+					} else if(parameters.get(i).getRequest().equals("tonalitymode")){
+					
+						filters.add(" LOWER(scr.score_tonality_mode) = '" + parameters.get(i).getValue() +  "' ");
+						
+					} else if(parameters.get(i).getRequest().equals("tempo")){
+					
+						filters.add(" LOWER(mov.movement_tempo)  LIKE '%" + parameters.get(i).getValue() +  "%'");
+						
+					} else if(parameters.get(i).getRequest().equals("creationdatefrom")){
+					
+						filters.add(" scr.score_creation_date_min  >= " + parameters.get(i).getValue() +  " ");
+						
+					} else if(parameters.get(i).getRequest().equals("creationdateto")){
+					
+						filters.add(" scr.score_creation_date_max  <= " + parameters.get(i).getValue() +  " ");
+						
+					} else if(parameters.get(i).getRequest().equals("format")){
+					
+						filters.add(" LOWER(doc.document_type_id)  = '" + parameters.get(i).getValue() +  "' ");
+						
 					}
 					
 				}
