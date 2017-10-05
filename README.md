@@ -150,7 +150,7 @@ Selects all music scores containing specific performance mediums. For instance, 
  http://localhost:8295/wmss?request=ListScores&performanceMedium=sc
 ```
 
-To constraint the search for the given performance medium to only mediums, use the *solo* parameter. 
+To constraint the search for the given performance medium to only solo mediums, use the *solo* parameter: 
 
  ```http
  http://localhost:8295/wmss?request=ListScores&performanceMedium=sc&solo=true
@@ -237,7 +237,7 @@ http://localhost:8295/wmss?request=ListScores&creationDateFrom=1700&creationDate
  
 Selects records available in a specific format. The supported formats are:
 
-  * mei (Music Encoding Initiative filles)
+  * mei (Music Encoding Initiative files)
   * musicxml (MusicXML files)
   
  ```http
@@ -252,7 +252,7 @@ Selects records containing a specific melody (a sequence of notes). Each element
 note-duration-octave/note-duration-octave
 ```
 
-Example.
+Example:
 
 E♭ whole note, 3rd octave followed by E, whole note, 3rd octave:
 
@@ -369,7 +369,7 @@ Retrieves a specific record based on its identifier:
   http://localhost:8295/wmss/?request=getscore&identifier=postgres_wwu:1&format=mei
   ```
 
-  * mei (Music Encoding Initiative filles)
+  * mei (Music Encoding Initiative files)
   * musicxml (MusicXML files)
 
 
