@@ -94,6 +94,10 @@ public class FactoryWMSS {
 					
 						filters.add(" LOWER(doc.document_type_id)  = '" + parameters.get(i).getValue() +  "' ");
 						
+					} else if(parameters.get(i).getRequest().equals("group")){
+					
+						filters.add(" scr.group_id  = " + parameters.get(i).getValue() +  " ");
+						
 					}
 					
 				}
