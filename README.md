@@ -160,39 +160,39 @@ To constraint the search for the given performance medium to only mediums, use t
 | id  	|  medium  	| id |medium| id |medium|
 |:-:	|:-:	|:-:	|:-:	|:-:	|:-:	|
 |ba	|Horn| pd	|Drum| vg	|Counter tenor|
-|bb	|Trumpet| pn	|Unspecified| vh	|High voice|
-|bc	|Cornet| pu	|Unknown| vi	|Medium voice|
-|bd	|Trombone| py	|Ethnic|vj	|Low voice|
-|be	|Tuba| pz	|Other| vn	|Unspecified|
-|bf	|Baritone| sa	|Violin| vu	|Unknown|
-|bn	|Unspecified| sb	|Viola| vy	|Ethnic|
-|bu	|Unknown| sc	|Violoncello|wa	|Flute|
-|by	|Ethnic| sd	|Double bass|wb	|Oboe|
-|bz	|Other| se	|Viol|wc	|Clarinet|
+|bb	|Trumpet| pn	|Unspecified (Percussion)| vh	|High voice|
+|bc	|Cornet| pu	|Unknown (Percussion)| vi	|Medium voice|
+|bd	|Trombone| py	|Ethnic (Percussion)|vj	|Low voice|
+|be	|Tuba| pz	|Other (Percussion)| vn	|Unspecified (Voice)|
+|bf	|Baritone| sa	|Violin| vu	|Unknown (Voice)|
+|bn	|Unspecified (Brass)| sb	|Viola| vy	|Ethnic (Voice)|
+|bu	|Unknown (Brass)| sc	|Violoncello|wa	|Flute|
+|by	|Ethnic (Brass)| sd	|Double bass|wb	|Oboe|
+|bz	|Other (Brass)| se	|Viol|wc	|Clarinet|
 |ea	|Synthesizer|sf	|Viola d`amore| wd	|Bassoon|
 |eb	|Tape| sg	|Viola da gamba| we	|Piccolo|
-|ec	|Computer|sn	|Unspecified| wf	|English horn|
-|ed	|Ondes Martinot| su	|Unknown| wg	|Bass clarinet|
-|en	|Unspecified| sy	|Ethnic| wh	|Recorder|
-|eu	|Unknown| sz	|Other| wi	|Saxophone|
-|ez	|Other| ta	|Harp| wn	|Unspecified|
-|ka	|Piano| tb	|Guitar| wu	|Unknown|
-|kb	|Organ| tc	|Lute| wy	|Ethnic|
-|kc	|Harpsichord| td	|Mandolin| wz	|Other|
-|kd	|Clavichord| tn	|Unspecified| zn	|Unspecified instruments|
-|ke	|Continuo| tu	|Unknown| zu	|Unknown|
-|kf	|Celeste| ty	|Ethnic|
-|kn	|Unspecified| tz	|Other|
-|ku	|Unknown| va	|Soprano|
-|ky	|Ethnic| vb	|Mezzo Soprano|
-|kz	|Other| vc	|Alto|
+|ec	|Computer|sn	|Unspecified (Strings, bowed)| wf	|English horn|
+|ed	|Ondes Martinot| su	|Unknown (Strings, bowed)| wg	|Bass clarinet|
+|en	|Unspecified (Electronic)| sy	|Ethnic (Strings, bowed)| wh	|Recorder|
+|eu	|Unknown (Electronic)| sz	|Other (Strings, bowed)| wi	|Saxophone|
+|ez	|Other (Electronic)| ta	|Harp| wn	|Unspecified (Woodwinds)|
+|ka	|Piano| tb	|Guitar| wu	|Unknown (Woodwinds)|
+|kb	|Organ| tc	|Lute| wy	|Ethnic (Woodwinds)|
+|kc	|Harpsichord| td	|Mandolin| wz	|Other (Woodwinds)|
+|kd	|Clavichord| tn	|Unspecified (Strings, plucked)| zn	|Unspecified instrument|
+|ke	|Continuo| tu	|Unknown (Strings, plucked)| zu	|Unknown|
+|kf	|Celeste| ty	|Ethnic (Strings, plucked)|
+|kn	|Unspecified (Keyboard)| tz	|Other (Strings, plucked)|
+|ku	|Unknown (Keyboard)| va	|Soprano|
+|ky	|Ethnic (Keyboard)| vb	|Mezzo Soprano|
+|kz	|Other (Keyboard)| vc	|Alto|
 |pa	|Timpani| vd	|Tenor|
 |pb	|Xylophone| ve	|Baritone|
 |pc	|Marimba| vf	|Bass|
 
+##### Performance Medium Type
 
-
-Listing all records containing voices written for bowed string instruments:
+It is also possible to select music scores based on performance medium types, e.g. Woodwinds, Keyboard. The example bellow selects all records that contain movements that are played with bowed string instruments:
  
  ```http
  http://localhost:8295/wmss?request=ListScores&performanceMediumType=stb
@@ -203,7 +203,7 @@ The performanceMediumType parameter expects the following codes:
 | code|medium type| code|medium type|
 |:-:|:-:|:-:|:-:|
 |bra|Brass|stb|Strings, bowed|
-|ele|Electronic|stl|Stringd, plucked|
+|ele|Electronic|stl|Strings, plucked|
 |key|Keyboard|voi|Voices|
 |per|Percussion|wwi|Woodwinds|
 
