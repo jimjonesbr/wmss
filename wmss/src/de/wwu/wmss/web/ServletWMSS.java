@@ -97,7 +97,7 @@ public class ServletWMSS extends HttpServlet
 			} else if (parameter.toLowerCase().equals("performancemediumtype")) {
 				
 				performanceMediumType=request.getParameter(parameter).toLowerCase();
-				req.setRequest("performancemediumType");
+				req.setRequest("performancemediumtype");
 				req.setValue(request.getParameter(parameter).toLowerCase());
 
 			} else if (parameter.toLowerCase().equals("solo")) {

@@ -2,10 +2,10 @@ package de.wwu.wmss.core;
 
 public class PerformanceMedium {
 
-	private String typeDescription;
-	private String typeClassification;
+	private String mediumTypeDescription;
+	private String mediumTypeId;
 	private String mediumDescription;
-	private String mediumClassification;
+	private String mediumId;
 	private String mediumScoreDescription;	
 	private String movementId;
 	private String scoreId;
@@ -18,19 +18,19 @@ public class PerformanceMedium {
 	}
 
 	public String getTypeDescription() {
-		return typeDescription;
+		return mediumTypeDescription;
 	}
 
 	public void setTypeDescription(String typeDescription) {
-		this.typeDescription = typeDescription;
+		this.mediumTypeDescription = typeDescription;
 	}
 
-	public String getTypeClassification() {
-		return typeClassification;
+	public String getMediumTypeId() {
+		return mediumTypeId;
 	}
 
-	public void setTypeClassification(String typeClassification) {
-		this.typeClassification = typeClassification;
+	public void setMediumTypeId(String typeClassification) {
+		this.mediumTypeId = typeClassification;
 	}
 
 	public String getMediumDescription() {
@@ -41,12 +41,12 @@ public class PerformanceMedium {
 		this.mediumDescription = mediumDescription;
 	}
 
-	public String getMediumClassification() {
-		return mediumClassification;
+	public String getMediumId() {
+		return mediumId;
 	}
 
-	public void setMediumClassification(String mediumClassification) {
-		this.mediumClassification = mediumClassification;
+	public void setMediumId(String mediumClassification) {
+		this.mediumId = mediumClassification;
 	}
 
 	public boolean isSolo() {

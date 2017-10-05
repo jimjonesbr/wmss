@@ -58,11 +58,21 @@ public class FactoryWMSS {
 					
 						filters.add(" LOWER(rol.role_description) = '" + parameters.get(i).getValue().toLowerCase() +  "' ");
 						
+					} else if(parameters.get(i).getRequest().equals("performancemedium")){
+					
+						filters.add(" LOWER(med.performance_medium_id) = '" + parameters.get(i).getValue() +  "' ");
+						
+					} else if(parameters.get(i).getRequest().equals("performancemediumtype")){
+					
+						filters.add(" medtype.performance_medium_type_id = '" + parameters.get(i).getValue() +  "' ");
+						
+					} else if(parameters.get(i).getRequest().equals("solo")){
+					
+						filters.add(" movmed.movement_performance_medium_solo = " + parameters.get(i).getValue() +  " ");
+						
 					}
 					
 				}
-				
-				
 				
 				if(!filters.isEmpty()){
 					
@@ -82,6 +92,7 @@ public class FactoryWMSS {
 					sqlFilter = sqlFilter + " )";
 					
 					System.out.println(sqlHeader+ sqlJoins + sqlFilter);
+					
 				}
 				
 				
@@ -122,8 +133,9 @@ public class FactoryWMSS {
 					movementList.add(mov);
 
 					PerformanceMedium med = new PerformanceMedium();
-					med.setMediumClassification(rs.getString("performance_medium_id"));
+					med.setMediumId(rs.getString("performance_medium_id"));
 					med.setMediumDescription(rs.getString("performance_medium_description"));
+					med.setMediumTypeId(rs.getString("performance_medium_type_id"));
 					med.setTypeDescription(rs.getString("performance_medium_type_description"));
 					med.setMovementId(rs.getString("movement_id"));
 					med.setScoreId(rs.getString("score_id"));
