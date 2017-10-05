@@ -34,13 +34,13 @@ The WMSS communication protocol is based on the following HTTP requests:
 ### [DescribeService](https://github.com/jimjonesbr/wmss/blob/master/README.md#describeservice)
 
  
- Lists all service related information as well as all repositories available. 
+ Lists all service related information as well as all repositories available: 
  
  ```http
  http://localhost:8295/wmss?request=DescribeService
  ```
- 
-The [Service Description Document](https://github.com/jimjonesbr/wmss/blob/master/README.md#service-description-document) is provided as JSON and is structured as follows:
+#### [Service Description Document](https://github.com/jimjonesbr/wmss/blob/master/README.md#service-description-document) 
+The Service Description Document is provided as JSON and is structured as follows:
  
 ```json
 {
@@ -296,8 +296,8 @@ eb-w-0/e-w-0
 
 
 
-
-The [Score List Document](https://github.com/jimjonesbr/wmss/blob/master/README.md#score-list-document) is provided as JSON and is structured as follows:
+#### [Score List Document](https://github.com/jimjonesbr/wmss/blob/master/README.md#score-list-document)
+The Score List Document is provided as JSON and is structured as follows:
 
 ```json
 {
