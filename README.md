@@ -97,13 +97,13 @@ The Service Description Document is provided as JSON and is structured as follow
 
 ### [ListScores](https://github.com/jimjonesbr/wmss/blob/master/README.md#listscores)
  
- Lists available scores from repositories. 
+ Lists all scores from available repositories. 
  
   ```http
  http://localhost:8295/wmss?request=ListScores
  ```
  
- It offers several music score related filter capabilities:
+ In order to facilitate the music score discovery, the ListScores request offers several filter capabilities:
  
  #### Data Source
  
@@ -115,7 +115,7 @@ The Service Description Document is provided as JSON and is structured as follow
 
  #### Group (Collection)
 
-In WMSS it is possible to add records to groups, so that specific collections can be also represented, e.g. "ULB Histotic Collection". 
+In WMSS it is possible to add music scores to groups, so that specific collections can be also represented, e.g. "ULB Histotic Collection", "Baroque Works", etc. 
 
  ```http
  http://localhost:8295/wmss?request=ListScores&source=postgres_wwu&group=1
@@ -123,7 +123,7 @@ In WMSS it is possible to add records to groups, so that specific collections ca
 
 #### Persons
 
-Filters out from the __Score List Document__ all records containing specific persons and roles. For instance, a request to list all scores from the person "Elgar" as a "Composer" is enconded like this:
+Selects all music scores containing specific persons and optionally with their respective roles. For instance, a request to list all scores from the person "Elgar" as a "Composer" is enconded like this:
 
 ```http
  http://localhost:8295/wmss?request=ListScores&person=Elgar&personRole=Composer
@@ -144,13 +144,13 @@ The __personRole__ parameter may contain the following values:
 
 #### Performance Medium
 
-Filters out from the __Score List Document__ all records containing specific performance mediums. For instance, a request to list all scores containing cello voices can be enconded like this:
+Selects all music scores containing specific performance mediums. For instance, a request to list all scores containing cello voices can be enconded like this:
 
  ```http
  http://localhost:8295/wmss?request=ListScores&performanceMedium=sc
 ```
 
-To constraint the search for the given performance medium to only solo instruments use the "solo" parameter.
+To constraint the search for the given performance medium to only mediums, use the *solo* parameter. 
 
  ```http
  http://localhost:8295/wmss?request=ListScores&performanceMedium=sc&solo=true
@@ -211,7 +211,7 @@ The performanceMediumType parameters expects the following values:
 
 #### Tonalities
 
-Selects records containing a specific tonality. For instance, a request to retrieve all records written in "E major" is encoded as follows:
+Selects records containing a specific tonality. For instance, a request to retrieve all records written in "E Major" is encoded as follows:
 
  ```http
 http://localhost:8295/wmss?request=ListScores&tonalityTonic=e&tonalityMode=major
@@ -219,7 +219,7 @@ http://localhost:8295/wmss?request=ListScores&tonalityTonic=e&tonalityMode=major
 
 #### Tempo
 
-Selects records containing movements played in a specific tempo, e.g. adagio, largo, etc.
+Selects records containing movements played in a specific tempo, e.g. *adagio*, *largo*, *andante* etc.
 
  ```http
 http://localhost:8295/wmss?request=ListScores&tempo=adagio
@@ -374,3 +374,4 @@ Retrieves a specific record based on its identifier:
 
 
   ### [Logging](https://github.com/jimjonesbr/wmss/blob/master/README.md#logging)
+  tbw.
