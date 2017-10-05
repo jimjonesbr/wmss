@@ -6,23 +6,23 @@ The Web Music Score Service (WMSS) provides an interface allowing requests for m
 
 ## Index
 
-- [WMSS Data Model](#model)
-- [Configuring WMSS](#configuring)
+- [WMSS Data Model](#wmss-data-model)
+- [Configuring WMSS](#configuring-wmss)
 - [Requests](#requests)
-  - [DescribeService](#service)
-    - [Service Description Document](#servicedocument)
+  - [DescribeService](#describeservice)
+    - [Service Description Document](#service-description-document)
   - [ListScores](#listscores)
-    - [Score List Document](#listdocument)  
+    - [Score List Document](#score-list-document)  
   - [GetScore](#getscore)
   - [Logging](#logging)
   
-## [WMSS Data Model](https://github.com/jimjonesbr/wmss/blob/master/README.md#model)
+## [WMSS Data Model](https://github.com/jimjonesbr/wmss/blob/master/README.md#wmss-data-model)
 
 The WMSS data model was inspired and based on the [MEI Header](http://music-encoding.org/support/tutorials/mei-1st/exploring-the-mei-header/) encoded by the [Music Encoding Initiative (MEI)](http://music-encoding.org/).
 
 tbw.
 
-## [Configuring WMSS](https://github.com/jimjonesbr/wmss/blob/master/README.md#configuring)
+## [Configuring WMSS](https://github.com/jimjonesbr/wmss/blob/master/README.md#configuring-wmss)
 
 tbw.
 
@@ -31,7 +31,7 @@ tbw.
 
 The WMSS communication protocol is based on the following HTTP requests:
 
-### [DescribeSerice](https://github.com/jimjonesbr/wmss/blob/master/README.md#service)
+### [DescribeService](https://github.com/jimjonesbr/wmss/blob/master/README.md#describeservice)
 
  
  Lists all service related information as well as all repositories available. 
@@ -40,7 +40,7 @@ The WMSS communication protocol is based on the following HTTP requests:
  http://localhost:8295/wmss?request=DescribeService
  ```
  
- The [__Service Description Document__](https://github.com/jimjonesbr/wmss/blob/master/README.md#servicedocument) is provided as JSON and is structured as follows:
+The [Service Description Document](https://github.com/jimjonesbr/wmss/blob/master/README.md#service-description-document) is provided as JSON and is structured as follows:
  
 ```json
 {
@@ -297,7 +297,7 @@ eb-w-0/e-w-0
 
 
 
-The [__Score List Document__](https://github.com/jimjonesbr/wmss/blob/master/README.md#listdocument) is provided as JSON and is structured as follows:
+The [Score List Document](https://github.com/jimjonesbr/wmss/blob/master/README.md#score-list-document) is provided as JSON and is structured as follows:
 
 ```json
 {
