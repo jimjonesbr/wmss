@@ -278,20 +278,21 @@ eb-w-0/e-w-0
 | B♭  | bb  || E♭  | eb  || F♭  | fb  |
 
 ##### Note Duration List
-|Note duration   | Code  | 
-|:-:|:-:|
-| octuple whole note  | ow  |
-| quadruple whole note  | qw  |
-| double whole note  | dw  |
-| whole note  | w  |
-| half note  | h  |
-| quarter  | 4  |
-| eighth  | 8  |
-| sixteenth  | 16  |
-| thirty-second  | 32  |
-| sixty-fourth  | 64  |
-| hundred twenty-eighth  | 128  |
-| unknown  | 0  |
+|Duration name (US)   |Duration name (UK) | Code  | Notation  |
+|:-:|:-:|:-:|:-:|
+| octuple whole note | large | ow  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Music-octwholenote.svg/100px-Music-octwholenote.svg.png" width="75">
+| quadruple whole note| longa | qw  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Music-quadwholenote.svg/100px-Music-quadwholenote.svg.png" width="75">
+| double whole note| breve | dw  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Music-alt-doublewholenote.svg/100px-Music-alt-doublewholenote.svg.png" width="75">
+| whole note| semibreve | w  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Music-wholenote.svg/100px-Music-wholenote.svg.png" width="75">
+| half note|  minim | h  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Music-halfnote.svg/100px-Music-halfnote.svg.png" width="75">
+| quarter| crotchet | 4  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Music-quarternote.svg/100px-Music-quarternote.svg.png" width="75">
+| eighth| quaver | 8  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Music-eighthnote.svg/100px-Music-eighthnote.svg.png" width="75">
+| sixteenth| semiquaver | 16  |<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Music-eighthnote.svg/100px-Music-eighthnote.svg.png" width="75">
+| thirty-second| demisemiquaver	| 32  |<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Music-thirtysecondnote.svg/100px-Music-thirtysecondnote.svg.png" width="75">
+| sixty-fourth| hemidemisemiquaver  | 64  |<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Sixtyfourth-note.svg/100px-Sixtyfourth-note.svg.png" width="75">
+| hundred twenty-eighth| semihemidemisemiquaver | 128  |<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Music-hundredtwentyeighthnote.svg/100px-Music-hundredtwentyeighthnote.svg.png" width="75">
+| two hundred fifty-sixth note| demisemihemidemisemiquaver | 256  |<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Semigarrapatea.svg/100px-Semigarrapatea.svg.png" width="75">
+| unknown  |   |0
 
 
 
