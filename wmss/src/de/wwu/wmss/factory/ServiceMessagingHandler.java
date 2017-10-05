@@ -1,6 +1,5 @@
 package de.wwu.wmss.factory;
 
-import java.time.temporal.IsoFields;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -44,7 +43,7 @@ public class ServiceMessagingHandler {
 		serviceDescription.put("type", "ServiceDescriptionReport");
 		serviceDescription.put("service", SystemSettings.getService());
 		serviceDescription.put("port", SystemSettings.getPort());
-		serviceDescription.put("version", SystemSettings.getServiceVersion());
+		serviceDescription.put("appVersion", SystemSettings.getServiceVersion());
 		serviceDescription.put("timeout", SystemSettings.getTimeout());
 		serviceDescription.put("contact", SystemSettings.getAdmin());
 		serviceDescription.put("title", SystemSettings.getTitle());
@@ -168,6 +167,7 @@ public class ServiceMessagingHandler {
 
 				listScoresJSON.put("datasources", repoArray);
 				listScoresJSON.put("type", "ScoreListReport");
+				listScoresJSON.put("protocolVersion", "1.0");
 				listScoresJSON.put("size", repoArray.size());
 
 				result = gson.toJson(listScoresJSON);

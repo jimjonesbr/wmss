@@ -29,21 +29,65 @@ public class FactoryWMSS {
 
 			if (dataSource.getStorage().equals("postgresql")){
 
-				String SQL = "SELECT grp.*,	scr.*, per.*, rol.*, doctype.*, med.*, movmed.*,  medtype.*, mov.* " + 	
-						"FROM wmss_scores scr " +
-						"JOIN wmss_score_movements mov ON scr.score_id = mov.score_id " + 
-						"JOIN wmss_movement_performance_medium movmed ON mov.movement_id = movmed.movement_id AND movmed.score_id = scr.score_id " + 
-						"JOIN wmss_performance_medium med ON movmed.performance_medium_id = med.performance_medium_id " +
-						"JOIN wmss_performance_medium_type medtype ON med.performance_medium_type_id = medtype.performance_medium_type_id " +
-						"JOIN wmss_score_persons scrper ON scrper.score_id = scr.score_id  " +
-						"JOIN wmss_persons per ON per.person_id = scrper.person_id  " +
-						"JOIN wmss_roles rol ON rol.role_id = scrper.role_id " +
-						"JOIN wmss_groups grp ON grp.group_id = scr.group_id " +
-						"JOIN wmss_document doc ON doc.score_id = scr.score_id " +
-						"JOIN wmss_document_type doctype ON doctype.document_type_id = doc.document_type_id "
-						+ "--limit 1";	
-
-				ResultSet rs = PostgreSQLConnector.executeQuery(SQL, dataSource);
+				String sqlHeader = "SELECT grp.*,	scr.*, per.*, rol.*, doctype.*, med.*, movmed.*,  medtype.*, mov.* \n";				
+				String sqlJoins = "" +						 	
+						"FROM wmss_scores scr \n" +
+						"	JOIN wmss_score_movements mov ON scr.score_id = mov.score_id \n" + 
+						"	JOIN wmss_movement_performance_medium movmed ON mov.movement_id = movmed.movement_id AND movmed.score_id = scr.score_id \n" + 
+						"	JOIN wmss_performance_medium med ON movmed.performance_medium_id = med.performance_medium_id \n" +
+						"	JOIN wmss_performance_medium_type medtype ON med.performance_medium_type_id = medtype.performance_medium_type_id \n" +
+						"	JOIN wmss_score_persons scrper ON scrper.score_id = scr.score_id  \n" +
+						"	JOIN wmss_persons per ON per.person_id = scrper.person_id  \n" +
+						"	JOIN wmss_roles rol ON rol.role_id = scrper.role_id \n" +
+						"	JOIN wmss_groups grp ON grp.group_id = scr.group_id \n" +
+						"	JOIN wmss_document doc ON doc.score_id = scr.score_id \n" +
+						"	JOIN wmss_document_type doctype ON doctype.document_type_id = doc.document_type_id \n ";
+				String sqlFilter = "";
+				
+				ArrayList<String> filters = new ArrayList<String>();
+				
+						
+				for (int i = 0; i < parameters.size(); i++) {
+				
+					
+					if(parameters.get(i).getRequest().equals("person")){
+						
+						filters.add(" LOWER(per.person_name) LIKE '%" + parameters.get(i).getValue().toLowerCase() +  "%' ");
+					
+					} else if(parameters.get(i).getRequest().equals("personrole")){
+					
+						filters.add(" LOWER(rol.role_description) = '" + parameters.get(i).getValue().toLowerCase() +  "' ");
+						
+					}
+					
+				}
+				
+				
+				
+				if(!filters.isEmpty()){
+					
+					
+					sqlFilter = " WHERE scr.score_id IN (SELECT scr.score_id \n " + sqlJoins + "\n WHERE \n";
+					
+					for (int j = 0; j < filters.size(); j++) {
+					
+						sqlFilter = sqlFilter + filters.get(j);
+						
+						if ((j+1) < filters.size()){
+							
+							sqlFilter = sqlFilter + " AND \n";
+						}
+					}
+				
+					sqlFilter = sqlFilter + " )";
+					
+					System.out.println(sqlHeader+ sqlJoins + sqlFilter);
+				}
+				
+				
+				String sql = sqlHeader + sqlJoins + sqlFilter;
+				
+				ResultSet rs = PostgreSQLConnector.executeQuery(sql, dataSource);
 
 
 				while (rs.next()){
