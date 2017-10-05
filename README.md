@@ -18,7 +18,7 @@ The Web Music Score Service (WMSS) provides an interface allowing requests for m
   
 ## [WMSS Data Model](https://github.com/jimjonesbr/wmss/blob/master/README.md#wmss-data-model)
 
-The WMSS data model was inspired and based on the [MEI Header](http://music-encoding.org/support/tutorials/mei-1st/exploring-the-mei-header/) encoded by the [Music Encoding Initiative (MEI)](http://music-encoding.org/).
+The WMSS data model is inspired on the [MEI Header](http://music-encoding.org/support/tutorials/mei-1st/exploring-the-mei-header/) encoded by the [Music Encoding Initiative (MEI)](http://music-encoding.org/).
 
 tbw.
 
