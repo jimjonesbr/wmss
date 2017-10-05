@@ -15,6 +15,8 @@ The Web Music Score Service (WMSS) provides an interface allowing requests for m
     - [Score List Document](#score-list-document)  
   - [GetScore](#getscore)
   - [Logging](#logging)
+  - [Exceptions](#exceptions)
+  	- [Service Exception Report](#service-exception-report)
   
 ## [WMSS Data Model](https://github.com/jimjonesbr/wmss/blob/master/README.md#wmss-data-model)
 
@@ -375,3 +377,34 @@ Retrieves a specific record based on its identifier:
 
   ### [Logging](https://github.com/jimjonesbr/wmss/blob/master/README.md#logging)
   tbw.
+  
+  
+### [Exceptions](https://github.com/jimjonesbr/wmss/blob/master/README.md#exceptions)
+  
+|Code   | Message  | Cause |
+|:-:|:-:|:-:|
+|E0001|No request type provided| |
+|E0002|Invalid request parameter| |
+|E0003|Invalid document format| |
+|E0004|Invalid mode| |
+|E0005|Invalid tonic| |
+|E0006|Invalid boolean value for 'solo' parameter| |
+|E0007|Invalid protocol version| |
+|E0008|No identifier provided for GetScore request| |
+|E0009|Invalid data source| |
+|E0010|Invalid filter requestd| |
+|E0011|Unsupported filter| |
+
+
+#### [Service Exception Report](https://github.com/jimjonesbr/wmss/blob/master/README.md#service-exception-report)
+
+The Service Exception Report is provided as JSON and is structured as follows:
+
+```json
+{
+  "type": "ExceptionReport",
+  "code": "E0009",
+  "message": "Invalid data source [fake_repo].",
+  "hint": "The provided data source cannot be found. Check the 'Service Description Report' for more information on the available data sources."  
+}
+```
