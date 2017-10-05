@@ -4,19 +4,33 @@ The Web Music Score Service (WMSS) provides an interface allowing requests for m
 
 ![GitHub Logo](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/wmss.jpg)
 
-## Data Model
+## Index
+
+- [WMSS Data Model](#model)
+- [Configuring WMSS](#configuring)
+- [Requests](#requests)
+  - [DescribeService](#service)
+  - [ListScores](#listscores)
+  - [GetScore](#getscore)
+  - [Logging](#logging)
+  
+## [WMSS Data Model](https://github.com/jimjonesbr/wmss/blob/master/README.md#model)
 
 The WMSS data model was inspired and based on the [MEI Header](http://music-encoding.org/support/tutorials/mei-1st/exploring-the-mei-header/) encoded by the [Music Encoding Initiative (MEI)](http://music-encoding.org/).
 
+tbw.
 
-tbc.
+## [Configuring WMSS](https://github.com/jimjonesbr/wmss/blob/master/README.md#configuring)
+
+tbw.
 
 
-## Requests
+## [Requests](https://github.com/jimjonesbr/wmss/blob/master/README.md#requests)
 
 The WMSS communication protocol is based on the following HTTP requests:
 
-### DescribeSerice
+### [DescribeSerice](https://github.com/jimjonesbr/wmss/blob/master/README.md#service)
+
  
  Lists all service related information as well as all repositories available. 
  
@@ -79,7 +93,7 @@ The WMSS communication protocol is based on the following HTTP requests:
 
 
 
-### ListScores
+### [ListScores](https://github.com/jimjonesbr/wmss/blob/master/README.md#listscores)
  
  Lists available scores from repositories. 
  
@@ -340,7 +354,7 @@ The __Score List Report__ is provided as JSON and is structured as follows:
 ```
  
   
-  ### GetScore
+  ### [GetScore](https://github.com/jimjonesbr/wmss/blob/master/README.md#getscore)
   
 Retrieves a specific record based on its identifier:
 
@@ -357,4 +371,4 @@ Retrieves a specific record based on its identifier:
   * musicxml (MusicXML files)
 
 
-
+  ### [Logging](https://github.com/jimjonesbr/wmss/blob/master/README.md#logging)
