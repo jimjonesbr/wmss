@@ -118,12 +118,10 @@ public class FactoryWMSS {
 					}
 				
 					sqlFilter = sqlFilter + " )";
-					
-					System.out.println(sqlHeader+ sqlJoins + sqlFilter);
+									
 					
 				}
-				
-				
+								
 				String sql = sqlHeader + sqlJoins + sqlFilter;
 				
 				ResultSet rs = PostgreSQLConnector.executeQuery(sql, dataSource);

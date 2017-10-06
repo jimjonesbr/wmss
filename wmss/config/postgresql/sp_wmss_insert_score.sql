@@ -40,7 +40,7 @@ BEGIN
 		
 	RAISE NOTICE 'Inserting % file "%" ... ',UPPER(score_type),score_path;   	
 	
-	score_file := wwusp_loadxml(score_path);
+	score_file := wmss_loadxml(score_path);
 	
 	IF UPPER(score_type) = 'MEI' THEN
 
@@ -84,8 +84,6 @@ BEGIN
 
 
 		END IF;
-		-- add here date parser (notbeore, notafter, date)
-
 
 		IF ARRAY_LENGTH(movement_id_array, 1) IS NULL THEN movement_id_array = ARRAY['1']; END IF;
 
@@ -98,7 +96,6 @@ BEGIN
 		
 
 		-- Parsing persons info (composers, arrangers, lyricists, etc..)
-
 		person_uri_array := (SELECT (XPATH('//mei:source/mei:titleStmt/mei:respStmt/mei:persName/@authURI', score_file, ARRAY[ARRAY['mei', 'http://www.music-encoding.org/ns/mei']]))::TEXT[]);		
 		person_name_array := (SELECT (XPATH('//mei:source/mei:titleStmt/mei:respStmt/mei:persName/text()', score_file, ARRAY[ARRAY['mei', 'http://www.music-encoding.org/ns/mei']]))::TEXT[]);
 		person_codedval_array := (SELECT (XPATH('//mei:source/mei:titleStmt/mei:respStmt/mei:persName/@codedval', score_file, ARRAY[ARRAY['mei', 'http://www.music-encoding.org/ns/mei']]))::TEXT[]);
@@ -185,16 +182,12 @@ BEGIN
 				ELSE
 
 					performance_medium_description := (SELECT (XPATH('//mei:perfRes/text()', score_file, ARRAY[ARRAY['mei', 'http://www.music-encoding.org/ns/mei']]))[j]::TEXT);					
-					performance_medium_id := (SELECT (XPATH('//mei:workDesc/mei:work/mei:perfMedium/mei:perfResList/mei:perfRes/@codedval', 
+					performance_medium_id := (SELECT (XPATH('//mei:perfRes/@codedval', 
 									score_file, ARRAY[ARRAY['mei', 'http://www.music-encoding.org/ns/mei']]))[j]::TEXT);
 
 					
 				END IF;
 
-
-				--IF (SELECT (XPATH('//mei:perfRes[@solo="true"]/text()', score_file, ARRAY[ARRAY['mei', 'http://www.music-encoding.org/ns/mei']]))[j]::TEXT) IS NOT NULL THEN
---						performance_medium_solo := TRUE;
---				END IF;
 
 				IF ARRAY_LENGTH(solo_performance_medien, 1) > 0 THEN 
 
@@ -206,6 +199,11 @@ BEGIN
 
 					END LOOP;
 
+				END IF;
+
+				-- In case the performance medium isn't specified, ‘zn’ (Unspecified instruments) is inserted.
+				IF performance_medium_id IS NULL THEN
+					performance_medium_id := 'zn';
 				END IF;
 
 				RAISE NOTICE '	Inserting performance medium "%" for movement "%" -> % (solo %)',movement_peformance_medium_array[j],movement_id_array[i],performance_medium_description,solo;
@@ -238,16 +236,16 @@ BEGIN
 END;
 $BODY$
 LANGUAGE plpgsql VOLATILE COST 100;
-ALTER FUNCTION public.wmss_insert_score(VARCHAR,VARCHAR,INTEGER) OWNER TO jones;
+ALTER FUNCTION public.wmss_insert_score(VARCHAR,VARCHAR,INTEGER) OWNER TO postgres;
 
-SELECT public.wmss_insert_score('/home/jones/Beethoven_op.18.mei','mei',1);
-SELECT public.wmss_insert_score('/home/jones/Brahms_StringQuartet_Op51_No1.mei','mei',1);
+--SELECT public.wmss_insert_score('/home/jones/Beethoven_op.18.mei','mei',1);
+--SELECT public.wmss_insert_score('/home/jones/Brahms_StringQuartet_Op51_No1.mei','mei',1);
 --SELECT public.wmss_insert_score('/home/jones/Liszt_Four_little_pieces.mei','mei',1);
 --SELECT public.wmss_insert_score('/home/jones/Hummel_Concerto_for_trumpet.mei','mei',1);
 
 --SELECT public.wmss_insert_score('/home/jones/Hummel_Concerto_for_trumpet.mei','mei',1);
 
-SELECT * from wmss_scores;
+--SELECT * from wmss_scores;
 --SELECT  --DISTINCT
 	--wmss_scores.score_id	AS id,
 	--wmss_scores.score_name	AS score_name,

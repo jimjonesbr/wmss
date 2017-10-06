@@ -20,6 +20,7 @@ public class PostgreSQLConnector {
 		
 		try {
 			
+			logger.info(SQL);
 			Connection con = DriverManager.getConnection("jdbc:postgresql://"+ds.getHost()+":"+ds.getPort()+"/"+ds.getRepository(), ds.getUser(), ds.getPassword());			
 			Statement st = con.createStatement();
 			rs = st.executeQuery(SQL);
