@@ -68,7 +68,6 @@ BEGIN
 				
 			END IF;
 
-
 			IF score_date_min IS NULL AND score_date_max IS NOT NULL THEN
 
 				score_date_min := score_date_max;				
@@ -80,8 +79,6 @@ BEGIN
 				score_date_max := score_date_min;				
 				
 			END IF;
-
-
 
 		END IF;
 
@@ -170,6 +167,8 @@ BEGIN
 				movement_description);
 					
 			
+			--TODO: add unspecified performance medium for MEI files without performance medium.
+
 			FOR j IN 1 .. ARRAY_UPPER(movement_peformance_medium_array, 1) LOOP
 
 				IF ARRAY_LENGTH(movement_id_array, 1) > 1 THEN 
