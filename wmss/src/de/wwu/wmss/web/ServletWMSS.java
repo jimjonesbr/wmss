@@ -35,7 +35,7 @@ public class ServletWMSS extends HttpServlet
 		String version = "";
 		String format = "";
 		String requestType = "";
-		String group = "";
+		String collection = "";
 		String person = "";
 		String personRole = "";
 		String performanceMedium = "";
@@ -70,10 +70,10 @@ public class ServletWMSS extends HttpServlet
 				req.setRequest("format");
 				req.setValue(request.getParameter(parameter).toLowerCase());
 				
-			} else if (parameter.toLowerCase().equals("group")) {
+			} else if (parameter.toLowerCase().equals("collection")) {
 				
-				group=request.getParameter(parameter).toLowerCase();
-				req.setRequest("group");
+				collection=request.getParameter(parameter).toLowerCase();
+				req.setRequest("collection");
 				req.setValue(request.getParameter(parameter).toLowerCase());
 
 			} else if (parameter.toLowerCase().equals("person")) {

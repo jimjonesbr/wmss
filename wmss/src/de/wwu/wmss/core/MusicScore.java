@@ -8,8 +8,8 @@ public class MusicScore {
 	private String source;
 	private String title;
 	private String composer;
-	private String groupDescription;
-	private String groupId;
+	private String collectionDescription;
+	private String collectionId;
 	private String tonalityTonic;
 	private String tonalityMode;
 	
@@ -122,23 +122,23 @@ public class MusicScore {
 	}
 
 
-	public String getGroupDescription() {
-		return groupDescription;
+	public String getCollectionDescription() {
+		return collectionDescription;
 	}
 
 
-	public void setGroupDescription(String groupDescription) {
-		this.groupDescription = groupDescription;
+	public void setCollectionDescription(String groupDescription) {
+		this.collectionDescription = groupDescription;
 	}
 
 
-	public String getGroupId() {
-		return groupId;
+	public String getCollectionId() {
+		return collectionId;
 	}
 
 
-	public void setGroupId(String groupId) {
-		this.groupId = groupId;
+	public void setCollectionId(String groupId) {
+		this.collectionId = groupId;
 	}
 		
 	

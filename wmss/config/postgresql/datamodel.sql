@@ -13,7 +13,7 @@ DROP TABLE IF EXISTS wmss_document;
 DROP TABLE IF EXISTS wmss_score_movements;
 DROP TABLE IF EXISTS wmss_scores;
 DROP TABLE IF EXISTS wmss_document_type ;
-DROP TABLE IF EXISTS wmss_groups;
+DROP TABLE IF EXISTS wmss_collections;
 DROP SEQUENCE IF EXISTS seq_scores;
 CREATE SEQUENCE seq_scores START WITH 1;
 
@@ -145,16 +145,16 @@ CONSTRAINT medium_pkey PRIMARY KEY (performance_medium_id)
  INSERT INTO wmss_performance_medium (performance_medium_id,performance_medium_type_id,performance_medium_description,language_id) VALUES ('oc','uns','String Orchestra','en');
 
 
--- wmss_group
+-- wmss_collection
 
-CREATE TABLE wmss_groups (
-group_id INTEGER,
-group_description VARCHAR,
-CONSTRAINT group_pkey PRIMARY KEY (group_id) 
+CREATE TABLE wmss_collections (
+collection_id INTEGER,
+collection_description VARCHAR,
+CONSTRAINT collection_pkey PRIMARY KEY (collection_id) 
 );
 
-INSERT INTO wmss_groups (group_id,group_description) VALUES (0,'Default Collection');
-INSERT INTO wmss_groups (group_id,group_description) VALUES (1,'MEI 3.0 Sample Collection');
+INSERT INTO wmss_collections (collection_id,collection_description) VALUES (0,'Default Collection');
+INSERT INTO wmss_collections (collection_id,collection_description) VALUES (1,'MEI 3.0 Sample Collection');
 
 -- wmss_scores
 
@@ -166,7 +166,7 @@ score_tonality_note VARCHAR,
 score_tonality_mode VARCHAR,
 score_creation_date_min INTEGER,
 score_creation_date_max INTEGER,
-group_id INTEGER REFERENCES wmss_groups(group_id),
+collection_id INTEGER REFERENCES wmss_collections(collection_id),
 CONSTRAINT score_pkey PRIMARY KEY (score_id) 
 );
 
@@ -204,11 +204,12 @@ CONSTRAINT movements_pkey PRIMARY KEY (movement_id,score_id)
 
 CREATE TABLE wmss_movement_performance_medium (
 movement_id VARCHAR,
-score_id VARCHAR REFERENCES wmss_scores(score_id), 
+score_id VARCHAR, 
 local_performance_medium_id VARCHAR,
 performance_medium_id VARCHAR REFERENCES wmss_performance_medium (performance_medium_id),
 movement_performance_medium_description VARCHAR,
-movement_performance_medium_solo BOOLEAN
+movement_performance_medium_solo BOOLEAN,
+FOREIGN KEY(movement_id, score_id) REFERENCES wmss_score_movements (movement_id, score_id)
 );
 
 -- wmss_roles

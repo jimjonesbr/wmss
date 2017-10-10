@@ -39,14 +39,13 @@ public class FactoryWMSS {
 						"	JOIN wmss_score_persons scrper ON scrper.score_id = scr.score_id  \n" +
 						"	JOIN wmss_persons per ON per.person_id = scrper.person_id  \n" +
 						"	JOIN wmss_roles rol ON rol.role_id = scrper.role_id \n" +
-						"	JOIN wmss_groups grp ON grp.group_id = scr.group_id \n" +
+						"	JOIN wmss_collections grp ON grp.collection_id = scr.collection_id \n" +
 						"	JOIN wmss_document doc ON doc.score_id = scr.score_id \n" +
 						"	JOIN wmss_document_type doctype ON doctype.document_type_id = doc.document_type_id \n ";
 				String sqlFilter = "";
 				
 				ArrayList<String> filters = new ArrayList<String>();
-				
-						
+									
 				for (int i = 0; i < parameters.size(); i++) {
 				
 					
@@ -94,9 +93,9 @@ public class FactoryWMSS {
 					
 						filters.add(" LOWER(doc.document_type_id)  = '" + parameters.get(i).getValue() +  "' ");
 						
-					} else if(parameters.get(i).getRequest().equals("group")){
+					} else if(parameters.get(i).getRequest().equals("collection")){
 					
-						filters.add(" scr.group_id  = " + parameters.get(i).getValue() +  " ");
+						filters.add(" scr.collection_id  = " + parameters.get(i).getValue() +  " ");
 						
 					}
 					
@@ -118,8 +117,7 @@ public class FactoryWMSS {
 					}
 				
 					sqlFilter = sqlFilter + " )";
-									
-					
+														
 				}
 								
 				String sql = sqlHeader + sqlJoins + sqlFilter;
@@ -147,8 +145,8 @@ public class FactoryWMSS {
 					rec.setTitle(rs.getString("score_name"));;
 					rec.setTonalityMode(rs.getString("score_tonality_mode"));;
 					rec.setTonalityTonic(rs.getString("score_tonality_note"));;
-					rec.setGroupId(rs.getString("group_id"));
-					rec.setGroupDescription(rs.getString("group_description"));
+					rec.setCollectionId(rs.getString("collection_id"));
+					rec.setCollectionDescription(rs.getString("collection_description"));
 
 					Movement mov = new Movement();					
 					mov.setMovementIdentifier(rs.getString("movement_id"));
@@ -205,10 +203,7 @@ public class FactoryWMSS {
 			e.printStackTrace();
 		}
 
-
-		
-		
-
+	
 		/**
 		 * Selecting and adding movements that belong to a music score
 		 */
