@@ -54,14 +54,7 @@
 			<version>9.4-1200-jdbc41</version>
 		</dependency>
 
-<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
-<dependency>
-    <groupId>org.hibernate</groupId>
-    <artifactId>hibernate-core</artifactId>
-    <version>5.2.11.Final</version>
-</dependency>
-
-						
+					
 	</dependencies> 
   <build>
     <sourceDirectory>src</sourceDirectory>

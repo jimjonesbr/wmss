@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import de.wwu.wmss.connectors.PostgreSQLConnector;
+import de.wwu.wmss.core.Collection;
 import de.wwu.wmss.core.DataSource;
 import de.wwu.wmss.core.Format;
 import de.wwu.wmss.core.Movement;
@@ -17,6 +18,42 @@ public class FactoryWMSS {
 
 	private static Logger logger = Logger.getLogger("Factory-WMSS");
 
+	
+	public static ArrayList<Collection> getCollections(DataSource dataSource){
+	
+		ArrayList<Collection> result = new ArrayList<Collection>(); 
+		
+		try {
+			
+			if (dataSource.getStorage().equals("postgresql")){
+				
+				String sql = "SELECT collection_id, collection_description FROM wmss_collections";
+				
+				ResultSet rs = PostgreSQLConnector.executeQuery(sql, dataSource);
+				
+				
+				while (rs.next()){
+
+					Collection rec = new Collection();
+					rec.setId(rs.getInt("collection_id"));
+					rec.setDescription(rs.getString("collection_description"));
+				
+					result.add(rec);
+				}
+
+				
+			}
+			
+		} catch (Exception e) {
+			
+			logger.error("Unexpected error ocurred at the PostgreSQL collection retrieval.");
+			e.printStackTrace();
+		}
+		
+		return result;
+		
+	}
+	
 	public static ArrayList<MusicScore> getScoreList(ArrayList<RequestParameter> parameters, DataSource dataSource){
 
 		ArrayList<MusicScore> scoreList = new ArrayList<MusicScore>();
@@ -235,7 +272,6 @@ public class FactoryWMSS {
 				}
 
 			}
-
 
 		}
 

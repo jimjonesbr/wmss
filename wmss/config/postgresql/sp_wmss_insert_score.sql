@@ -4,11 +4,11 @@
 --	      3) Group where the scores should be added. Default: 0 
 -- Comments: This function loads either MEI or MusicXML files and stores in the database according to the WMSS data model.
 
-CREATE OR REPLACE FUNCTION public.wmss_insert_score(score_path VARCHAR, score_type VARCHAR, group_id INTEGER) RETURNS CHARACTER VARYING AS $BODY$
+CREATE OR REPLACE FUNCTION public.wmss_insert_score(document_id VARCHAR, score_path VARCHAR, score_type VARCHAR, group_id INTEGER) RETURNS CHARACTER VARYING AS $BODY$
 
 DECLARE i RECORD;
 DECLARE j RECORD;
-DECLARE main_id INTEGER DEFAULT 0;
+DECLARE main_id VARCHAR DEFAULT '';
 DECLARE role_id INTEGER DEFAULT 0;
 DECLARE score_title VARCHAR DEFAULT '';
 DECLARE tonality_note VARCHAR DEFAULT '';
@@ -83,11 +83,17 @@ BEGIN
 		END IF;
 
 		IF ARRAY_LENGTH(movement_id_array, 1) IS NULL THEN movement_id_array = ARRAY['1']; END IF;
+		
+		IF document_id = '' THEN 
+			main_id := (SELECT nextval('seq_scores')); 
+		ELSE
+			main_id := document_id;
+		END IF;
+				
+		INSERT INTO wmss_scores (score_id, score_name, collection_id, score_tonality_note, score_tonality_mode, score_creation_date_min, score_creation_date_max) 
+                VALUES (main_id, score_title, group_id, tonality_note, tonality_mode, score_date_min, score_date_max);
 
-		INSERT INTO wmss_scores (score_id, score_name, group_id, score_tonality_note, score_tonality_mode, score_creation_date_min, score_creation_date_max) 
-                VALUES (nextval('seq_scores'), score_title,group_id, tonality_note, tonality_mode, score_date_min, score_date_max);
-
-		main_id := (SELECT MAX(score_id) FROM wmss_scores WHERE score_name = score_title);
+		--main_id := (SELECT MAX(score_id) FROM wmss_scores WHERE score_name = score_title);
 
 		INSERT INTO wmss_document (score_id,score_document,document_type_id) VALUES (main_id, score_file,'mei');
 		
@@ -235,9 +241,9 @@ BEGIN
 END;
 $BODY$
 LANGUAGE plpgsql VOLATILE COST 100;
-ALTER FUNCTION public.wmss_insert_score(VARCHAR,VARCHAR,INTEGER) OWNER TO postgres;
+ALTER FUNCTION public.wmss_insert_score(VARCHAR,VARCHAR,VARCHAR,INTEGER) OWNER TO postgres;
 
---SELECT public.wmss_insert_score('/home/jones/Beethoven_op.18.mei','mei',1);
+SELECT public.wmss_insert_score('66666','/home/jones/git/wmss/wmss/data/mei/Beethoven_op.18.mei','mei',1);
 --SELECT public.wmss_insert_score('/home/jones/Brahms_StringQuartet_Op51_No1.mei','mei',1);
 --SELECT public.wmss_insert_score('/home/jones/Liszt_Four_little_pieces.mei','mei',1);
 --SELECT public.wmss_insert_score('/home/jones/Hummel_Concerto_for_trumpet.mei','mei',1);

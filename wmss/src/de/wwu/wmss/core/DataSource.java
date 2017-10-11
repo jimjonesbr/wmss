@@ -16,12 +16,13 @@ public class DataSource {
 	private String password;
 	private String info;
 	private FilterCapability filters;
+	private ArrayList<Collection> collections;
 	
 	public DataSource() {
 
 		super();
 		this.filters = new FilterCapability();
-		
+		this.collections = new ArrayList<Collection>();
 	}
 	
 	public String getId() {
@@ -95,6 +96,10 @@ public class DataSource {
 
 	public void setInfo(String info) {
 		this.info = info;
+	}
+
+	public ArrayList<Collection> getCollections() {
+		return collections;
 	}
 
 	

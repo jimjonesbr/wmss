@@ -76,6 +76,8 @@ public class ServiceMessagingHandler {
 			ds.put("version", SystemSettings.sourceList.get(i).getVersion());
 			ds.put("user", SystemSettings.sourceList.get(i).getUser());
 			ds.put("filterCapabilities", SystemSettings.sourceList.get(i).getFilters());
+			ds.put("collections", FactoryWMSS.getCollections(SystemSettings.sourceList.get(i)));
+			
 			dsArray.add(ds);
 		}
 
