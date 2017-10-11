@@ -7,6 +7,8 @@ The Web Music Score Service (WMSS) provides an interface allowing requests for m
 ## Index
 
 - [WMSS Data Model](#wmss-data-model)
+	- [Relational Databases](#relational-databases)
+  - [RDF Model](#rdf-model)
 - [Configuring WMSS](#configuring-wmss)
 - [Requests](#requests)
   - [DescribeService](#describeservice)
@@ -22,8 +24,12 @@ The Web Music Score Service (WMSS) provides an interface allowing requests for m
 
 The WMSS data model is inspired on the [MEI Header](http://music-encoding.org/support/tutorials/mei-1st/exploring-the-mei-header/) encoded by the [Music Encoding Initiative (MEI)](http://music-encoding.org/).
 
-tbw.
+### [Relational Databases](https://github.com/jimjonesbr/wmss/blob/master/README.md#relational-databases)
 
+<img src="https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/erm.svg" width="850"></img>
+
+### [RDF Model](https://github.com/jimjonesbr/wmss/blob/master/README.md#rdf-model)
+tbw.
 ## [Configuring WMSS](https://github.com/jimjonesbr/wmss/blob/master/README.md#configuring-wmss)
 
 tbw.
@@ -115,12 +121,12 @@ The Service Description Document is provided as JSON and is structured as follow
  http://localhost:8295/wmss?request=ListScores&source=postgres_wwu
  ```
 
- #### Group (Collection)
+ #### Collections
 
-In WMSS it is possible to add music scores to groups, so that specific collections can be also represented, e.g. "ULB Histotic Collection", "Baroque Works", etc. 
+To facilitate the management of large repositories, WMSS offers the possibility to add music scores to specific collections, e.g. "ULB Histotic Collection", "Baroque Works", etc. The collection id, required for this parameter, is delivered together with the music score at the Score List Document.
 
  ```http
- http://localhost:8295/wmss?request=ListScores&source=postgres_wwu&group=1
+ http://localhost:8295/wmss?request=ListScores&source=postgres_wwu&collection=1
 ```
 
 #### Persons
