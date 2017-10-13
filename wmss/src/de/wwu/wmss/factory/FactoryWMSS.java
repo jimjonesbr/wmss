@@ -57,8 +57,6 @@ public class FactoryWMSS {
 
 	
 	public static ArrayList<PerformanceMediumType> getPerformanceMediumList(DataSource dataSource){
-	
-		//ArrayList<PerformanceMediumType> result = new ArrayList<PerformanceMediumType>();
 		
 		ArrayList<PerformanceMedium> mediumList = new ArrayList<PerformanceMedium>();
 		ArrayList<PerformanceMediumType> mediumTypeList = new ArrayList<PerformanceMediumType>();
@@ -121,10 +119,25 @@ public class FactoryWMSS {
 							mediumTypeList.get(i).getMediums().add(mediumList.get(j));
 							
 						}
+												
 					}
 				}
 
 
+				/**
+				 * Removing MediumTypeId from medium records, so that they do not appear in the JSON document.
+				 */				
+				for (int i = 0; i < mediumTypeList.size(); i++) {
+					
+					for (int j = 0; j < mediumTypeList.get(i).getMediums().size(); j++) {
+						
+						mediumTypeList.get(i).getMediums().get(j).setMediumTypeId(null);
+						
+					}
+				}
+				
+				
+				
 			}
 
 		} catch (Exception e) {
@@ -293,7 +306,7 @@ public class FactoryWMSS {
 					med.setTypeDescription(rs.getString("performance_medium_type_description"));
 					med.setMovementId(rs.getString("movement_id"));
 					med.setScoreId(rs.getString("score_id"));
-					med.setSolo(rs.getBoolean("movement_performance_medium_solo"));
+					med.setSolo(rs.getString("movement_performance_medium_solo"));
 					med.setMediumScoreDescription(rs.getString("movement_performance_medium_description"));
 
 					mediumList.add(med);
