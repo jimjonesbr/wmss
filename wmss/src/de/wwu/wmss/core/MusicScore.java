@@ -11,8 +11,7 @@ public class MusicScore {
 	private String collectionDescription;
 	private String collectionId;
 	private String tonalityTonic;
-	private String tonalityMode;
-	
+	private String tonalityMode;	
 	private int creationDateFrom;
 	private int creationDateTo;
 	private ArrayList<Movement> movements;

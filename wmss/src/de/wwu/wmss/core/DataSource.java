@@ -17,12 +17,15 @@ public class DataSource {
 	private String info;
 	private FilterCapability filters;
 	private ArrayList<Collection> collections;
+	private ArrayList<PerformanceMediumType> performanceMediums;
 	
 	public DataSource() {
 
 		super();
 		this.filters = new FilterCapability();
 		this.collections = new ArrayList<Collection>();
+		this.performanceMediums = new ArrayList<PerformanceMediumType>();
+		
 	}
 	
 	public String getId() {
@@ -101,6 +104,11 @@ public class DataSource {
 	public ArrayList<Collection> getCollections() {
 		return collections;
 	}
+
+	public ArrayList<PerformanceMediumType> getPerformanceMediumList() {
+		return performanceMediums;
+	}
+
 
 	
 }

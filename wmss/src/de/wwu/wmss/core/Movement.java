@@ -8,22 +8,21 @@ public class Movement {
 	private String title;	
 	private String tempo;
 	private String scoreId;
+	//private ArrayList<PerformanceMedium> performanceMediumList;
+	private ArrayList<PerformanceMediumType> performanceMediumList;
 	
+	public Movement() {
+		super();
+		//this.performanceMediumList = new ArrayList<PerformanceMedium>();
+		this.performanceMediumList = new ArrayList<PerformanceMediumType>();
+	}
 	
-	public String getMovementIdentifier() {
+	public String getMovementId() {
 		return movementIdentifier;
 	}
 
 	public void setMovementIdentifier(String identifier) {
 		this.movementIdentifier = identifier;
-	}
-
-
-	private ArrayList<PerformanceMedium> performanceMediumList;
-	
-	public Movement() {
-		super();
-		this.performanceMediumList = new ArrayList<PerformanceMedium>();
 	}
 
 	public String getTitle() {
@@ -42,13 +41,13 @@ public class Movement {
 		this.tempo = tempo;
 	}
 
-	public ArrayList<PerformanceMedium> getPerformanceMediumList() {
-		return performanceMediumList;
-	}
+//	public ArrayList<PerformanceMedium> getPerformanceMediumList() {
+//		return performanceMediumList;
+//	}
 
-	public void setPerformanceMediumList(ArrayList<PerformanceMedium> performanceMediumList) {
-		this.performanceMediumList = performanceMediumList;
-	}
+//	public void setPerformanceMediumList(ArrayList<PerformanceMedium> performanceMediumList) {
+//		this.performanceMediumList = performanceMediumList;
+//	}
 
 	public String getScoreId() {
 		return scoreId;
@@ -56,6 +55,10 @@ public class Movement {
 
 	public void setScoreId(String scoreId) {
 		this.scoreId = scoreId;
+	}
+
+	public ArrayList<PerformanceMediumType> getPerformanceMediumList() {
+		return performanceMediumList;
 	}
 
 

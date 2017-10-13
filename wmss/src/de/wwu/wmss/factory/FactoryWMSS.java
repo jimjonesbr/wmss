@@ -10,6 +10,7 @@ import de.wwu.wmss.core.Format;
 import de.wwu.wmss.core.Movement;
 import de.wwu.wmss.core.MusicScore;
 import de.wwu.wmss.core.PerformanceMedium;
+import de.wwu.wmss.core.PerformanceMediumType;
 import de.wwu.wmss.core.Person;
 import de.wwu.wmss.core.RequestParameter;
 import de.wwu.wmss.settings.SystemSettings;
@@ -18,47 +19,131 @@ public class FactoryWMSS {
 
 	private static Logger logger = Logger.getLogger("Factory-WMSS");
 
-	
+
 	public static ArrayList<Collection> getCollections(DataSource dataSource){
-	
+
 		ArrayList<Collection> result = new ArrayList<Collection>(); 
-		
+
 		try {
-			
+
 			if (dataSource.getStorage().equals("postgresql")){
-				
+
 				String sql = "SELECT collection_id, collection_description FROM wmss_collections";
-				
+
 				ResultSet rs = PostgreSQLConnector.executeQuery(sql, dataSource);
-				
-				
+
+
 				while (rs.next()){
 
 					Collection rec = new Collection();
 					rec.setId(rs.getInt("collection_id"));
 					rec.setDescription(rs.getString("collection_description"));
-				
+
 					result.add(rec);
 				}
 
-				
+
 			}
-			
+
 		} catch (Exception e) {
-			
+
 			logger.error("Unexpected error ocurred at the PostgreSQL collection retrieval.");
 			e.printStackTrace();
 		}
-		
+
 		return result;
+
+	}
+
+	
+	public static ArrayList<PerformanceMediumType> getPerformanceMediumList(DataSource dataSource){
+	
+		//ArrayList<PerformanceMediumType> result = new ArrayList<PerformanceMediumType>();
+		
+		ArrayList<PerformanceMedium> mediumList = new ArrayList<PerformanceMedium>();
+		ArrayList<PerformanceMediumType> mediumTypeList = new ArrayList<PerformanceMediumType>();
+		
+		try {
+
+			if (dataSource.getStorage().equals("postgresql")){
+
+				String sql = "SELECT pmt.performance_medium_type_id, pmt.performance_medium_type_description, pm.performance_medium_id, pm.performance_medium_description \n" + 
+							 "FROM wmss_performance_medium pm \n" + 
+							 "JOIN wmss_performance_medium_type pmt ON pm.performance_medium_type_id = pmt.performance_medium_type_id \n" + 
+							 "ORDER BY pmt.performance_medium_type_id ";
+
+				ResultSet rs = PostgreSQLConnector.executeQuery(sql, dataSource);
+
+
+				
+				while (rs.next()){
+
+
+					PerformanceMediumType type = new PerformanceMediumType();
+					PerformanceMedium medium = new PerformanceMedium();
+					
+					type.setMediumTypeId(rs.getString("performance_medium_type_id"));
+					type.setMediumTypeDescription(rs.getString("performance_medium_type_description"));
+					
+					medium.setMediumId(rs.getString("performance_medium_id"));
+					medium.setMediumDescription(rs.getString("performance_medium_description"));
+					medium.setMediumTypeId(rs.getString("performance_medium_type_id"));
+					
+					mediumList.add(medium);
+					
+					boolean mediumTypeAdded = false;
+					
+					for (int i = 0; i < mediumTypeList.size(); i++) {
+						
+						if(mediumTypeList.get(i).getMediumTypeId().equals(type.getMediumTypeId())) {
+							
+							mediumTypeAdded = true;
+							
+						}
+				
+					}
+				
+					if(!mediumTypeAdded) {
+						
+						mediumTypeList.add(type);
+						
+					}
+					
+				}
+				
+				
+				for (int i = 0; i < mediumTypeList.size(); i++) {
+					
+					for (int j = 0; j < mediumList.size(); j++) {
+						
+						if(mediumList.get(j).getMediumTypeId().equals(mediumTypeList.get(i).getMediumTypeId())) {
+							
+							mediumTypeList.get(i).getMediums().add(mediumList.get(j));
+							
+						}
+					}
+				}
+
+
+			}
+
+		} catch (Exception e) {
+
+			logger.error("Unexpected error ocurred at the PostgreSQL performance mediums retrieval.");
+			e.printStackTrace();
+		}
+		
+		return mediumTypeList;
 		
 	}
+	
 	
 	public static ArrayList<MusicScore> getScoreList(ArrayList<RequestParameter> parameters, DataSource dataSource){
 
 		ArrayList<MusicScore> scoreList = new ArrayList<MusicScore>();
 		ArrayList<Movement> movementList = new ArrayList<Movement>();
 		ArrayList<PerformanceMedium> mediumList = new ArrayList<PerformanceMedium>();
+		ArrayList<PerformanceMediumType> mediumTypeList = new ArrayList<PerformanceMediumType>();
 		ArrayList<Person> personList = new ArrayList<Person>();
 		ArrayList<Format> formatList = new ArrayList<Format>();
 
@@ -80,85 +165,85 @@ public class FactoryWMSS {
 						"	JOIN wmss_document doc ON doc.score_id = scr.score_id \n" +
 						"	JOIN wmss_document_type doctype ON doctype.document_type_id = doc.document_type_id \n ";
 				String sqlFilter = "";
-				
+
 				ArrayList<String> filters = new ArrayList<String>();
-									
+
 				for (int i = 0; i < parameters.size(); i++) {
-				
-					
+
+
 					if(parameters.get(i).getRequest().equals("person")){
-						
+
 						filters.add(" LOWER(per.person_name) LIKE '%" + parameters.get(i).getValue().toLowerCase() +  "%' ");
-					
+
 					} else if(parameters.get(i).getRequest().equals("personrole")){
-					
+
 						filters.add(" LOWER(rol.role_description) = '" + parameters.get(i).getValue().toLowerCase() +  "' ");
-						
+
 					} else if(parameters.get(i).getRequest().equals("performancemedium")){
-					
+
 						filters.add(" LOWER(med.performance_medium_id) = '" + parameters.get(i).getValue() +  "' ");
-						
+
 					} else if(parameters.get(i).getRequest().equals("performancemediumtype")){
-					
+
 						filters.add(" medtype.performance_medium_type_id = '" + parameters.get(i).getValue() +  "' ");
-						
+
 					} else if(parameters.get(i).getRequest().equals("solo")){
-					
+
 						filters.add(" movmed.movement_performance_medium_solo = " + parameters.get(i).getValue() +  " ");
-						
+
 					} else if(parameters.get(i).getRequest().equals("tonalitytonic")){
-					
+
 						filters.add(" LOWER(scr.score_tonality_note) = '" + parameters.get(i).getValue() +  "' ");
-						
+
 					} else if(parameters.get(i).getRequest().equals("tonalitymode")){
-					
+
 						filters.add(" LOWER(scr.score_tonality_mode) = '" + parameters.get(i).getValue() +  "' ");
-						
+
 					} else if(parameters.get(i).getRequest().equals("tempo")){
-					
+
 						filters.add(" LOWER(mov.movement_tempo)  LIKE '%" + parameters.get(i).getValue() +  "%'");
-						
+
 					} else if(parameters.get(i).getRequest().equals("creationdatefrom")){
-					
+
 						filters.add(" scr.score_creation_date_min  >= " + parameters.get(i).getValue() +  " ");
-						
+
 					} else if(parameters.get(i).getRequest().equals("creationdateto")){
-					
+
 						filters.add(" scr.score_creation_date_max  <= " + parameters.get(i).getValue() +  " ");
-						
+
 					} else if(parameters.get(i).getRequest().equals("format")){
-					
+
 						filters.add(" LOWER(doc.document_type_id)  = '" + parameters.get(i).getValue() +  "' ");
-						
+
 					} else if(parameters.get(i).getRequest().equals("collection")){
-					
+
 						filters.add(" scr.collection_id  = " + parameters.get(i).getValue() +  " ");
-						
+
 					}
-					
+
 				}
-				
+
 				if(!filters.isEmpty()){
-					
-					
+
+
 					sqlFilter = " WHERE scr.score_id IN (SELECT scr.score_id \n " + sqlJoins + "\n WHERE \n";
-					
+
 					for (int j = 0; j < filters.size(); j++) {
-					
+
 						sqlFilter = sqlFilter + filters.get(j);
-						
+
 						if ((j+1) < filters.size()){
-							
+
 							sqlFilter = sqlFilter + " AND \n";
 						}
 					}
-				
+
 					sqlFilter = sqlFilter + " )";
-														
+
 				}
-								
+
 				String sql = sqlHeader + sqlJoins + sqlFilter;
-				
+
 				ResultSet rs = PostgreSQLConnector.executeQuery(sql, dataSource);
 
 
@@ -192,6 +277,14 @@ public class FactoryWMSS {
 					mov.setScoreId(rs.getString("score_id"));
 
 					movementList.add(mov);
+
+					PerformanceMediumType pmt = new PerformanceMediumType();
+					pmt.setMediumTypeId(rs.getString("performance_medium_type_id"));
+					pmt.setMediumTypeDescription(rs.getString("performance_medium_type_description"));
+					pmt.setScoreId(rs.getString("score_id"));
+					pmt.setMovementId(rs.getString("movement_id"));
+
+					mediumTypeList.add(pmt);
 
 					PerformanceMedium med = new PerformanceMedium();
 					med.setMediumId(rs.getString("performance_medium_id"));
@@ -240,7 +333,7 @@ public class FactoryWMSS {
 			e.printStackTrace();
 		}
 
-	
+
 		/**
 		 * Selecting and adding movements that belong to a music score
 		 */
@@ -256,7 +349,7 @@ public class FactoryWMSS {
 					for (int k = 0; k < scoreList.get(i).getMovements().size(); k++) {
 
 						if(scoreList.get(i).getMovements().get(k).getScoreId().equals(movementList.get(j).getScoreId()) &&
-						   scoreList.get(i).getMovements().get(k).getTitle().equals(movementList.get(j).getTitle())){
+								scoreList.get(i).getMovements().get(k).getTitle().equals(movementList.get(j).getTitle())){
 
 							movementAdded = true;
 						}
@@ -275,10 +368,7 @@ public class FactoryWMSS {
 
 		}
 
-
 		/**
-		 * Selecting and adding performance medium that belong to a movement
-		 */
 		for (int i = 0; i < scoreList.size(); i++) {
 
 			for (int j = 0; j < scoreList.get(i).getMovements().size(); j++) {
@@ -288,13 +378,13 @@ public class FactoryWMSS {
 					boolean mediumAdded = false;
 
 					if(scoreList.get(i).getScoreIdentifier().equals(mediumList.get(k).getScoreId())  &&
-					   scoreList.get(i).getMovements().get(j).getMovementIdentifier().equals(mediumList.get(k).getMovementId())){
+							scoreList.get(i).getMovements().get(j).getMovementId().equals(mediumList.get(k).getMovementId())){
 
 						for (int l = 0; l < scoreList.get(i).getMovements().get(j).getPerformanceMediumList().size(); l++) {
 
 							if(scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getScoreId().equals(mediumList.get(k).getScoreId()) &&
-							   scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMovementId().equals(mediumList.get(k).getMovementId()) &&
-							   scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediumScoreDescription().equals(mediumList.get(k).getMediumScoreDescription())){
+									scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMovementId().equals(mediumList.get(k).getMovementId()) &&
+									scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediumScoreDescription().equals(mediumList.get(k).getMediumScoreDescription())){
 
 								mediumAdded = true;
 
@@ -302,7 +392,11 @@ public class FactoryWMSS {
 
 						}
 
-						if(!mediumAdded) {scoreList.get(i).getMovements().get(j).getPerformanceMediumList().add(mediumList.get(k));}
+						if(!mediumAdded) {
+							//previous approach
+							//scoreList.get(i).getMovements().get(j).getPerformanceMediumList().add(mediumList.get(k));
+
+						}
 
 
 					}
@@ -313,7 +407,96 @@ public class FactoryWMSS {
 			}
 
 		}
+		*/
 
+		/**
+		 * Adding performance medium types to the correspondent performance mediums played in the score.
+		 */
+
+		for (int i = 0; i < scoreList.size(); i++) {
+
+			for (int j = 0; j < scoreList.get(i).getMovements().size(); j++) {
+
+				for (int k = 0; k < mediumTypeList.size(); k++) {
+
+					boolean mediumTypeAdded = false;
+
+
+					if(scoreList.get(i).getScoreIdentifier().equals(mediumList.get(k).getScoreId())  &&
+					   scoreList.get(i).getMovements().get(j).getMovementId().equals(mediumList.get(k).getMovementId())){
+
+						for (int l = 0; l < scoreList.get(i).getMovements().get(j).getPerformanceMediumList().size(); l++) {
+
+							if(scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediumTypeId().equals(mediumTypeList.get(k).getMediumTypeId()) &&
+							   scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMovementId().equals(mediumTypeList.get(k).getMovementId()) &&
+							   scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getScoreId().equals(mediumTypeList.get(k).getScoreId())){
+
+								mediumTypeAdded = true;
+
+							}
+
+
+						}
+
+
+						if(!mediumTypeAdded) {
+
+							scoreList.get(i).getMovements().get(j).getPerformanceMediumList().add(mediumTypeList.get(k));
+
+
+						}					
+					}
+				}
+
+
+			}
+
+		}
+
+
+
+		for (int i = 0; i < scoreList.size(); i++) {
+
+			for (int j = 0; j < scoreList.get(i).getMovements().size(); j++) {
+
+				for (int k = 0; k < mediumList.size(); k++) {
+
+					for (int l = 0; l < scoreList.get(i).getMovements().get(j).getPerformanceMediumList().size(); l++) {
+
+						boolean mediumAdded = false;
+
+						if(scoreList.get(i).getScoreIdentifier().equals(mediumList.get(k).getScoreId())  &&
+						   scoreList.get(i).getMovements().get(j).getMovementId().equals(mediumList.get(k).getMovementId()) &&
+						   scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediumTypeId().equals(mediumList.get(k).getMediumTypeId())){
+
+
+							for (int m = 0; m < scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediums().size(); m++) {
+
+								if(scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediums().get(m).getMediumId().equals(mediumList.get(k).getMediumId()) &&
+								   scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediums().get(m).getMovementId().equals(mediumList.get(k).getMovementId()) &&
+								   scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediums().get(m).getScoreId().equals(mediumList.get(k).getScoreId()) && 
+								   scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediums().get(m).getMediumTypeId().equals(mediumList.get(k).getMediumTypeId())) {
+
+									mediumAdded = true;
+
+								}
+
+							}
+
+							if(!mediumAdded) {
+
+								scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediums().add(mediumList.get(k));
+
+							}
+							
+						}
+					}
+
+				}
+
+			}
+
+		}
 
 		/**
 		 * Selecting and adding persons that belong to a music score
@@ -352,6 +535,9 @@ public class FactoryWMSS {
 
 		}
 
+		/**
+		 * Selecting formats available for a given score
+		 */
 
 		for (int i = 0; i < scoreList.size(); i++) {
 
@@ -388,13 +574,13 @@ public class FactoryWMSS {
 
 
 		for (int i = 0; i < scoreList.size(); i++) {
-			
+
 			scoreList.get(i).setScoreIdentifier(dataSource.getId() + ":" + scoreList.get(i).getScoreIdentifier());
-			
+
 		}
 
-		
-		
+
+
 
 		if (dataSource.getStorage().equals("graphdb")){
 
@@ -406,68 +592,68 @@ public class FactoryWMSS {
 
 		return scoreList;
 	}
-	
-	
+
+
 	public static String getScore(ArrayList<RequestParameter> parameters){
-		
+
 		String result = "";
 		String scoreId = "";
 		String format = "";
-		
+
 		String dataSourceId = "";
 		DataSource dataSource = new DataSource();
-		
+
 		for (int i = 0; i < parameters.size(); i++) {
-			
-			
-			
+
+
+
 			if(parameters.get(i).getRequest().equals("identifier")){
-				
+
 				dataSourceId = parameters.get(i).getValue().split(":")[0];
 				scoreId = parameters.get(i).getValue().split(":")[1];
-				
+
 			}
-			
+
 			if(parameters.get(i).getRequest().equals("format")){
-				
+
 				format = parameters.get(i).getValue();
-				
+
 			}
-			
+
 		}
-		
-		
+
+
 		for (int i = 0; i < SystemSettings.sourceList.size(); i++) {
-		
+
 			if(SystemSettings.sourceList.get(i).getId().equals(dataSourceId)){
-				
+
 				dataSource = SystemSettings.sourceList.get(i); 
-				
+
 			}
-			
+
 		}
-		
-		
+
+
 		try {
 
 			if (dataSource.getStorage().equals("postgresql")){
 
 				String SQL = "SELECT score_document FROM wmss_document WHERE score_id = '" + scoreId + "' ";	
-				
+
 				if(!format.equals("")){
-				
+
 					SQL = SQL + "AND document_type_id = '" + format + "'";
-					
+
 				}
-				
+
 				ResultSet rs = PostgreSQLConnector.executeQuery(SQL, dataSource);
 
 				while (rs.next()){
-					
+
 					result = rs.getString("score_document");
-					
+
 				}
-				
+
 				rs.close();
 
 			}
@@ -479,9 +665,9 @@ public class FactoryWMSS {
 			logger.error("Unexpected error ocurred at the PostgreSQL connector (GetScore request).");
 			e.printStackTrace();
 		}
-		
+
 		return result;
-		
+
 	}
 
 }

@@ -9,8 +9,6 @@ public class PerformanceMedium {
 	private String mediumScoreDescription;	
 	private String movementId;
 	private String scoreId;
-	
-	
 	private boolean solo;
 	
 	public PerformanceMedium() {
