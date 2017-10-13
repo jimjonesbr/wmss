@@ -52,21 +52,10 @@ The Service Description Document is provided as JSON and is structured as follow
  
 ```json
 {
-  "type": "ServiceDescriptionReport",
-  "port": 8295,
-  "timeout": 10000,
-  "service": "wmss",
-  "startup": "2017/10/04 13:02:12",
-  "contact": "jim.jones@uni-muenster.de",
-  "title": "Web Music Score Service - University of Münster",
-  "version": "Dev-0.0.1",
-  "supportedProtocols": [
-    "1.0",
-    "1.1"
-  ],
+  "appVersion": "Dev-0.0.1",
   "environment": {
     "java": "1.8.0_131",
-    "os": "Linux 4.4.0-96-generic (amd64)"
+    "os": "Linux 4.10.0-35-generic (amd64)"
   },
   "datasources": [
     {
@@ -87,6 +76,20 @@ The Service Description Document is provided as JSON and is structured as follow
         "identifier": true,
         "format": true
       },
+      "collections": [
+        {
+          "id": 0,
+          "description": "Default Collection"
+        },
+        {
+          "id": 1,
+          "description": "MEI 3.0 Sample Collection"
+        },
+        {
+          "id": 2,
+          "description": "ULB Digitale Sammlung"
+        }
+      ],
       "host": "localhost",
       "active": true,
       "id": "postgres_wwu",
@@ -96,8 +99,48 @@ The Service Description Document is provided as JSON and is structured as follow
       "version": "9.5",
       "user": "postgres",
       "info": "Test PostgreSQL repository."
+    },
+    {
+      "port": 7200,
+      "filterCapabilities": {
+        "melody": true,
+        "group": true,
+        "personRole": true,
+        "performanceMedium": true,
+        "performanceMediumType": true,
+        "solo": true,
+        "tonalityTonic": true,
+        "tonalityMode": true,
+        "tempo": true,
+        "creationDateFrom": true,
+        "creationDateTo": true,
+        "source": true,
+        "identifier": true,
+        "format": true
+      },
+      "collections": [],
+      "host": "linkeddata.uni-muenster.de",
+      "active": false,
+      "id": "graphdb_wwu",
+      "storage": "graphdb",
+      "type": "triplestore",
+      "repository": "wwu",
+      "version": "8",
+      "user": "",
+      "info": "Test GraphDB repository."
     }
-  ]
+  ],
+  "port": 8295,
+  "service": "wmss",
+  "startup": "2017/10/11 15:59:25",
+  "contact": "jim.jones@uni-muenster.de",
+  "type": "ServiceDescriptionReport",
+  "title": "Web Music Score Service - University of Münster",
+  "supportedProtocols": [
+    "1.0",
+    "1.1"
+  ],
+  "timeout": 5000
 }
 ```
 
