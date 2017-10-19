@@ -222,7 +222,7 @@ BEGIN
 			    
 			    corrected_instrument_name := instrument_name;
     
-			    RAISE NOTICE 'inst name ->> %',instrument_name;
+			    RAISE NOTICE '        Instrument name: %',instrument_display_name;
 
 			    FOR k IN 1 .. ARRAY_UPPER(remove, 1) LOOP
 				
@@ -521,24 +521,6 @@ ALTER FUNCTION public.wmss_insert_score(VARCHAR,VARCHAR,VARCHAR,INTEGER) OWNER T
 --WHERE score_id = 28
 
 
-SELECT public.wmss_insert_score('4276911','/home/jones/git/wmss/wmss/data/musicxml/4287515@DieHarmoniederSphaeren.xml','musicxml',2);
+-- SELECT public.wmss_insert_score('4276911','/home/jones/git/wmss/wmss/data/musicxml/4287515@DieHarmoniederSphaeren.xml','musicxml',2);
 --SELECT public.wmss_insert_score('825151','/home/jones/git/wmss/wmss/data/musicxml/825151@TroisDuosConcertans.xml','musicxml',2);
 
-
-
-
-SELECT grp.*,	scr.*, per.*, rol.*, doctype.*, med.*, movmed.*,  medtype.*, mov.* 
-FROM wmss_scores scr 
-	JOIN wmss_score_movements mov ON scr.score_id = mov.score_id 
-	JOIN wmss_movement_performance_medium movmed ON mov.movement_id = movmed.movement_id AND movmed.score_id = scr.score_id 
-	JOIN wmss_performance_medium med ON movmed.performance_medium_id = med.performance_medium_id 
-	JOIN wmss_performance_medium_type medtype ON med.performance_medium_type_id = medtype.performance_medium_type_id 
-	JOIN wmss_score_persons scrper ON scrper.score_id = scr.score_id  
-	JOIN wmss_persons per ON per.person_id = scrper.person_id  
-	JOIN wmss_roles rol ON rol.role_id = scrper.role_id 
-	JOIN wmss_collections grp ON grp.collection_id = scr.collection_id 
-	JOIN wmss_document doc ON doc.score_id = scr.score_id 
-	JOIN wmss_document_type doctype ON doctype.document_type_id = doc.document_type_id 
-
---select * from wmss_score_movements
---select * from wmss_persons 

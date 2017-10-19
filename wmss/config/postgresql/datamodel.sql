@@ -18,16 +18,14 @@ DROP SEQUENCE IF EXISTS seq_scores;
 CREATE SEQUENCE seq_scores START WITH 1;
 
 -- wmss_languages
-
-CREATE TABLE wmss_languages (
-language_id VARCHAR,
-language_description VARCHAR,
-CONSTRAINT language_id_pkey PRIMARY KEY (language_id) 
-);
-
-INSERT INTO wmss_languages (language_id,language_description) VALUES ('en','English');
-INSERT INTO wmss_languages (language_id,language_description) VALUES ('de','Deutsch');
-INSERT INTO wmss_languages (language_id,language_description) VALUES ('br','Potuguês');
+--CREATE TABLE wmss_languages (
+--language_id VARCHAR,
+--language_description VARCHAR,
+--CONSTRAINT language_id_pkey PRIMARY KEY (language_id) 
+--);
+--INSERT INTO wmss_languages (language_id,language_description) VALUES ('en','English');
+--INSERT INTO wmss_languages (language_id,language_description) VALUES ('de','Deutsch');
+--INSERT INTO wmss_languages (language_id,language_description) VALUES ('br','Potuguês');
 
 -- wwms_performance_medium_type
 
