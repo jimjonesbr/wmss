@@ -28,19 +28,256 @@ DECLARE person_role_array VARCHAR[];
 DECLARE movement_id_array VARCHAR[];
 DECLARE movement_peformance_medium_array VARCHAR[];
 DECLARE movement_description VARCHAR;
-DECLARE performance_medium_description VARCHAR;
-DECLARE performance_medium_id VARCHAR;
+DECLARE remove VARCHAR[] = ARRAY[' III',' II',' I',' IV',' Solo','Solo ',' 1',' 2',' 3',' 4',' 5',' 6',' 7',' 8','(1)','(2)','(3)','(4)','(5)','(6)','(7)','(8)' ];
+DECLARE instrument_name VARCHAR;
+DECLARE corrected_instrument_name VARCHAR;
 DECLARE tempo VARCHAR DEFAULT '';
 DECLARE solo BOOLEAN DEFAULT FALSE;
 DECLARE solo_performance_medien VARCHAR[];
 
+DECLARE instrument VARCHAR DEFAULT '';
 DECLARE score_file XML;
+
+--
+DECLARE score_part XML[];
+DECLARE score_movements XML[];
+DECLARE array_persons TEXT[];
+DECLARE composer TEXT;
+DECLARE lyricist TEXT;
+DECLARE encoder TEXT;
+DECLARE arranger TEXT;
+DECLARE movement TEXT;
+DECLARE instrument_display_name TEXT;
 
 BEGIN
 		
 	RAISE NOTICE 'Inserting % file "%" ... ',UPPER(score_type),score_path;   	
 	
 	score_file := wmss_loadxml(score_path);
+
+	
+	IF UPPER(score_type) = 'MUSICXML' THEN
+
+	    score_title := (SELECT XPATH('//work-title/text()', score_file))[1]::TEXT;
+	    score_part := (SELECT XPATH('//score-part', score_file));
+	    composer := TRIM((SELECT XPATH('//creator[@type="composer"]/text()', score_file))[1]::TEXT);
+	    lyricist := TRIM((SELECT XPATH('//creator[@type="lyricist"]/text()', score_file))[1]::TEXT);
+	    arranger := TRIM((SELECT XPATH('//creator[@type="arranger"]/text()', score_file))[1]::TEXT);
+	    --encoder := TRIM((SELECT XPATH('//encoder/text()', score_file))[1]::TEXT);
+	    encoder := 'Jim Jones';
+
+	    tonality_note := '';
+	    tonality_mode := '';
+	    score_date_min := 0;
+	    score_date_max := 0;
+	    score_date_text := '';
+
+
+	    IF document_id = '' THEN 
+	        main_id := (SELECT nextval('seq_scores')); 
+	    ELSE
+	        main_id := document_id;
+	    END IF;
+
+
+	delete from wmss_score_persons where score_id = main_id;
+	--delete from wmss_persons;
+	delete from wmss_document where score_id = main_id;
+	delete from wmss_scores where score_id = main_id;
+	
+	    INSERT INTO wmss_scores (score_id, score_name, collection_id, score_tonality_note, score_tonality_mode, score_creation_date_min, score_creation_date_max) 
+            VALUES (main_id, score_title, group_id, tonality_note, tonality_mode, score_date_min, score_date_max);
+
+	    INSERT INTO wmss_document (score_id,score_document,document_type_id) VALUES (main_id, score_file,'musicxml');
+	    
+
+	    array_persons := REGEXP_SPLIT_TO_ARRAY(composer,',');
+
+	    IF ARRAY_LENGTH(array_persons,1) IS NOT NULL THEN
+
+	        FOR i IN 1 .. ARRAY_UPPER(array_persons, 1) LOOP
+
+		    composer := TRIM(regexp_replace(array_persons[i]::TEXT,E'[\\n\\r\\t]+', '', 'g'));		
+		    exist := (SELECT person_id FROM wmss_persons WHERE person_name = composer);
+
+		    IF exist IS NULL THEN 
+			
+			INSERT INTO wmss_persons (person_name, person_authority, person_uri, person_codedval) 
+			VALUES (composer,'', '', '');
+			
+		    END IF;
+
+		    INSERT INTO wmss_score_persons (score_id,person_id,role_id) VALUES (main_id,(SELECT DISTINCT person_id FROM wmss_persons WHERE person_name = composer),1);
+
+	        END LOOP;
+
+	    END IF;
+
+
+	    -- Lyricists
+
+	    array_persons := REGEXP_SPLIT_TO_ARRAY(lyricist,',');
+
+	    IF ARRAY_LENGTH(array_persons,1) IS NOT NULL THEN
+
+	        FOR i IN 1 .. ARRAY_UPPER(array_persons, 1) LOOP
+	            
+		    lyricist := TRIM(regexp_replace(array_persons[i]::TEXT,E'[\\n\\r\\t]+', '', 'g'));		
+		    exist := (SELECT person_id FROM wmss_persons WHERE person_name = lyricist);
+
+		    IF exist IS NULL THEN 
+			
+			INSERT INTO wmss_persons (person_name, person_authority, person_uri, person_codedval) 
+			VALUES (lyricist,'', '', '');
+			
+		    END IF;
+		    RAISE NOTICE '    Adding lyricist: %',lyricist;
+		    INSERT INTO wmss_score_persons (score_id,person_id,role_id) VALUES (main_id,(SELECT DISTINCT person_id FROM wmss_persons WHERE person_name = lyricist),7);
+
+	        END LOOP;
+
+	    END IF;
+
+
+
+	    -- Arrangers
+
+	    array_persons := REGEXP_SPLIT_TO_ARRAY(arranger,',');
+
+	    IF ARRAY_LENGTH(array_persons,1) IS NOT NULL THEN
+
+	        FOR i IN 1 .. ARRAY_UPPER(array_persons, 1) LOOP
+	            
+		    arranger := TRIM(regexp_replace(array_persons[i]::TEXT,E'[\\n\\r\\t]+', '', 'g'));		
+		    exist := (SELECT person_id FROM wmss_persons WHERE person_name = arranger);
+
+		    IF exist IS NULL THEN 
+			
+			INSERT INTO wmss_persons (person_name, person_authority, person_uri, person_codedval) 
+			VALUES (arranger,'', '', '');
+			
+		    END IF;
+		    RAISE NOTICE '    Adding arranger: %',arranger;
+		    INSERT INTO wmss_score_persons (score_id,person_id,role_id) VALUES (main_id,(SELECT DISTINCT person_id FROM wmss_persons WHERE person_name = arranger),2);
+
+	        END LOOP;
+
+	    END IF;
+
+
+	    -- Encoders
+
+	    array_persons := REGEXP_SPLIT_TO_ARRAY(encoder,',');
+
+	    IF ARRAY_LENGTH(array_persons,1) IS NOT NULL THEN
+
+	        FOR i IN 1 .. ARRAY_UPPER(array_persons, 1) LOOP
+	            
+		    encoder := TRIM(regexp_replace(array_persons[i]::TEXT,E'[\\n\\r\\t]+', '', 'g'));		
+		    exist := (SELECT person_id FROM wmss_persons WHERE person_name = encoder);
+
+		    IF exist IS NULL THEN 
+			
+			INSERT INTO wmss_persons (person_name, person_authority, person_uri, person_codedval) 
+			VALUES (encoder,'', '', '');
+			
+		    END IF;
+		    RAISE NOTICE '    Adding encoder: %',encoder;
+		    INSERT INTO wmss_score_persons (score_id,person_id,role_id) VALUES (main_id,(SELECT DISTINCT person_id FROM wmss_persons WHERE person_name = encoder),3);
+
+	        END LOOP;
+
+	    END IF;
+
+
+
+
+
+
+	    score_movements := (SELECT XPATH('//part[@id="P1"]/measure[@number="1"]', score_file));
+
+	    FOR i IN 1 .. ARRAY_UPPER(score_movements, 1) LOOP
+
+
+	        movement := TRIM((SELECT XPATH('//direction/direction-type/words/text()', score_movements[i]))[1]::TEXT);
+	        IF movement IS NULL THEN movement = 'Unspecified'; END IF;
+		RAISE NOTICE 'Movement: % (%)',i,movement;
+		
+	        INSERT INTO wmss_score_movements (movement_id, score_id, movement_tempo, score_movement_description) 
+	        VALUES (i, main_id, '', movement);
+
+
+
+
+	        FOR j IN 1 .. ARRAY_UPPER(score_part, 1) LOOP
+
+   	            IF ARRAY_LENGTH(score_part,1) > 0 THEN 
+
+	                RAISE NOTICE '    Inserting instrument for movement %: %',i, (SELECT XPATH('//instrument-sound/text()', score_part[j]));
+			
+			instrument_name := (SELECT (XPATH('//instrument-name/text()', score_part[j]))[1]::TEXT);
+			instrument_display_name := (SELECT (XPATH('//part-name-display/display-text/text()', score_part[j]))[1]::TEXT);
+
+		        IF (SELECT (XPATH('//instrument-sound', score_part[j]))[1]) IS NULL THEN
+			    
+			    corrected_instrument_name := instrument_name;
+    
+			    RAISE NOTICE 'inst name ->> %',instrument_name;
+
+			    FOR k IN 1 .. ARRAY_UPPER(remove, 1) LOOP
+				
+			        corrected_instrument_name := REPLACE(corrected_instrument_name,remove[k],'');
+				
+			    END LOOP;
+
+			    instrument := (SELECT performance_medium_id 
+				           FROM wmss_performance_medium 
+				           WHERE LOWER(TRIM(performance_medium_description)) = LOWER(TRIM(corrected_instrument_name)) 
+				           ORDER BY performance_medium_description LIMIT 1);
+
+			ELSE
+
+			    instrument := (SELECT (XPATH('//instrument-sound/text()', score_part[j]))[1]::TEXT);
+			    
+		        END IF;
+		   
+			IF instrument IS NULL THEN instrument = 'unspecified'; END IF;
+			IF (SELECT (XPATH('//solo', score_part[j]))[1]) IS NOT NULL THEN solo := TRUE; END IF;
+			
+			INSERT INTO wmss_movement_performance_medium (
+				movement_id, 					 					
+				--local_performance_medium_id,
+				movement_performance_medium_description,
+				performance_medium_id,
+				score_id,
+				movement_performance_medium_solo) 
+			VALUES (
+				i,
+				--'',
+				instrument_display_name,	
+				instrument,
+				main_id,
+				solo);
+
+			solo := FALSE;
+	            END IF;
+
+	        END LOOP;
+
+
+	    END LOOP;
+	    
+
+	END IF;
+	
+
+
+
+
+
+
+
+
 	
 	IF UPPER(score_type) = 'MEI' THEN
 
@@ -93,7 +330,6 @@ BEGIN
 		INSERT INTO wmss_scores (score_id, score_name, collection_id, score_tonality_note, score_tonality_mode, score_creation_date_min, score_creation_date_max) 
                 VALUES (main_id, score_title, group_id, tonality_note, tonality_mode, score_date_min, score_date_max);
 
-		--main_id := (SELECT MAX(score_id) FROM wmss_scores WHERE score_name = score_title);
 
 		INSERT INTO wmss_document (score_id,score_document,document_type_id) VALUES (main_id, score_file,'mei');
 		
@@ -114,7 +350,7 @@ BEGIN
 				IF exist IS NULL THEN 
 					
 					INSERT INTO wmss_persons (person_name, person_authority, person_uri, person_codedval) 
-					VALUES (TRIM(person_name_array[i]),person_authority_array[i], person_uri_array[i], person_codedval_array[i]);
+					VALUES (TRIM(person_name_array[i]),TRIM(person_authority_array[i]), TRIM(person_uri_array[i]), TRIM(person_codedval_array[i]));
 					
 				END IF;
 				raise notice ' %: % ',TRIM(person_name_array[i]), TRIM(person_role_array[i]);
@@ -173,22 +409,19 @@ BEGIN
 				movement_description);
 					
 			
-			--TODO: add unspecified performance medium for MEI files without performance medium.
-
 			FOR j IN 1 .. ARRAY_UPPER(movement_peformance_medium_array, 1) LOOP
 
 				IF ARRAY_LENGTH(movement_id_array, 1) > 1 THEN 
 
-					performance_medium_description := (SELECT (XPATH('//mei:workDesc/mei:work[@n='||movement_id_array[i]||']/mei:perfMedium/mei:perfResList/mei:perfRes[@n='||movement_peformance_medium_array[j]||']/text()', 
+					instrument_name := (SELECT (XPATH('//mei:workDesc/mei:work[@n='||movement_id_array[i]||']/mei:perfMedium/mei:perfResList/mei:perfRes[@n='||movement_peformance_medium_array[j]||']/text()', 
 									   score_file, ARRAY[ARRAY['mei', 'http://www.music-encoding.org/ns/mei']]))[1]::TEXT);
-					performance_medium_id := (SELECT (XPATH('//mei:workDesc/mei:work[@n='||movement_id_array[i]||']/mei:perfMedium/mei:perfResList/mei:perfRes[@n='||movement_peformance_medium_array[j]||']/@codedval', 
+					instrument := (SELECT (XPATH('//mei:workDesc/mei:work[@n='||movement_id_array[i]||']/mei:perfMedium/mei:perfResList/mei:perfRes[@n='||movement_peformance_medium_array[j]||']/@codedval', 
 						score_file, ARRAY[ARRAY['mei', 'http://www.music-encoding.org/ns/mei']]))[1]::TEXT);
 									
 				ELSE
 
-					performance_medium_description := (SELECT (XPATH('//mei:perfRes/text()', score_file, ARRAY[ARRAY['mei', 'http://www.music-encoding.org/ns/mei']]))[j]::TEXT);					
-					performance_medium_id := (SELECT (XPATH('//mei:perfRes/@codedval', 
-									score_file, ARRAY[ARRAY['mei', 'http://www.music-encoding.org/ns/mei']]))[j]::TEXT);
+					instrument_name := (SELECT (XPATH('//mei:perfRes/text()', score_file, ARRAY[ARRAY['mei', 'http://www.music-encoding.org/ns/mei']]))[j]::TEXT);					
+					instrument := (SELECT (XPATH('//mei:perfRes/@codedval',   score_file, ARRAY[ARRAY['mei', 'http://www.music-encoding.org/ns/mei']]))[j]::TEXT);
 
 					
 				END IF;
@@ -198,7 +431,7 @@ BEGIN
 
 					FOR j IN 1 .. ARRAY_UPPER(solo_performance_medien, 1) LOOP
 						
-						IF solo_performance_medien[j] = performance_medium_description THEN
+						IF solo_performance_medien[j] = instrument_name THEN
 							solo := TRUE;
 						END IF;
 
@@ -206,24 +439,30 @@ BEGIN
 
 				END IF;
 
-				-- In case the performance medium isn't specified, ‘zn’ (Unspecified instruments) is inserted.
-				IF performance_medium_id IS NULL THEN
-					performance_medium_id := 'zn';
-				END IF;
 
-				RAISE NOTICE '	Inserting performance medium "%" for movement "%" -> % (solo %)',movement_peformance_medium_array[j],movement_id_array[i],performance_medium_description,solo;
-
+				RAISE NOTICE '	Inserting performance medium "%" for movement "%" -> % (solo %)',movement_peformance_medium_array[j],movement_id_array[i],instrument_name,solo;
+				
+				corrected_instrument_name := instrument_name;
+				FOR k IN 1 .. ARRAY_UPPER(remove, 1) LOOP
+				
+				    corrected_instrument_name := REPLACE(corrected_instrument_name,remove[k],'');
+				
+				END LOOP;
+												
+				instrument := (SELECT performance_medium_id FROM wmss_performance_medium WHERE LOWER(TRIM(performance_medium_description)) = LOWER(TRIM(corrected_instrument_name)) ORDER BY performance_medium_description LIMIT 1);
+				
+				IF instrument IS NULL THEN instrument = 'unspecified'; END IF;
 				INSERT INTO wmss_movement_performance_medium (
 					movement_id, 					 					
-					local_performance_medium_id,
+					--local_performance_medium_id,
 					movement_performance_medium_description,
 					performance_medium_id,
 					score_id,
 					movement_performance_medium_solo) 
 				VALUES (movement_id_array[i],
-					movement_peformance_medium_array[j],
-					performance_medium_description,	
-					performance_medium_id,
+					--movement_peformance_medium_array[j],
+					instrument_name,	
+					instrument,
 					main_id,
 					solo);
  
@@ -243,7 +482,7 @@ $BODY$
 LANGUAGE plpgsql VOLATILE COST 100;
 ALTER FUNCTION public.wmss_insert_score(VARCHAR,VARCHAR,VARCHAR,INTEGER) OWNER TO postgres;
 
-SELECT public.wmss_insert_score('66666','/home/jones/git/wmss/wmss/data/mei/Beethoven_op.18.mei','mei',1);
+
 --SELECT public.wmss_insert_score('/home/jones/Brahms_StringQuartet_Op51_No1.mei','mei',1);
 --SELECT public.wmss_insert_score('/home/jones/Liszt_Four_little_pieces.mei','mei',1);
 --SELECT public.wmss_insert_score('/home/jones/Hummel_Concerto_for_trumpet.mei','mei',1);
@@ -281,3 +520,25 @@ SELECT public.wmss_insert_score('66666','/home/jones/git/wmss/wmss/data/mei/Beet
 --join wmss_roles ON wmss_roles.role_id = wmss_score_persons.role_id
 --WHERE score_id = 28
 
+
+SELECT public.wmss_insert_score('4276911','/home/jones/git/wmss/wmss/data/musicxml/4287515@DieHarmoniederSphaeren.xml','musicxml',2);
+--SELECT public.wmss_insert_score('825151','/home/jones/git/wmss/wmss/data/musicxml/825151@TroisDuosConcertans.xml','musicxml',2);
+
+
+
+
+SELECT grp.*,	scr.*, per.*, rol.*, doctype.*, med.*, movmed.*,  medtype.*, mov.* 
+FROM wmss_scores scr 
+	JOIN wmss_score_movements mov ON scr.score_id = mov.score_id 
+	JOIN wmss_movement_performance_medium movmed ON mov.movement_id = movmed.movement_id AND movmed.score_id = scr.score_id 
+	JOIN wmss_performance_medium med ON movmed.performance_medium_id = med.performance_medium_id 
+	JOIN wmss_performance_medium_type medtype ON med.performance_medium_type_id = medtype.performance_medium_type_id 
+	JOIN wmss_score_persons scrper ON scrper.score_id = scr.score_id  
+	JOIN wmss_persons per ON per.person_id = scrper.person_id  
+	JOIN wmss_roles rol ON rol.role_id = scrper.role_id 
+	JOIN wmss_collections grp ON grp.collection_id = scr.collection_id 
+	JOIN wmss_document doc ON doc.score_id = scr.score_id 
+	JOIN wmss_document_type doctype ON doctype.document_type_id = doc.document_type_id 
+
+--select * from wmss_score_movements
+--select * from wmss_persons 

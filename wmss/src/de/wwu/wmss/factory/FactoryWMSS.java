@@ -65,9 +65,10 @@ public class FactoryWMSS {
 
 			if (dataSource.getStorage().equals("postgresql")){
 
-				String sql = "SELECT pmt.performance_medium_type_id, pmt.performance_medium_type_description, pm.performance_medium_id, pm.performance_medium_description \n" + 
+				String sql = "SELECT DISTINCT pmt.performance_medium_type_id, pmt.performance_medium_type_description, pm.performance_medium_id, pm.performance_medium_description \n" + 
 							 "FROM wmss_performance_medium pm \n" + 
-							 "JOIN wmss_performance_medium_type pmt ON pm.performance_medium_type_id = pmt.performance_medium_type_id \n" + 
+							 "JOIN wmss_performance_medium_type pmt ON pm.performance_medium_type_id = pmt.performance_medium_type_id \n" +
+							 "JOIN wmss_movement_performance_medium mvpm ON pm.performance_medium_id = mvpm.performance_medium_id \n" + 
 							 "ORDER BY pmt.performance_medium_type_id ";
 
 				ResultSet rs = PostgreSQLConnector.executeQuery(sql, dataSource);
