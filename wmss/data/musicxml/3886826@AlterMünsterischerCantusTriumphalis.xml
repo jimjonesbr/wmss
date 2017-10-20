@@ -122,7 +122,7 @@
     <display-text>Cant.</display-text>
    </part-abbreviation-display>
    <score-instrument id="P1-I1">
-    <instrument-name>Cantus</instrument-name>
+    <instrument-name>Voice</instrument-name>
     <virtual-instrument>
      <virtual-library>Sibelius 7 Sounds</virtual-library>
     </virtual-instrument>

@@ -195,7 +195,7 @@ public class FactoryWMSS {
 
 					} else if(parameters.get(i).getRequest().equals("performancemedium")){
 
-						filters.add(" LOWER(med.performance_medium_id) = '" + parameters.get(i).getValue() +  "' ");
+						filters.add(" LOWER(med.performance_medium_id) LIKE '" + parameters.get(i).getValue() +  "%' ");
 
 					} else if(parameters.get(i).getRequest().equals("performancemediumtype")){
 

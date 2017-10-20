@@ -135,7 +135,7 @@
     <display-text>Clav.</display-text>
    </part-abbreviation-display>
    <score-instrument id="P2-I1">
-    <instrument-name> </instrument-name>
+    <instrument-name>Piano</instrument-name>
     <virtual-instrument>
      <virtual-library>Sibelius 7 Sounds</virtual-library>
     </virtual-instrument>
@@ -151,7 +151,7 @@
     <display-text>Clav.</display-text>
    </part-abbreviation-display>
    <score-instrument id="P3-I1">
-    <instrument-name> </instrument-name>
+    <instrument-name>Piano</instrument-name>
     <virtual-instrument>
      <virtual-library>Sibelius 7 Sounds</virtual-library>
     </virtual-instrument>

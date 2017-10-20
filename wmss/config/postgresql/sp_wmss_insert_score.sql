@@ -241,7 +241,7 @@ BEGIN
 			    
 		        END IF;
 		   
-			IF instrument IS NULL THEN instrument = 'unspecified'; END IF;
+			IF instrument IS NULL THEN instrument = 'unspecified.unspecified'; END IF;
 			IF (SELECT (XPATH('//solo', score_part[j]))[1]) IS NOT NULL THEN solo := TRUE; END IF;
 			
 			INSERT INTO wmss_movement_performance_medium (
@@ -451,7 +451,7 @@ BEGIN
 												
 				instrument := (SELECT performance_medium_id FROM wmss_performance_medium WHERE LOWER(TRIM(performance_medium_description)) = LOWER(TRIM(corrected_instrument_name)) ORDER BY performance_medium_description LIMIT 1);
 				
-				IF instrument IS NULL THEN instrument = 'unspecified'; END IF;
+				IF instrument IS NULL THEN instrument = 'unspecified.unspecified'; END IF;
 				INSERT INTO wmss_movement_performance_medium (
 					movement_id, 					 					
 					--local_performance_medium_id,

@@ -360,7 +360,7 @@
     <display-text>B. con.</display-text>
    </part-abbreviation-display>
    <score-instrument id="P5-I1">
-    <instrument-name> </instrument-name>
+    <instrument-name>Basso continuo</instrument-name>
     <virtual-instrument>
      <virtual-library>Sibelius 7 Sounds</virtual-library>
     </virtual-instrument>

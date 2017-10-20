@@ -91,7 +91,7 @@
     <display-text> </display-text>
    </part-abbreviation-display>
    <score-instrument id="P1-I1">
-    <instrument-name> </instrument-name>
+    <instrument-name>Piano</instrument-name>
     <virtual-instrument>
      <virtual-library>General MIDI</virtual-library>
      <virtual-name>Bright Piano</virtual-name>
@@ -108,7 +108,7 @@
     <display-text> </display-text>
    </part-abbreviation-display>
    <score-instrument id="P2-I1">
-    <instrument-name> </instrument-name>
+    <instrument-name>Piano</instrument-name>
     <virtual-instrument>
      <virtual-library>General MIDI</virtual-library>
      <virtual-name>Bright Piano</virtual-name>
@@ -122,7 +122,7 @@
    </part-name-display>
    <part-abbreviation> </part-abbreviation>
    <part-abbreviation-display>
-    <display-text> </display-text>
+    <display-text>Piano</display-text>
    </part-abbreviation-display>
    <score-instrument id="P3-I1">
     <instrument-name> </instrument-name>
