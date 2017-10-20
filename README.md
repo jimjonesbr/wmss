@@ -22,7 +22,7 @@ The Web Music Score Service (WMSS) provides an interface allowing requests for m
   
 ## [WMSS Data Model](https://github.com/jimjonesbr/wmss/blob/master/README.md#wmss-data-model)
 
-The WMSS data model is inspired on the [MEI Header](http://music-encoding.org/support/tutorials/mei-1st/exploring-the-mei-header/) encoded by the [Music Encoding Initiative (MEI)](http://music-encoding.org/).
+The WMSS generic data model is currently supported in relational databases and triple stores, and is designed as follows.
 
 ### [Relational Databases](https://github.com/jimjonesbr/wmss/blob/master/README.md#relational-databases)
 
@@ -193,70 +193,59 @@ The __personRole__ parameter may contain the following values:
 * Performer
 
 
-#### Performance Medium
+#### Performance Medium (Instrument)
 
-Selects all music scores containing specific performance mediums. For instance, a request to list all scores containing cello voices can be enconded like this:
+Selects all music scores containing specific performance mediums. The performance mediums are structured following the principle adopted by [MusicXML 3.0 Standard Sounds](http://www.musicxml.com/for-developers/standard-sounds/). For instance, requesting a list of all scores containing cello voices can be enconded like this:
 
  ```http
- http://localhost:8295/wmss?request=ListScores&performanceMedium=sc
+ http://localhost:8295/wmss?request=ListScores&performanceMedium=string.cello
 ```
 
 To constraint the search for the given performance medium to only solo mediums, use the *solo* parameter: 
 
  ```http
- http://localhost:8295/wmss?request=ListScores&performanceMedium=sc&solo=true
+ http://localhost:8295/wmss?request=ListScores&performanceMedium=string.cello&solo=true
 ```
 
-##### Performance Medium List
-| id  	|  medium  	| id |medium| id |medium|
-|:-:	|:-:	|:-:	|:-:	|:-:	|:-:	|
-|ba	|Horn| pd	|Drum| vg	|Counter tenor|
-|bb	|Trumpet| pn	|Unspecified (Percussion)| vh	|High voice|
-|bc	|Cornet| pu	|Unknown (Percussion)| vi	|Medium voice|
-|bd	|Trombone| py	|Ethnic (Percussion)|vj	|Low voice|
-|be	|Tuba| pz	|Other (Percussion)| vn	|Unspecified (Voice)|
-|bf	|Baritone| sa	|Violin| vu	|Unknown (Voice)|
-|bn	|Unspecified (Brass)| sb	|Viola| vy	|Ethnic (Voice)|
-|bu	|Unknown (Brass)| sc	|Violoncello|wa	|Flute|
-|by	|Ethnic (Brass)| sd	|Double bass|wb	|Oboe|
-|bz	|Other (Brass)| se	|Viol|wc	|Clarinet|
-|ea	|Synthesizer|sf	|Viola d`amore| wd	|Bassoon|
-|eb	|Tape| sg	|Viola da gamba| we	|Piccolo|
-|ec	|Computer|sn	|Unspecified (Strings, bowed)| wf	|English horn|
-|ed	|Ondes Martinot| su	|Unknown (Strings, bowed)| wg	|Bass clarinet|
-|en	|Unspecified (Electronic)| sy	|Ethnic (Strings, bowed)| wh	|Recorder|
-|eu	|Unknown (Electronic)| sz	|Other (Strings, bowed)| wi	|Saxophone|
-|ez	|Other (Electronic)| ta	|Harp| wn	|Unspecified (Woodwinds)|
-|ka	|Piano| tb	|Guitar| wu	|Unknown (Woodwinds)|
-|kb	|Organ| tc	|Lute| wy	|Ethnic (Woodwinds)|
-|kc	|Harpsichord| td	|Mandolin| wz	|Other (Woodwinds)|
-|kd	|Clavichord| tn	|Unspecified (Strings, plucked)| zn	|Unspecified instrument|
-|ke	|Continuo| tu	|Unknown (Strings, plucked)| zu	|Unknown|
-|kf	|Celeste| ty	|Ethnic (Strings, plucked)|
-|kn	|Unspecified (Keyboard)| tz	|Other (Strings, plucked)|
-|ku	|Unknown (Keyboard)| va	|Soprano|
-|ky	|Ethnic (Keyboard)| vb	|Mezzo Soprano|
-|kz	|Other (Keyboard)| vc	|Alto|
-|pa	|Timpani| vd	|Tenor|
-|pb	|Xylophone| ve	|Baritone|
-|pc	|Marimba| vf	|Bass|
+This approach allows searching for groups and subgroups of performance mediums. For istance, all brass instruments:
+
+
+ ```http
+ http://localhost:8295/wmss?request=ListScores&performanceMedium=brass
+```
+
+All trumpets:
+
+ ```http
+ http://localhost:8295/wmss?request=ListScores&performanceMedium=brass.trumpet
+```
+
+Only baroque trumpets:
+
+ ```http
+ http://localhost:8295/wmss?request=ListScores&performanceMedium=brass.trumpet.baroque
+```
+
+A complete list of performance mediums containing approx. 900 items can be foun [here](https://github.com/jimjonesbr/wmss/tree/master/wmss/data/system/mediums.csv).
 
 ##### Performance Medium Type
 
-It is also possible to select music scores based on performance medium types, e.g. Woodwinds, Keyboard. The example bellow selects all records that contain movements that are played with bowed string instruments:
+It is also possible to select music scores based on performance medium types, e.g. Strings, Keyboard. The example bellow selects all records that contain movements that are played with bowed string instruments:
  
  ```http
- http://localhost:8295/wmss?request=ListScores&performanceMediumType=stb
+ http://localhost:8295/wmss?request=ListScores&performanceMediumType=strings
 ```
 
 The performanceMediumType parameter expects the following codes:
 
 | code|medium type| code|medium type|
 |:-:|:-:|:-:|:-:|
-|bra|Brass|stb|Strings, bowed|
-|ele|Electronic|stl|Strings, plucked|
-|key|Keyboard|voi|Voices|
-|per|Percussion|wwi|Woodwinds|
+|brass|Brass|pitched-percussion|Pitched Percussion|
+|drum|Drums|pluck|Plucked|
+|key|Keyboard|rattle|Rattle|
+|metal|Metals|strings|Strings|
+|synth|Synthesizer|voice|Voices|
+|wind|Wind|wood|wood|
 
 
 #### Tonalities
@@ -457,3 +446,4 @@ The Service Exception Report is provided as JSON and is structured as follows:
   "hint": "The provided data source cannot be found. Check the 'Service Description Report' for more information on the available data sources."  
 }
 ```
+
