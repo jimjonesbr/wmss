@@ -198,13 +198,13 @@ The __personRole__ parameter may contain the following values:
 Selects all music scores containing specific performance mediums. The performance mediums are structured following the principle adopted by [MusicXML 3.0 Standard Sounds](http://www.musicxml.com/for-developers/standard-sounds/). For instance, requesting a list of all scores containing cello voices can be enconded like this:
 
  ```http
- http://localhost:8295/wmss?request=ListScores&performanceMedium=string.cello
+ http://localhost:8295/wmss?request=ListScores&performanceMedium=strings.cello
 ```
 
 To constraint the search for the given performance medium to only solo mediums, use the *solo* parameter: 
 
  ```http
- http://localhost:8295/wmss?request=ListScores&performanceMedium=string.cello&solo=true
+ http://localhost:8295/wmss?request=ListScores&performanceMedium=strings.cello&solo=true
 ```
 
 This approach allows searching for groups and subgroups of performance mediums. For istance, all brass instruments:
