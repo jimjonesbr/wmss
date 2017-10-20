@@ -9,9 +9,7 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-
 import de.wwu.wmss.core.DataSource;
-import de.wwu.wmss.core.FilterCapability;
 
 public class SystemSettings {
 

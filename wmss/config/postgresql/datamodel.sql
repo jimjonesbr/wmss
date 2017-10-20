@@ -66,7 +66,7 @@ INSERT INTO wmss_performance_medium (performance_medium_id, performance_medium_t
 INSERT INTO wmss_performance_medium (performance_medium_id, performance_medium_type_id, performance_medium_description) VALUES ('brass.cornet.soprano','brass','Soprano Cornet');
 INSERT INTO wmss_performance_medium (performance_medium_id, performance_medium_type_id, performance_medium_description) VALUES ('brass.cornett','brass','Cornett');
 INSERT INTO wmss_performance_medium (performance_medium_id, performance_medium_type_id, performance_medium_description) VALUES ('brass.cornett.tenor','brass','Tenor Cornett');
-INSERT INTO wmss_performance_medium (performance_medium_id, performance_medium_type_id, performance_medium_description) VALUES ('brass.cornettino','brass','Comettino');
+INSERT INTO wmss_performance_medium (performance_medium_id, performance_medium_type_id, performance_medium_description) VALUES ('brass.cornettino','brass','Cornettino');
 INSERT INTO wmss_performance_medium (performance_medium_id, performance_medium_type_id, performance_medium_description) VALUES ('brass.didgeridoo','brass','Didgeridoo');
 INSERT INTO wmss_performance_medium (performance_medium_id, performance_medium_type_id, performance_medium_description) VALUES ('brass.euphonium','brass','Euphonium');
 INSERT INTO wmss_performance_medium (performance_medium_id, performance_medium_type_id, performance_medium_description) VALUES ('brass.fiscorn','brass','Fiscom');

@@ -88,6 +88,7 @@ public class ServiceMessagingHandler {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public static String getScoreList(ArrayList<RequestParameter> parameterList){
 
 		ArrayList<MusicScore> listScores = new ArrayList<MusicScore>();
