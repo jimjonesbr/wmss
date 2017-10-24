@@ -4,7 +4,7 @@
 --	      3) Group where the scores should be added. Default: 0 
 -- Comments: This function loads either MEI or MusicXML files and stores in the database according to the WMSS data model.
 
-CREATE OR REPLACE FUNCTION public.wmss_insert_score(document_id VARCHAR, score_path VARCHAR, score_type VARCHAR, group_id INTEGER) RETURNS CHARACTER VARYING AS $BODY$
+CREATE OR REPLACE FUNCTION public.wmss_import_score(document_id VARCHAR, score_path VARCHAR, score_type VARCHAR, group_id INTEGER) RETURNS CHARACTER VARYING AS $BODY$
 
 DECLARE i RECORD;
 DECLARE j RECORD;
@@ -80,10 +80,10 @@ BEGIN
 	    END IF;
 
 
-	delete from wmss_score_persons where score_id = main_id;
+	--delete from wmss_score_persons where score_id = main_id;
 	--delete from wmss_persons;
-	delete from wmss_document where score_id = main_id;
-	delete from wmss_scores where score_id = main_id;
+	--delete from wmss_document where score_id = main_id;
+	--delete from wmss_scores where score_id = main_id;
 	
 	    INSERT INTO wmss_scores (score_id, score_name, collection_id, score_tonality_note, score_tonality_mode, score_creation_date_min, score_creation_date_max) 
             VALUES (main_id, score_title, group_id, tonality_note, tonality_mode, score_date_min, score_date_max);
@@ -480,7 +480,7 @@ BEGIN
 END;
 $BODY$
 LANGUAGE plpgsql VOLATILE COST 100;
-ALTER FUNCTION public.wmss_insert_score(VARCHAR,VARCHAR,VARCHAR,INTEGER) OWNER TO postgres;
+ALTER FUNCTION public.wmss_import_score(VARCHAR,VARCHAR,VARCHAR,INTEGER) OWNER TO postgres;
 
 
 --SELECT public.wmss_insert_score('/home/jones/Brahms_StringQuartet_Op51_No1.mei','mei',1);
