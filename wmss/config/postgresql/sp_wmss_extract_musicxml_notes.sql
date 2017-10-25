@@ -18,6 +18,7 @@ DECLARE ext_pitch VARCHAR;
 DECLARE ext_octave VARCHAR;
 DECLARE ext_duration VARCHAR;
 DECLARE ext_instrument VARCHAR;
+DECLARE ext_accidental VARCHAR;
 DECLARE ext_movement INTEGER DEFAULT 0;
 
 BEGIN
@@ -37,7 +38,7 @@ BEGIN
 	        ext_measure_id := (SELECT XPATH('//measure/@number', ext_measures[j]))[1];		
 
 		IF ext_measure_id = '1' THEN ext_movement := ext_movement + 1; END IF;
-
+		--TODO add here code for different keys!
 		ext_notes := (SELECT XPATH('//measure/note', ext_measures[j]));		
 
 		FOR k IN 1 .. ARRAY_LENGTH(ext_notes, 1) LOOP
@@ -48,6 +49,7 @@ BEGIN
 		    ext_staff := (SELECT XPATH('//staff/text()', ext_notes[k]))[1];
 		    ext_voice := (SELECT XPATH('//voice/text()', ext_notes[k]))[1];
 		    ext_instrument := (SELECT XPATH('//instrument/@id', ext_notes[k]))[1];
+		    ext_accidental := (SELECT XPATH('//accidental/text()', ext_notes[k]))[1];
 
 		    IF ext_voice = '' OR ext_voice IS NULL THEN ext_voice := '1'; END IF;
 		    IF ext_duration = 'whole' THEN ext_duration = 'w'; END IF;
@@ -61,8 +63,15 @@ BEGIN
 		    IF ext_duration = '256th' THEN ext_duration = '256'; END IF;
 		    IF ext_pitch = '' OR ext_pitch IS NULL THEN ext_pitch := 'rest'; END IF;
 		    IF ext_octave = '' OR ext_octave IS NULL THEN ext_octave := 'rest'; END IF;
-		
-		    INSERT INTO wmss_notes (score_id, movement_id, measure, octave, pitch, duration, voice, instrument,staff) VALUES (document_id, ext_movement, ext_measure_id, ext_octave, ext_pitch, ext_duration, ext_voice, ext_instrument, ext_staff);
+		    IF ext_accidental IS NOT NULL THEN 
+			IF LOWER(ext_accidental) = 'flat' THEN ext_accidental := 'b'; END IF;
+			IF LOWER(ext_accidental) = 'sharp' THEN ext_accidental := 's'; END IF;
+			IF LOWER(ext_accidental) = 'natural' THEN ext_accidental := ''; END IF;
+		    --raise notice 'accidental %',ext_accidental;
+		    ELSE 
+		        ext_accidental := '';
+		    END IF;
+		    INSERT INTO wmss_notes (score_id, movement_id, measure, octave, pitch, duration, voice, instrument,staff) VALUES (document_id, ext_movement, ext_measure_id, ext_octave, ext_pitch||ext_accidental, ext_duration, ext_voice::INTEGER, ext_instrument, ext_staff::INTEGER);
 		    --raise notice '[Part: % Movement: % Measure: %] pitch: % | octave: % | duration: % | staff: % | voice: % | instrument: %',parts[i], movement, measure_id, pitch, octave,duration,staff,voice,instrument;
 		END LOOP;
 
@@ -97,7 +106,7 @@ ALTER FUNCTION public.wmss_extract_musicxml_notes(VARCHAR) OWNER TO postgres;
 
 DROP TABLE IF EXISTS wmss_notes;
 CREATE TABLE wmss_notes (
-note_id SERIAL,
+note_id SERIAL PRIMARY KEY,
 score_id VARCHAR,
 movement_id INTEGER,
 instrument VARCHAR,
@@ -105,38 +114,37 @@ measure VARCHAR,
 pitch VARCHAR,
 octave VARCHAR,
 duration VARCHAR,
-voice VARCHAR,
-staff VARCHAR,
+voice INTEGER,
+staff INTEGER,
 next NUMERIC
 );
-CREATE INDEX idx_wmss_note ON wmss_notes (note_id);
-CREATE INDEX idx_wmss_staff ON wmss_notes (staff);
-CREATE INDEX idx_wmss_voice ON wmss_notes (voice);
+
+
+
+
+
+--SELECT wmss_extract_musicxml_notes('4287515');
+--CREATE INDEX idx_wmss_staff ON wmss_notes (staff);
+--CREATE INDEX idx_wmss_voice ON wmss_notes (voice);
+--CREATE INDEX idx_wmss_movement ON wmss_notes (movement_id);
+--CREATE INDEX idx_wmss_instrument ON wmss_notes (instrument);
+--CREATE INDEX idx_wmss_score_id ON wmss_notes (score_id);
+
+
+
+--CREATE INDEX idx_wmss_note ON wmss_notes (note_id);
+CREATE INDEX idx_wmss_next_note ON wmss_notes (next);
+CREATE INDEX idx_wmss_pitch ON wmss_notes (pitch);
+CREATE INDEX idx_wmss_duration ON wmss_notes (duration);
+CREATE INDEX idx_wmss_octave ON wmss_notes (octave);
 CREATE INDEX idx_wmss_movement ON wmss_notes (movement_id);
-CREATE INDEX idx_wmss_instrument ON wmss_notes (instrument);
 
---SELECT wmss_extract_musicxml_notes('825151');
-SELECT wmss_extract_musicxml_notes(score_id) FROM wmss_document WHERE document_type_id = 'musicxml';
-
---SELECT * FROM wmss_notes limit 1000
+CREATE INDEX idx_wmss_staff ON wmss_notes (staff);
+SELECT wmss_extract_musicxml_notes(score_id) FROM wmss_document WHERE document_type_id = 'musicxml'-- limit 10;
 
 
 
+--VACUUM FULL;
 
 
 
-
-
-
---UPDATE wmss_notes note 
---SET next = (SELECT note_id 
---	    FROM wmss_notes 
---	    WHERE note_id > note.note_id AND
---		  staff = note.staff AND
---		  voice = note.voice AND
---		  score_id = note.score_id AND
---		  movement_id = note.movement_id AND
---		  instrument = note.instrument
---	    ORDER BY note_id
---	    LIMIT 1)
---WHERE score_id = '4340117';
