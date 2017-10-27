@@ -104,7 +104,28 @@ $BODY$
 LANGUAGE plpgsql VOLATILE COST 100;
 ALTER FUNCTION public.wmss_extract_musicxml_notes(VARCHAR) OWNER TO postgres;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DROP TABLE IF EXISTS wmss_notes_p1;
+DROP TABLE IF EXISTS wmss_notes_p2;
+DROP TABLE IF EXISTS wmss_notes_p3;
+DROP TABLE IF EXISTS wmss_notes_p4;
+DROP TABLE IF EXISTS wmss_notes_p5;
 DROP TABLE IF EXISTS wmss_notes;
+
 CREATE TABLE wmss_notes (
 note_id SERIAL PRIMARY KEY,
 score_id VARCHAR,
@@ -120,31 +141,81 @@ next NUMERIC
 );
 
 
+-- wmss_notes partitions (every million records)
+								
+CREATE TABLE wmss_notes_p1 (CHECK ( note_id >= 1 AND note_id <= 1000000 )) INHERITS (wmss_notes);
+CREATE TABLE wmss_notes_p2 (CHECK ( note_id > 1000000 AND note_id <= 2000000 )) INHERITS (wmss_notes);
+CREATE TABLE wmss_notes_p3 (CHECK ( note_id > 2000000 AND note_id <= 3000000 )) INHERITS (wmss_notes);
+CREATE TABLE wmss_notes_p4 (CHECK ( note_id > 3000000 AND note_id <= 4000000 )) INHERITS (wmss_notes);
+CREATE TABLE wmss_notes_p5 (CHECK ( note_id > 4000000 )) INHERITS (wmss_notes);
+
+
+CREATE INDEX idx_wmss_notes_p1 ON wmss_notes_p1 (note_id);
+CREATE INDEX idx_wmss_notes_p1_pitch ON wmss_notes_p1 (pitch);
+CREATE INDEX idx_wmss_notes_p1_octave ON wmss_notes_p1 (octave);
+CREATE INDEX idx_wmss_notes_p1_duration ON wmss_notes_p1 (duration);
+
+CREATE INDEX idx_wmss_notes_p2 ON wmss_notes_p2 (note_id);
+CREATE INDEX idx_wmss_notes_p2_pitch ON wmss_notes_p2 (pitch);
+CREATE INDEX idx_wmss_notes_p2_octave ON wmss_notes_p2 (octave);
+CREATE INDEX idx_wmss_notes_p2_duration ON wmss_notes_p2 (duration);
+
+CREATE INDEX idx_wmss_notes_p3 ON wmss_notes_p3 (note_id);
+CREATE INDEX idx_wmss_notes_p3_pitch ON wmss_notes_p3 (pitch);
+CREATE INDEX idx_wmss_notes_p3_octave ON wmss_notes_p3 (octave);
+CREATE INDEX idx_wmss_notes_p3_duration ON wmss_notes_p3 (duration);
+
+CREATE INDEX idx_wmss_notes_p4 ON wmss_notes_p4 (note_id);
+CREATE INDEX idx_wmss_notes_p4_pitch ON wmss_notes_p4 (pitch);
+CREATE INDEX idx_wmss_notes_p4_octave ON wmss_notes_p4 (octave);
+CREATE INDEX idx_wmss_notes_p4_duration ON wmss_notes_p4 (duration);
+
+CREATE INDEX idx_wmss_notes_p5 ON wmss_notes_p5 (note_id);
+CREATE INDEX idx_wmss_notes_p5_pitch ON wmss_notes_p5 (pitch);
+CREATE INDEX idx_wmss_notes_p5_octave ON wmss_notes_p5 (octave);
+CREATE INDEX idx_wmss_notes_p5_duration ON wmss_notes_p5 (duration);
 
 
 
---SELECT wmss_extract_musicxml_notes('4287515');
---CREATE INDEX idx_wmss_staff ON wmss_notes (staff);
---CREATE INDEX idx_wmss_voice ON wmss_notes (voice);
---CREATE INDEX idx_wmss_movement ON wmss_notes (movement_id);
---CREATE INDEX idx_wmss_instrument ON wmss_notes (instrument);
---CREATE INDEX idx_wmss_score_id ON wmss_notes (score_id);
+CREATE OR REPLACE FUNCTION wmss_notes_insert_trigger()
+RETURNS TRIGGER AS $$
+BEGIN					     
+    IF ( NEW.note_id >= 0 AND NEW.note_id <= 1000000 ) THEN
+        INSERT INTO wmss_notes_p1 VALUES (NEW.*);
+    ELSIF ( NEW.note_id > 1000000 AND NEW.note_id <= 2000000) THEN
+        INSERT INTO wmss_notes_p2 VALUES (NEW.*);
+    ELSIF ( NEW.note_id > 2000000  AND NEW.note_id <= 3000000) THEN
+        INSERT INTO wmss_notes_p3 VALUES (NEW.*);
+    ELSIF ( NEW.note_id > 3000000 AND NEW.note_id <= 4000000) THEN
+        INSERT INTO wmss_notes_p4 VALUES (NEW.*);
+    ELSIF ( NEW.note_id > 4000000 ) THEN
+        INSERT INTO wmss_notes_p5 VALUES (NEW.*);
+    ELSE
+        RAISE EXCEPTION 'Date out of range.  Fix the measurement_insert_trigger() function!';
+    END IF;
+    RETURN NULL;
+END;
+$$
+LANGUAGE plpgsql;
 
+
+DROP TRIGGER IF EXISTS wmss_trigger_insert_notes ON wmss_notes;
+
+CREATE TRIGGER wmss_trigger_insert_notes
+    BEFORE INSERT ON wmss_notes
+    FOR EACH ROW EXECUTE PROCEDURE wmss_notes_insert_trigger();
 
 
 --CREATE INDEX idx_wmss_note ON wmss_notes (note_id);
-CREATE INDEX idx_wmss_next_note ON wmss_notes (next);
-CREATE INDEX idx_wmss_pitch ON wmss_notes (pitch);
-CREATE INDEX idx_wmss_duration ON wmss_notes (duration);
-CREATE INDEX idx_wmss_octave ON wmss_notes (octave);
-CREATE INDEX idx_wmss_movement ON wmss_notes (movement_id);
+SELECT wmss_extract_musicxml_notes(score_id) FROM wmss_document WHERE document_type_id = 'musicxml';-- limit 10;
+--SELECT wmss_extract_musicxml_notes(score_id) FROM wmss_document WHERE document_type_id = 'musicxml';
 
-CREATE INDEX idx_wmss_staff ON wmss_notes (staff);
-SELECT wmss_extract_musicxml_notes(score_id) FROM wmss_document WHERE document_type_id = 'musicxml'-- limit 10;
+INSERT INTO wmss_notes (score_id, movement_id, instrument, measure, pitch, octave, duration, voice, staff, next) SELECT score_id, movement_id, instrument, measure, pitch, octave, duration, voice, staff, note_id+1 FROM wmss_notes;
+INSERT INTO wmss_notes (score_id, movement_id, instrument, measure, pitch, octave, duration, voice, staff, next) SELECT score_id, movement_id, instrument, measure, pitch, octave, duration, voice, staff, note_id+1 FROM wmss_notes;
+--VACUUM full;
 
 
+--select count(*) from wmss_notes_p2
+--EXPLAIN ANALYZE SELECT ROW(pitch, duration, octave, next) FROM wmss_notes WHERE note_id = 373851 AND score_id = '4342391' AND movement_id = 4  LIMIT 1
 
---VACUUM FULL;
-
-
-
+--explain analyze SELECT public.wmss_find_melody('d-8-0/rest-8-0/b-8-0/rest-8-0/g-8-0/rest-8-0/d-8-0/rest-8-0');

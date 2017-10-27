@@ -31,7 +31,7 @@ DECLARE next_note NOTE;
 
 DECLARE melody_query TEXT;
 
-declare debug time;
+declare teste record;
 
 BEGIN
 		
@@ -50,8 +50,6 @@ BEGIN
 	END LOOP;
 
 	start_note = array_notes[1];
-
-	debug := current_time;
 
 	melody_query := 'SELECT * FROM wmss_notes WHERE next IS NOT NULL AND ';
 	
@@ -78,9 +76,11 @@ BEGIN
 	END IF;
 
 	raise notice 'Query -> %', melody_query;
-
-
+	
+	--DROP TABLE IF EXISTS tmp_notes; CREATE TEMPORARY TABLE tmp_notes AS SELECT * FROM wmss_notes;
+	
 	FOR j IN EXECUTE melody_query LOOP
+	
 
 	    current_note.pitch = j.pitch;
 	    current_note.duration = j.duration;
@@ -90,10 +90,8 @@ BEGIN
 	    next_note_id = j.next;	    
 	    array_result := array_result || current_note;
 	    
-	    --k= 2;
 	    matches := TRUE;
-	    
-	    --WHILE k <= ARRAY_UPPER(array_notes, 1) LOOP
+	    	
 	    FOR k IN 2 .. ARRAY_UPPER(array_notes, 1) LOOP
 		
 	        next_note := (SELECT ROW(pitch, duration, octave, next) FROM wmss_notes 
@@ -106,8 +104,7 @@ BEGIN
 		IF matches THEN array_result := array_result || next_note; END IF;
 		
 		next_note_id := next_note.next_note;
-		--k=k+1;
-		
+	
 		EXIT WHEN NOT matches;
 		
 	    END LOOP;
@@ -118,7 +115,6 @@ BEGIN
 		raise notice 'Score: % | Movement: % | Meausure: % | Staff: % Voice: % Instrument: % Sequence: % ', j.score_id, j.movement_id, j.measure, j.staff, j.voice, j.instrument, array_result;
 
 	    END IF;
-		--raise notice '%',j;
 
 	    array_result := NULL;
 
@@ -130,13 +126,19 @@ BEGIN
 
 END;
 $BODY$
-LANGUAGE plpgsql VOLATILE COST 100;
+LANGUAGE plpgsql PARALLEL unsafe;
 ALTER FUNCTION public.wmss_find_melody(VARCHAR) OWNER TO postgres;
+
+
+--SELECT public.wmss_find_melody('c-4-0/c-4-0/d-4-0/d-4-0/e-4-0');
 
 --SELECT public.wmss_find_melody('c-8-5/c-8-4/b-8-3');
 
 
 --SELECT public.wmss_find_melody('f-32-0/g-32-0/b-8-0');
+--SET max_parallel_workers_per_gather TO 6;
 SELECT public.wmss_find_melody('d-8-0/rest-8-0/b-8-0/rest-8-0/g-8-0/rest-8-0/d-8-0/rest-8-0');
 --SELECT public.wmss_find_melody('c-w-2/c-w-2/c-w-2');
+
+
 

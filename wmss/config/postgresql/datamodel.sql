@@ -7,7 +7,6 @@ DROP TABLE IF EXISTS wmss_persons;
 DROP TABLE IF EXISTS wmss_roles;
 DROP TABLE IF EXISTS wmss_performance_medium;
 DROP TABLE IF EXISTS wmss_performance_medium_type;
-DROP TABLE IF EXISTS wmss_languages;
 DROP TABLE IF EXISTS wmss_document;
 DROP TABLE IF EXISTS wmss_score_movements;
 DROP TABLE IF EXISTS wmss_scores;
@@ -1057,6 +1056,7 @@ score_id VARCHAR REFERENCES wmss_scores (score_id)
 
 
 
+
 -- MEI Examples
 SELECT public.wmss_import_score('','/home/jones/git/wmss/wmss/data/mei/Aguado_Walzer_G-major.mei','mei',1);
 SELECT public.wmss_import_score('','/home/jones/git/wmss/wmss/data/mei/Ahle_Jesu_meines_Herzens_Freud.mei','mei',1);
@@ -1197,3 +1197,4 @@ SELECT wmss_import_score('d7c0073f-8406-4dc0-be5c-3f267e7f5789','/home/jones/git
 SELECT wmss_import_score('e73f74ec-6711-499f-b3eb-503ca99c6b14','/home/jones/git/wmss/wmss/data/musicxml/e73f74ec-6711-499f-b3eb-503ca99c6b14@sonate.xml','musicxml',2);
 SELECT wmss_import_score('ebb4d5a6-3096-492f-934a-bc7c0e6644bf','/home/jones/git/wmss/wmss/data/musicxml/ebb4d5a6-3096-492f-934a-bc7c0e6644bf@AndenMond.xml','musicxml',2);
 SELECT wmss_import_score('4339837','/home/jones/git/wmss/wmss/data/musicxml/4339837@PolonoisepourlaHarpe.xml','musicxml',2);
+SELECT wmss_import_score('974543','/home/jones/git/wmss/wmss/data/musicxml/974543@Pot-pourrisurdesmélodiesdeloperaDonJuan.xml','musicxml',2);
