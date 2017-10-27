@@ -210,8 +210,8 @@ CREATE TRIGGER wmss_trigger_insert_notes
 SELECT wmss_extract_musicxml_notes(score_id) FROM wmss_document WHERE document_type_id = 'musicxml';-- limit 10;
 --SELECT wmss_extract_musicxml_notes(score_id) FROM wmss_document WHERE document_type_id = 'musicxml';
 
-INSERT INTO wmss_notes (score_id, movement_id, instrument, measure, pitch, octave, duration, voice, staff, next) SELECT score_id, movement_id, instrument, measure, pitch, octave, duration, voice, staff, note_id+1 FROM wmss_notes;
-INSERT INTO wmss_notes (score_id, movement_id, instrument, measure, pitch, octave, duration, voice, staff, next) SELECT score_id, movement_id, instrument, measure, pitch, octave, duration, voice, staff, note_id+1 FROM wmss_notes;
+--INSERT INTO wmss_notes (score_id, movement_id, instrument, measure, pitch, octave, duration, voice, staff, next) SELECT score_id, movement_id, instrument, measure, pitch, octave, duration, voice, staff, note_id+1 FROM wmss_notes;
+--INSERT INTO wmss_notes (score_id, movement_id, instrument, measure, pitch, octave, duration, voice, staff, next) SELECT score_id, movement_id, instrument, measure, pitch, octave, duration, voice, staff, note_id+1 FROM wmss_notes;
 --VACUUM full;
 
 

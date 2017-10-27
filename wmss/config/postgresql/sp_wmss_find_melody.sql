@@ -2,20 +2,22 @@
 -- Parameter: 1) Note sequence
 -- Comments: 
 
-DROP TYPE IF EXISTS melody_result;
-CREATE TYPE melody_result AS (document_id VARCHAR, melody_location VARCHAR );
+--DROP TYPE IF EXISTS melody_result;
+--CREATE TYPE melody_result AS (document_id VARCHAR, melody_location VARCHAR );
 
 DROP TYPE IF EXISTS note;
 CREATE TYPE note AS (pitch VARCHAR, duration VARCHAR, octave VARCHAR, next_note NUMERIC);
 
-CREATE OR REPLACE FUNCTION public.wmss_find_melody(melody VARCHAR) RETURNS CHARACTER VARYING AS $BODY$
+
+CREATE OR REPLACE FUNCTION public.wmss_find_melody(melody VARCHAR)
+RETURNS TABLE (res_score VARCHAR, res_movement VARCHAR, res_measure VARCHAR, res_staff VARCHAR, res_voice VARCHAR, res_instrument VARCHAR) AS $$
+--AS $BODY$
 
 DECLARE i INTEGER;
 DECLARE j RECORD;
 DECLARE k INTEGER;
 
-
-DECLARE result melody_result[];
+--DECLARE result melody_result[];
 DECLARE array_input_melody VARCHAR[];
 DECLARE array_notes NOTE[];
 DECLARE note NOTE;
@@ -31,11 +33,13 @@ DECLARE next_note NOTE;
 
 DECLARE melody_query TEXT;
 
-declare teste record;
+--declare teste record;
 
 BEGIN
 		
 	RAISE NOTICE 'Parsing given melody ... ';   	
+	DROP TABLE IF EXISTS tmp_result;
+	CREATE TEMPORARY TABLE tmp_result (tmp_score VARCHAR, tmp_movement VARCHAR, tmp_measure VARCHAR, tmp_staff VARCHAR, tmp_voice VARCHAR, tmp_instrument VARCHAR);
 
 	array_input_melody := REGEXP_SPLIT_TO_ARRAY(melody,'/');
 
@@ -76,12 +80,9 @@ BEGIN
 	END IF;
 
 	raise notice 'Query -> %', melody_query;
-	
-	--DROP TABLE IF EXISTS tmp_notes; CREATE TEMPORARY TABLE tmp_notes AS SELECT * FROM wmss_notes;
-	
+		
 	FOR j IN EXECUTE melody_query LOOP
 	
-
 	    current_note.pitch = j.pitch;
 	    current_note.duration = j.duration;
 	    current_note.octave = j.octave;
@@ -95,7 +96,7 @@ BEGIN
 	    FOR k IN 2 .. ARRAY_UPPER(array_notes, 1) LOOP
 		
 	        next_note := (SELECT ROW(pitch, duration, octave, next) FROM wmss_notes 
-			      WHERE note_id = next_note_id AND score_id = j.score_id AND movement_id = j.movement_id  LIMIT 1);--AND score_id = j.score_id AND movement_id = j.movement_id AND voice = j.voice AND staff = j.staff AND instrument = j.instrument);
+			      WHERE note_id = next_note_id AND score_id = j.score_id AND movement_id = j.movement_id  LIMIT 1);
 
 		IF next_note.pitch <> array_notes[k].pitch AND array_notes[k].pitch <> '0' THEN matches := FALSE; END IF;
 		IF next_note.duration <> array_notes[k].duration AND array_notes[k].duration <> '0' THEN matches := FALSE; END IF;
@@ -109,11 +110,13 @@ BEGIN
 		
 	    END LOOP;
 	    
-
 	    IF matches THEN 
 
 		raise notice 'Score: % | Movement: % | Meausure: % | Staff: % Voice: % Instrument: % Sequence: % ', j.score_id, j.movement_id, j.measure, j.staff, j.voice, j.instrument, array_result;
+		INSERT INTO tmp_result (tmp_score, tmp_movement, tmp_measure, tmp_staff, tmp_voice, tmp_instrument) VALUES (j.score_id, j.movement_id, j.measure, j.staff, j.voice, j.instrument);
 
+		--RETURN tmp_result;
+		--RETURN QUERY EXECUTE SELECT res_score, res_movement, res_measure, res_staff, res_voice, res_instrument FROM tmp_result;
 	    END IF;
 
 	    array_result := NULL;
@@ -122,11 +125,10 @@ BEGIN
 	    
 	END LOOP;
 	
-	RETURN result;
+	RETURN QUERY SELECT tmp_score, tmp_movement, tmp_measure, tmp_staff, tmp_voice, tmp_instrument FROM tmp_result;
 
-END;
-$BODY$
-LANGUAGE plpgsql PARALLEL unsafe;
+END;$$
+LANGUAGE plpgsql;
 ALTER FUNCTION public.wmss_find_melody(VARCHAR) OWNER TO postgres;
 
 
@@ -137,8 +139,8 @@ ALTER FUNCTION public.wmss_find_melody(VARCHAR) OWNER TO postgres;
 
 --SELECT public.wmss_find_melody('f-32-0/g-32-0/b-8-0');
 --SET max_parallel_workers_per_gather TO 6;
-SELECT public.wmss_find_melody('d-8-0/rest-8-0/b-8-0/rest-8-0/g-8-0/rest-8-0/d-8-0/rest-8-0');
---SELECT public.wmss_find_melody('c-w-2/c-w-2/c-w-2');
+--SELECT public.wmss_find_melody('d-8-0/rest-8-0/b-8-0/rest-8-0/g-8-0/rest-8-0/d-8-0/rest-8-0');
+SELECT * FROM public.wmss_find_melody('c-w-2/c-w-2/c-w-2');
 
 
 
