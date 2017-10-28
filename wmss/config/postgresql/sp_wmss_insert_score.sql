@@ -48,6 +48,7 @@ DECLARE encoder TEXT;
 DECLARE arranger TEXT;
 DECLARE movement TEXT;
 DECLARE instrument_display_name TEXT;
+DECLARE instrument_file_id TEXT;
 
 BEGIN
 		
@@ -217,7 +218,8 @@ BEGIN
 			
 			instrument_name := (SELECT (XPATH('//instrument-name/text()', score_part[j]))[1]::TEXT);
 			instrument_display_name := (SELECT (XPATH('//part-name-display/display-text/text()', score_part[j]))[1]::TEXT);
-
+			instrument_file_id := (SELECT (XPATH('//score-instrument/@id', score_part[j]))[1]::TEXT);
+			
 		        IF (SELECT (XPATH('//instrument-sound', score_part[j]))[1]) IS NULL THEN
 			    
 			    corrected_instrument_name := instrument_name;
@@ -246,14 +248,14 @@ BEGIN
 			
 			INSERT INTO wmss_movement_performance_medium (
 				movement_id, 					 					
-				--local_performance_medium_id,
+				file_performance_medium_id,
 				movement_performance_medium_description,
 				performance_medium_id,
 				score_id,
 				movement_performance_medium_solo) 
 			VALUES (
 				i,
-				--'',
+				instrument_file_id,
 				instrument_display_name,	
 				instrument,
 				main_id,

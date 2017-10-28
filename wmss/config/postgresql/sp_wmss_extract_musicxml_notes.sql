@@ -1,8 +1,4 @@
-﻿-- Author: Jones
--- Parameter: 1) Score ID
--- Comments: This extracts all note sequences from MusicXML documents.
-
-CREATE OR REPLACE FUNCTION public.wmss_extract_musicxml_notes(document_id VARCHAR) RETURNS CHARACTER VARYING AS $BODY$
+﻿CREATE OR REPLACE FUNCTION public.wmss_extract_musicxml_notes(document_id VARCHAR) RETURNS CHARACTER VARYING AS $BODY$
 
 DECLARE i RECORD;
 DECLARE j RECORD;
@@ -154,6 +150,7 @@ CREATE INDEX idx_wmss_notes_p1 ON wmss_notes_p1 (note_id);
 CREATE INDEX idx_wmss_notes_p1_pitch ON wmss_notes_p1 (pitch);
 CREATE INDEX idx_wmss_notes_p1_octave ON wmss_notes_p1 (octave);
 CREATE INDEX idx_wmss_notes_p1_duration ON wmss_notes_p1 (duration);
+CREATE INDEX idx_wmss_notes_p1_next ON wmss_notes_p1 (next);
 
 CREATE INDEX idx_wmss_notes_p2 ON wmss_notes_p2 (note_id);
 CREATE INDEX idx_wmss_notes_p2_pitch ON wmss_notes_p2 (pitch);

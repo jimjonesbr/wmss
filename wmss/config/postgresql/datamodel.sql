@@ -1005,7 +1005,7 @@ CONSTRAINT movements_pkey PRIMARY KEY (movement_id,score_id)
 CREATE TABLE wmss_movement_performance_medium (
 movement_id VARCHAR,
 score_id VARCHAR, 
---local_performance_medium_id VARCHAR,
+file_performance_medium_id VARCHAR,
 performance_medium_id VARCHAR REFERENCES wmss_performance_medium (performance_medium_id),
 movement_performance_medium_description VARCHAR,
 movement_performance_medium_solo BOOLEAN,

@@ -10,7 +10,15 @@ CREATE TYPE note AS (pitch VARCHAR, duration VARCHAR, octave VARCHAR, next_note 
 
 
 CREATE OR REPLACE FUNCTION public.wmss_find_melody(melody VARCHAR)
-RETURNS TABLE (res_score VARCHAR, res_movement VARCHAR, res_measure VARCHAR, res_staff VARCHAR, res_voice VARCHAR, res_instrument VARCHAR) AS $$
+RETURNS TABLE (
+res_score VARCHAR, 
+res_movement VARCHAR,
+res_movement_name VARCHAR, 
+res_measure VARCHAR, 
+res_staff VARCHAR, 
+res_voice VARCHAR, 
+res_instrument VARCHAR,
+res_instrument_name VARCHAR) AS $$
 --AS $BODY$
 
 DECLARE i INTEGER;
@@ -39,7 +47,7 @@ BEGIN
 		
 	RAISE NOTICE 'Parsing given melody ... ';   	
 	DROP TABLE IF EXISTS tmp_result;
-	CREATE TEMPORARY TABLE tmp_result (tmp_score VARCHAR, tmp_movement VARCHAR, tmp_measure VARCHAR, tmp_staff VARCHAR, tmp_voice VARCHAR, tmp_instrument VARCHAR);
+	CREATE TEMPORARY TABLE tmp_result (tmp_score VARCHAR, tmp_movement VARCHAR, tmp_movement_name VARCHAR, tmp_measure VARCHAR, tmp_staff VARCHAR, tmp_voice VARCHAR, tmp_instrument VARCHAR, tmp_instrument_name VARCHAR);
 
 	array_input_melody := REGEXP_SPLIT_TO_ARRAY(melody,'/');
 
@@ -90,30 +98,34 @@ BEGIN
 
 	    next_note_id = j.next;	    
 	    array_result := array_result || current_note;
-	    
+	    raise notice 'array_result > %',array_result;
 	    matches := TRUE;
 	    	
-	    FOR k IN 2 .. ARRAY_UPPER(array_notes, 1) LOOP
+	    FOR k IN 2 .. ARRAY_LENGTH(array_notes, 1) LOOP
 		
 	        next_note := (SELECT ROW(pitch, duration, octave, next) FROM wmss_notes 
-			      WHERE note_id = next_note_id AND score_id = j.score_id AND movement_id = j.movement_id  LIMIT 1);
+			      WHERE note_id = next_note_id AND score_id = j.score_id AND movement_id = j.movement_id LIMIT 1);
 
+		--IF next_note.next_note <> j.next THEN matches := FALSE; END IF;
+		--raise notice ' %  >  %',k,next_note;
 		IF next_note.pitch <> array_notes[k].pitch AND array_notes[k].pitch <> '0' THEN matches := FALSE; END IF;
 		IF next_note.duration <> array_notes[k].duration AND array_notes[k].duration <> '0' THEN matches := FALSE; END IF;
 		IF next_note.octave <> array_notes[k].octave AND array_notes[k].octave <> '0' THEN matches := FALSE; END IF;
-
-		IF matches THEN array_result := array_result || next_note; END IF;
+		
+		IF matches AND next_note is not null THEN 
+		    array_result := array_result || next_note; 
+		END IF;
 		
 		next_note_id := next_note.next_note;
-	
-		EXIT WHEN NOT matches;
+		
+		EXIT WHEN NOT matches ;
 		
 	    END LOOP;
 	    
-	    IF matches THEN 
+	    IF ARRAY_LENGTH(array_notes, 1)-1 = ARRAY_LENGTH(array_result, 1) THEN 
 
 		raise notice 'Score: % | Movement: % | Meausure: % | Staff: % Voice: % Instrument: % Sequence: % ', j.score_id, j.movement_id, j.measure, j.staff, j.voice, j.instrument, array_result;
-		INSERT INTO tmp_result (tmp_score, tmp_movement, tmp_measure, tmp_staff, tmp_voice, tmp_instrument) VALUES (j.score_id, j.movement_id, j.measure, j.staff, j.voice, j.instrument);
+		INSERT INTO tmp_result (tmp_score, tmp_movement, tmp_movement_name, tmp_measure, tmp_staff, tmp_voice, tmp_instrument, tmp_instrument_name) VALUES (j.score_id, j.movement_id,'', j.measure, j.staff, j.voice, j.instrument,'');
 
 		--RETURN tmp_result;
 		--RETURN QUERY EXECUTE SELECT res_score, res_movement, res_measure, res_staff, res_voice, res_instrument FROM tmp_result;
@@ -125,7 +137,20 @@ BEGIN
 	    
 	END LOOP;
 	
-	RETURN QUERY SELECT tmp_score, tmp_movement, tmp_measure, tmp_staff, tmp_voice, tmp_instrument FROM tmp_result;
+	RETURN QUERY 
+	       SELECT tmp_score, 
+		      tmp_movement, 
+		      mov.score_movement_description, 
+		      tmp_measure, 
+		      tmp_staff, 
+		      tmp_voice, 
+		      tmp_instrument, 
+		      med.movement_performance_medium_description
+	FROM tmp_result 
+	JOIN wmss_score_movements mov ON mov.movement_id = tmp_movement AND mov.score_id = tmp_score
+	JOIN wmss_movement_performance_medium med ON med.file_performance_medium_id = tmp_instrument AND 
+						     mov.movement_id = med.movement_id AND 
+						     med.score_id = mov.score_id;
 
 END;$$
 LANGUAGE plpgsql;
