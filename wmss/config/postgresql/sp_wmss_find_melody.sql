@@ -36,12 +36,12 @@ DECLARE next_note_id NUMERIC;
 
 
 DECLARE array_result NOTE[];
-DECLARE matches BOOLEAN DEFAULT FALSE;
-DECLARE next_note NOTE;
+DECLARE matches_pitch BOOLEAN DEFAULT FALSE;
+DECLARE matches_octave BOOLEAN DEFAULT FALSE;
+DECLARE matches_duration BOOLEAN DEFAULT FALSE;
+DECLARE next_note_result NOTE;
 
 DECLARE melody_query TEXT;
-
---declare teste record;
 
 BEGIN
 		
@@ -91,44 +91,45 @@ BEGIN
 		
 	FOR j IN EXECUTE melody_query LOOP
 	
-	    current_note.pitch = j.pitch;
-	    current_note.duration = j.duration;
-	    current_note.octave = j.octave;
-	    current_note.next_note = j.next;
-
-	    next_note_id = j.next;	    
+	    current_note.pitch := j.pitch;
+	    current_note.duration := j.duration;
+	    current_note.octave := j.octave;
+	    current_note.next_note := j.next;
 	    array_result := array_result || current_note;
-	    raise notice 'array_result > %',array_result;
-	    matches := TRUE;
 	    	
 	    FOR k IN 2 .. ARRAY_LENGTH(array_notes, 1) LOOP
 		
-	        next_note := (SELECT ROW(pitch, duration, octave, next) FROM wmss_notes 
-			      WHERE note_id = next_note_id AND score_id = j.score_id AND movement_id = j.movement_id LIMIT 1);
+		matches_duration := FALSE;
+		matches_pitch := FALSE;
+		matches_octave := FALSE;
 
-		--IF next_note.next_note <> j.next THEN matches := FALSE; END IF;
-		--raise notice ' %  >  %',k,next_note;
-		IF next_note.pitch <> array_notes[k].pitch AND array_notes[k].pitch <> '0' THEN matches := FALSE; END IF;
-		IF next_note.duration <> array_notes[k].duration AND array_notes[k].duration <> '0' THEN matches := FALSE; END IF;
-		IF next_note.octave <> array_notes[k].octave AND array_notes[k].octave <> '0' THEN matches := FALSE; END IF;
-		
-		IF matches AND next_note is not null THEN 
-		    array_result := array_result || next_note; 
+	        next_note_result := (SELECT ROW(pitch, duration, octave, next) FROM wmss_notes 
+				     WHERE note_id = current_note.next_note AND 
+				           score_id = j.score_id AND 
+					   movement_id = j.movement_id LIMIT 1);
+
+		IF next_note_result.pitch = array_notes[k].pitch OR array_notes[k].pitch = '0' THEN matches_pitch := TRUE; END IF;
+		IF next_note_result.duration = array_notes[k].duration OR array_notes[k].duration = '0' THEN matches_duration := TRUE; END IF;
+		IF next_note_result.octave = array_notes[k].octave OR array_notes[k].octave = '0' THEN matches_octave := TRUE; END IF;
+
+		current_note.next_note = next_note_result.next_note;
+
+
+		EXIT WHEN NOT matches_duration OR NOT matches_octave OR NOT matches_pitch ;
+
+		IF matches_pitch AND matches_duration AND matches_octave THEN 
+		    array_result := array_result || next_note_result; 
 		END IF;
 		
-		next_note_id := next_note.next_note;
-		
-		EXIT WHEN NOT matches ;
 		
 	    END LOOP;
 	    
-	    IF ARRAY_LENGTH(array_notes, 1)-1 = ARRAY_LENGTH(array_result, 1) THEN 
+	    IF ARRAY_LENGTH(array_notes, 1) = ARRAY_LENGTH(array_result, 1) THEN 
 
 		raise notice 'Score: % | Movement: % | Meausure: % | Staff: % Voice: % Instrument: % Sequence: % ', j.score_id, j.movement_id, j.measure, j.staff, j.voice, j.instrument, array_result;
-		INSERT INTO tmp_result (tmp_score, tmp_movement, tmp_movement_name, tmp_measure, tmp_staff, tmp_voice, tmp_instrument, tmp_instrument_name) VALUES (j.score_id, j.movement_id,'', j.measure, j.staff, j.voice, j.instrument,'');
+		INSERT INTO tmp_result (tmp_score, tmp_movement, tmp_movement_name, tmp_measure, tmp_staff, tmp_voice, tmp_instrument, tmp_instrument_name) 
+		VALUES (j.score_id, j.movement_id,'', j.measure, j.staff, j.voice, j.instrument,'');
 
-		--RETURN tmp_result;
-		--RETURN QUERY EXECUTE SELECT res_score, res_movement, res_measure, res_staff, res_voice, res_instrument FROM tmp_result;
 	    END IF;
 
 	    array_result := NULL;
@@ -151,6 +152,7 @@ BEGIN
 	JOIN wmss_movement_performance_medium med ON med.file_performance_medium_id = tmp_instrument AND 
 						     mov.movement_id = med.movement_id AND 
 						     med.score_id = mov.score_id;
+	--ORDER BY res_score, res_movement, res_instrument, res_measure ASC ;
 
 END;$$
 LANGUAGE plpgsql;
@@ -165,7 +167,14 @@ ALTER FUNCTION public.wmss_find_melody(VARCHAR) OWNER TO postgres;
 --SELECT public.wmss_find_melody('f-32-0/g-32-0/b-8-0');
 --SET max_parallel_workers_per_gather TO 6;
 --SELECT public.wmss_find_melody('d-8-0/rest-8-0/b-8-0/rest-8-0/g-8-0/rest-8-0/d-8-0/rest-8-0');
-SELECT * FROM public.wmss_find_melody('c-w-2/c-w-2/c-w-2');
+
+--SELECT * FROM public.wmss_find_melody('c-w-0/c-w-0/c-w-0/c-w-0/c-w-0') 
+--where res_score in ('4280885')
+
+SELECT * FROM public.wmss_find_melody('a-w-0/a-w-0/a-w-0/a-w-0') where res_score in ('4280885') ORDER BY res_measure::INTEGER;
+
+SELECT * FROM public.wmss_find_melody('c-4-0/d-4-0/e-4-0/f-4-0/g-4-0/a-4-0') 
 
 
 
+select * from wmss_notes where score_id = '3530337' and measure = '14' and instrument = 'P1-I1'

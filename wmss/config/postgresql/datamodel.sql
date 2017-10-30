@@ -966,6 +966,8 @@ score_tonality_note VARCHAR,
 score_tonality_mode VARCHAR,
 score_creation_date_min INTEGER,
 score_creation_date_max INTEGER,
+score_print_resource VARCHAR,
+score_thumbnail VARCHAR,
 collection_id INTEGER REFERENCES wmss_collections(collection_id),
 CONSTRAINT score_pkey PRIMARY KEY (score_id) 
 );

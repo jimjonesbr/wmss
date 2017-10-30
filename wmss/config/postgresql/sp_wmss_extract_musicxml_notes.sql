@@ -16,11 +16,12 @@ DECLARE ext_duration VARCHAR;
 DECLARE ext_instrument VARCHAR;
 DECLARE ext_accidental VARCHAR;
 DECLARE ext_movement INTEGER DEFAULT 0;
-
+DECLARE ext_key_mode VARCHAR;
+DECLARE ext_key_fifth VARCHAR;
+DECLARE current_tonality VARCHAR;
 BEGIN
 	RAISE NOTICE 'Processing MusicXML from "%" ... ',document_id;   	
-	
-	
+		
 	ext_parts := (SELECT XPATH('//score-part/@id', score_document)::TEXT[] FROM wmss_document WHERE score_id = document_id);
 	RAISE NOTICE '	Extracting notes of % instruments ... ', ARRAY_LENGTH(ext_parts,1);   	
 
@@ -29,9 +30,60 @@ BEGIN
 	    --RAISE NOTICE '	Instrument %',ext_parts[i];
 	    ext_measures := (SELECT XPATH('//part[@id="'||ext_parts[i]||'"]/measure', score_document) FROM wmss_document WHERE score_id = document_id);
 	    
+
 	    FOR j IN 1 .. ARRAY_LENGTH(ext_measures, 1) LOOP
 	
 	        ext_measure_id := (SELECT XPATH('//measure/@number', ext_measures[j]))[1];		
+		ext_key_mode := LOWER((SELECT XPATH('//measure/attributes/key/mode/text()', ext_measures[j]))[1]::TEXT);		
+		ext_key_fifth := (SELECT XPATH('//measure/attributes/key/fifths/text()', ext_measures[j]))[1];		
+
+		
+		IF ext_key_mode IS NOT NULL AND ext_key_fifth IS NOT NULL then 
+		
+		    IF ext_key_mode = 'major' THEN 
+
+		        IF ext_key_fifth = '0' THEN current_tonality := 'cmajor'; END IF;
+			IF ext_key_fifth = '1' THEN current_tonality := 'gmajor'; END IF;
+			IF ext_key_fifth = '2' THEN current_tonality := 'dmajor'; END IF;
+			IF ext_key_fifth = '3' THEN current_tonality := 'amajor'; END IF;
+			IF ext_key_fifth = '4' THEN current_tonality := 'emajor'; END IF;
+			IF ext_key_fifth = '5' THEN current_tonality := 'bmajor'; END IF;
+			IF ext_key_fifth = '6' THEN current_tonality := 'fsmajor'; END IF;
+			IF ext_key_fifth = '7' THEN current_tonality := 'csmajor'; END IF;
+			IF ext_key_fifth = '-1' THEN current_tonality := 'fmajor'; END IF;
+			IF ext_key_fifth = '-2' THEN current_tonality := 'bbmajor'; END IF;
+			IF ext_key_fifth = '-3' THEN current_tonality := 'ebmajor'; END IF;
+			IF ext_key_fifth = '-4' THEN current_tonality := 'abmajor'; END IF;
+			IF ext_key_fifth = '-5' THEN current_tonality := 'dbmajor'; END IF;
+			IF ext_key_fifth = '-6' THEN current_tonality := 'gbmajor'; END IF;			
+			IF ext_key_fifth = '-7' THEN current_tonality := 'cbmajor'; END IF;
+		    END IF;
+
+
+		    IF ext_key_mode = 'minor' THEN 
+
+		        IF ext_key_fifth = '0' THEN current_tonality := 'aminor'; END IF;
+			IF ext_key_fifth = '1' THEN current_tonality := 'eminor'; END IF;
+			IF ext_key_fifth = '2' THEN current_tonality := 'bminor'; END IF;
+			IF ext_key_fifth = '3' THEN current_tonality := 'fsminor'; END IF;
+			IF ext_key_fifth = '4' THEN current_tonality := 'csminor'; END IF;
+			IF ext_key_fifth = '5' THEN current_tonality := 'gsminor'; END IF;
+			IF ext_key_fifth = '6' THEN current_tonality := 'dsminor'; END IF;
+			IF ext_key_fifth = '7' THEN current_tonality := 'abminor'; END IF;
+			IF ext_key_fifth = '-1' THEN current_tonality := 'dminor'; END IF;
+			IF ext_key_fifth = '-2' THEN current_tonality := 'gminor'; END IF;
+			IF ext_key_fifth = '-3' THEN current_tonality := 'cminor'; END IF;
+			IF ext_key_fifth = '-4' THEN current_tonality := 'fminor'; END IF;
+			IF ext_key_fifth = '-5' THEN current_tonality := 'bbminor'; END IF;
+			IF ext_key_fifth = '-6' THEN current_tonality := 'ebminor'; END IF;			
+			IF ext_key_fifth = '-7' THEN current_tonality := 'gsminor'; END IF;
+
+		    END IF;
+
+		    RAISE NOTICE 'Measure: % > Tonality change (%)',ext_measure_id, current_tonality;
+		    
+		END IF;
+
 
 		IF ext_measure_id = '1' THEN ext_movement := ext_movement + 1; END IF;
 		--TODO add here code for different keys!
@@ -40,6 +92,142 @@ BEGIN
 		FOR k IN 1 .. ARRAY_LENGTH(ext_notes, 1) LOOP
 
 		    ext_pitch := LOWER((SELECT XPATH('//pitch/step/text()', ext_notes[k]))[1]::TEXT);
+		    ext_accidental := LOWER((SELECT XPATH('//accidental/text()', ext_notes[k]))[1]::TEXT);
+
+		    IF ext_accidental <> 'natural' THEN 
+		    
+			    IF current_tonality = 'aminor' OR current_tonality = 'cmajor' THEN
+
+				
+			    END IF;
+			    
+			    IF current_tonality = 'gmajor' OR current_tonality = 'eminor' THEN
+
+				IF ext_pitch = 'f' THEN ext_pitch = 'fs';  END IF;
+
+			    END IF;
+			    
+			    IF current_tonality = 'dmajor' OR current_tonality = 'bminor' THEN
+
+				IF ext_pitch = 'f' THEN ext_pitch = 'fs'; END IF;
+				IF ext_pitch = 'c' THEN ext_pitch = 'cs'; END IF;
+
+			    END IF;
+
+			    IF current_tonality = 'amajor' OR current_tonality = 'fminor' THEN
+
+				IF ext_pitch = 'f' THEN ext_pitch = 'fs'; END IF;
+				IF ext_pitch = 'c' THEN ext_pitch = 'cs'; END IF;
+				IF ext_pitch = 'g' THEN ext_pitch = 'gs'; END IF;
+
+			    END IF;
+
+			    IF current_tonality = 'emajor' OR current_tonality = 'cminor' THEN
+
+				IF ext_pitch = 'f' THEN ext_pitch = 'fs'; END IF;
+				IF ext_pitch = 'c' THEN ext_pitch = 'cs'; END IF;
+				IF ext_pitch = 'g' THEN ext_pitch = 'gs'; END IF;
+				IF ext_pitch = 'd' THEN ext_pitch = 'ds'; END IF;
+
+			    END IF;
+
+			    IF current_tonality = 'bmajor' OR current_tonality = 'gminor' THEN
+
+				IF ext_pitch = 'f' THEN ext_pitch = 'fs'; END IF;
+				IF ext_pitch = 'c' THEN ext_pitch = 'cs'; END IF;
+				IF ext_pitch = 'g' THEN ext_pitch = 'gs'; END IF;
+				IF ext_pitch = 'd' THEN ext_pitch = 'ds'; END IF;
+				IF ext_pitch = 'a' THEN ext_pitch = 'as'; END IF;
+
+			    END IF;
+			    
+			    IF current_tonality = 'fsmajor' OR current_tonality = 'dsminor' THEN
+
+				IF ext_pitch = 'f' THEN ext_pitch = 'fs'; END IF;
+				IF ext_pitch = 'c' THEN ext_pitch = 'cs'; END IF;
+				IF ext_pitch = 'g' THEN ext_pitch = 'gs'; END IF;
+				IF ext_pitch = 'd' THEN ext_pitch = 'ds'; END IF;
+				IF ext_pitch = 'a' THEN ext_pitch = 'as'; END IF;
+				IF ext_pitch = 'e' THEN ext_pitch = 'es'; END IF;
+
+			    END IF;
+			    
+			    IF current_tonality = 'csmajor' OR current_tonality = 'asminor' THEN
+
+				IF ext_pitch = 'f' THEN ext_pitch = 'fs'; END IF;
+				IF ext_pitch = 'c' THEN ext_pitch = 'cs'; END IF;
+				IF ext_pitch = 'g' THEN ext_pitch = 'gs'; END IF;
+				IF ext_pitch = 'd' THEN ext_pitch = 'ds'; END IF;
+				IF ext_pitch = 'a' THEN ext_pitch = 'as'; END IF;
+				IF ext_pitch = 'e' THEN ext_pitch = 'es'; END IF;
+				IF ext_pitch = 'b' THEN ext_pitch = 'bs'; END IF;
+				
+			    END IF;
+			    
+			    IF current_tonality = 'fmajor' OR current_tonality = 'dminor' THEN
+
+				IF ext_pitch = 'b' THEN ext_pitch = 'bb'; END IF;
+				
+			    END IF;
+			    
+			    IF current_tonality = 'bbmajor' OR current_tonality = 'gminor' THEN
+
+				IF ext_pitch = 'b' THEN ext_pitch = 'bb'; END IF;
+				IF ext_pitch = 'e' THEN ext_pitch = 'eb'; END IF;
+				
+			    END IF;
+
+			    IF current_tonality = 'ebmajor' OR current_tonality = 'cminor' THEN
+
+				IF ext_pitch = 'b' THEN ext_pitch = 'bb'; END IF;
+				IF ext_pitch = 'e' THEN ext_pitch = 'eb'; END IF;
+				IF ext_pitch = 'a' THEN ext_pitch = 'ab'; END IF;
+				
+			    END IF;
+
+			    IF current_tonality = 'abmajor' OR current_tonality = 'fminor' THEN
+
+				IF ext_pitch = 'b' THEN ext_pitch = 'bb'; END IF;
+				IF ext_pitch = 'e' THEN ext_pitch = 'eb'; END IF;
+				IF ext_pitch = 'a' THEN ext_pitch = 'ab'; END IF;
+				IF ext_pitch = 'd' THEN ext_pitch = 'db'; END IF;		        
+				
+			    END IF;	
+
+			    IF current_tonality = 'dbmajor' OR current_tonality = 'bbminor' THEN
+
+				IF ext_pitch = 'b' THEN ext_pitch = 'bb'; END IF;
+				IF ext_pitch = 'e' THEN ext_pitch = 'eb'; END IF;
+				IF ext_pitch = 'a' THEN ext_pitch = 'ab'; END IF;
+				IF ext_pitch = 'd' THEN ext_pitch = 'db'; END IF;		        
+				IF ext_pitch = 'g' THEN ext_pitch = 'gb'; END IF;
+				
+			    END IF;	
+
+			    IF current_tonality = 'gbmajor' OR current_tonality = 'ebminor' THEN
+
+				IF ext_pitch = 'b' THEN ext_pitch = 'bb'; END IF;
+				IF ext_pitch = 'e' THEN ext_pitch = 'eb'; END IF;
+				IF ext_pitch = 'a' THEN ext_pitch = 'ab'; END IF;
+				IF ext_pitch = 'd' THEN ext_pitch = 'db'; END IF;		        
+				IF ext_pitch = 'g' THEN ext_pitch = 'gb'; END IF;
+				IF ext_pitch = 'c' THEN ext_pitch = 'cb'; END IF;
+				
+			    END IF;	
+
+			    IF current_tonality = 'cbmajor' OR current_tonality = 'abminor' THEN
+
+				IF ext_pitch = 'b' THEN ext_pitch = 'bb'; END IF;
+				IF ext_pitch = 'e' THEN ext_pitch = 'eb'; END IF;
+				IF ext_pitch = 'a' THEN ext_pitch = 'ab'; END IF;
+				IF ext_pitch = 'd' THEN ext_pitch = 'db'; END IF;		        
+				IF ext_pitch = 'g' THEN ext_pitch = 'gb'; END IF;
+				IF ext_pitch = 'c' THEN ext_pitch = 'cb'; END IF;
+				IF ext_pitch = 'f' THEN ext_pitch = 'fb'; END IF;
+				
+			    END IF;		
+		    END IF;
+		      	    	    		    
 		    ext_octave := (SELECT XPATH('//pitch/octave/text()', ext_notes[k]))[1];
 		    ext_duration := (SELECT XPATH('//type/text()', ext_notes[k]))[1];
 		    ext_staff := (SELECT XPATH('//staff/text()', ext_notes[k]))[1];
@@ -204,7 +392,7 @@ CREATE TRIGGER wmss_trigger_insert_notes
 
 
 --CREATE INDEX idx_wmss_note ON wmss_notes (note_id);
-SELECT wmss_extract_musicxml_notes(score_id) FROM wmss_document WHERE document_type_id = 'musicxml';-- limit 10;
+SELECT wmss_extract_musicxml_notes(score_id) FROM wmss_document WHERE document_type_id = 'musicxml'-- AND score_id = '4281042' ;-- limit 10;
 --SELECT wmss_extract_musicxml_notes(score_id) FROM wmss_document WHERE document_type_id = 'musicxml';
 
 --INSERT INTO wmss_notes (score_id, movement_id, instrument, measure, pitch, octave, duration, voice, staff, next) SELECT score_id, movement_id, instrument, measure, pitch, octave, duration, voice, staff, note_id+1 FROM wmss_notes;
