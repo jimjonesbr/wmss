@@ -177,4 +177,4 @@ SELECT * FROM public.wmss_find_melody('c-4-0/d-4-0/e-4-0/f-4-0/g-4-0/a-4-0')
 
 
 
-select * from wmss_notes where score_id = '3530337' and measure = '14' and instrument = 'P1-I1'
+select * from wmss_notes where score_id = '3530337' and (measure = '14' or measure = '15') and instrument = 'P2-I1' and movement_id = 1
