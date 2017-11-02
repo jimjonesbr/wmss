@@ -7,6 +7,7 @@ import de.wwu.wmss.connectors.PostgreSQLConnector;
 import de.wwu.wmss.core.Collection;
 import de.wwu.wmss.core.DataSource;
 import de.wwu.wmss.core.Format;
+import de.wwu.wmss.core.MelodyLocation;
 import de.wwu.wmss.core.Movement;
 import de.wwu.wmss.core.MusicScore;
 import de.wwu.wmss.core.PerformanceMedium;
@@ -160,7 +161,8 @@ public class FactoryWMSS {
 		ArrayList<PerformanceMediumType> mediumTypeList = new ArrayList<PerformanceMediumType>();
 		ArrayList<Person> personList = new ArrayList<Person>();
 		ArrayList<Format> formatList = new ArrayList<Format>();
-
+		String melody = "";
+		
 		try {
 
 			if (dataSource.getStorage().equals("postgresql")){
@@ -233,6 +235,10 @@ public class FactoryWMSS {
 
 						filters.add(" scr.collection_id  = " + parameters.get(i).getValue() +  " ");
 
+					} else if(parameters.get(i).getRequest().equals("melody")){
+
+						melody = parameters.get(i).getValue();
+
 					}
 
 				}
@@ -274,7 +280,7 @@ public class FactoryWMSS {
 					}
 
 					MusicScore rec = new MusicScore();
-
+					
 					rec.setScoreIdentifier(rs.getString("score_id"));
 					rec.setCreationDateFrom(rs.getInt("score_creation_date_min"));
 					rec.setCreationDateTo(rs.getInt("score_creation_date_max"));
@@ -333,7 +339,7 @@ public class FactoryWMSS {
 					} 
 
 				}
-
+				
 				rs.close();
 
 
@@ -587,6 +593,28 @@ public class FactoryWMSS {
 		}
 
 
+		if(!melody.equals("")) {
+			
+			String identifiers = "";
+			MelodyLocation meloc = new MelodyLocation();
+			
+			for (int i = 0; i < scoreList.size(); i++) {
+				
+				identifiers = identifiers + "'" + scoreList.get(i).getScoreIdentifier()+"'";
+				
+				if(scoreList.size()-1 != i) identifiers = identifiers + ",";
+				
+				
+				
+				
+			}
+		
+			logger.info("Searching for melody in " + scoreList.size() + " records: " + melody);
+			System.out.println("DEBUG identifiers > "+identifiers);
+		}
+		
+		
+		
 		for (int i = 0; i < scoreList.size(); i++) {
 
 			scoreList.get(i).setScoreIdentifier(dataSource.getId() + ":" + scoreList.get(i).getScoreIdentifier());

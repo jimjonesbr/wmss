@@ -17,6 +17,7 @@ public class MusicScore {
 	private ArrayList<Movement> movements;
 	private ArrayList<Format> formats;
 	private ArrayList<Person> persons;
+	private ArrayList<MelodyLocation> melodyLocation;
 	
 	public MusicScore() {
 		super();
@@ -24,6 +25,7 @@ public class MusicScore {
 		this.movements = new ArrayList<Movement>();
 		this.formats = new ArrayList<Format>();
 		this.persons = new ArrayList<Person>();
+		this.melodyLocation = new ArrayList<MelodyLocation>();
 	}
 
 
@@ -138,6 +140,11 @@ public class MusicScore {
 
 	public void setCollectionId(String groupId) {
 		this.collectionId = groupId;
+	}
+
+
+	public ArrayList<MelodyLocation> getMelodyLocation() {
+		return melodyLocation;
 	}
 		
 	

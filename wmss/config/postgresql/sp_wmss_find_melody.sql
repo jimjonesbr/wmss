@@ -8,8 +8,7 @@
 DROP TYPE IF EXISTS note;
 CREATE TYPE note AS (pitch VARCHAR, duration VARCHAR, octave VARCHAR, next_note NUMERIC);
 
-
-CREATE OR REPLACE FUNCTION public.wmss_find_melody(melody VARCHAR)
+CREATE OR REPLACE FUNCTION public.wmss_find_melody(melody VARCHAR, identifiers VARCHAR)
 RETURNS TABLE (
 res_score VARCHAR, 
 res_movement VARCHAR,
@@ -19,13 +18,11 @@ res_staff VARCHAR,
 res_voice VARCHAR, 
 res_instrument VARCHAR,
 res_instrument_name VARCHAR) AS $$
---AS $BODY$
 
 DECLARE i INTEGER;
 DECLARE j RECORD;
 DECLARE k INTEGER;
 
---DECLARE result melody_result[];
 DECLARE array_input_melody VARCHAR[];
 DECLARE array_notes NOTE[];
 DECLARE note NOTE;
@@ -87,6 +84,12 @@ BEGIN
 	    melody_query := melody_query || 'duration=' || QUOTE_LITERAL(start_note.duration); 	    
 	END IF;
 
+	IF identifiers <> '*' THEN
+
+	    melody_query := melody_query || ' AND score_id IN (' || identifiers || ') ';
+	    
+	END IF;
+	
 	raise notice 'Query -> %', melody_query;
 		
 	FOR j IN EXECUTE melody_query LOOP
@@ -156,7 +159,7 @@ BEGIN
 
 END;$$
 LANGUAGE plpgsql;
-ALTER FUNCTION public.wmss_find_melody(VARCHAR) OWNER TO postgres;
+ALTER FUNCTION public.wmss_find_melody(VARCHAR,VARCHAR) OWNER TO postgres;
 
 
 --SELECT public.wmss_find_melody('c-4-0/c-4-0/d-4-0/d-4-0/e-4-0');
@@ -171,10 +174,12 @@ ALTER FUNCTION public.wmss_find_melody(VARCHAR) OWNER TO postgres;
 --SELECT * FROM public.wmss_find_melody('c-w-0/c-w-0/c-w-0/c-w-0/c-w-0') 
 --where res_score in ('4280885')
 
-SELECT * FROM public.wmss_find_melody('a-w-0/a-w-0/a-w-0/a-w-0') where res_score in ('4280885') ORDER BY res_measure::INTEGER;
-
-SELECT * FROM public.wmss_find_melody('c-4-0/d-4-0/e-4-0/f-4-0/g-4-0/a-4-0') 
+--SELECT * FROM public.wmss_find_melody('a-w-0/a-w-0/a-w-0/a-w-0') where res_score in ('4280885') ORDER BY res_measure::INTEGER;
 
 
+--SELECT * FROM public.wmss_find_melody('c-4-0/d-4-0/e-4-0/f-4-0/g-4-0/a-4-0','''1'',''2'',''3'',''4'',''5'',''6'',''7'',''8'',''9'',''10'',''11'',''12'',''13'',''14'',''15'',''16'',''17'',''18'',''19'',''20'',''21'',''22'',''23'',''24'',''25'',''26'',''27'',''28'',''29'',''30'',''31'',''32'',''33'',''34'',''35'',''36'',''37'',''38'',''39'',''40'',''41'',''42'',''43'',''44'',''45'',''46'',''47'',''48'',''49'',''50'',''51'',''52'',''53'',''54'',''55'',''56'',''57'',''58'',''59'',''60'',''61'',''62'',''63'',''64'',''65'',''66'',''67'',''68'',''69'',''70'',''71'',''72'',''73'',''74'',''75'',''76'',''3e724fa4-f67e-4dff-94d6-a01b78d73049'',''4a12fece-a4ac-4654-8407-2e32be8d3e56'',''5c3047f9-f8bc-46eb-8073-0dc3ffb28d30'',''5e61ff05-7ceb-4e5c-b81e-19f8105f4a53'',''6be19ce2-fbf2-442f-af37-08b0eb487d45'',''20b0dcec-ff6a-43d2-8bfe-9e077937a1cf'',''899c8c9e-dd50-4041-8706-8c0479eb5de5'',''01924ae1-3991-464f-97f0-b6498f973560'',''825151'',''948617'',''1009591'',''1118465'',''1639763'',''1642539'',''1883542'',''2398460'',''3079496'',''3079600'',''3079686'',''3079699'',''3098742'',''3368467'',''3368606'',''3530337'',''3886826'',''4272171'',''4272244'',''4276689'',''4276790'',''4276911'',''4279917'',''4280245'',''4280660'',''4280885'',''4280969'',''4281006'',''4281042'',''4283787'',''4287452'',''4287515'',''4307727'',''4308235'',''4339428'',''4339906'',''4339998'',''4340117'',''4341718'',''4341767'',''4342391'',''75266515-9803-41de-ac1b-bc2796adc12d'',''a13a60c1-8170-40cb-aaf2-4805931f9465'',''ad3ed640-90e3-49ce-8ce4-b3dc69c597a5'',''bd2527e4-155e-401d-a6ba-7d1056d09b37'',''cfc09cec-206c-4a97-b3ac-b4c304080350'',''d7c0073f-8406-4dc0-be5c-3f267e7f5789'',''e73f74ec-6711-499f-b3eb-503ca99c6b14'',''ebb4d5a6-3096-492f-934a-bc7c0e6644bf'',''4339837'',''974543''');
+SELECT * FROM public.wmss_find_melody('c-4-0/d-4-0/e-4-0/f-4-0/g-4-0/a-4-0','*');
 
-select * from wmss_notes where score_id = '3530337' and (measure = '14' or measure = '15') and instrument = 'P2-I1' and movement_id = 1
+
+
+--select * from wmss_notes where score_id = '3530337' and (measure = '14' or measure = '15') and instrument = 'P2-I1' and movement_id = 1
