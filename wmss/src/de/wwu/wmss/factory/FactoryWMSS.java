@@ -1,6 +1,7 @@
 package de.wwu.wmss.factory;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import de.wwu.wmss.connectors.PostgreSQLConnector;
@@ -161,6 +162,8 @@ public class FactoryWMSS {
 		ArrayList<PerformanceMediumType> mediumTypeList = new ArrayList<PerformanceMediumType>();
 		ArrayList<Person> personList = new ArrayList<Person>();
 		ArrayList<Format> formatList = new ArrayList<Format>();
+		
+		ArrayList<String> filters = new ArrayList<String>();
 		String melody = "";
 		
 		try {
@@ -182,7 +185,7 @@ public class FactoryWMSS {
 						"	JOIN wmss_document_type doctype ON doctype.document_type_id = doc.document_type_id \n ";
 				String sqlFilter = "";
 
-				ArrayList<String> filters = new ArrayList<String>();
+				
 
 				for (int i = 0; i < parameters.size(); i++) {
 
@@ -261,7 +264,44 @@ public class FactoryWMSS {
 					sqlFilter = sqlFilter + " )";
 
 				}
-
+				
+				
+				
+				
+				
+				
+				
+				///////////////// B
+				
+				
+				ArrayList<MelodyLocation> melodyLocationList = new ArrayList<MelodyLocation>();
+				
+				if(filters.isEmpty() && !melody.equals("")) {
+					
+					melodyLocationList = findMelody(melody, "*", dataSource);
+					
+					String idsRetrievedFromMelodySearch = "";
+					
+					for (int j = 0; j < melodyLocationList.size(); j++) {
+						
+						idsRetrievedFromMelodySearch = idsRetrievedFromMelodySearch + "'" + melodyLocationList.get(j).getScoreId() + "'";
+						
+						if((j+1)< melodyLocationList.size()) {
+							
+							idsRetrievedFromMelodySearch = idsRetrievedFromMelodySearch + ",";
+						}
+					}
+					
+					sqlFilter = " WHERE scr.score_id IN ("+ idsRetrievedFromMelodySearch +")";
+					
+				}									
+				
+				/////////////////// E
+				
+				
+				
+				
+				
 				String sql = sqlHeader + sqlJoins + sqlFilter;
 
 				ResultSet rs = PostgreSQLConnector.executeQuery(sql, dataSource);
@@ -292,7 +332,7 @@ public class FactoryWMSS {
 
 					Movement mov = new Movement();					
 					mov.setMovementIdentifier(rs.getString("movement_id"));
-					mov.setTitle(rs.getString("score_movement_description"));
+					mov.setMovementName(rs.getString("score_movement_description"));
 					mov.setTempo(rs.getString("movement_tempo"));
 					mov.setScoreId(rs.getString("score_id"));
 
@@ -369,7 +409,7 @@ public class FactoryWMSS {
 					for (int k = 0; k < scoreList.get(i).getMovements().size(); k++) {
 
 						if(scoreList.get(i).getMovements().get(k).getScoreId().equals(movementList.get(j).getScoreId()) &&
-								scoreList.get(i).getMovements().get(k).getTitle().equals(movementList.get(j).getTitle())){
+								scoreList.get(i).getMovements().get(k).getMovementName().equals(movementList.get(j).getMovementName())){
 
 							movementAdded = true;
 						}
@@ -594,23 +634,8 @@ public class FactoryWMSS {
 
 
 		if(!melody.equals("")) {
+
 			
-			String identifiers = "";
-			MelodyLocation meloc = new MelodyLocation();
-			
-			for (int i = 0; i < scoreList.size(); i++) {
-				
-				identifiers = identifiers + "'" + scoreList.get(i).getScoreIdentifier()+"'";
-				
-				if(scoreList.size()-1 != i) identifiers = identifiers + ",";
-				
-				
-				
-				
-			}
-		
-			logger.info("Searching for melody in " + scoreList.size() + " records: " + melody);
-			System.out.println("DEBUG identifiers > "+identifiers);
 		}
 		
 		
@@ -710,6 +735,69 @@ public class FactoryWMSS {
 
 		return result;
 
+	}
+	
+	private static ArrayList<MelodyLocation> findMelody(String melody, String identifiers, DataSource dataSource){
+		
+		ArrayList<MelodyLocation> result = new ArrayList<MelodyLocation>();
+		try {
+			
+			
+			ResultSet rs;
+	
+			rs = PostgreSQLConnector.executeQuery("SELECT * FROM wmss_find_melody('"+melody+"','"+identifiers+"')", dataSource);
+		
+
+			while (rs.next()){
+
+				MelodyLocation rec = new MelodyLocation();
+				
+				rec.setScoreId(rs.getString("res_score"));
+				rec.setMovementIdentifier(rs.getString("res_movement"));
+				rec.setMovementName(rs.getString("res_movement_name"));
+				rec.setStartingMeasure(rs.getString("res_measure"));
+				rec.setStaff(rs.getString("res_staff"));
+				rec.setVoice(rs.getString("res_voice"));
+				rec.setInstrumentName(rs.getString("res_instrument_name"));
+				
+				result.add(rec);
+
+			}		
+		
+//		if(filters.isEmpty()){
+//
+//			
+//
+//		} else {
+//
+//			for (int i = 0; i < scoreList.size(); i++) {
+//
+//				identifiers = identifiers + scoreList.get(i).getScoreIdentifier();
+//
+//				if(scoreList.size()-1 != i) identifiers = identifiers + ",";
+//
+//			}
+//
+//			logger.info("Searching for melody in " + scoreList.size() + " records: " + melody);
+//			System.out.println("DEBUG identifiers > "+identifiers);
+//
+//			rs = PostgreSQLConnector.executeQuery("SELECT * FROM wmss_find_melody('"+melody+"','"+identifiers+"')", dataSource);
+//
+//		}
+
+		
+
+
+
+
+			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return result;
+		
+		
 	}
 
 }

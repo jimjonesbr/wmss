@@ -94,7 +94,7 @@ BEGIN
 		    ext_pitch := LOWER((SELECT XPATH('//pitch/step/text()', ext_notes[k]))[1]::TEXT);
 		    ext_accidental := LOWER((SELECT XPATH('//accidental/text()', ext_notes[k]))[1]::TEXT);
 
-		    IF ext_accidental <> 'natural' THEN 
+		    IF ext_accidental <> 'natural' AND ext_accidental <> '' THEN 
 		    
 			    IF current_tonality = 'aminor' OR current_tonality = 'cmajor' THEN
 

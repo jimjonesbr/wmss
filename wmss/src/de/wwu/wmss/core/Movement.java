@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Movement {
 
 	private String movementIdentifier;
-	private String title;	
+	private String movementName;	
 	private String tempo;
 	private String scoreId;
 	//private ArrayList<PerformanceMedium> performanceMediumList;
@@ -25,12 +25,12 @@ public class Movement {
 		this.movementIdentifier = identifier;
 	}
 
-	public String getTitle() {
-		return title;
+	public String getMovementName() {
+		return movementName;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public void setMovementName(String movementName) {
+		this.movementName = movementName;
 	}
 
 	public String getTempo() {

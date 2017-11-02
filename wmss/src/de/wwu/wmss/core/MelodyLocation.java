@@ -5,6 +5,7 @@ public class MelodyLocation extends Movement {
 	String startingMeasure;
 	String voice;
 	String staff;
+	String instrumentName;
 
 	public MelodyLocation() {
 		super();
@@ -32,6 +33,14 @@ public class MelodyLocation extends Movement {
 
 	public void setStaff(String staff) {
 		this.staff = staff;
+	}
+
+	public String getInstrumentName() {
+		return instrumentName;
+	}
+
+	public void setInstrumentName(String instrumentName) {
+		this.instrumentName = instrumentName;
 	}
 	
 	
