@@ -308,4 +308,26 @@ public class ServiceMessagingHandler {
 	}
 	
 
+	private static boolean isMelodyValid(String melody) {
+		
+		String[] notes = new String[] {"a", "ab", "as", "abb", "ass", 
+									   "b", "bb", "bs", "bbb", "bss", 
+									   "c", "cb", "cs", "cbb", "css", 
+									   "d", "db", "ds", "dbb", "dss", 
+									   "e", "eb", "es", "ebb", "ess", 
+									   "f", "fb", "fs", "fbb", "fss", 
+									   "g", "gb", "gs", "gbb", "gss"};
+		
+		String[] melodyElements = melody.split("/");
+		boolean valid = true;
+		
+		for (int i = 0; i < melodyElements.length; i++) {
+			
+			
+			
+		}
+		
+		return false;
+		
+	}
 }

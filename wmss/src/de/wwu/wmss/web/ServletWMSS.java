@@ -200,7 +200,6 @@ public class ServletWMSS extends HttpServlet
 
 		
 		
-		
 		if(requestType.equals("")){
 
 			response.setContentType("text/javascript");
@@ -255,7 +254,7 @@ public class ServletWMSS extends HttpServlet
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0005", "Invalid tonic [" + tonalityTonic + "].","[TBW]"));
+			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0005", "Invalid tonic '" + tonalityTonic + "'.","[TBW]"));
 
 		} else if (!solo.equals("true") &&
 				!solo.equals("false") &&
@@ -263,21 +262,28 @@ public class ServletWMSS extends HttpServlet
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0006", "Invalid boolean value for 'solo' parameter [" + solo + "].","The 'solo' filter required a boolean value ('true' or 'false')."));
+			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0006", "Invalid boolean value for 'solo' parameter '" + solo + "'.","The 'solo' filter required a boolean value ('true' or 'false')."));
 
 		} else if (!version.equals("") &&
 				!SystemSettings.protocolVersions.contains(version.toString())){
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0007", "Invalid protocol version [" + version+ "].","Check the 'Service Description Report' for more information on the supported WMSS protocols."));
+			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0007", "Invalid protocol version '" + version+ "'.","Check the 'Service Description Report' for more information on the supported WMSS protocols."));
 
 		} else if (!validSource) {
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0009", "Invalid data source [" + source + "].","The provided data source cannot be found. Check the 'Service Description Report' for more information on the available data sources."));
+			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0009", "Invalid data source '" + source + "'.","The provided data source cannot be found. Check the 'Service Description Report' for more information on the available data sources."));
 
+		} else if (!melody.equals("") && !isMelodyRequestValid(melody)) {
+			
+			response.setContentType("text/javascript");
+			response.setStatus(HttpServletResponse.SC_OK);
+			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0012", "Invalid melody '" + melody +"'","The provided melody is not valid. For more information go to: https://github.com/jimjonesbr/wmss/blob/master/README.md#melody"));
+
+			
 		} else if (requestType.equals("checklog")) {
 			
 			response.setContentType("text/plain");
@@ -320,6 +326,49 @@ public class ServletWMSS extends HttpServlet
 			//TODO create search for scores based on all search criteria
 
 		}
+
+	}
+
+	private static boolean isMelodyRequestValid(String melody) {
+
+		String[] melodyElements = melody.split("/");
+
+		boolean validNotes = false;
+		boolean validDurations = false;
+		boolean validOctaves = false;
+		boolean result = true;
+
+		for (int i = 0; i < melodyElements.length; i++) {
+
+			String[] element = melodyElements[i].split("-");
+
+			if(element.length < 3) {
+
+				result = false;
+				
+			} else {
+				
+				validNotes = element[0].matches("0|a|b|c|d|e|f|g|ab|bb|cb|db|eb|fb|gb|abb|bbb|cbb|dbb|ebb|fbb|gbb|as|bs|cs|ds|es|fs|gs|ass|bss|css|dss|ess|fss|gss");	
+				validDurations = element[1].matches("0|ow|qw|dw|w|h|4|8|16|32|64|128|256");	
+				validOctaves = element[2].matches("0|1|2|3|4|5|6|7|8|9");
+				
+			}
+			
+			if(validNotes && validDurations && validOctaves) {
+
+				if(element[0].equals("0") && element[1].equals("0")) {
+
+					result = false;
+				}
+
+			} else {
+
+				result = false;
+			}
+
+		}
+
+		return result;
 
 	}
 }
