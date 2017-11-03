@@ -432,6 +432,7 @@ Retrieves a specific record based on its identifier:
 |E0009|Invalid data source| |
 |E0010|Invalid filter requestd| |
 |E0011|Unsupported filter| |
+|E0012|Invalid melody| |
 
 
 #### [Service Exception Report](https://github.com/jimjonesbr/wmss/blob/master/README.md#service-exception-report)
