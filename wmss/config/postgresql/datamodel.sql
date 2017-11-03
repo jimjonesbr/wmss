@@ -989,7 +989,8 @@ INSERT INTO wmss_document_type (document_type_id,document_type_description) VALU
 CREATE TABLE wmss_document (
 score_id VARCHAR REFERENCES wmss_scores(score_id),
 score_document XML,
-document_type_id VARCHAR REFERENCES wmss_document_type (document_type_id)
+document_type_id VARCHAR REFERENCES wmss_document_type (document_type_id),
+PRIMARY KEY (score_id,document_type_id)
 );
 
 -- wmss_score_movements

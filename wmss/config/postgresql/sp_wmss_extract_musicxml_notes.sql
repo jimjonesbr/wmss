@@ -24,7 +24,7 @@ DECLARE current_tonality VARCHAR;
 BEGIN
 	RAISE NOTICE 'Processing MusicXML from "%" ... ',document_id;   	
 		
-	ext_parts := (SELECT XPATH('//score-part/@id', score_document)::TEXT[] FROM wmss_document WHERE score_id = document_id);
+	ext_parts := (SELECT XPATH('//score-part/@id', score_document)::TEXT[] FROM wmss_document WHERE score_id = document_id AND document_type_id = 'musicxml');
 	RAISE NOTICE '	Extracting notes of % instruments ... ', ARRAY_LENGTH(ext_parts,1);   	
 
 	FOR i IN 1 .. ARRAY_LENGTH(ext_parts, 1) LOOP
@@ -264,8 +264,8 @@ BEGIN
 		    ELSE 
 		        ext_accidental := '';
 		    END IF;
-		    INSERT INTO wmss_notes (score_id, movement_id, measure, octave, pitch, duration, voice, instrument,staff,chord,noteset_id) 
-		    VALUES (document_id, ext_movement, ext_measure_id, ext_octave, ext_pitch||ext_accidental, ext_duration, ext_voice::INTEGER, ext_instrument, ext_staff::INTEGER,ext_is_chord,noteset);
+		    INSERT INTO wmss_notes (score_id, movement_id, measure, octave, pitch, duration, voice, instrument,staff,chord,noteset_id,document_type_id) 
+		    VALUES (document_id, ext_movement, ext_measure_id, ext_octave, ext_pitch||ext_accidental, ext_duration, ext_voice::INTEGER, ext_instrument, ext_staff::INTEGER,ext_is_chord,noteset,'musicxml');
 
 		    ext_is_chord := FALSE;
 		    --raise notice '[Part: % Movement: % Measure: %] pitch: % | octave: % | duration: % | staff: % | voice: % | instrument: %',parts[i], movement, measure_id, pitch, octave,duration,staff,voice,instrument;
@@ -340,6 +340,7 @@ CREATE TABLE wmss_notes (
 noteset_id BIGINT,
 next_noteset_id BIGINT,
 score_id VARCHAR,
+document_type_id VARCHAR,
 movement_id INTEGER,
 instrument VARCHAR,
 measure VARCHAR,
@@ -348,7 +349,9 @@ octave VARCHAR,
 duration VARCHAR,
 voice INTEGER,
 staff INTEGER,
-chord BOOLEAN
+chord BOOLEAN,
+FOREIGN KEY (score_id,document_type_id) REFERENCES wmss_document (score_id, document_type_id)
+
 --note_id SERIAL PRIMARY KEY,
 --next NUMERIC
 );
@@ -422,7 +425,7 @@ BEGIN
     ELSIF ( NEW.noteset_id > 4000000 ) THEN
         INSERT INTO wmss_notes_p5 VALUES (NEW.*);
     ELSE
-        RAISE EXCEPTION 'Date out of range. Fix the wmss_notes_insert_trigger() function!';
+        RAISE EXCEPTION 'Noteset out of range. Fix the wmss_notes_insert_trigger() function!';
     END IF;
     RETURN NULL;
 END;
