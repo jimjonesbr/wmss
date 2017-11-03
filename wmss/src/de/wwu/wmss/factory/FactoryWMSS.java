@@ -246,6 +246,8 @@ public class FactoryWMSS {
 					}
 
 				}
+				
+				
 
 				if(!filters.isEmpty()){
 
@@ -292,7 +294,10 @@ public class FactoryWMSS {
 					
 					sqlFilter = " WHERE scr.score_id IN ("+ idsRetrievedFromMelodySearch +")";
 					
-				}									
+				}
+				
+				
+				
 				
 				/////////////////// E
 				
@@ -311,7 +316,7 @@ public class FactoryWMSS {
 
 					for (int j = 0; j < scoreList.size(); j++) {
 
-						if(scoreList.get(j).getScoreIdentifier().equals(rs.getString("score_id"))){
+						if(scoreList.get(j).getScoreId().equals(rs.getString("score_id"))){
 							scoreAdded = true;
 						}
 
@@ -319,7 +324,7 @@ public class FactoryWMSS {
 
 					MusicScore rec = new MusicScore();
 					
-					rec.setScoreIdentifier(rs.getString("score_id"));
+					rec.setScoreId(rs.getString("score_id"));
 					rec.setCreationDateFrom(rs.getInt("score_creation_date_min"));
 					rec.setCreationDateTo(rs.getInt("score_creation_date_max"));
 					rec.setTitle(rs.getString("score_name"));;
@@ -400,7 +405,7 @@ public class FactoryWMSS {
 
 			for (int j = 0; j < movementList.size(); j++) {						
 
-				if(scoreList.get(i).getScoreIdentifier().equals(movementList.get(j).getScoreId())){
+				if(scoreList.get(i).getScoreId().equals(movementList.get(j).getScoreId())){
 
 					boolean movementAdded = false;
 
@@ -480,7 +485,7 @@ public class FactoryWMSS {
 					boolean mediumTypeAdded = false;
 
 
-					if(scoreList.get(i).getScoreIdentifier().equals(mediumList.get(k).getScoreId())  &&
+					if(scoreList.get(i).getScoreId().equals(mediumList.get(k).getScoreId())  &&
 					   scoreList.get(i).getMovements().get(j).getMovementId().equals(mediumList.get(k).getMovementId())){
 
 						for (int l = 0; l < scoreList.get(i).getMovements().get(j).getPerformanceMediumList().size(); l++) {
@@ -523,7 +528,7 @@ public class FactoryWMSS {
 
 						boolean mediumAdded = false;
 
-						if(scoreList.get(i).getScoreIdentifier().equals(mediumList.get(k).getScoreId())  &&
+						if(scoreList.get(i).getScoreId().equals(mediumList.get(k).getScoreId())  &&
 						   scoreList.get(i).getMovements().get(j).getMovementId().equals(mediumList.get(k).getMovementId()) &&
 						   scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediumTypeId().equals(mediumList.get(k).getMediumTypeId())){
 
@@ -578,7 +583,7 @@ public class FactoryWMSS {
 
 				}
 
-				if(scoreList.get(i).getScoreIdentifier().equals(personList.get(j).getScoreId())){
+				if(scoreList.get(i).getScoreId().equals(personList.get(j).getScoreId())){
 
 					if(!personAdded){	
 
@@ -615,7 +620,7 @@ public class FactoryWMSS {
 
 				}
 
-				if(scoreList.get(i).getScoreIdentifier().equals(formatList.get(j).getScoreId())){
+				if(scoreList.get(i).getScoreId().equals(formatList.get(j).getScoreId())){
 
 					if(!formatAdded){
 
@@ -631,13 +636,72 @@ public class FactoryWMSS {
 		}
 
 
+
+		
+		
+		
+		
+		if(!filters.isEmpty() && !melody.equals("")) {
+		
+			ArrayList<MusicScore> tmpScorelist = new ArrayList<MusicScore>();
+			ArrayList<MelodyLocation> tmpMelodyLocation = new ArrayList<MelodyLocation>();
+			
+			String identifiers = "";
+			
+			for (int i = 0; i < scoreList.size(); i++) {
+				
+				identifiers = identifiers + scoreList.get(i).getScoreId();
+				
+				if ((i+1) != scoreList.size()) {
+					identifiers = identifiers + ",";
+				}
+				
+			}
+			
+			tmpMelodyLocation = findMelody(melody, identifiers, dataSource);
+			
+			boolean found = false;
+			
+			for (int i = 0; i < scoreList.size(); i++) {
+				
+				for (int j = 0; j < tmpMelodyLocation.size(); j++) {
+					
+					if(tmpMelodyLocation.get(j).getScoreId().equals(scoreList.get(i).getScoreId())) {
+						
+						found = true;
+						
+					}
+					
+				}
+				
+				if(found) {
+					tmpScorelist.add(scoreList.get(i));
+					found = false;
+				}
+				
+			}
+			
+			scoreList = tmpScorelist;
+			
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		if(!melody.equals("")) {
 
 			for (int i = 0; i < melodyLocationList.size(); i++) {
 				
 				for (int j = 0; j < scoreList.size(); j++) {
 					
-					if(melodyLocationList.get(i).getScoreId().equals(scoreList.get(j).getScoreIdentifier())) {
+					if(melodyLocationList.get(i).getScoreId().equals(scoreList.get(j).getScoreId())) {
 						
 						scoreList.get(j).getMelodyLocation().add(melodyLocationList.get(i));
 						
@@ -651,9 +715,13 @@ public class FactoryWMSS {
 		
 		
 		
+
+		
+		
+		
 		for (int i = 0; i < scoreList.size(); i++) {
 
-			scoreList.get(i).setScoreIdentifier(dataSource.getId() + ":" + scoreList.get(i).getScoreIdentifier());
+			scoreList.get(i).setScoreId(dataSource.getId() + ":" + scoreList.get(i).getScoreId());
 
 		}
 
@@ -756,7 +824,7 @@ public class FactoryWMSS {
 			
 			ResultSet rs;
 	
-			rs = PostgreSQLConnector.executeQuery("SELECT * FROM wmss_find_melody('"+melody+"','"+identifiers+"')", dataSource);
+			rs = PostgreSQLConnector.executeQuery("SELECT DISTINCT * FROM wmss_find_melody('"+melody+"','"+identifiers+"')", dataSource);
 		
 
 			while (rs.next()){
@@ -799,9 +867,8 @@ public class FactoryWMSS {
 		
 
 
-
-
 			rs.close();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

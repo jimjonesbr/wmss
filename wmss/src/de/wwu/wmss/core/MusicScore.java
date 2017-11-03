@@ -29,12 +29,12 @@ public class MusicScore {
 	}
 
 
-	public String getScoreIdentifier() {
+	public String getScoreId() {
 		return scoreIdentifier;
 	}
 
 
-	public void setScoreIdentifier(String identifier) {
+	public void setScoreId(String identifier) {
 		this.scoreIdentifier = identifier;
 	}
 

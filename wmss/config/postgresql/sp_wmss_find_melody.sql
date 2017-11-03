@@ -1,12 +1,10 @@
 ﻿-- Author: Jones
--- Parameter: 1) Note sequence
+-- Parameter: 1) Note sequence (melody)
+--	      2) Identifiers of scores to be harversted. For all available music scores use '*'.
 -- Comments: 
 
---DROP TYPE IF EXISTS melody_result;
---CREATE TYPE melody_result AS (document_id VARCHAR, melody_location VARCHAR );
-
 DROP TYPE IF EXISTS note;
-CREATE TYPE note AS (pitch VARCHAR, duration VARCHAR, octave VARCHAR, next_note NUMERIC);
+CREATE TYPE note AS (pitch VARCHAR, duration VARCHAR, octave VARCHAR, next_noteset NUMERIC);
 
 CREATE OR REPLACE FUNCTION public.wmss_find_melody(melody VARCHAR, identifiers VARCHAR)
 RETURNS TABLE (
@@ -22,6 +20,7 @@ res_instrument_name VARCHAR) AS $$
 DECLARE i INTEGER;
 DECLARE j RECORD;
 DECLARE k INTEGER;
+DECLARE l RECORD;
 
 DECLARE array_input_melody VARCHAR[];
 DECLARE array_notes NOTE[];
@@ -61,7 +60,7 @@ BEGIN
 
 	start_note = array_notes[1];
 
-	melody_query := 'SELECT * FROM wmss_notes WHERE next IS NOT NULL AND ';
+	melody_query := 'SELECT * FROM wmss_notes WHERE next_noteset_id IS NOT NULL AND ';
 	
 	IF start_note.octave <> '0' THEN 
 	    melody_query := melody_query || 'octave=' || QUOTE_LITERAL(start_note.octave); 
@@ -108,7 +107,7 @@ BEGIN
 	    current_note.pitch := j.pitch;
 	    current_note.duration := j.duration;
 	    current_note.octave := j.octave;
-	    current_note.next_note := j.next;
+	    current_note.next_noteset := j.next_noteset_id;
 	    array_result := array_result || current_note;
 	    	
 	    FOR k IN 2 .. ARRAY_LENGTH(array_notes, 1) LOOP
@@ -117,16 +116,30 @@ BEGIN
 		matches_pitch := FALSE;
 		matches_octave := FALSE;
 
-	        next_note_result := (SELECT ROW(pitch, duration, octave, next) FROM wmss_notes 
-				     WHERE note_id = current_note.next_note AND 
-				           score_id = j.score_id AND 
-					   movement_id = j.movement_id LIMIT 1);
+	        --next_note_result := (SELECT ROW(pitch, duration, octave, next_noteset_id) FROM wmss_notes 
+		--		     WHERE noteset_id = current_note.next_noteset AND 
+		--		           score_id = j.score_id AND 
+		--			   movement_id = j.movement_id LIMIT 1);
 
-		IF next_note_result.pitch = array_notes[k].pitch OR array_notes[k].pitch = '0' THEN matches_pitch := TRUE; END IF;
-		IF next_note_result.duration = array_notes[k].duration OR array_notes[k].duration = '0' THEN matches_duration := TRUE; END IF;
-		IF next_note_result.octave = array_notes[k].octave OR array_notes[k].octave = '0' THEN matches_octave := TRUE; END IF;
+					   
+		FOR l IN SELECT pitch, duration, octave, next_noteset_id FROM wmss_notes 
+				  WHERE noteset_id = current_note.next_noteset AND 
+				        score_id = j.score_id AND 
+					movement_id = j.movement_id LIMIT 1 LOOP
 
-		current_note.next_note = next_note_result.next_note;
+		    IF l.pitch = array_notes[k].pitch OR array_notes[k].pitch = '0' THEN matches_pitch := TRUE; END IF;
+		    IF l.duration = array_notes[k].duration OR array_notes[k].duration = '0' THEN matches_duration := TRUE; END IF;
+		    IF l.octave = array_notes[k].octave OR array_notes[k].octave = '0' THEN matches_octave := TRUE; END IF;
+
+		    current_note.next_noteset = l.next_noteset_id;
+		    
+		END LOOP;
+
+--		IF next_note_result.pitch = array_notes[k].pitch OR array_notes[k].pitch = '0' THEN matches_pitch := TRUE; END IF;
+--		IF next_note_result.duration = array_notes[k].duration OR array_notes[k].duration = '0' THEN matches_duration := TRUE; END IF;
+--		IF next_note_result.octave = array_notes[k].octave OR array_notes[k].octave = '0' THEN matches_octave := TRUE; END IF;
+
+		--current_note.next_noteset = next_note_result.next_noteset;
 
 
 		EXIT WHEN NOT matches_duration OR NOT matches_octave OR NOT matches_pitch ;
@@ -140,7 +153,7 @@ BEGIN
 	    
 	    IF ARRAY_LENGTH(array_notes, 1) = ARRAY_LENGTH(array_result, 1) THEN 
 
-		raise notice 'Score: % | Movement: % | Meausure: % | Staff: % Voice: % Instrument: % Sequence: % ', j.score_id, j.movement_id, j.measure, j.staff, j.voice, j.instrument, array_result;
+		--raise notice 'Score: % | Movement: % | Meausure: % | Staff: % Voice: % Instrument: % Sequence: % ', j.score_id, j.movement_id, j.measure, j.staff, j.voice, j.instrument, array_result;
 		INSERT INTO tmp_result (tmp_score, tmp_movement, tmp_movement_name, tmp_measure, tmp_staff, tmp_voice, tmp_instrument, tmp_instrument_name) 
 		VALUES (j.score_id, j.movement_id,'', j.measure, j.staff, j.voice, j.instrument,'');
 
@@ -194,11 +207,18 @@ ALTER FUNCTION public.wmss_find_melody(VARCHAR,VARCHAR) OWNER TO postgres;
 --select * from wmss_notes where score_id = '3530337' and (measure = '14' or measure = '15') and instrument = 'P2-I1' and movement_id = 1
 
 
-SELECT * FROM public.wmss_find_melody('c-w-0/c-w-0/c-w-0/c-w-0/c-w-0','*') where res_score = '4307727' order by res_measure::int 
+--SELECT * FROM public.wmss_find_melody('c-w-0/c-w-0/c-w-0/c-w-0/c-w-0','*') where res_score = '4307727' order by res_measure::int 
 --SELECT * FROM wmss_find_melody('c-w-0/c-w-0/c-w-0/c-w-0/c-w-0','6,7,16,20,25,29,33,35,37,55,56,62,68,4272244,4276689,4276790,4276911,4279917,4280245,4281006,4287452,4307727,4339428,4339906,4340117,4341767,4342391')
 
 
 
 --select * from wmss_notes where score_id = '4307727' and movement_id = 1 and (measure = '227' or measure = '228' OR measure = '229'OR measure = '230'OR measure = '231')  and instrument = 'P4-I1'
 
-select * from wmss_notes where score_id = '4307727' and chord limit 1000
+--select * from wmss_notes where score_id = '4307727' and chord limit 1000
+
+--select * from wmss_notes where next_noteset_id is null
+
+--SELECT * FROM public.wmss_find_melody('c-w-0/c-w-0/c-w-0/c-w-0/c-w-0','*')
+--SELECT * FROM public.wmss_find_melody('a-w-0/a-w-0/a-w-0/a-w-0/a-w-0','*')
+
+SELECT DISTINCT * FROM public.wmss_find_melody('c-4-0/d-4-0/e-4-0/f-4-0/g-4-0/a-4-0','*');
