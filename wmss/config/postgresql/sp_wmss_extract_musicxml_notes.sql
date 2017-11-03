@@ -18,6 +18,7 @@ DECLARE ext_accidental VARCHAR;
 DECLARE ext_movement INTEGER DEFAULT 0;
 DECLARE ext_key_mode VARCHAR;
 DECLARE ext_key_fifth VARCHAR;
+DECLARE ext_is_chord BOOLEAN DEFAULT FALSE;
 DECLARE current_tonality VARCHAR;
 BEGIN
 	RAISE NOTICE 'Processing MusicXML from "%" ... ',document_id;   	
@@ -27,9 +28,7 @@ BEGIN
 
 	FOR i IN 1 .. ARRAY_LENGTH(ext_parts, 1) LOOP
 
-	    --RAISE NOTICE '	Instrument %',ext_parts[i];
 	    ext_measures := (SELECT XPATH('//part[@id="'||ext_parts[i]||'"]/measure', score_document) FROM wmss_document WHERE score_id = document_id);
-	    
 
 	    FOR j IN 1 .. ARRAY_LENGTH(ext_measures, 1) LOOP
 	
@@ -86,7 +85,7 @@ BEGIN
 
 
 		IF ext_measure_id = '1' THEN ext_movement := ext_movement + 1; END IF;
-		--TODO add here code for different keys!
+
 		ext_notes := (SELECT XPATH('//measure/note', ext_measures[j]));		
 
 		FOR k IN 1 .. ARRAY_LENGTH(ext_notes, 1) LOOP
@@ -235,6 +234,8 @@ BEGIN
 		    ext_instrument := (SELECT XPATH('//instrument/@id', ext_notes[k]))[1];
 		    ext_accidental := (SELECT XPATH('//accidental/text()', ext_notes[k]))[1];
 
+		    IF (SELECT XPATH('//chord', ext_notes[k]))[1] IS NOT NULL THEN ext_is_chord := TRUE; END IF;
+
 		    IF ext_voice = '' OR ext_voice IS NULL THEN ext_voice := '1'; END IF;
 		    IF ext_duration = 'whole' THEN ext_duration = 'w'; END IF;
 		    IF ext_duration = 'half' THEN ext_duration = 'h'; END IF;
@@ -255,7 +256,10 @@ BEGIN
 		    ELSE 
 		        ext_accidental := '';
 		    END IF;
-		    INSERT INTO wmss_notes (score_id, movement_id, measure, octave, pitch, duration, voice, instrument,staff) VALUES (document_id, ext_movement, ext_measure_id, ext_octave, ext_pitch||ext_accidental, ext_duration, ext_voice::INTEGER, ext_instrument, ext_staff::INTEGER);
+		    INSERT INTO wmss_notes (score_id, movement_id, measure, octave, pitch, duration, voice, instrument,staff,chord) 
+		    VALUES (document_id, ext_movement, ext_measure_id, ext_octave, ext_pitch||ext_accidental, ext_duration, ext_voice::INTEGER, ext_instrument, ext_staff::INTEGER,ext_is_chord);
+
+		    ext_is_chord := FALSE;
 		    --raise notice '[Part: % Movement: % Measure: %] pitch: % | octave: % | duration: % | staff: % | voice: % | instrument: %',parts[i], movement, measure_id, pitch, octave,duration,staff,voice,instrument;
 		END LOOP;
 
@@ -265,7 +269,6 @@ BEGIN
 		
 	END LOOP;
 	
-
 	RAISE NOTICE '	Creating note sequences. This might take a while ...';
 
 	UPDATE wmss_notes note 
@@ -276,7 +279,8 @@ BEGIN
 			  voice = note.voice AND
 			  score_id = note.score_id AND
 			  movement_id = note.movement_id AND
-			  instrument = note.instrument
+			  instrument = note.instrument AND 
+			  chord IS FALSE
 		    ORDER BY note_id
 		    LIMIT 1)
 	WHERE score_id = document_id;
@@ -321,6 +325,7 @@ octave VARCHAR,
 duration VARCHAR,
 voice INTEGER,
 staff INTEGER,
+chord BOOLEAN,
 next NUMERIC
 );
 
@@ -392,7 +397,7 @@ CREATE TRIGGER wmss_trigger_insert_notes
 
 
 --CREATE INDEX idx_wmss_note ON wmss_notes (note_id);
-SELECT wmss_extract_musicxml_notes(score_id) FROM wmss_document WHERE document_type_id = 'musicxml'-- AND score_id = '4281042' ;-- limit 10;
+SELECT wmss_extract_musicxml_notes(score_id) FROM wmss_document WHERE document_type_id = 'musicxml' --AND score_id = '4307727' ;-- limit 10;
 --SELECT wmss_extract_musicxml_notes(score_id) FROM wmss_document WHERE document_type_id = 'musicxml';
 
 --INSERT INTO wmss_notes (score_id, movement_id, instrument, measure, pitch, octave, duration, voice, staff, next) SELECT score_id, movement_id, instrument, measure, pitch, octave, duration, voice, staff, note_id+1 FROM wmss_notes;

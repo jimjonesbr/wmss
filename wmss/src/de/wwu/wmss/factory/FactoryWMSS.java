@@ -162,6 +162,7 @@ public class FactoryWMSS {
 		ArrayList<PerformanceMediumType> mediumTypeList = new ArrayList<PerformanceMediumType>();
 		ArrayList<Person> personList = new ArrayList<Person>();
 		ArrayList<Format> formatList = new ArrayList<Format>();
+		ArrayList<MelodyLocation> melodyLocationList = new ArrayList<MelodyLocation>();
 		
 		ArrayList<String> filters = new ArrayList<String>();
 		String melody = "";
@@ -272,10 +273,7 @@ public class FactoryWMSS {
 				
 				
 				///////////////// B
-				
-				
-				ArrayList<MelodyLocation> melodyLocationList = new ArrayList<MelodyLocation>();
-				
+								
 				if(filters.isEmpty() && !melody.equals("")) {
 					
 					melodyLocationList = findMelody(melody, "*", dataSource);
@@ -635,6 +633,19 @@ public class FactoryWMSS {
 
 		if(!melody.equals("")) {
 
+			for (int i = 0; i < melodyLocationList.size(); i++) {
+				
+				for (int j = 0; j < scoreList.size(); j++) {
+					
+					if(melodyLocationList.get(i).getScoreId().equals(scoreList.get(j).getScoreIdentifier())) {
+						
+						scoreList.get(j).getMelodyLocation().add(melodyLocationList.get(i));
+						
+					}
+					
+				}
+				
+			}
 			
 		}
 		
@@ -646,8 +657,8 @@ public class FactoryWMSS {
 
 		}
 
-
-
+		//TODO: create pretty print function for JSON documents (DEBUG / PRODUCTION Mode) 
+		//TODO: create a different class for graph dbs
 
 		if (dataSource.getStorage().equals("graphdb")){
 

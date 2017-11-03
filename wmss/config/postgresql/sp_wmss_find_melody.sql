@@ -194,8 +194,11 @@ ALTER FUNCTION public.wmss_find_melody(VARCHAR,VARCHAR) OWNER TO postgres;
 --select * from wmss_notes where score_id = '3530337' and (measure = '14' or measure = '15') and instrument = 'P2-I1' and movement_id = 1
 
 
---SELECT * FROM public.wmss_find_melody('c-w-0/c-w-0/c-w-0/c-w-0/c-w-0','*') 
-SELECT * FROM wmss_find_melody('c-w-0/c-w-0/c-w-0/c-w-0/c-w-0','6,7,16,20,25,29,33,35,37,55,56,62,68,4272244,4276689,4276790,4276911,4279917,4280245,4281006,4287452,4307727,4339428,4339906,4340117,4341767,4342391')
+SELECT * FROM public.wmss_find_melody('c-w-0/c-w-0/c-w-0/c-w-0/c-w-0','*') where res_score = '4307727' order by res_measure::int 
+--SELECT * FROM wmss_find_melody('c-w-0/c-w-0/c-w-0/c-w-0/c-w-0','6,7,16,20,25,29,33,35,37,55,56,62,68,4272244,4276689,4276790,4276911,4279917,4280245,4281006,4287452,4307727,4339428,4339906,4340117,4341767,4342391')
 
 
 
+--select * from wmss_notes where score_id = '4307727' and movement_id = 1 and (measure = '227' or measure = '228' OR measure = '229'OR measure = '230'OR measure = '231')  and instrument = 'P4-I1'
+
+select * from wmss_notes where score_id = '4307727' and chord limit 1000
