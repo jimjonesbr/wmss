@@ -13,7 +13,7 @@
       "password": "postgres",
       "filterCapabilities": 
             {
-              "melody": false,
+              "melody": true,
               "group": true,
               "person": true,
               "personRole": true,

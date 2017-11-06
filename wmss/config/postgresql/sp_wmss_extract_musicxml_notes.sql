@@ -236,8 +236,9 @@ BEGIN
 		    ext_accidental := (SELECT XPATH('//accidental/text()', ext_notes[k]))[1];
 
 		    IF (SELECT XPATH('//chord', ext_notes[k]))[1] IS NOT NULL THEN 
-
+			
 		        ext_is_chord := TRUE; 
+
 		    ELSE
 
 		        noteset := (SELECT nextval('seq_noteset'));
@@ -257,8 +258,11 @@ BEGIN
 		    IF ext_pitch = '' OR ext_pitch IS NULL THEN ext_pitch := 'rest'; END IF;
 		    IF ext_octave = '' OR ext_octave IS NULL THEN ext_octave := 'rest'; END IF;
 		    IF ext_accidental IS NOT NULL THEN 
+			ext_pitch := LOWER((SELECT XPATH('//pitch/step/text()', ext_notes[k]))[1]::TEXT);
 			IF LOWER(ext_accidental) = 'flat' THEN ext_accidental := 'b'; END IF;
 			IF LOWER(ext_accidental) = 'sharp' THEN ext_accidental := 's'; END IF;
+			IF LOWER(ext_accidental) = 'double-sharp' THEN ext_accidental := 'ss'; END IF;
+			IF LOWER(ext_accidental) = 'flat-flat' THEN ext_accidental := 'bb'; END IF;
 			IF LOWER(ext_accidental) = 'natural' THEN ext_accidental := ''; END IF;
 		    --raise notice 'accidental %',ext_accidental;
 		    ELSE 

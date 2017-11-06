@@ -967,6 +967,7 @@ score_tonality_mode VARCHAR,
 score_creation_date_min INTEGER,
 score_creation_date_max INTEGER,
 score_print_resource VARCHAR,
+score_online_resource VARCHAR,
 score_thumbnail VARCHAR,
 collection_id INTEGER REFERENCES wmss_collections(collection_id),
 CONSTRAINT score_pkey PRIMARY KEY (score_id) 
@@ -981,9 +982,9 @@ document_type_description VARCHAR,
 CONSTRAINT document_type_pkey PRIMARY KEY (document_type_id) 
 );
 
-INSERT INTO wmss_document_type (document_type_id,document_type_description) VALUES ('mei','MEI - Music Encoding Initiative 3.0');
+INSERT INTO wmss_document_type (document_type_id,document_type_description) VALUES ('mei','MEI 3.0 - Music Encoding Initiative');
 INSERT INTO wmss_document_type (document_type_id,document_type_description) VALUES ('musicxml','MusicXML 3.0');
-
+INSERT INTO wmss_document_type (document_type_id,document_type_description) VALUES ('sib','Sibelius');
 -- wmss_document
 
 CREATE TABLE wmss_document (

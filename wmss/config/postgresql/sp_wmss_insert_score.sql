@@ -67,8 +67,8 @@ BEGIN
 	    --encoder := TRIM((SELECT XPATH('//encoder/text()', score_file))[1]::TEXT);
 	    encoder := 'Jim Jones';
 
-	    tonality_note := '';
-	    tonality_mode := '';
+	    tonality_note := 'unspecified';
+	    tonality_mode := 'unspecified';
 	    score_date_min := 0;
 	    score_date_max := 0;
 	    score_date_text := '';

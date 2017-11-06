@@ -78,6 +78,9 @@ public class ServiceMessagingHandler {
 			ds.put("filterCapabilities", SystemSettings.sourceList.get(i).getFilters());
 			ds.put("collections", FactoryWMSS.getCollections(SystemSettings.sourceList.get(i)));
 			ds.put("performanceMediums", FactoryWMSS.getPerformanceMediumList(SystemSettings.sourceList.get(i)));
+			ds.put("tempoMarkings", FactoryWMSS.getTempoMarkings(SystemSettings.sourceList.get(i)));
+			ds.put("formats", FactoryWMSS.getFormats(SystemSettings.sourceList.get(i)));
+			ds.put("tonalities", FactoryWMSS.getTonalities(SystemSettings.sourceList.get(i)));
 			dsArray.add(ds);
 		}
 

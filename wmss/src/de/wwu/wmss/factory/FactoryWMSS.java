@@ -15,6 +15,7 @@ import de.wwu.wmss.core.PerformanceMedium;
 import de.wwu.wmss.core.PerformanceMediumType;
 import de.wwu.wmss.core.Person;
 import de.wwu.wmss.core.RequestParameter;
+import de.wwu.wmss.core.Tonality;
 import de.wwu.wmss.settings.SystemSettings;
 
 public class FactoryWMSS {
@@ -44,7 +45,7 @@ public class FactoryWMSS {
 					result.add(rec);
 				}
 
-
+				rs.close();
 			}
 
 		} catch (Exception e) {
@@ -53,10 +54,123 @@ public class FactoryWMSS {
 			e.printStackTrace();
 		}
 
+		
 		return result;
 
 	}
 
+	public static ArrayList<Format> getFormats(DataSource dataSource){
+
+		ArrayList<Format> result = new ArrayList<Format>(); 
+
+		try {
+
+			if (dataSource.getStorage().equals("postgresql")){
+
+				String sql = "SELECT DISTINCT typ.document_type_id, typ.document_type_description \n" + 
+							 "FROM wmss_document_type typ\n" + 
+							 "JOIN wmss_document doc ON doc.document_type_id = typ.document_type_id";
+
+				ResultSet rs = PostgreSQLConnector.executeQuery(sql, dataSource);
+
+
+				while (rs.next()){
+
+					Format rec = new Format();
+					rec.setFormatId(rs.getString("document_type_id"));
+					rec.setFormatDescription(rs.getString("document_type_description"));
+
+					result.add(rec);
+				}
+
+				rs.close();
+			}
+
+		} catch (Exception e) {
+
+			logger.error("Unexpected error ocurred at the PostgreSQL formats retrieval.");
+			e.printStackTrace();
+		}
+
+		
+		return result;
+
+	}
+	
+	public static ArrayList<Tonality> getTonalities(DataSource dataSource){
+
+		ArrayList<Tonality> result = new ArrayList<Tonality>(); 
+
+		try {
+
+			if (dataSource.getStorage().equals("postgresql")){
+
+				String sql = "SELECT DISTINCT score_tonality_note, score_tonality_mode \n" + 
+							 "FROM wmss_scores WHERE score_tonality_note IS NOT NULL AND \n" + 
+							 "		       score_tonality_mode IS NOT NULL ";
+
+				ResultSet rs = PostgreSQLConnector.executeQuery(sql, dataSource);
+
+
+				while (rs.next()){
+
+					Tonality rec = new Tonality();
+					rec.setTonic(rs.getString("score_tonality_note"));
+					rec.setMode(rs.getString("score_tonality_mode"));
+
+					result.add(rec);
+				}
+
+				rs.close();
+			}
+
+		} catch (Exception e) {
+
+			logger.error("Unexpected error ocurred at the PostgreSQL tonalities retrieval.");
+			e.printStackTrace();
+		}
+
+		
+		return result;
+
+	}
+	
+	public static ArrayList<String> getTempoMarkings(DataSource dataSource){
+
+		ArrayList<String> result = new ArrayList<String>(); 
+
+		try {
+
+			if (dataSource.getStorage().equals("postgresql")){
+
+				String sql = "SELECT DISTINCT movement_tempo \n" + 
+						"FROM wmss_score_movements \n" + 
+						"WHERE movement_tempo IS NOT NULL AND movement_tempo <> ''";
+
+				ResultSet rs = PostgreSQLConnector.executeQuery(sql, dataSource);
+
+
+				while (rs.next()){
+
+					String tempo = "";
+					tempo = rs.getString("movement_tempo");
+					
+					result.add(tempo);
+				}
+
+				rs.close();
+			}
+
+		} catch (Exception e) {
+
+			logger.error("Unexpected error ocurred at the PostgreSQL tempo markings retrieval.");
+			e.printStackTrace();
+		}
+
+		
+		return result;
+
+	}
 	
 	public static ArrayList<PerformanceMediumType> getPerformanceMediumList(DataSource dataSource){
 		
