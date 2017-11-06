@@ -962,29 +962,6 @@ public class FactoryWMSS {
 
 			}		
 		
-//		if(filters.isEmpty()){
-//
-//			
-//
-//		} else {
-//
-//			for (int i = 0; i < scoreList.size(); i++) {
-//
-//				identifiers = identifiers + scoreList.get(i).getScoreIdentifier();
-//
-//				if(scoreList.size()-1 != i) identifiers = identifiers + ",";
-//
-//			}
-//
-//			logger.info("Searching for melody in " + scoreList.size() + " records: " + melody);
-//			System.out.println("DEBUG identifiers > "+identifiers);
-//
-//			rs = PostgreSQLConnector.executeQuery("SELECT * FROM wmss_find_melody('"+melody+"','"+identifiers+"')", dataSource);
-//
-//		}
-
-		
-
 
 			rs.close();
 			
