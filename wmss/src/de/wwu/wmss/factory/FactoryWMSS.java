@@ -3,6 +3,8 @@ package de.wwu.wmss.factory;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
+
 import org.apache.log4j.Logger;
 import de.wwu.wmss.connectors.PostgreSQLConnector;
 import de.wwu.wmss.core.Collection;
@@ -17,6 +19,7 @@ import de.wwu.wmss.core.Person;
 import de.wwu.wmss.core.RequestParameter;
 import de.wwu.wmss.core.Tonality;
 import de.wwu.wmss.settings.SystemSettings;
+import de.wwu.wmss.settings.Util;
 
 public class FactoryWMSS {
 
@@ -109,8 +112,10 @@ public class FactoryWMSS {
 							 "FROM wmss_scores WHERE score_tonality_note IS NOT NULL AND \n" + 
 							 "		       score_tonality_mode IS NOT NULL ";
 
+				
 				ResultSet rs = PostgreSQLConnector.executeQuery(sql, dataSource);
 
+				
 
 				while (rs.next()){
 

@@ -5,8 +5,11 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
+
 import org.apache.log4j.Logger;
 import de.wwu.wmss.core.DataSource;
+import de.wwu.wmss.settings.Util;
 
 public class PostgreSQLConnector {
 	
@@ -19,12 +22,14 @@ public class PostgreSQLConnector {
 		try {
 			
 			
-			logger.info("\n"+ SQL);
+			logger.info("SQL Query fired: \n\n"+ SQL +"\n");
+			Date start = new Date();
 			
 			Connection con = DriverManager.getConnection("jdbc:postgresql://"+ds.getHost()+":"+ds.getPort()+"/"+ds.getRepository(), ds.getUser(), ds.getPassword());			
 			Statement st = con.createStatement();
 			rs = st.executeQuery(SQL);
 			
+			logger.info("SQL Query time: " + Util.timeElapsed(start, new Date()));
 			//rs.close();
 			//st.close();
 			
