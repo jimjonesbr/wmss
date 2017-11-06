@@ -1,6 +1,124 @@
 ﻿-- Author: Jones
 -- Comments: WMSS data model.
 
+
+
+-- Notes elements and partitions
+
+DROP TABLE IF EXISTS wmss_notes_p1;
+DROP TABLE IF EXISTS wmss_notes_p2;
+DROP TABLE IF EXISTS wmss_notes_p3;
+DROP TABLE IF EXISTS wmss_notes_p4;
+DROP TABLE IF EXISTS wmss_notes_p5;
+DROP TABLE IF EXISTS wmss_notes;
+
+CREATE TABLE wmss_notes (
+noteset_id BIGINT,
+next_noteset_id BIGINT,
+score_id VARCHAR,
+document_type_id VARCHAR,
+movement_id INTEGER,
+instrument VARCHAR,
+measure VARCHAR,
+pitch VARCHAR,
+octave VARCHAR,
+duration VARCHAR,
+voice INTEGER,
+staff INTEGER,
+chord BOOLEAN,
+FOREIGN KEY (score_id,document_type_id) REFERENCES wmss_document (score_id, document_type_id)
+
+);
+
+DROP SEQUENCE IF EXISTS seq_noteset;
+CREATE SEQUENCE seq_noteset START WITH 1;
+
+-- wmss_notes partitions (every million records)
+								
+CREATE TABLE wmss_notes_p1 (CHECK ( noteset_id >= 1 AND noteset_id <= 1000000 )) INHERITS (wmss_notes);
+CREATE TABLE wmss_notes_p2 (CHECK ( noteset_id > 1000000 AND noteset_id <= 2000000 )) INHERITS (wmss_notes);
+CREATE TABLE wmss_notes_p3 (CHECK ( noteset_id > 2000000 AND noteset_id <= 3000000 )) INHERITS (wmss_notes);
+CREATE TABLE wmss_notes_p4 (CHECK ( noteset_id > 3000000 AND noteset_id <= 4000000 )) INHERITS (wmss_notes);
+CREATE TABLE wmss_notes_p5 (CHECK ( noteset_id > 4000000 )) INHERITS (wmss_notes);
+
+CREATE INDEX idx_wmss_notes_p1_noteset ON wmss_notes_p1 (noteset_id);
+CREATE INDEX idx_wmss_notes_p1_pitch ON wmss_notes_p1 (pitch);
+CREATE INDEX idx_wmss_notes_p1_octave ON wmss_notes_p1 (octave);
+CREATE INDEX idx_wmss_notes_p1_duration ON wmss_notes_p1 (duration);
+CREATE INDEX idx_wmss_notes_p1_next_noteset ON wmss_notes_p1 (next_noteset_id);
+
+CREATE INDEX idx_wmss_notes_p2_noteset ON wmss_notes_p2 (noteset_id);
+CREATE INDEX idx_wmss_notes_p2_pitch ON wmss_notes_p2 (pitch);
+CREATE INDEX idx_wmss_notes_p2_octave ON wmss_notes_p2 (octave);
+CREATE INDEX idx_wmss_notes_p2_duration ON wmss_notes_p2 (duration);
+CREATE INDEX idx_wmss_notes_p2_next_noteset ON wmss_notes_p2 (next_noteset_id);
+
+CREATE INDEX idx_wmss_notes_p3_noteset ON wmss_notes_p3 (noteset_id);
+CREATE INDEX idx_wmss_notes_p3_pitch ON wmss_notes_p3 (pitch);
+CREATE INDEX idx_wmss_notes_p3_octave ON wmss_notes_p3 (octave);
+CREATE INDEX idx_wmss_notes_p3_duration ON wmss_notes_p3 (duration);
+CREATE INDEX idx_wmss_notes_p3_next_noteset ON wmss_notes_p3 (next_noteset_id);
+
+CREATE INDEX idx_wmss_notes_p4_noteset ON wmss_notes_p4 (noteset_id);
+CREATE INDEX idx_wmss_notes_p4_pitch ON wmss_notes_p4 (pitch);
+CREATE INDEX idx_wmss_notes_p4_octave ON wmss_notes_p4 (octave);
+CREATE INDEX idx_wmss_notes_p4_duration ON wmss_notes_p4 (duration);
+CREATE INDEX idx_wmss_notes_p4_next_noteset ON wmss_notes_p4 (next_noteset_id);
+
+CREATE INDEX idx_wmss_notes_p5_noteset ON wmss_notes_p5 (noteset_id);
+CREATE INDEX idx_wmss_notes_p5_pitch ON wmss_notes_p5 (pitch);
+CREATE INDEX idx_wmss_notes_p5_octave ON wmss_notes_p5 (octave);
+CREATE INDEX idx_wmss_notes_p5_duration ON wmss_notes_p5 (duration);
+CREATE INDEX idx_wmss_notes_p5_next_noteset ON wmss_notes_p5 (next_noteset_id);
+
+
+
+CREATE OR REPLACE FUNCTION wmss_notes_insert_trigger()
+RETURNS TRIGGER AS $$
+BEGIN					     
+    IF ( NEW.noteset_id >= 0 AND NEW.noteset_id <= 1000000 ) THEN
+        INSERT INTO wmss_notes_p1 VALUES (NEW.*);
+    ELSIF ( NEW.noteset_id > 1000000 AND NEW.noteset_id <= 2000000) THEN
+        INSERT INTO wmss_notes_p2 VALUES (NEW.*);
+    ELSIF ( NEW.noteset_id > 2000000  AND NEW.noteset_id <= 3000000) THEN
+        INSERT INTO wmss_notes_p3 VALUES (NEW.*);
+    ELSIF ( NEW.noteset_id > 3000000 AND NEW.noteset_id <= 4000000) THEN
+        INSERT INTO wmss_notes_p4 VALUES (NEW.*);
+    ELSIF ( NEW.noteset_id > 4000000 ) THEN
+        INSERT INTO wmss_notes_p5 VALUES (NEW.*);
+    ELSE
+        RAISE EXCEPTION 'Noteset out of range. Fix the wmss_notes_insert_trigger() function!';
+    END IF;
+    RETURN NULL;
+END;
+$$
+LANGUAGE plpgsql;
+
+
+DROP TRIGGER IF EXISTS wmss_trigger_insert_notes ON wmss_notes;
+
+CREATE TRIGGER wmss_trigger_insert_notes
+    BEFORE INSERT ON wmss_notes
+    FOR EACH ROW EXECUTE PROCEDURE wmss_notes_insert_trigger();
+
+
+
+
+
+
+-- Data Model
+
+
+
+
+
+
+
+
+
+
+
+
 DROP TABLE IF EXISTS wmss_movement_performance_medium;
 DROP TABLE IF EXISTS wmss_score_persons;
 DROP TABLE IF EXISTS wmss_persons;
@@ -955,6 +1073,7 @@ CONSTRAINT collection_pkey PRIMARY KEY (collection_id)
 INSERT INTO wmss_collections (collection_id,collection_description) VALUES (0,'Default Collection');
 INSERT INTO wmss_collections (collection_id,collection_description) VALUES (1,'MEI 3.0 Sample Collection');
 INSERT INTO wmss_collections (collection_id,collection_description) VALUES (2,'ULB Digitale Sammlung');
+INSERT INTO wmss_collections (collection_id,collection_description) VALUES (3,'ULB MIAMI');
 
 -- wmss_scores
 
@@ -1143,14 +1262,14 @@ SELECT public.wmss_import_score('','/home/jones/git/wmss/wmss/data/mei/Webern_Va
 -- ULB Sammlung
 
 
-SELECT wmss_import_score('3e724fa4-f67e-4dff-94d6-a01b78d73049','/home/jones/git/wmss/wmss/data/musicxml/3e724fa4-f67e-4dff-94d6-a01b78d73049@SinfoniaA-DurfurStreicherundBassocontinuo.xml','musicxml',2);
-SELECT wmss_import_score('4a12fece-a4ac-4654-8407-2e32be8d3e56','/home/jones/git/wmss/wmss/data/musicxml/4a12fece-a4ac-4654-8407-2e32be8d3e56@Sonatee-MollfürTraversflöteundBassocontinuo.xml','musicxml',2);
-SELECT wmss_import_score('5c3047f9-f8bc-46eb-8073-0dc3ffb28d30','/home/jones/git/wmss/wmss/data/musicxml/5c3047f9-f8bc-46eb-8073-0dc3ffb28d30@Sedunamortiranno.xml','musicxml',2);
-SELECT wmss_import_score('5e61ff05-7ceb-4e5c-b81e-19f8105f4a53','/home/jones/git/wmss/wmss/data/musicxml/5e61ff05-7ceb-4e5c-b81e-19f8105f4a53@BetrübtesHerz,zerbrich.xml','musicxml',2);
-SELECT wmss_import_score('6be19ce2-fbf2-442f-af37-08b0eb487d45','/home/jones/git/wmss/wmss/data/musicxml/6be19ce2-fbf2-442f-af37-08b0eb487d45@Aquellleggiadrovolto.xml','musicxml',2);
-SELECT wmss_import_score('20b0dcec-ff6a-43d2-8bfe-9e077937a1cf','/home/jones/git/wmss/wmss/data/musicxml/20b0dcec-ff6a-43d2-8bfe-9e077937a1cf@SonateD-Durfür2TraversflötenundBassocontinuo.xml','musicxml',2);
-SELECT wmss_import_score('899c8c9e-dd50-4041-8706-8c0479eb5de5','/home/jones/git/wmss/wmss/data/musicxml/899c8c9e-dd50-4041-8706-8c0479eb5de5@Confusasmarritaspiegartivorrei.xml','musicxml',2);
-SELECT wmss_import_score('01924ae1-3991-464f-97f0-b6498f973560','/home/jones/git/wmss/wmss/data/musicxml/01924ae1-3991-464f-97f0-b6498f973560@SinfoniaB-DurfürStreicherundBassocontinuo.xml','musicxml',2);
+SELECT wmss_import_score('3e724fa4-f67e-4dff-94d6-a01b78d73049','/home/jones/git/wmss/wmss/data/musicxml/3e724fa4-f67e-4dff-94d6-a01b78d73049@SinfoniaA-DurfurStreicherundBassocontinuo.xml','musicxml',3);
+SELECT wmss_import_score('4a12fece-a4ac-4654-8407-2e32be8d3e56','/home/jones/git/wmss/wmss/data/musicxml/4a12fece-a4ac-4654-8407-2e32be8d3e56@Sonatee-MollfürTraversflöteundBassocontinuo.xml','musicxml',3);
+SELECT wmss_import_score('5c3047f9-f8bc-46eb-8073-0dc3ffb28d30','/home/jones/git/wmss/wmss/data/musicxml/5c3047f9-f8bc-46eb-8073-0dc3ffb28d30@Sedunamortiranno.xml','musicxml',3);
+SELECT wmss_import_score('5e61ff05-7ceb-4e5c-b81e-19f8105f4a53','/home/jones/git/wmss/wmss/data/musicxml/5e61ff05-7ceb-4e5c-b81e-19f8105f4a53@BetrübtesHerz,zerbrich.xml','musicxml',3);
+SELECT wmss_import_score('6be19ce2-fbf2-442f-af37-08b0eb487d45','/home/jones/git/wmss/wmss/data/musicxml/6be19ce2-fbf2-442f-af37-08b0eb487d45@Aquellleggiadrovolto.xml','musicxml',3);
+SELECT wmss_import_score('20b0dcec-ff6a-43d2-8bfe-9e077937a1cf','/home/jones/git/wmss/wmss/data/musicxml/20b0dcec-ff6a-43d2-8bfe-9e077937a1cf@SonateD-Durfür2TraversflötenundBassocontinuo.xml','musicxml',3);
+SELECT wmss_import_score('899c8c9e-dd50-4041-8706-8c0479eb5de5','/home/jones/git/wmss/wmss/data/musicxml/899c8c9e-dd50-4041-8706-8c0479eb5de5@Confusasmarritaspiegartivorrei.xml','musicxml',3);
+SELECT wmss_import_score('01924ae1-3991-464f-97f0-b6498f973560','/home/jones/git/wmss/wmss/data/musicxml/01924ae1-3991-464f-97f0-b6498f973560@SinfoniaB-DurfürStreicherundBassocontinuo.xml','musicxml',3);
 SELECT wmss_import_score('825151','/home/jones/git/wmss/wmss/data/musicxml/825151@TroisDuosConcertans.xml','musicxml',2);
 SELECT wmss_import_score('948617','/home/jones/git/wmss/wmss/data/musicxml/948617@nouvellepolonaisepourlepianoforte.xml','musicxml',2);
 SELECT wmss_import_score('1009591','/home/jones/git/wmss/wmss/data/musicxml/1009591@kleinerfeierabend.xml','musicxml',2);
@@ -1192,13 +1311,27 @@ SELECT wmss_import_score('4340117','/home/jones/git/wmss/wmss/data/musicxml/4340
 SELECT wmss_import_score('4341718','/home/jones/git/wmss/wmss/data/musicxml/4341718@troisduosconcertanspourdeuxflutes.xml','musicxml',2);
 SELECT wmss_import_score('4341767','/home/jones/git/wmss/wmss/data/musicxml/4341767@3duospourdeuxVioloncelles.xml','musicxml',2);
 SELECT wmss_import_score('4342391','/home/jones/git/wmss/wmss/data/musicxml/4342391@LeBalmasque.xml','musicxml',2);
-SELECT wmss_import_score('75266515-9803-41de-ac1b-bc2796adc12d','/home/jones/git/wmss/wmss/data/musicxml/75266515-9803-41de-ac1b-bc2796adc12d@SonateA-Durfur2ViolinenundBassocontinuo.xml','musicxml',2);
-SELECT wmss_import_score('a13a60c1-8170-40cb-aaf2-4805931f9465','/home/jones/git/wmss/wmss/data/musicxml/a13a60c1-8170-40cb-aaf2-4805931f9465@konzertBdurfurviolinestreicherundbassocontinuo.xml','musicxml',2);
-SELECT wmss_import_score('ad3ed640-90e3-49ce-8ce4-b3dc69c597a5','/home/jones/git/wmss/wmss/data/musicxml/ad3ed640-90e3-49ce-8ce4-b3dc69c597a5@SonateG-Durfür2ViolinenundBassocontinuo.xml','musicxml',2);
-SELECT wmss_import_score('bd2527e4-155e-401d-a6ba-7d1056d09b37','/home/jones/git/wmss/wmss/data/musicxml/bd2527e4-155e-401d-a6ba-7d1056d09b37@SonateA-Durfür2TraversflötenundBassocontinuo.xml','musicxml',2);
-SELECT wmss_import_score('cfc09cec-206c-4a97-b3ac-b4c304080350','/home/jones/git/wmss/wmss/data/musicxml/cfc09cec-206c-4a97-b3ac-b4c304080350@sonate.xml','musicxml',2);
-SELECT wmss_import_score('d7c0073f-8406-4dc0-be5c-3f267e7f5789','/home/jones/git/wmss/wmss/data/musicxml/d7c0073f-8406-4dc0-be5c-3f267e7f5789@andermond.xml','musicxml',2);
-SELECT wmss_import_score('e73f74ec-6711-499f-b3eb-503ca99c6b14','/home/jones/git/wmss/wmss/data/musicxml/e73f74ec-6711-499f-b3eb-503ca99c6b14@sonate.xml','musicxml',2);
-SELECT wmss_import_score('ebb4d5a6-3096-492f-934a-bc7c0e6644bf','/home/jones/git/wmss/wmss/data/musicxml/ebb4d5a6-3096-492f-934a-bc7c0e6644bf@AndenMond.xml','musicxml',2);
+SELECT wmss_import_score('75266515-9803-41de-ac1b-bc2796adc12d','/home/jones/git/wmss/wmss/data/musicxml/75266515-9803-41de-ac1b-bc2796adc12d@SonateA-Durfur2ViolinenundBassocontinuo.xml','musicxml',3);
+SELECT wmss_import_score('a13a60c1-8170-40cb-aaf2-4805931f9465','/home/jones/git/wmss/wmss/data/musicxml/a13a60c1-8170-40cb-aaf2-4805931f9465@konzertBdurfurviolinestreicherundbassocontinuo.xml','musicxml',3);
+SELECT wmss_import_score('ad3ed640-90e3-49ce-8ce4-b3dc69c597a5','/home/jones/git/wmss/wmss/data/musicxml/ad3ed640-90e3-49ce-8ce4-b3dc69c597a5@SonateG-Durfür2ViolinenundBassocontinuo.xml','musicxml',3);
+SELECT wmss_import_score('bd2527e4-155e-401d-a6ba-7d1056d09b37','/home/jones/git/wmss/wmss/data/musicxml/bd2527e4-155e-401d-a6ba-7d1056d09b37@SonateA-Durfür2TraversflötenundBassocontinuo.xml','musicxml',3);
+SELECT wmss_import_score('cfc09cec-206c-4a97-b3ac-b4c304080350','/home/jones/git/wmss/wmss/data/musicxml/cfc09cec-206c-4a97-b3ac-b4c304080350@sonate.xml','musicxml',3);
+SELECT wmss_import_score('d7c0073f-8406-4dc0-be5c-3f267e7f5789','/home/jones/git/wmss/wmss/data/musicxml/d7c0073f-8406-4dc0-be5c-3f267e7f5789@andermond.xml','musicxml',3);
+SELECT wmss_import_score('e73f74ec-6711-499f-b3eb-503ca99c6b14','/home/jones/git/wmss/wmss/data/musicxml/e73f74ec-6711-499f-b3eb-503ca99c6b14@sonate.xml','musicxml',3);
+SELECT wmss_import_score('ebb4d5a6-3096-492f-934a-bc7c0e6644bf','/home/jones/git/wmss/wmss/data/musicxml/ebb4d5a6-3096-492f-934a-bc7c0e6644bf@AndenMond.xml','musicxml',3);
 SELECT wmss_import_score('4339837','/home/jones/git/wmss/wmss/data/musicxml/4339837@PolonoisepourlaHarpe.xml','musicxml',2);
 SELECT wmss_import_score('974543','/home/jones/git/wmss/wmss/data/musicxml/974543@Pot-pourrisurdesmélodiesdeloperaDonJuan.xml','musicxml',2);
+
+
+
+-- WWU specific updates
+
+UPDATE wmss_scores 
+SET score_online_resource = 'https://sammlungen.ulb.uni-muenster.de/id/' || score_id 
+WHERE collection_id = 2;
+
+UPDATE wmss_scores 
+SET score_online_resource = 'https://miami.uni-muenster.de/Record/' || score_id 
+WHERE collection_id = 3;
+
+

@@ -1,4 +1,7 @@
-﻿CREATE OR REPLACE FUNCTION public.wmss_extract_musicxml_notes(document_id VARCHAR) RETURNS CHARACTER VARYING AS $BODY$
+﻿-- Author: Jones
+-- Comments: Function to extract notes from MusicXML documents.
+
+CREATE OR REPLACE FUNCTION public.wmss_extract_musicxml_notes(document_id VARCHAR) RETURNS CHARACTER VARYING AS $BODY$
 
 DECLARE i RECORD;
 DECLARE j RECORD;
@@ -264,7 +267,6 @@ BEGIN
 			IF LOWER(ext_accidental) = 'double-sharp' THEN ext_accidental := 'ss'; END IF;
 			IF LOWER(ext_accidental) = 'flat-flat' THEN ext_accidental := 'bb'; END IF;
 			IF LOWER(ext_accidental) = 'natural' THEN ext_accidental := ''; END IF;
-		    --raise notice 'accidental %',ext_accidental;
 		    ELSE 
 		        ext_accidental := '';
 		    END IF;
