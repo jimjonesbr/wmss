@@ -14,7 +14,7 @@ The Web Music Score Service (WMSS) provides an interface allowing requests for m
   - [DescribeService](#describeservice)
     - [Service Description Document](#service-description-report)
   - [ListScores](#listscores)
-    - [Score List Document](#score-list-document)  
+    - [Score List Report](#score-list-report)  
   - [GetScore](#getscore)
   - [Logging](#logging)
   - [Exceptions](#exceptions)
@@ -53,7 +53,6 @@ The Service Description Report collects all available properties from each avail
 #### [Service Description Report](https://github.com/jimjonesbr/wmss/blob/master/README.md#service-description-report) 
 The Service Description Document is provided as JSON and is structured as follows:
  
-
 `appVersion`&nbsp;   WMSS version.
 
 `service`&nbsp;   Service name.
@@ -112,6 +111,7 @@ The Service Description Document is provided as JSON and is structured as follow
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`mediumDescription`&nbsp;  Performance medium description.
 
+An example of a Service Description Report can be found [here](https://github.com/jimjonesbr/wmss/tree/master/wmss/data/system/reports/DescribeService.json).
 ### [ListScores](https://github.com/jimjonesbr/wmss/blob/master/README.md#listscores)
  
  Lists all scores from available repositories. 
@@ -192,7 +192,7 @@ Only baroque trumpets:
  http://localhost:8295/wmss?request=ListScores&performanceMedium=brass.trumpet.baroque
 ```
 
-A complete list of performance mediums containing approx. 900 items can be foun [here](https://github.com/jimjonesbr/wmss/tree/master/wmss/data/system/mediums.csv).
+A complete list of performance mediums containing approx. 900 items can be found [here](https://github.com/jimjonesbr/wmss/tree/master/wmss/data/system/mediums.csv).
 
 ##### Performance Medium Type
 
@@ -301,67 +301,12 @@ eb-w-0/e-w-0
 | unknown  |   |0
 
 
-
-#### [Score List Document](https://github.com/jimjonesbr/wmss/blob/master/README.md#score-list-document)
+#### [Score List Report](https://github.com/jimjonesbr/wmss/blob/master/README.md#score-list-report)
 The Score List Document is provided as JSON and is structured as follows:
 
-```json
-{
-  "type": "ScoreListReport",
-  "size": 1,
-  "datasources": [
-    {
-      "identifier": "postgres_wwu",
-      "size": 1,
-      "host": "localhost",
-      "storage": "postgresql",
-      "type": "database",
-      "version": "9.5",
-      "scores": [
-        {
-          "scoreIdentifier": "postgres_wwu:1",
-          "title": "Walzer G-Dur",
-          "groupDescription": "MEI Examples",
-          "groupId": "1",
-          "tonalityTonic": "g",
-          "tonalityMode": "major",
-          "creationDateFrom": 1784,
-          "creationDateTo": 1849,
-          "movements": [
-            {
-              "movementIdentifier": "1",
-              "title": "Walzer G-Dur",
-              "performanceMediumList": [
-                {
-                  "typeDescription": "Strings, plucked",
-                  "mediumDescription": "Guitar",
-                  "mediumClassification": "tb",
-                  "mediumScoreDescription": "Guitar I",
-                  "solo": false
-                }
-              ]
-            }
-          ],
-          "formats": [
-            {
-              "formatId": "mei",
-              "formatDescription": "MEI - Music Encoding Initiative"
-            }
-          ],
-          "persons": [
-            {
-              "name": "Dionisio Aguado y García",
-              "role": "Composer"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-```
- 
-  
+
+An example of a Score List Report can be found [here](https://github.com/jimjonesbr/wmss/tree/master/wmss/data/system/reports/ListScores.json).
+
   ### [GetScore](https://github.com/jimjonesbr/wmss/blob/master/README.md#getscore)
   
 Retrieves a specific record based on its identifier:
