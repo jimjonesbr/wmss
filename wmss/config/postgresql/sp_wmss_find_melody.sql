@@ -3,10 +3,10 @@
 --	      2) Identifiers of scores to be harversted. For all available music scores use '*'.
 -- Comments: 
 
-DROP TYPE IF EXISTS note;
-CREATE TYPE note AS (pitch VARCHAR, duration VARCHAR, octave VARCHAR, next_noteset NUMERIC);
+DROP TYPE IF EXISTS wmss.note;
+CREATE TYPE wmss.note AS (pitch VARCHAR, duration VARCHAR, octave VARCHAR, next_noteset NUMERIC);
 
-CREATE OR REPLACE FUNCTION public.wmss_find_melody(melody VARCHAR, identifiers VARCHAR)
+CREATE OR REPLACE FUNCTION wmss.wmss_find_melody(melody VARCHAR, identifiers VARCHAR)
 RETURNS TABLE (
 res_score VARCHAR, 
 res_movement VARCHAR,
@@ -60,7 +60,7 @@ BEGIN
 
 	start_note = array_notes[1];
 
-	melody_query := 'SELECT * FROM wmss_notes WHERE next_noteset_id IS NOT NULL AND ';
+	melody_query := 'SELECT * FROM wmss.wmss_notes WHERE next_noteset_id IS NOT NULL AND ';
 	
 	IF start_note.octave <> '0' THEN 
 	    melody_query := melody_query || 'octave=' || QUOTE_LITERAL(start_note.octave); 
@@ -122,7 +122,7 @@ BEGIN
 		--			   movement_id = j.movement_id LIMIT 1);
 
 					   
-		FOR l IN SELECT pitch, duration, octave, next_noteset_id FROM wmss_notes 
+		FOR l IN SELECT pitch, duration, octave, next_noteset_id FROM wmss.wmss_notes 
 				  WHERE noteset_id = current_note.next_noteset AND 
 				        score_id = j.score_id AND 
 					movement_id = j.movement_id LIMIT 1 LOOP
@@ -175,15 +175,15 @@ BEGIN
 		      tmp_instrument, 
 		      med.movement_performance_medium_description
 	FROM tmp_result 
-	JOIN wmss_score_movements mov ON mov.movement_id = tmp_movement AND mov.score_id = tmp_score
-	JOIN wmss_movement_performance_medium med ON med.file_performance_medium_id = tmp_instrument AND 
+	JOIN wmss.wmss_score_movements mov ON mov.movement_id = tmp_movement AND mov.score_id = tmp_score
+	JOIN wmss.wmss_movement_performance_medium med ON med.file_performance_medium_id = tmp_instrument AND 
 						     mov.movement_id = med.movement_id AND 
 						     med.score_id = mov.score_id;
 	--ORDER BY res_score, res_movement, res_instrument, res_measure ASC ;
 
 END;$$
 LANGUAGE plpgsql;
-ALTER FUNCTION public.wmss_find_melody(VARCHAR,VARCHAR) OWNER TO postgres;
+ALTER FUNCTION wmss.wmss_find_melody(VARCHAR,VARCHAR) OWNER TO postgres;
 
 
 --SELECT public.wmss_find_melody('c-4-0/c-4-0/d-4-0/d-4-0/e-4-0');
@@ -221,4 +221,4 @@ ALTER FUNCTION public.wmss_find_melody(VARCHAR,VARCHAR) OWNER TO postgres;
 --SELECT * FROM public.wmss_find_melody('c-w-0/c-w-0/c-w-0/c-w-0/c-w-0','*')
 --SELECT * FROM public.wmss_find_melody('a-w-0/a-w-0/a-w-0/a-w-0/a-w-0','*')
 
-SELECT DISTINCT * FROM public.wmss_find_melody('c-4-0/d-4-0/e-4-0/f-4-0/g-4-0/a-4-0','*');
+SELECT DISTINCT * FROM wmss.wmss_find_melody('c-4-0/d-4-0/e-4-0/f-4-0/g-4-0/a-4-0','*');

@@ -32,8 +32,8 @@ public class FactoryWMSS {
 			if (dataSource.getStorage().equals("postgresql")){
 
 				String sql = "SELECT DISTINCT col.collection_id, col.collection_description \n " + 
-							 "FROM wmss_collections col\n " + 
-							 "JOIN wmss_scores scr ON scr.collection_id = col.collection_id ";
+							 "FROM wmss.wmss_collections col\n " + 
+							 "JOIN wmss.wmss_scores scr ON scr.collection_id = col.collection_id ";
 
 				ResultSet rs = PostgreSQLConnector.executeQuery(sql, dataSource);
 
@@ -70,8 +70,8 @@ public class FactoryWMSS {
 			if (dataSource.getStorage().equals("postgresql")){
 
 				String sql = "SELECT DISTINCT typ.document_type_id, typ.document_type_description \n" + 
-							 "FROM wmss_document_type typ\n" + 
-							 "JOIN wmss_document doc ON doc.document_type_id = typ.document_type_id";
+							 "FROM wmss.wmss_document_type typ\n" + 
+							 "JOIN wmss.wmss_document doc ON doc.document_type_id = typ.document_type_id";
 
 				ResultSet rs = PostgreSQLConnector.executeQuery(sql, dataSource);
 
@@ -108,7 +108,7 @@ public class FactoryWMSS {
 			if (dataSource.getStorage().equals("postgresql")){
 
 				String sql = "SELECT DISTINCT score_tonality_note, score_tonality_mode \n" + 
-							 "FROM wmss_scores WHERE score_tonality_note IS NOT NULL AND \n" + 
+							 "FROM wmss.wmss_scores WHERE score_tonality_note IS NOT NULL AND \n" + 
 							 "		       score_tonality_mode IS NOT NULL ";
 
 				
@@ -148,7 +148,7 @@ public class FactoryWMSS {
 			if (dataSource.getStorage().equals("postgresql")){
 
 				String sql = "SELECT DISTINCT movement_tempo \n" + 
-						"FROM wmss_score_movements \n" + 
+						"FROM wmss.wmss_score_movements \n" + 
 						"WHERE movement_tempo IS NOT NULL AND movement_tempo <> ''";
 
 				ResultSet rs = PostgreSQLConnector.executeQuery(sql, dataSource);
@@ -186,9 +186,9 @@ public class FactoryWMSS {
 			if (dataSource.getStorage().equals("postgresql")){
 
 				String sql = "SELECT DISTINCT pmt.performance_medium_type_id, pmt.performance_medium_type_description, pm.performance_medium_id, pm.performance_medium_description \n" + 
-							 "FROM wmss_performance_medium pm \n" + 
-							 "JOIN wmss_performance_medium_type pmt ON pm.performance_medium_type_id = pmt.performance_medium_type_id \n" +
-							 "JOIN wmss_movement_performance_medium mvpm ON pm.performance_medium_id = mvpm.performance_medium_id \n" + 
+							 "FROM wmss.wmss_performance_medium pm \n" + 
+							 "JOIN wmss.wmss_performance_medium_type pmt ON pm.performance_medium_type_id = pmt.performance_medium_type_id \n" +
+							 "JOIN wmss.wmss_movement_performance_medium mvpm ON pm.performance_medium_id = mvpm.performance_medium_id \n" + 
 							 "ORDER BY pmt.performance_medium_type_id ";
 
 				ResultSet rs = PostgreSQLConnector.executeQuery(sql, dataSource);
@@ -291,17 +291,17 @@ public class FactoryWMSS {
 
 				String sqlHeader = "SELECT grp.*,	scr.*, per.*, rol.*, doctype.*, med.*, movmed.*,  medtype.*, mov.* \n";				
 				String sqlJoins = "" +						 	
-						"FROM wmss_scores scr \n" +
-						"	JOIN wmss_score_movements mov ON scr.score_id = mov.score_id \n" + 
-						"	JOIN wmss_movement_performance_medium movmed ON mov.movement_id = movmed.movement_id AND movmed.score_id = scr.score_id \n" + 
-						"	JOIN wmss_performance_medium med ON movmed.performance_medium_id = med.performance_medium_id \n" +
-						"	JOIN wmss_performance_medium_type medtype ON med.performance_medium_type_id = medtype.performance_medium_type_id \n" +
-						"	JOIN wmss_score_persons scrper ON scrper.score_id = scr.score_id  \n" +
-						"	JOIN wmss_persons per ON per.person_id = scrper.person_id  \n" +
-						"	JOIN wmss_roles rol ON rol.role_id = scrper.role_id \n" +
-						"	JOIN wmss_collections grp ON grp.collection_id = scr.collection_id \n" +
-						"	JOIN wmss_document doc ON doc.score_id = scr.score_id \n" +
-						"	JOIN wmss_document_type doctype ON doctype.document_type_id = doc.document_type_id \n ";
+						"FROM wmss.wmss_scores scr \n" +
+						"	JOIN wmss.wmss_score_movements mov ON scr.score_id = mov.score_id \n" + 
+						"	JOIN wmss.wmss_movement_performance_medium movmed ON mov.movement_id = movmed.movement_id AND movmed.score_id = scr.score_id \n" + 
+						"	JOIN wmss.wmss_performance_medium med ON movmed.performance_medium_id = med.performance_medium_id \n" +
+						"	JOIN wmss.wmss_performance_medium_type medtype ON med.performance_medium_type_id = medtype.performance_medium_type_id \n" +
+						"	JOIN wmss.wmss_score_persons scrper ON scrper.score_id = scr.score_id  \n" +
+						"	JOIN wmss.wmss_persons per ON per.person_id = scrper.person_id  \n" +
+						"	JOIN wmss.wmss_roles rol ON rol.role_id = scrper.role_id \n" +
+						"	JOIN wmss.wmss_collections grp ON grp.collection_id = scr.collection_id \n" +
+						"	JOIN wmss.wmss_document doc ON doc.score_id = scr.score_id \n" +
+						"	JOIN wmss.wmss_document_type doctype ON doctype.document_type_id = doc.document_type_id \n ";
 				String sqlFilter = "";
 
 				
@@ -549,46 +549,6 @@ public class FactoryWMSS {
 
 		}
 
-		/**
-		for (int i = 0; i < scoreList.size(); i++) {
-
-			for (int j = 0; j < scoreList.get(i).getMovements().size(); j++) {
-
-				for (int k = 0; k < mediumList.size(); k++) {
-
-					boolean mediumAdded = false;
-
-					if(scoreList.get(i).getScoreIdentifier().equals(mediumList.get(k).getScoreId())  &&
-							scoreList.get(i).getMovements().get(j).getMovementId().equals(mediumList.get(k).getMovementId())){
-
-						for (int l = 0; l < scoreList.get(i).getMovements().get(j).getPerformanceMediumList().size(); l++) {
-
-							if(scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getScoreId().equals(mediumList.get(k).getScoreId()) &&
-									scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMovementId().equals(mediumList.get(k).getMovementId()) &&
-									scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediumScoreDescription().equals(mediumList.get(k).getMediumScoreDescription())){
-
-								mediumAdded = true;
-
-							} 
-
-						}
-
-						if(!mediumAdded) {
-							//previous approach
-							//scoreList.get(i).getMovements().get(j).getPerformanceMediumList().add(mediumList.get(k));
-
-						}
-
-
-					}
-				}
-
-
-
-			}
-
-		}
-		*/
 
 		/**
 		 * Adding performance medium types to the correspondent performance mediums played in the score.
@@ -902,7 +862,7 @@ public class FactoryWMSS {
 
 			if (dataSource.getStorage().equals("postgresql")){
 
-				String SQL = "SELECT score_document FROM wmss_document WHERE score_id = '" + scoreId + "' ";	
+				String SQL = "SELECT score_document FROM wmss.wmss_document WHERE score_id = '" + scoreId + "' ";	
 
 				if(!format.equals("")){
 
@@ -942,7 +902,7 @@ public class FactoryWMSS {
 			
 			ResultSet rs;
 	
-			rs = PostgreSQLConnector.executeQuery("SELECT DISTINCT * FROM wmss_find_melody('"+melody+"','"+identifiers+"')", dataSource);
+			rs = PostgreSQLConnector.executeQuery("SELECT DISTINCT * FROM wmss.wmss_find_melody('"+melody+"','"+identifiers+"')", dataSource);
 		
 
 			while (rs.next()){

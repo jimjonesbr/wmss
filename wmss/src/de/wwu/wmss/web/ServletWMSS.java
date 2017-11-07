@@ -358,7 +358,16 @@ public class ServletWMSS extends HttpServlet
 				
 			} else {
 				
-				validNotes = element[0].matches("0|a|b|c|d|e|f|g|ab|bb|cb|db|eb|fb|gb|abb|bbb|cbb|dbb|ebb|fbb|gbb|as|bs|cs|ds|es|fs|gs|ass|bss|css|dss|ess|fss|gss");	
+				validNotes = element[0].matches("0|a|b|c|d|e|f|g|" 				// natural
+											  + "ahb|bhb|chb|dhb|ehb|fhb|ghb|"	// half flat
+											  + "ab|bb|cb|db|eb|fb|gb|"			// flat
+											  + "abh|bbh|cbh|dbh|ebh|fbh|gbh|"	// flat and a half										  
+											  + "abb|bbb|cbb|dbb|ebb|fbb|gbb|"	// double flat
+											  + "ahs|bhs|chs|dhs|ehs|fhs|ghs|"	// half sharp
+											  + "as|bs|cs|ds|es|fs|gs|"			// sharp					  
+											  + "ash|bsh|csh|dsh|esh|fsh|gsh|"	// sharp and a half							  
+											  + "ass|bss|css|dss|ess|fss|gss");	// double sharp
+				
 				validDurations = element[1].matches("0|ow|qw|dw|w|h|4|8|16|32|64|128|256");	
 				validOctaves = element[2].matches("0|1|2|3|4|5|6|7|8|9");
 				

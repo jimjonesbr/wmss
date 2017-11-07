@@ -1,7 +1,7 @@
 ﻿-- Author: Jones
 -- Comments: Function to extract notes from MusicXML documents.
 
-CREATE OR REPLACE FUNCTION public.wmss_extract_musicxml_notes(document_id VARCHAR) RETURNS CHARACTER VARYING AS $BODY$
+CREATE OR REPLACE FUNCTION wmss.wmss_extract_musicxml_notes(document_id VARCHAR) RETURNS CHARACTER VARYING AS $BODY$
 
 DECLARE i RECORD;
 DECLARE j RECORD;
@@ -27,12 +27,12 @@ DECLARE current_tonality VARCHAR;
 BEGIN
 	RAISE NOTICE 'Processing MusicXML from "%" ... ',document_id;   	
 		
-	ext_parts := (SELECT XPATH('//score-part/@id', score_document)::TEXT[] FROM wmss_document WHERE score_id = document_id AND document_type_id = 'musicxml');
+	ext_parts := (SELECT XPATH('//score-part/@id', score_document)::TEXT[] FROM wmss.wmss_document WHERE score_id = document_id AND document_type_id = 'musicxml');
 	RAISE NOTICE '	Extracting notes of % instruments ... ', ARRAY_LENGTH(ext_parts,1);   	
 
 	FOR i IN 1 .. ARRAY_LENGTH(ext_parts, 1) LOOP
 
-	    ext_measures := (SELECT XPATH('//part[@id="'||ext_parts[i]||'"]/measure', score_document) FROM wmss_document WHERE score_id = document_id);
+	    ext_measures := (SELECT XPATH('//part[@id="'||ext_parts[i]||'"]/measure', score_document) FROM wmss.wmss_document WHERE score_id = document_id);
 
 	    FOR j IN 1 .. ARRAY_LENGTH(ext_measures, 1) LOOP
 	
@@ -270,7 +270,7 @@ BEGIN
 		    ELSE 
 		        ext_accidental := '';
 		    END IF;
-		    INSERT INTO wmss_notes (score_id, movement_id, measure, octave, pitch, duration, voice, instrument,staff,chord,noteset_id,document_type_id) 
+		    INSERT INTO wmss.wmss_notes (score_id, movement_id, measure, octave, pitch, duration, voice, instrument,staff,chord,noteset_id,document_type_id) 
 		    VALUES (document_id, ext_movement, ext_measure_id, ext_octave, ext_pitch||ext_accidental, ext_duration, ext_voice::INTEGER, ext_instrument, ext_staff::INTEGER,ext_is_chord,noteset,'musicxml');
 
 		    ext_is_chord := FALSE;
@@ -300,9 +300,9 @@ BEGIN
 	--WHERE score_id = document_id;
 
 
-	UPDATE wmss_notes note 
+	UPDATE wmss.wmss_notes note 
 	SET next_noteset_id = (SELECT noteset_id 
-			       FROM wmss_notes 
+			       FROM wmss.wmss_notes 
 			       WHERE noteset_id > note.noteset_id AND
 				  staff = note.staff AND
 				  voice = note.voice AND
@@ -318,7 +318,7 @@ BEGIN
 END;
 $BODY$
 LANGUAGE plpgsql VOLATILE COST 100;
-ALTER FUNCTION public.wmss_extract_musicxml_notes(VARCHAR) OWNER TO postgres;
+ALTER FUNCTION wmss.wmss_extract_musicxml_notes(VARCHAR) OWNER TO postgres;
 
 
 
@@ -356,106 +356,12 @@ duration VARCHAR,
 voice INTEGER,
 staff INTEGER,
 chord BOOLEAN,
-FOREIGN KEY (score_id,document_type_id) REFERENCES wmss_document (score_id, document_type_id)
-
---note_id SERIAL PRIMARY KEY,
---next NUMERIC
+FOREIGN KEY (score_id,document_type_id) REFERENCES wmss.wmss_document (score_id, document_type_id)
 );
 
-DROP SEQUENCE IF EXISTS seq_noteset;
-CREATE SEQUENCE seq_noteset START WITH 1;
-
--- wmss_notes partitions (every million records)
-								
-CREATE TABLE wmss_notes_p1 (CHECK ( noteset_id >= 1 AND noteset_id <= 1000000 )) INHERITS (wmss_notes);
-CREATE TABLE wmss_notes_p2 (CHECK ( noteset_id > 1000000 AND noteset_id <= 2000000 )) INHERITS (wmss_notes);
-CREATE TABLE wmss_notes_p3 (CHECK ( noteset_id > 2000000 AND noteset_id <= 3000000 )) INHERITS (wmss_notes);
-CREATE TABLE wmss_notes_p4 (CHECK ( noteset_id > 3000000 AND noteset_id <= 4000000 )) INHERITS (wmss_notes);
-CREATE TABLE wmss_notes_p5 (CHECK ( noteset_id > 4000000 )) INHERITS (wmss_notes);
-
-
---CREATE INDEX idx_wmss_notes_p1 ON wmss_notes_p1 (note_id);
-CREATE INDEX idx_wmss_notes_p1_noteset ON wmss_notes_p1 (noteset_id);
-CREATE INDEX idx_wmss_notes_p1_pitch ON wmss_notes_p1 (pitch);
-CREATE INDEX idx_wmss_notes_p1_octave ON wmss_notes_p1 (octave);
-CREATE INDEX idx_wmss_notes_p1_duration ON wmss_notes_p1 (duration);
---CREATE INDEX idx_wmss_notes_p1_next ON wmss_notes_p1 (next);
-CREATE INDEX idx_wmss_notes_p1_next_noteset ON wmss_notes_p1 (next_noteset_id);
-
-
---CREATE INDEX idx_wmss_notes_p2 ON wmss_notes_p2 (note_id);
-CREATE INDEX idx_wmss_notes_p2_noteset ON wmss_notes_p2 (noteset_id);
-CREATE INDEX idx_wmss_notes_p2_pitch ON wmss_notes_p2 (pitch);
-CREATE INDEX idx_wmss_notes_p2_octave ON wmss_notes_p2 (octave);
-CREATE INDEX idx_wmss_notes_p2_duration ON wmss_notes_p2 (duration);
---CREATE INDEX idx_wmss_notes_p2_next ON wmss_notes_p2 (next);
-CREATE INDEX idx_wmss_notes_p2_next_noteset ON wmss_notes_p2 (next_noteset_id);
-
---CREATE INDEX idx_wmss_notes_p3 ON wmss_notes_p3 (note_id);
-CREATE INDEX idx_wmss_notes_p3_noteset ON wmss_notes_p3 (noteset_id);
-CREATE INDEX idx_wmss_notes_p3_pitch ON wmss_notes_p3 (pitch);
-CREATE INDEX idx_wmss_notes_p3_octave ON wmss_notes_p3 (octave);
-CREATE INDEX idx_wmss_notes_p3_duration ON wmss_notes_p3 (duration);
---CREATE INDEX idx_wmss_notes_p3_next ON wmss_notes_p3 (next);
-CREATE INDEX idx_wmss_notes_p3_next_noteset ON wmss_notes_p3 (next_noteset_id);
-
---CREATE INDEX idx_wmss_notes_p4 ON wmss_notes_p4 (note_id);
-CREATE INDEX idx_wmss_notes_p4_noteset ON wmss_notes_p4 (noteset_id);
-CREATE INDEX idx_wmss_notes_p4_pitch ON wmss_notes_p4 (pitch);
-CREATE INDEX idx_wmss_notes_p4_octave ON wmss_notes_p4 (octave);
-CREATE INDEX idx_wmss_notes_p4_duration ON wmss_notes_p4 (duration);
---CREATE INDEX idx_wmss_notes_p4_next ON wmss_notes_p4 (next);
-CREATE INDEX idx_wmss_notes_p4_next_noteset ON wmss_notes_p4 (next_noteset_id);
-
---CREATE INDEX idx_wmss_notes_p5 ON wmss_notes_p5 (note_id);
-CREATE INDEX idx_wmss_notes_p5_noteset ON wmss_notes_p5 (noteset_id);
-CREATE INDEX idx_wmss_notes_p5_pitch ON wmss_notes_p5 (pitch);
-CREATE INDEX idx_wmss_notes_p5_octave ON wmss_notes_p5 (octave);
-CREATE INDEX idx_wmss_notes_p5_duration ON wmss_notes_p5 (duration);
---CREATE INDEX idx_wmss_notes_p5_next ON wmss_notes_p5 (next);
-CREATE INDEX idx_wmss_notes_p5_next_noteset ON wmss_notes_p5 (next_noteset_id);
 
 
 
-CREATE OR REPLACE FUNCTION wmss_notes_insert_trigger()
-RETURNS TRIGGER AS $$
-BEGIN					     
-    IF ( NEW.noteset_id >= 0 AND NEW.noteset_id <= 1000000 ) THEN
-        INSERT INTO wmss_notes_p1 VALUES (NEW.*);
-    ELSIF ( NEW.noteset_id > 1000000 AND NEW.noteset_id <= 2000000) THEN
-        INSERT INTO wmss_notes_p2 VALUES (NEW.*);
-    ELSIF ( NEW.noteset_id > 2000000  AND NEW.noteset_id <= 3000000) THEN
-        INSERT INTO wmss_notes_p3 VALUES (NEW.*);
-    ELSIF ( NEW.noteset_id > 3000000 AND NEW.noteset_id <= 4000000) THEN
-        INSERT INTO wmss_notes_p4 VALUES (NEW.*);
-    ELSIF ( NEW.noteset_id > 4000000 ) THEN
-        INSERT INTO wmss_notes_p5 VALUES (NEW.*);
-    ELSE
-        RAISE EXCEPTION 'Noteset out of range. Fix the wmss_notes_insert_trigger() function!';
-    END IF;
-    RETURN NULL;
-END;
-$$
-LANGUAGE plpgsql;
+SELECT wmss.wmss_extract_musicxml_notes(score_id) FROM wmss.wmss_document WHERE document_type_id = 'musicxml'-- AND score_id = '4307727' ;-- limit 10;
 
 
-DROP TRIGGER IF EXISTS wmss_trigger_insert_notes ON wmss_notes;
-
-CREATE TRIGGER wmss_trigger_insert_notes
-    BEFORE INSERT ON wmss_notes
-    FOR EACH ROW EXECUTE PROCEDURE wmss_notes_insert_trigger();
-
-
---CREATE INDEX idx_wmss_note ON wmss_notes (note_id);
-SELECT wmss_extract_musicxml_notes(score_id) FROM wmss_document WHERE document_type_id = 'musicxml'-- AND score_id = '4307727' ;-- limit 10;
---SELECT wmss_extract_musicxml_notes(score_id) FROM wmss_document WHERE document_type_id = 'musicxml';
-
---INSERT INTO wmss_notes (score_id, movement_id, instrument, measure, pitch, octave, duration, voice, staff, next) SELECT score_id, movement_id, instrument, measure, pitch, octave, duration, voice, staff, note_id+1 FROM wmss_notes;
---INSERT INTO wmss_notes (score_id, movement_id, instrument, measure, pitch, octave, duration, voice, staff, next) SELECT score_id, movement_id, instrument, measure, pitch, octave, duration, voice, staff, note_id+1 FROM wmss_notes;
---VACUUM full;
-
-
---select count(*) from wmss_notes_p2
---EXPLAIN ANALYZE SELECT ROW(pitch, duration, octave, next) FROM wmss_notes WHERE note_id = 373851 AND score_id = '4342391' AND movement_id = 4  LIMIT 1
-
---explain analyze SELECT public.wmss_find_melody('d-8-0/rest-8-0/b-8-0/rest-8-0/g-8-0/rest-8-0/d-8-0/rest-8-0');
