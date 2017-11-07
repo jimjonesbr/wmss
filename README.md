@@ -14,7 +14,7 @@ The Web Music Score Service (WMSS) provides an interface allowing requests for m
   - [DescribeService](#describeservice)
     - [Service Description Document](#service-description-report)
   - [ListScores](#listscores)
-    - [Score List Document](#score-list-document)  
+    - [Score List Report](#score-list-report)  
   - [GetScore](#getscore)
   - [Logging](#logging)
   - [Exceptions](#exceptions)
@@ -53,7 +53,6 @@ The Service Description Report collects all available properties from each avail
 #### [Service Description Report](https://github.com/jimjonesbr/wmss/blob/master/README.md#service-description-report) 
 The Service Description Document is provided as JSON and is structured as follows:
  
-
 `appVersion`&nbsp;   WMSS version.
 
 `service`&nbsp;   Service name.
@@ -112,6 +111,7 @@ The Service Description Document is provided as JSON and is structured as follow
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`mediumDescription`&nbsp;  Performance medium description.
 
+An example of a Service Description Report can be found [here](https://github.com/jimjonesbr/wmss/tree/master/wmss/data/system/reports/DescribeService.json).
 ### [ListScores](https://github.com/jimjonesbr/wmss/blob/master/README.md#listscores)
  
  Lists all scores from available repositories. 
@@ -192,7 +192,7 @@ Only baroque trumpets:
  http://localhost:8295/wmss?request=ListScores&performanceMedium=brass.trumpet.baroque
 ```
 
-A complete list of performance mediums containing approx. 900 items can be foun [here](https://github.com/jimjonesbr/wmss/tree/master/wmss/data/system/mediums.csv).
+A complete list of performance mediums containing approx. 900 items can be found [here](https://github.com/jimjonesbr/wmss/tree/master/wmss/data/system/mediums.csv).
 
 ##### Performance Medium Type
 
@@ -274,14 +274,18 @@ eb-w-0/e-w-0
 
 ##### Note list
 
-|Note   | Code  || Note   | Code  || Note   | Code  || Note   | Code  | 
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| C  | c  ||D  | d  ||E  | e  ||G  | g  |
-| C#  | cs  ||D#  | ds  ||E#  | es  ||G#  | gs  |
-| C♭  | cb  || D♭  | db  || E♭  | eb  ||G♭  | gb  |
-| B  | b  || E  | e  || F  | f  ||Unknown  | 0  |
-| B#  | bs  || E#  | es  || F#  | fs  |
-| B♭  | bb  || E♭  | eb  || F♭  | fb  |
+|Note   | Code ||Note | Code | |Note | Code | |Note | Code | |Note | Code | |Note | Code | |Note | Code | 
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:
+| C __♮__  | c  || D __♮__  | d  || E __♮__  | e  || F __♮__  | f  || G __♮__  | g  || A __♮__  | a  || B __♮__  | b  |
+| C ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | chs  || D ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | dhs  || E ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | ehs  || F ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | fhs  || G ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | ghs  || A ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | ahs  || B ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | bhs  |
+| C __#__  | cs  || D __#__  | ds  || E __#__  | es  || F __#__  | fs  || G __#__  | gs  || A __#__  | as  || B __#__  | bs  |
+| C ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | csh  || D ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | dsh  || E ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | esh  || F ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | fsh  || G ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | gsh  || A ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | ash  || B ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | bsh  |
+| C ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | css || D ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | dss || E ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | ess || F ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | fss || G ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | gss || A ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | ass || B ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | bss |
+| C ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | chb || D ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | dhb || E ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | ehb || F ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | fhb || G ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | ghb || A ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | ahb || B ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | bhb |  
+| C __♭__  | cb  || D __♭__  | db  || E __♭__  | eb  || F __♭__  | fb  || G __♭__  | gb  || A __♭__  | ab  || B __♭__  | bb  |
+| C ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | cbh  || D ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | dbh  || E ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | dbh  || F ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | fbh  || G ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | gbh  || A ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | abh  || B ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | bbh  |
+| C __𝄫__  | cbb  || D __𝄫__  | dbb  || E __𝄫__  | ebb  || F __𝄫__  | fbb  || G __𝄫__  | gbb  || A __𝄫__  | abb  || B __𝄫__  | bbb  |
+
 
 ##### Note Duration List
 |Duration name (US)   |Duration name (UK) | Code  | Notation  |
@@ -301,67 +305,12 @@ eb-w-0/e-w-0
 | unknown  |   |0
 
 
-
-#### [Score List Document](https://github.com/jimjonesbr/wmss/blob/master/README.md#score-list-document)
+#### [Score List Report](https://github.com/jimjonesbr/wmss/blob/master/README.md#score-list-report)
 The Score List Document is provided as JSON and is structured as follows:
 
-```json
-{
-  "type": "ScoreListReport",
-  "size": 1,
-  "datasources": [
-    {
-      "identifier": "postgres_wwu",
-      "size": 1,
-      "host": "localhost",
-      "storage": "postgresql",
-      "type": "database",
-      "version": "9.5",
-      "scores": [
-        {
-          "scoreIdentifier": "postgres_wwu:1",
-          "title": "Walzer G-Dur",
-          "groupDescription": "MEI Examples",
-          "groupId": "1",
-          "tonalityTonic": "g",
-          "tonalityMode": "major",
-          "creationDateFrom": 1784,
-          "creationDateTo": 1849,
-          "movements": [
-            {
-              "movementIdentifier": "1",
-              "title": "Walzer G-Dur",
-              "performanceMediumList": [
-                {
-                  "typeDescription": "Strings, plucked",
-                  "mediumDescription": "Guitar",
-                  "mediumClassification": "tb",
-                  "mediumScoreDescription": "Guitar I",
-                  "solo": false
-                }
-              ]
-            }
-          ],
-          "formats": [
-            {
-              "formatId": "mei",
-              "formatDescription": "MEI - Music Encoding Initiative"
-            }
-          ],
-          "persons": [
-            {
-              "name": "Dionisio Aguado y García",
-              "role": "Composer"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-```
- 
-  
+
+An example of a Score List Report can be found [here](https://github.com/jimjonesbr/wmss/tree/master/wmss/data/system/reports/ListScores.json).
+
   ### [GetScore](https://github.com/jimjonesbr/wmss/blob/master/README.md#getscore)
   
 Retrieves a specific record based on its identifier:
