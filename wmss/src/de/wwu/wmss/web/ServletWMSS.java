@@ -200,6 +200,10 @@ public class ServletWMSS extends HttpServlet
 
 		
 		
+		
+		
+		
+		
 		if(requestType.equals("")){
 
 			response.setContentType("text/javascript");
@@ -282,6 +286,12 @@ public class ServletWMSS extends HttpServlet
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0012", "Invalid melody '" + melody +"'","The provided melody is not valid. For more information go to: https://github.com/jimjonesbr/wmss/blob/master/README.md#melody"));
+
+		} else if (!collection.equals("") && !isCollectionValid(collection)) {
+			
+			response.setContentType("text/javascript");
+			response.setStatus(HttpServletResponse.SC_OK);
+			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0013", "Invalid collection string '" + collection +"'","The provided collection string is not valid. Provided either a single numeric identifier '1' or multiple separated by comma '1,2,3'."));
 
 			
 		} else if (requestType.equals("checklog")) {
@@ -371,5 +381,37 @@ public class ServletWMSS extends HttpServlet
 		return result;
 
 	}
+	
+	private static boolean isCollectionValid(String collectionString) {
+
+		boolean result = true;
+
+		result = collectionString.matches("^[0-9,]+$");
+
+		int comma = 0;
+		int digits = 0;
+
+		if (result) {
+			
+			for( int i=0; i<collectionString.length(); i++ ) {
+				
+				if( collectionString.charAt(i) == ',' ) {
+					comma++;
+				} 
+
+				if (Character.isDigit(collectionString.charAt(i))) {
+					digits++;
+				}
+
+			}
+
+			if(comma >= digits) result = false;
+			
+		}
+
+
+		return result;
+	}
+
 }
 

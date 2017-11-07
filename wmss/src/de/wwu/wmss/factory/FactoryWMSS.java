@@ -3,8 +3,6 @@ package de.wwu.wmss.factory;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
-
 import org.apache.log4j.Logger;
 import de.wwu.wmss.connectors.PostgreSQLConnector;
 import de.wwu.wmss.core.Collection;
@@ -19,7 +17,6 @@ import de.wwu.wmss.core.Person;
 import de.wwu.wmss.core.RequestParameter;
 import de.wwu.wmss.core.Tonality;
 import de.wwu.wmss.settings.SystemSettings;
-import de.wwu.wmss.settings.Util;
 
 public class FactoryWMSS {
 
@@ -34,7 +31,9 @@ public class FactoryWMSS {
 
 			if (dataSource.getStorage().equals("postgresql")){
 
-				String sql = "SELECT collection_id, collection_description FROM wmss_collections";
+				String sql = "SELECT DISTINCT col.collection_id, col.collection_description \n " + 
+							 "FROM wmss_collections col\n " + 
+							 "JOIN wmss_scores scr ON scr.collection_id = col.collection_id ";
 
 				ResultSet rs = PostgreSQLConnector.executeQuery(sql, dataSource);
 
@@ -356,7 +355,7 @@ public class FactoryWMSS {
 
 					} else if(parameters.get(i).getRequest().equals("collection")){
 
-						filters.add(" scr.collection_id  = " + parameters.get(i).getValue() +  " ");
+						filters.add(" scr.collection_id IN (" + parameters.get(i).getValue() +  ") ");
 
 					} else if(parameters.get(i).getRequest().equals("melody")){
 

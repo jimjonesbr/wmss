@@ -12,7 +12,7 @@ The Web Music Score Service (WMSS) provides an interface allowing requests for m
 - [Configuring WMSS](#configuring-wmss)
 - [Requests](#requests)
   - [DescribeService](#describeservice)
-    - [Service Description Document](#service-description-document)
+    - [Service Description Document](#service-description-report)
   - [ListScores](#listscores)
     - [Score List Document](#score-list-document)  
   - [GetScore](#getscore)
@@ -42,109 +42,75 @@ The WMSS communication protocol is based on the following HTTP requests:
 ### [DescribeService](https://github.com/jimjonesbr/wmss/blob/master/README.md#describeservice)
 
  
- Lists all service related information as well as all repositories available: 
+Lists all service related information as well as all repositories available: 
  
  ```http
  http://localhost:8295/wmss?request=DescribeService
  ```
-#### [Service Description Document](https://github.com/jimjonesbr/wmss/blob/master/README.md#service-description-document) 
+
+The Service Description Report collects all available properties from each available data source. It gives the client all possible filters for each filter option, such as tonalities, tempo markings or instruments available for search.
+
+#### [Service Description Report](https://github.com/jimjonesbr/wmss/blob/master/README.md#service-description-report) 
 The Service Description Document is provided as JSON and is structured as follows:
  
-```json
-{
-  "appVersion": "Dev-0.0.1",
-  "environment": {
-    "java": "1.8.0_131",
-    "os": "Linux 4.10.0-35-generic (amd64)"
-  },
-  "datasources": [
-    {
-      "port": 5432,
-      "filterCapabilities": {
-        "melody": false,
-        "group": true,
-        "personRole": true,
-        "performanceMedium": true,
-        "performanceMediumType": true,
-        "solo": true,
-        "tonalityTonic": true,
-        "tonalityMode": true,
-        "tempo": true,
-        "creationDateFrom": false,
-        "creationDateTo": false,
-        "source": true,
-        "identifier": true,
-        "format": true
-      },
-      "collections": [
-        {
-          "id": 0,
-          "description": "Default Collection"
-        },
-        {
-          "id": 1,
-          "description": "MEI 3.0 Sample Collection"
-        },
-        {
-          "id": 2,
-          "description": "ULB Digitale Sammlung"
-        }
-      ],
-      "host": "localhost",
-      "active": true,
-      "id": "postgres_wwu",
-      "storage": "postgresql",
-      "type": "database",
-      "repository": "wmss",
-      "version": "9.5",
-      "user": "postgres",
-      "info": "Test PostgreSQL repository."
-    },
-    {
-      "port": 7200,
-      "filterCapabilities": {
-        "melody": true,
-        "group": true,
-        "personRole": true,
-        "performanceMedium": true,
-        "performanceMediumType": true,
-        "solo": true,
-        "tonalityTonic": true,
-        "tonalityMode": true,
-        "tempo": true,
-        "creationDateFrom": true,
-        "creationDateTo": true,
-        "source": true,
-        "identifier": true,
-        "format": true
-      },
-      "collections": [],
-      "host": "linkeddata.uni-muenster.de",
-      "active": false,
-      "id": "graphdb_wwu",
-      "storage": "graphdb",
-      "type": "triplestore",
-      "repository": "wwu",
-      "version": "8",
-      "user": "",
-      "info": "Test GraphDB repository."
-    }
-  ],
-  "port": 8295,
-  "service": "wmss",
-  "startup": "2017/10/11 15:59:25",
-  "contact": "jim.jones@uni-muenster.de",
-  "type": "ServiceDescriptionReport",
-  "title": "Web Music Score Service - University of Münster",
-  "supportedProtocols": [
-    "1.0",
-    "1.1"
-  ],
-  "timeout": 5000
-}
-```
 
+`appVersion`&nbsp;   WMSS version.
 
+`service`&nbsp;   Service name.
+
+`type`&nbsp;   `ServiceDescriptionReport` (Standard value for Service Description Report)
+
+`startup`&nbsp;   Service startup time.
+
+`contact`&nbsp;   Administrator e-mail address.
+
+`title`&nbsp;   Service title of description.
+
+`supportedProtocols`&nbsp;   Protocols supported by the service.
+
+`environment`&nbsp;  Environment settings.
+
+&nbsp;&nbsp;&nbsp;&nbsp;`java`&nbsp;  Java version.
+
+&nbsp;&nbsp;&nbsp;&nbsp;`os`&nbsp;  Operating system description.
+
+`datasources`&nbsp;  Data sources available in the system.
+
+&nbsp;&nbsp;&nbsp;&nbsp;`id`&nbsp;  Data source identifier.
+
+&nbsp;&nbsp;&nbsp;&nbsp;`host`&nbsp;  Data source hosting server.
+
+&nbsp;&nbsp;&nbsp;&nbsp;`enabled`&nbsp;  Boolean value to enable or disable access to a data source.
+
+&nbsp;&nbsp;&nbsp;&nbsp;`type`&nbsp;  Data source type. Currently supported values are `database` and `triplestore`.
+
+&nbsp;&nbsp;&nbsp;&nbsp;`storage`&nbsp;  Storage technology used in a data source. Currently supported values are: `postgresql` and `graphdb`.
+
+&nbsp;&nbsp;&nbsp;&nbsp;`repository`&nbsp;  Specific repository of a data storage, e.g database for RDMS or a repository/named graph for triple stores.
+
+&nbsp;&nbsp;&nbsp;&nbsp;`user`&nbsp;  Username used for accessing the data source.
+
+&nbsp;&nbsp;&nbsp;&nbsp;`info`&nbsp;  Data source description.
+
+&nbsp;&nbsp;&nbsp;&nbsp;`formats`&nbsp;  Formats available in a data source, e.g. MusicXML, MEI.
+
+&nbsp;&nbsp;&nbsp;&nbsp;`tempoMarkings`&nbsp;  Tempo markings available in a data source, e.g. adagion, andante.
+
+&nbsp;&nbsp;&nbsp;&nbsp;`tonalities`&nbsp;  Tonalities available in a data source, e.g. C major, E minor.
+
+&nbsp;&nbsp;&nbsp;&nbsp;`collections`&nbsp;  Collections available in a data source.
+
+&nbsp;&nbsp;&nbsp;&nbsp;`performanceMediums`&nbsp;  Performance mediums (instruments) available in a data source.
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`mediumTypeId`&nbsp;  Identifier of the performance medium type
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`mediumTypeDescription`&nbsp;  Description of the performance medium type
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`mediums`&nbsp;  Performance mediums (instruments) available for a certain performance medium type
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`mediumId`&nbsp;  Performance medium identifier.
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`mediumDescription`&nbsp;  Performance medium description.
 
 ### [ListScores](https://github.com/jimjonesbr/wmss/blob/master/README.md#listscores)
  
@@ -433,7 +399,7 @@ Retrieves a specific record based on its identifier:
 |E0010|Invalid filter requestd| |
 |E0011|Unsupported filter| |
 |E0012|Invalid melody| |
-
+|E0013|Invalid collection string| |
 
 #### [Service Exception Report](https://github.com/jimjonesbr/wmss/blob/master/README.md#service-exception-report)
 

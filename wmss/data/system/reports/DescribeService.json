@@ -1,0 +1,455 @@
+{
+  "appVersion": "Dev-0.0.1",
+  "environment": {
+    "java": "1.8.0_131",
+    "os": "Linux 4.10.0-38-generic (amd64)"
+  },
+  "datasources": [
+    {
+      "performanceMediums": [
+        {
+          "mediumTypeDescription": "Brass",
+          "mediumTypeId": "brass",
+          "mediums": [
+            {
+              "mediumDescription": "Euphonium",
+              "mediumId": "brass.euphonium"
+            },
+            {
+              "mediumDescription": "French Horn",
+              "mediumId": "brass.french-horn"
+            },
+            {
+              "mediumDescription": "Trombone",
+              "mediumId": "brass.trombone"
+            },
+            {
+              "mediumDescription": "Bass Trombone",
+              "mediumId": "brass.trombone.bass"
+            },
+            {
+              "mediumDescription": "Tenor Trombone",
+              "mediumId": "brass.trombone.tenor"
+            },
+            {
+              "mediumDescription": "Trumpet",
+              "mediumId": "brass.trumpet"
+            },
+            {
+              "mediumDescription": "Trumpet in B",
+              "mediumId": "brass.trumpet.b"
+            },
+            {
+              "mediumDescription": "Trumpet in C",
+              "mediumId": "brass.trumpet.c"
+            },
+            {
+              "mediumDescription": "Tuba",
+              "mediumId": "brass.tuba"
+            }
+          ]
+        },
+        {
+          "mediumTypeDescription": "Drums",
+          "mediumTypeId": "drum",
+          "mediums": [
+            {
+              "mediumDescription": "Bass Drum",
+              "mediumId": "drum.bass-drum"
+            },
+            {
+              "mediumDescription": "Drums",
+              "mediumId": "drum.drum"
+            },
+            {
+              "mediumDescription": "Side Drum",
+              "mediumId": "drum.side-drum"
+            },
+            {
+              "mediumDescription": "Tambourine",
+              "mediumId": "drum.tambourine"
+            },
+            {
+              "mediumDescription": "Timpani",
+              "mediumId": "drum.timpani"
+            }
+          ]
+        },
+        {
+          "mediumTypeDescription": "Keyboards",
+          "mediumTypeId": "keyboard",
+          "mediums": [
+            {
+              "mediumDescription": "Harpsichord",
+              "mediumId": "keyboard.harpsichord"
+            },
+            {
+              "mediumDescription": "Organ",
+              "mediumId": "keyboard.organ"
+            },
+            {
+              "mediumDescription": "Piano",
+              "mediumId": "keyboard.piano"
+            },
+            {
+              "mediumDescription": "Grand Piano",
+              "mediumId": "keyboard.piano.grand"
+            }
+          ]
+        },
+        {
+          "mediumTypeDescription": "Metals",
+          "mediumTypeId": "metal",
+          "mediums": [
+            {
+              "mediumDescription": "Cymbals",
+              "mediumId": "metal.cymbal"
+            },
+            {
+              "mediumDescription": "Triangle",
+              "mediumId": "metal.triangle"
+            }
+          ]
+        },
+        {
+          "mediumTypeDescription": "Pluck",
+          "mediumTypeId": "pluck",
+          "mediums": [
+            {
+              "mediumDescription": "Guitar",
+              "mediumId": "pluck.guitar"
+            },
+            {
+              "mediumDescription": "Nylon String Guitar",
+              "mediumId": "pluck.guitar.nylon-string"
+            },
+            {
+              "mediumDescription": "Harp",
+              "mediumId": "pluck.harp"
+            }
+          ]
+        },
+        {
+          "mediumTypeDescription": "Strings",
+          "mediumTypeId": "strings",
+          "mediums": [
+            {
+              "mediumDescription": "Violoncello",
+              "mediumId": "strings.cello"
+            },
+            {
+              "mediumDescription": "Contrabass",
+              "mediumId": "strings.contrabass"
+            },
+            {
+              "mediumDescription": "Viola",
+              "mediumId": "strings.viola"
+            },
+            {
+              "mediumDescription": "Bass Viol",
+              "mediumId": "strings.viol.bass"
+            },
+            {
+              "mediumDescription": "Violin",
+              "mediumId": "strings.violin"
+            },
+            {
+              "mediumDescription": "Violone",
+              "mediumId": "strings.viol.violone"
+            }
+          ]
+        },
+        {
+          "mediumTypeDescription": "Unspecified",
+          "mediumTypeId": "unspecified",
+          "mediums": [
+            {
+              "mediumDescription": "Basso Continuo",
+              "mediumId": "unspecified.basso.continuo"
+            },
+            {
+              "mediumDescription": "Unspecified",
+              "mediumId": "unspecified.unspecified"
+            }
+          ]
+        },
+        {
+          "mediumTypeDescription": "Voice",
+          "mediumTypeId": "voice",
+          "mediums": [
+            {
+              "mediumDescription": "Alto",
+              "mediumId": "voice.alto"
+            },
+            {
+              "mediumDescription": "Bass",
+              "mediumId": "voice.bass"
+            },
+            {
+              "mediumDescription": "Soprano",
+              "mediumId": "voice.soprano"
+            },
+            {
+              "mediumDescription": "Tenor",
+              "mediumId": "voice.tenor"
+            },
+            {
+              "mediumDescription": "Voice",
+              "mediumId": "voice.vocals"
+            }
+          ]
+        },
+        {
+          "mediumTypeDescription": "Wind",
+          "mediumTypeId": "wind",
+          "mediums": [
+            {
+              "mediumDescription": "Flute",
+              "mediumId": "wind.flutes.flute"
+            },
+            {
+              "mediumDescription": "Piccolo Flute",
+              "mediumId": "wind.flutes.flute.piccolo"
+            },
+            {
+              "mediumDescription": "Recorder",
+              "mediumId": "wind.flutes.recorder"
+            },
+            {
+              "mediumDescription": "Alto Recorder",
+              "mediumId": "wind.flutes.recorder.alto"
+            },
+            {
+              "mediumDescription": "Tenor Recorder",
+              "mediumId": "wind.flutes.recorder.tenor"
+            },
+            {
+              "mediumDescription": "Basson",
+              "mediumId": "wind.reed.bassoon"
+            },
+            {
+              "mediumDescription": "Clarinet",
+              "mediumId": "wind.reed.clarinet"
+            },
+            {
+              "mediumDescription": "Bass Clarinet",
+              "mediumId": "wind.reed.clarinet.bass"
+            },
+            {
+              "mediumDescription": "Clarinet in B flat",
+              "mediumId": "wind.reed.clarinet.bflat"
+            },
+            {
+              "mediumDescription": "Contrabassoon",
+              "mediumId": "wind.reed.contrabassoon"
+            },
+            {
+              "mediumDescription": "Oboe",
+              "mediumId": "wind.reed.oboe"
+            }
+          ]
+        }
+      ],
+      "formats": [
+        {
+          "formatId": "mei",
+          "formatDescription": "MEI 3.0 - Music Encoding Initiative"
+        },
+        {
+          "formatId": "musicxml",
+          "formatDescription": "MusicXML 3.0"
+        }
+      ],
+      "active": true,
+      "storage": "postgresql",
+      "type": "database",
+      "repository": "wmss",
+      "version": "9.5",
+      "tempoMarkings": [
+        "undefined",
+        "Allegretto vivace",
+        "Largo",
+        "Allegro.",
+        "Alla marcia",
+        "Allegro leggiero",
+        "Adagio",
+        "Allegro con brio",
+        "Ziemlich langsam und mit Ausdruck",
+        "Allegretto grazioso",
+        "Allegro molto agitato",
+        "Moderato",
+        "Sostenuto assai",
+        "Allegretto",
+        "Allegro moderato",
+        "Langsam, zart",
+        "unclear",
+        "Frisch und munter",
+        "Allegro non molto",
+        "Tempo di marcia",
+        "Allegro grazioso",
+        "Andantino",
+        "Allegro assai",
+        "Maestoso",
+        "Allegro vivace",
+        "Schnell",
+        "Poco Adagio.",
+        "Sehr Schnell",
+        "Mässig.",
+        "Allegro",
+        "Andante",
+        "Presto.",
+        "Scherzo. Allegro molto.",
+        "Not fast",
+        "Marziale",
+        "Adagio affettuoso ed appasionato",
+        "Andante con moto",
+        "Fast Bebop"
+      ],
+      "tonalities": [
+        {
+          "mode": "dorian",
+          "tonic": "d"
+        },
+        {
+          "mode": "major",
+          "tonic": "g"
+        },
+        {
+          "mode": "major",
+          "tonic": "f"
+        },
+        {
+          "mode": "unspecified",
+          "tonic": "unspecified"
+        },
+        {
+          "mode": "major",
+          "tonic": "a"
+        },
+        {
+          "mode": "major",
+          "tonic": "b"
+        },
+        {
+          "mode": "minor",
+          "tonic": "c"
+        },
+        {
+          "mode": "minor",
+          "tonic": "e"
+        },
+        {
+          "mode": "minor",
+          "tonic": "d"
+        },
+        {
+          "mode": "minor",
+          "tonic": "a"
+        },
+        {
+          "mode": "minor",
+          "tonic": "b"
+        },
+        {
+          "mode": "major",
+          "tonic": "c"
+        },
+        {
+          "mode": "major",
+          "tonic": "d"
+        },
+        {
+          "mode": "major",
+          "tonic": "e"
+        },
+        {
+          "mode": "minor",
+          "tonic": "g"
+        },
+        {
+          "mode": "minor",
+          "tonic": "f"
+        }
+      ],
+      "port": 5432,
+      "filterCapabilities": {
+        "melody": true,
+        "group": true,
+        "personRole": true,
+        "performanceMedium": true,
+        "performanceMediumType": true,
+        "solo": true,
+        "tonalityTonic": true,
+        "tonalityMode": true,
+        "tempo": true,
+        "creationDateFrom": false,
+        "creationDateTo": false,
+        "source": true,
+        "identifier": true,
+        "format": true
+      },
+      "collections": [
+        {
+          "id": 2,
+          "description": "ULB Digitale Sammlung"
+        },
+        {
+          "id": 3,
+          "description": "ULB MIAMI"
+        },
+        {
+          "id": 1,
+          "description": "MEI 3.0 Sample Collection"
+        }
+      ],
+      "host": "localhost",
+      "id": "postgres_wwu",
+      "user": "postgres",
+      "info": "Test PostgreSQL repository."
+    },
+    {
+      "performanceMediums": [],
+      "formats": [],
+      "active": false,
+      "storage": "graphdb",
+      "type": "triplestore",
+      "repository": "wwu",
+      "version": "8",
+      "tempoMarkings": [],
+      "tonalities": [],
+      "port": 7200,
+      "filterCapabilities": {
+        "melody": true,
+        "group": true,
+        "personRole": true,
+        "performanceMedium": true,
+        "performanceMediumType": true,
+        "solo": true,
+        "tonalityTonic": true,
+        "tonalityMode": true,
+        "tempo": true,
+        "creationDateFrom": true,
+        "creationDateTo": true,
+        "source": true,
+        "identifier": true,
+        "format": true
+      },
+      "collections": [],
+      "host": "linkeddata.uni-muenster.de",
+      "id": "graphdb_wwu",
+      "user": "",
+      "info": "Test GraphDB repository."
+    }
+  ],
+  "port": 8295,
+  "service": "wmss",
+  "startup": "2017/11/07 11:56:27",
+  "contact": "jim.jones@uni-muenster.de",
+  "type": "ServiceDescriptionReport",
+  "title": "Web Music Score Service - University of Münster",
+  "supportedProtocols": [
+    "1.0",
+    "1.1"
+  ],
+  "timeout": 5000
+}

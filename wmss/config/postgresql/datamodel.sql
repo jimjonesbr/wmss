@@ -1072,8 +1072,8 @@ CONSTRAINT collection_pkey PRIMARY KEY (collection_id)
 
 INSERT INTO wmss_collections (collection_id,collection_description) VALUES (0,'Default Collection');
 INSERT INTO wmss_collections (collection_id,collection_description) VALUES (1,'MEI 3.0 Sample Collection');
-INSERT INTO wmss_collections (collection_id,collection_description) VALUES (2,'ULB Digitale Sammlung');
-INSERT INTO wmss_collections (collection_id,collection_description) VALUES (3,'ULB MIAMI');
+INSERT INTO wmss_collections (collection_id,collection_description) VALUES (2,'Universität Münster - Digitale Sammlung');
+INSERT INTO wmss_collections (collection_id,collection_description) VALUES (3,'Universität Münster - MIAMI');
 
 -- wmss_scores
 

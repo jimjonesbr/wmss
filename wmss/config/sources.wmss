@@ -1,7 +1,7 @@
 {
     "datasource": [{
       "id": "postgres_wwu",
-	  "info": "Test PostgreSQL repository.",
+	  "info": "Universität Münster - PostgreSQL repository.",
       "active": true,
       "type": "database",
       "storage": "postgresql",
@@ -33,7 +33,7 @@
           
     },{
       "id": "graphdb_wwu",
-      "info": "Test GraphDB repository.",
+      "info": "Universität Münster - GraphDB repository.",
       "active": false,
       "type": "triplestore",
       "storage": "graphdb",
