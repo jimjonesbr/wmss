@@ -326,42 +326,6 @@ ALTER FUNCTION wmss.wmss_extract_musicxml_notes(VARCHAR) OWNER TO postgres;
 
 
 
-
-
-
-
-
-
-
-
-
-DROP TABLE IF EXISTS wmss_notes_p1;
-DROP TABLE IF EXISTS wmss_notes_p2;
-DROP TABLE IF EXISTS wmss_notes_p3;
-DROP TABLE IF EXISTS wmss_notes_p4;
-DROP TABLE IF EXISTS wmss_notes_p5;
-DROP TABLE IF EXISTS wmss_notes;
-
-CREATE TABLE wmss_notes (
-noteset_id BIGINT,
-next_noteset_id BIGINT,
-score_id VARCHAR,
-document_type_id VARCHAR,
-movement_id INTEGER,
-instrument VARCHAR,
-measure VARCHAR,
-pitch VARCHAR,
-octave VARCHAR,
-duration VARCHAR,
-voice INTEGER,
-staff INTEGER,
-chord BOOLEAN,
-FOREIGN KEY (score_id,document_type_id) REFERENCES wmss.wmss_document (score_id, document_type_id)
-);
-
-
-
-
 SELECT wmss.wmss_extract_musicxml_notes(score_id) FROM wmss.wmss_document WHERE document_type_id = 'musicxml'-- AND score_id = '4307727' ;-- limit 10;
 
 

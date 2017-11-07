@@ -75,7 +75,7 @@ BEGIN
 
 
 	    IF document_id = '' THEN 
-	        main_id := (SELECT nextval('seq_scores')); 
+	        main_id := (SELECT nextval('wmss.seq_scores')); 
 	    ELSE
 	        main_id := document_id;
 	    END IF;
@@ -324,7 +324,7 @@ BEGIN
 		IF ARRAY_LENGTH(movement_id_array, 1) IS NULL THEN movement_id_array = ARRAY['1']; END IF;
 		
 		IF document_id = '' THEN 
-			main_id := (SELECT nextval('seq_scores')); 
+			main_id := (SELECT nextval('wmss.seq_scores')); 
 		ELSE
 			main_id := document_id;
 		END IF;
