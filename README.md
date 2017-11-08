@@ -12,7 +12,7 @@ The Web Music Score Service (WMSS) provides an interface allowing requests for m
 - [Configuring WMSS](#configuring-wmss)
 - [Requests](#requests)
   - [DescribeService](#describeservice)
-    - [Service Description Document](#service-description-report)
+    - [Service Description Report](#service-description-report)
   - [ListScores](#listscores)
     - [Score List Report](#score-list-report)  
   - [GetScore](#getscore)
@@ -48,7 +48,7 @@ Lists all service related information as well as all repositories available:
  http://localhost:8295/wmss?request=DescribeService
  ```
 
-The Service Description Report collects all available properties from each available data source. It gives the client all possible filters for each filter option, such as tonalities, tempo markings or instruments available for search.
+The Service Description Report collects all available properties and filter possibilities from each available data source, giving the client all possible filters for each filter option, such as tonalities, tempo markings or instruments.
 
 #### [Service Description Report](https://github.com/jimjonesbr/wmss/blob/master/README.md#service-description-report) 
 The Service Description Document is provided as JSON and is structured as follows:
@@ -132,7 +132,7 @@ An example of a Service Description Report can be found [here](https://github.co
 
  #### Collections
 
-To facilitate the management of large repositories, WMSS offers the possibility to add music scores to specific collections, e.g. "ULB Histotic Collection", "Baroque Works", etc. The collection id, required for this parameter, is delivered together with the music score at the Score List Document.
+To facilitate the management of large repositories, WMSS offers the possibility to add music scores to specific collections, e.g. "ULB Histotic Collection", "Baroque Works", etc. The collection id, required for this parameter, is delivered together with the music score in the Score List Report and in the Service Description Report.
 
  ```http
  http://localhost:8295/wmss?request=ListScores&source=postgres_wwu&collection=1
