@@ -1,6 +1,7 @@
 package de.wwu.wmss.core;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MusicScore {
 
@@ -12,8 +13,8 @@ public class MusicScore {
 	private String collectionId;
 	private String tonalityTonic;
 	private String tonalityMode;	
-	private int creationDateFrom;
-	private int creationDateTo;
+	private Date creationDateFrom;
+	private Date creationDateTo;
 	private ArrayList<Movement> movements;
 	private ArrayList<Format> formats;
 	private ArrayList<Person> persons;
@@ -88,22 +89,22 @@ public class MusicScore {
 	}
 
 
-	public int getCreationDateFrom() {
+	public Date getCreationDateFrom() {
 		return creationDateFrom;
 	}
 
 
-	public void setCreationDateFrom(int creationDateFrom) {
+	public void setCreationDateFrom(Date creationDateFrom) {
 		this.creationDateFrom = creationDateFrom;
 	}
 
 
-	public int getCreationDateTo() {
+	public Date getCreationDateTo() {
 		return creationDateTo;
 	}
 
 
-	public void setCreationDateTo(int creationDateTo) {
+	public void setCreationDateTo(Date creationDateTo) {
 		this.creationDateTo = creationDateTo;
 	}
 

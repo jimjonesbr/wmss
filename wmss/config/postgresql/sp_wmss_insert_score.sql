@@ -13,8 +13,8 @@ DECLARE role_id INTEGER DEFAULT 0;
 DECLARE score_title VARCHAR DEFAULT '';
 DECLARE tonality_note VARCHAR DEFAULT '';
 DECLARE tonality_mode VARCHAR DEFAULT '';
-DECLARE score_date_max INTEGER DEFAULT 0;
-DECLARE score_date_min INTEGER DEFAULT 0;
+DECLARE score_date_max TEXT;
+DECLARE score_date_min TEXT;
 DECLARE score_date_text VARCHAR DEFAULT 0;
 DECLARE isNumeric BOOLEAN DEFAULT FALSE;
 DECLARE exist VARCHAR;
@@ -54,7 +54,7 @@ BEGIN
 		
 	RAISE NOTICE 'Inserting % file "%" ... ',UPPER(score_type),score_path;   	
 	
-	score_file := wmss_loadxml(score_path);
+	score_file := wmss.wmss_loadxml(score_path);
 
 	
 	IF UPPER(score_type) = 'MUSICXML' THEN
@@ -69,8 +69,8 @@ BEGIN
 
 	    tonality_note := 'unspecified';
 	    tonality_mode := 'unspecified';
-	    score_date_min := 0;
-	    score_date_max := 0;
+	    score_date_min := '0001-01-01';
+	    score_date_max := '0001-01-01';
 	    score_date_text := '';
 
 
@@ -87,7 +87,7 @@ BEGIN
 	--delete from wmss_scores where score_id = main_id;
 	
 	    INSERT INTO wmss.wmss_scores (score_id, score_name, collection_id, score_tonality_note, score_tonality_mode, score_creation_date_min, score_creation_date_max) 
-            VALUES (main_id, score_title, group_id, tonality_note, tonality_mode, score_date_min, score_date_max);
+            VALUES (main_id, score_title, group_id, tonality_note, tonality_mode, TO_DATE(score_date_min,'yyyy-mm-dd'), TO_DATE(score_date_max,'yyyy-mm-dd'));
 
 	    INSERT INTO wmss.wmss_document (score_id,score_document,document_type_id) VALUES (main_id, score_file,'musicxml');
 	    
@@ -330,7 +330,7 @@ BEGIN
 		END IF;
 				
 		INSERT INTO wmss.wmss_scores (score_id, score_name, collection_id, score_tonality_note, score_tonality_mode, score_creation_date_min, score_creation_date_max) 
-                VALUES (main_id, score_title, group_id, tonality_note, tonality_mode, score_date_min, score_date_max);
+                VALUES (main_id, score_title, group_id, tonality_note, tonality_mode, TO_DATE(score_date_min,'yyyy-mm-dd'), TO_DATE(score_date_max,'yyyy-mm-dd'));
 
 
 		INSERT INTO wmss.wmss_document (score_id,score_document,document_type_id) VALUES (main_id, score_file,'mei');

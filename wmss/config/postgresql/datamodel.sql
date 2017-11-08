@@ -977,8 +977,8 @@ score_id VARCHAR,
 score_name VARCHAR,
 score_tonality_note VARCHAR,
 score_tonality_mode VARCHAR,
-score_creation_date_min INTEGER,
-score_creation_date_max INTEGER,
+score_creation_date_min DATE,
+score_creation_date_max DATE,
 score_print_resource VARCHAR,
 score_online_resource VARCHAR,
 score_thumbnail VARCHAR,
@@ -986,7 +986,8 @@ collection_id INTEGER REFERENCES wmss.wmss_collections(collection_id),
 CONSTRAINT score_pkey PRIMARY KEY (score_id) 
 );
 
-
+CREATE INDEX idx_score_creation_date_min ON wmss.wmss_scores (score_creation_date_min);
+CREATE INDEX idx_score_creation_date_max ON wmss.wmss_scores (score_creation_date_max);
 -- wmss.wmss_document_type
 
 CREATE TABLE wmss.wmss_document_type (

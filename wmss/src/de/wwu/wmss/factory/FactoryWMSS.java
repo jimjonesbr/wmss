@@ -2,12 +2,15 @@ package de.wwu.wmss.factory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import de.wwu.wmss.connectors.PostgreSQLConnector;
 import de.wwu.wmss.core.Collection;
 import de.wwu.wmss.core.DataSource;
 import de.wwu.wmss.core.Format;
+import de.wwu.wmss.core.Interval;
 import de.wwu.wmss.core.MelodyLocation;
 import de.wwu.wmss.core.Movement;
 import de.wwu.wmss.core.MusicScore;
@@ -53,6 +56,7 @@ public class FactoryWMSS {
 		} catch (Exception e) {
 
 			logger.error("Unexpected error ocurred at the PostgreSQL collection retrieval.");
+			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -61,6 +65,45 @@ public class FactoryWMSS {
 
 	}
 
+	public static ArrayList<Interval> getCreationInterval(DataSource dataSource){
+
+		ArrayList<Interval> result = new ArrayList<Interval>(); 
+
+		try {
+
+			if (dataSource.getStorage().equals("postgresql")){
+
+				String sql = "SELECT MIN(score_creation_date_min) AS min_date, \n"+
+						     "       MAX(score_creation_date_max) AS max_date \n" + 
+						     "FROM wmss.wmss_scores; ";
+
+				ResultSet rs = PostgreSQLConnector.executeQuery(sql, dataSource);
+
+
+				while (rs.next()){
+
+					Interval rec = new Interval();
+					rec.setFrom(rs.getDate("min_date"));
+					rec.setTo(rs.getDate("max_date"));
+
+					result.add(rec);
+				}
+
+				rs.close();
+			}
+
+		} catch (Exception e) {
+
+			logger.error("Unexpected error ocurred at the PostgreSQL creation interval retrieval.");
+			logger.error(e.getMessage());
+			
+			e.printStackTrace();
+		}
+
+		
+		return result;
+
+	}
 	public static ArrayList<Format> getFormats(DataSource dataSource){
 
 		ArrayList<Format> result = new ArrayList<Format>(); 
@@ -91,6 +134,7 @@ public class FactoryWMSS {
 		} catch (Exception e) {
 
 			logger.error("Unexpected error ocurred at the PostgreSQL formats retrieval.");
+			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -131,6 +175,7 @@ public class FactoryWMSS {
 		} catch (Exception e) {
 
 			logger.error("Unexpected error ocurred at the PostgreSQL tonalities retrieval.");
+			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -168,6 +213,7 @@ public class FactoryWMSS {
 		} catch (Exception e) {
 
 			logger.error("Unexpected error ocurred at the PostgreSQL tempo markings retrieval.");
+			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -264,6 +310,7 @@ public class FactoryWMSS {
 		} catch (Exception e) {
 
 			logger.error("Unexpected error ocurred at the PostgreSQL performance mediums retrieval.");
+			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
 		
@@ -343,11 +390,11 @@ public class FactoryWMSS {
 
 					} else if(parameters.get(i).getRequest().equals("creationdatefrom")){
 
-						filters.add(" scr.score_creation_date_min  >= " + parameters.get(i).getValue() +  " ");
+						filters.add(" scr.score_creation_date_min  >= '" + formatDate(parameters.get(i).getValue()) +  "' ");
 
 					} else if(parameters.get(i).getRequest().equals("creationdateto")){
 
-						filters.add(" scr.score_creation_date_max  <= " + parameters.get(i).getValue() +  " ");
+						filters.add(" scr.score_creation_date_max  <= '" + formatDate(parameters.get(i).getValue()) +  "' ");
 
 					} else if(parameters.get(i).getRequest().equals("format")){
 
@@ -443,8 +490,8 @@ public class FactoryWMSS {
 					MusicScore rec = new MusicScore();
 					
 					rec.setScoreId(rs.getString("score_id"));
-					rec.setCreationDateFrom(rs.getInt("score_creation_date_min"));
-					rec.setCreationDateTo(rs.getInt("score_creation_date_max"));
+					rec.setCreationDateFrom(rs.getDate("score_creation_date_min"));
+					rec.setCreationDateTo(rs.getDate("score_creation_date_max"));
 					rec.setTitle(rs.getString("score_name"));;
 					rec.setTonalityMode(rs.getString("score_tonality_mode"));;
 					rec.setTonalityTonic(rs.getString("score_tonality_note"));;
@@ -511,6 +558,7 @@ public class FactoryWMSS {
 		} catch (Exception e) {
 
 			logger.error("Unexpected error ocurred at the PostgreSQL data crawler.");
+			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -925,12 +973,47 @@ public class FactoryWMSS {
 			rs.close();
 			
 		} catch (SQLException e) {
+			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
 
 		return result;
 		
 		
+	}
+	
+	
+	private static String formatDate (String date) {
+		
+		String result = "";
+
+		try {
+			
+			
+			SimpleDateFormat yearFormat  = new SimpleDateFormat("yyyy");
+			SimpleDateFormat yearMonthFormat  = new SimpleDateFormat("yyyy-MM");
+			SimpleDateFormat yearMonthDayFormat  = new SimpleDateFormat("yyyy-MM-dd");
+			
+			if(date.length()<=4) {
+			
+				result = yearMonthDayFormat.format(yearFormat.parse(date));
+				
+			} else if (date.length() > 4 && date.length() < 8) {
+				
+				result = yearMonthDayFormat.format(yearMonthFormat.parse(date));
+				
+			} else if (date.length() >= 8 && date.length() <= 10) {
+								
+				result = yearMonthDayFormat.format(yearMonthDayFormat.parse(date));
+			}
+			
+		} catch (ParseException e) {
+			logger.error(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		logger.info("Date converted from '"+date+"' to '"+result+"'");
+		return result;
 	}
 
 }

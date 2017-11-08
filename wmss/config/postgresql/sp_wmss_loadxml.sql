@@ -1,4 +1,4 @@
-﻿CREATE OR REPLACE FUNCTION wmss_loadxml(filename text)
+﻿CREATE OR REPLACE FUNCTION wmss.wmss_loadxml(filename text)
   RETURNS XML
   VOLATILE
   LANGUAGE plpgsql AS
