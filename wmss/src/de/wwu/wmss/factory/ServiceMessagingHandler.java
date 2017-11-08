@@ -181,12 +181,13 @@ public class ServiceMessagingHandler {
 
 			} catch (Exception e) {
 				e.printStackTrace();
-				logger.error("Unexpected error at the ListScores request: " + e.getMessage());
+				logger.error("Unexpected error at the ListScores request.");
+				logger.error(e.getMessage());
 			}
 			
 		} else {
 			
-			result = getServiceExceptionReport("E0011", "Unsupported filter [" + fil.getFilter() + "]","Check the 'Service Description Report' for more information on which filters are enabled in each data source.");
+			result = getServiceExceptionReport("E0011", "Unsupported filter [" + fil.getFilter() + "]","Check the 'Service Description Report' for more information on which filters are enabled for the data source '"+source+"'.");
 		}
 
 		return result;
