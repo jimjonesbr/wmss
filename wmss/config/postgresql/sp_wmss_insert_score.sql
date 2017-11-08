@@ -679,9 +679,15 @@ SELECT wmss.wmss_import_score('974543','/home/jones/git/wmss/wmss/data/musicxml/
 -- WWU specific updates
 
 UPDATE wmss.wmss_scores 
-SET score_online_resource = 'https://sammlungen.ulb.uni-muenster.de/id/' || score_id 
+SET score_online_resource = 'https://sammlungen.ulb.uni-muenster.de/id/' || score_id,
+    score_print_resource = 'http://sammlungen.ulb.uni-muenster.de/download/pdf/' || score_id,
+    score_thumbnail = 'https://miami.uni-muenster.de/interface/themes/repository/images/logo.gif'
 WHERE collection_id = 2;
 
 UPDATE wmss.wmss_scores 
-SET score_online_resource = 'https://miami.uni-muenster.de/Record/' || score_id 
+SET score_online_resource = 'https://miami.uni-muenster.de/Record/' || score_id,
+    score_print_resource = 'https://repositorium.uni-muenster.de/transfer/miami/' || score_id,
+    score_thumbnail = 'https://miami.uni-muenster.de/interface/themes/repository/images/logo.gif'
 WHERE collection_id = 3;
+
+

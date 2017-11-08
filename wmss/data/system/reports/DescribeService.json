@@ -305,6 +305,12 @@
         "Andante con moto",
         "Fast Bebop"
       ],
+      "creationRange": [
+        {
+          "from": "Jan 1, 0001",
+          "to": "Jan 1, 2010"
+        }
+      ],
       "tonalities": [
         {
           "mode": "dorian",
@@ -390,22 +396,22 @@
       },
       "collections": [
         {
-          "id": 2,
-          "description": "ULB Digitale Sammlung"
-        },
-        {
           "id": 3,
-          "description": "ULB MIAMI"
+          "description": "Universität Münster - MIAMI"
         },
         {
           "id": 1,
           "description": "MEI 3.0 Sample Collection"
+        },
+        {
+          "id": 2,
+          "description": "Universität Münster - Digitale Sammlung"
         }
       ],
       "host": "localhost",
       "id": "postgres_wwu",
       "user": "postgres",
-      "info": "Test PostgreSQL repository."
+      "info": "Universität Münster - PostgreSQL repository."
     },
     {
       "performanceMediums": [],
@@ -416,6 +422,7 @@
       "repository": "wwu",
       "version": "8",
       "tempoMarkings": [],
+      "creationRange": [],
       "tonalities": [],
       "port": 7200,
       "filterCapabilities": {
@@ -438,12 +445,12 @@
       "host": "linkeddata.uni-muenster.de",
       "id": "graphdb_wwu",
       "user": "",
-      "info": "Test GraphDB repository."
+      "info": "Universität Münster - GraphDB repository."
     }
   ],
   "port": 8295,
   "service": "wmss",
-  "startup": "2017/11/07 11:56:27",
+  "startup": "2017/11/08 16:44:50",
   "contact": "jim.jones@uni-muenster.de",
   "type": "ServiceDescriptionReport",
   "title": "Web Music Score Service - University of Münster",

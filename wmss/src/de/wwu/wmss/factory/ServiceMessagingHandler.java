@@ -81,7 +81,7 @@ public class ServiceMessagingHandler {
 			ds.put("tempoMarkings", FactoryWMSS.getTempoMarkings(SystemSettings.sourceList.get(i)));
 			ds.put("formats", FactoryWMSS.getFormats(SystemSettings.sourceList.get(i)));
 			ds.put("tonalities", FactoryWMSS.getTonalities(SystemSettings.sourceList.get(i)));
-			ds.put("creation", FactoryWMSS.getCreationInterval(SystemSettings.sourceList.get(i)));
+			ds.put("creationRange", FactoryWMSS.getCreationInterval(SystemSettings.sourceList.get(i)));
 			dsArray.add(ds);
 		}
 
