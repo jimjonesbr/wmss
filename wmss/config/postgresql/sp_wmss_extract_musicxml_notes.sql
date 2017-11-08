@@ -244,7 +244,7 @@ BEGIN
 
 		    ELSE
 
-		        noteset := (SELECT nextval('seq_noteset'));
+		        noteset := (SELECT nextval('wmss.seq_noteset'));
 		        
 		    END IF;
 

@@ -23,19 +23,19 @@ DECLARE k INTEGER;
 DECLARE l RECORD;
 
 DECLARE array_input_melody VARCHAR[];
-DECLARE array_notes NOTE[];
-DECLARE note NOTE;
-DECLARE start_note NOTE;
+DECLARE array_notes wmss.NOTE[];
+DECLARE note wmss.NOTE;
+DECLARE start_note wmss.NOTE;
 
-DECLARE current_note NOTE;
+DECLARE current_note wmss.NOTE;
 DECLARE next_note_id NUMERIC; 
 
 
-DECLARE array_result NOTE[];
+DECLARE array_result wmss.NOTE[];
 DECLARE matches_pitch BOOLEAN DEFAULT FALSE;
 DECLARE matches_octave BOOLEAN DEFAULT FALSE;
 DECLARE matches_duration BOOLEAN DEFAULT FALSE;
-DECLARE next_note_result NOTE;
+DECLARE next_note_result wmss.NOTE;
 
 DECLARE melody_query TEXT;
 DECLARE array_identifiers TEXT[];
