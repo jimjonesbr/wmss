@@ -166,7 +166,6 @@ public class ServiceMessagingHandler {
 
 						repoArray.add(repo);
 
-
 					}
 				}
 

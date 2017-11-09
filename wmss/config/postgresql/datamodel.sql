@@ -968,6 +968,8 @@ INSERT INTO wmss.wmss_collections (collection_id,collection_description) VALUES 
 INSERT INTO wmss.wmss_collections (collection_id,collection_description) VALUES (1,'MEI 3.0 Sample Collection');
 INSERT INTO wmss.wmss_collections (collection_id,collection_description) VALUES (2,'Universität Münster - Digitale Sammlung');
 INSERT INTO wmss.wmss_collections (collection_id,collection_description) VALUES (3,'Universität Münster - MIAMI');
+INSERT INTO wmss.wmss_collections (collection_id,collection_description) VALUES (4,'MusicXML Official Samples');
+INSERT INTO wmss.wmss_collections (collection_id,collection_description) VALUES (5,'MuseScore Samples');
 
 -- wmss.wmss_scores
 
@@ -1074,12 +1076,12 @@ score_id VARCHAR REFERENCES wmss.wmss_scores (score_id)
 -- Notes partitions
 
 
-DROP TABLE IF EXISTS wmss.wmss_notes_p1;
-DROP TABLE IF EXISTS wmss.wmss_notes_p2;
-DROP TABLE IF EXISTS wmss.wmss_notes_p3;
-DROP TABLE IF EXISTS wmss.wmss_notes_p4;
-DROP TABLE IF EXISTS wmss.wmss_notes_p5;
-DROP TABLE IF EXISTS wmss.wmss_notes;
+--DROP TABLE IF EXISTS wmss.wmss_notes_p1;
+--DROP TABLE IF EXISTS wmss.wmss_notes_p2;
+--DROP TABLE IF EXISTS wmss.wmss_notes_p3;
+--DROP TABLE IF EXISTS wmss.wmss_notes_p4;
+--DROP TABLE IF EXISTS wmss.wmss_notes_p5;
+--DROP TABLE IF EXISTS wmss.wmss_notes;
 
 CREATE TABLE wmss.wmss_notes (
 noteset_id BIGINT,
@@ -1100,7 +1102,7 @@ FOREIGN KEY (score_id,document_type_id) REFERENCES wmss.wmss_document (score_id,
 );
 
 
-DROP SEQUENCE IF EXISTS wmss.seq_noteset;
+--DROP SEQUENCE IF EXISTS wmss.seq_noteset;
 CREATE SEQUENCE wmss.seq_noteset START WITH 1;
 
 -- wmss.wmss_notes partitions (every million records)
@@ -1165,7 +1167,7 @@ $$
 LANGUAGE plpgsql;
 
 
-DROP TRIGGER IF EXISTS wmss_trigger_insert_notes ON wmss.wmss_notes;
+--DROP TRIGGER IF EXISTS wmss_trigger_insert_notes ON wmss.wmss_notes;
 
 CREATE TRIGGER wmss_trigger_insert_notes
     BEFORE INSERT ON wmss.wmss_notes

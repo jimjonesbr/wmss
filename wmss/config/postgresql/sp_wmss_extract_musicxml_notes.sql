@@ -41,8 +41,10 @@ BEGIN
 		ext_key_fifth := (SELECT XPATH('//measure/attributes/key/fifths/text()', ext_measures[j]))[1];		
 
 		
-		IF ext_key_mode IS NOT NULL AND ext_key_fifth IS NOT NULL then 
-		
+		IF ext_key_fifth IS NOT NULL then 
+
+		    IF ext_key_mode IS NULL THEN ext_key_mode = 'major'; END IF;
+		    
 		    IF ext_key_mode = 'major' THEN 
 
 		        IF ext_key_fifth = '0' THEN current_tonality := 'cmajor'; END IF;
@@ -233,11 +235,18 @@ BEGIN
 		      	    	    		    
 		    ext_octave := (SELECT XPATH('//pitch/octave/text()', ext_notes[k]))[1];
 		    ext_duration := (SELECT XPATH('//type/text()', ext_notes[k]))[1];
-		    ext_staff := (SELECT XPATH('//staff/text()', ext_notes[k]))[1];
-		    ext_voice := (SELECT XPATH('//voice/text()', ext_notes[k]))[1];
-		    ext_instrument := (SELECT XPATH('//instrument/@id', ext_notes[k]))[1];
 		    ext_accidental := (SELECT XPATH('//accidental/text()', ext_notes[k]))[1];
 
+		    ext_instrument := (SELECT XPATH('//instrument/@id', ext_notes[k]))[1];
+		    IF ext_instrument IS NULL THEN ext_instrument := ext_parts[i]::TEXT || '-I1'; END IF;
+
+		    ext_staff := (SELECT XPATH('//staff/text()', ext_notes[k]))[1];
+		    IF ext_staff IS NULL THEN ext_staff := 1; END IF;
+
+		    ext_voice := (SELECT XPATH('//voice/text()', ext_notes[k]))[1];
+		    IF ext_voice IS NULL THEN ext_voice := 1; END IF;
+
+		    
 		    IF (SELECT XPATH('//chord', ext_notes[k]))[1] IS NOT NULL THEN 
 			
 		        ext_is_chord := TRUE; 
@@ -319,13 +328,3 @@ END;
 $BODY$
 LANGUAGE plpgsql VOLATILE COST 100;
 ALTER FUNCTION wmss.wmss_extract_musicxml_notes(VARCHAR) OWNER TO postgres;
-
-
-
-
-
-
-
-SELECT wmss.wmss_extract_musicxml_notes(score_id) FROM wmss.wmss_document WHERE document_type_id = 'musicxml'-- AND score_id = '4307727' ;-- limit 10;
-
-
