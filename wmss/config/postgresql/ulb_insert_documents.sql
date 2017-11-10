@@ -194,6 +194,11 @@ SELECT wmss.wmss_import_score('','/home/jones/git/wmss/wmss/data/musicxml/musesc
 SELECT wmss.wmss_import_score('','/home/jones/git/wmss/wmss/data/musicxml/musescore/Elgar_Cello_Concerto_Op._85_1st_Mvmnt._full_orchestral_score.xml','musicxml',5);
 SELECT wmss.wmss_import_score('','/home/jones/git/wmss/wmss/data/musicxml/musescore/Salut_damour_duet.xml','musicxml',5);
 
+SELECT wmss.wmss_import_score('','/home/jones/git/wmss/wmss/data/musicxml/musescore/Schubert_-_Allegretto_in_C_Minor_D.915.xml','musicxml',5);
+SELECT wmss.wmss_import_score('','/home/jones/git/wmss/wmss/data/musicxml/musescore/Faure_-_Piano_Quintet_No._2_Op._115.xml','musicxml',5);
+SELECT wmss.wmss_import_score('','/home/jones/git/wmss/wmss/data/musicxml/musescore/Beethoven_-_Fur_Elise_Bagatelle_No._25_WoO_59.xml','musicxml',5);
+SELECT wmss.wmss_import_score('','/home/jones/git/wmss/wmss/data/musicxml/musescore/Aequale_No._1.xml','musicxml',5);
+--SELECT wmss.wmss_import_score('','/home/jones/git/wmss/wmss/data/musicxml/musescore/Salut_damour_duet.xml','musicxml',5);
 -- WWU specific updates 
 
 UPDATE wmss.wmss_scores 
@@ -208,10 +213,8 @@ SET score_online_resource = 'https://miami.uni-muenster.de/Record/' || score_id,
     score_thumbnail = 'https://miami.uni-muenster.de/interface/themes/repository/images/logo.gif'
 WHERE collection_id = 3;
 
+UPDATE wmss.wmss_scores SET score_name = '' WHERE score_name IS NULL;
 
 --TRUNCATE TABLE wmss.wmss_notes;
---
-
---select * from wmss.wmss_scores
 
 SELECT wmss.wmss_extract_musicxml_notes(score_id) FROM wmss.wmss_document WHERE document_type_id = 'musicxml'-- AND score_id = '4307727' ;-- limit 10;

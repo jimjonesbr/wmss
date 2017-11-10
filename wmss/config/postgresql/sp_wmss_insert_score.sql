@@ -219,6 +219,8 @@ BEGIN
 			instrument_name := (SELECT (XPATH('//instrument-name/text()', score_part[j]))[1]::TEXT);
 			instrument_display_name := (SELECT (XPATH('//part-name-display/display-text/text()', score_part[j]))[1]::TEXT);
 			instrument_file_id := (SELECT (XPATH('//score-instrument/@id', score_part[j]))[1]::TEXT);
+
+			IF instrument_display_name IS NULL THEN instrument_display_name := instrument_name; END IF;
 			
 		        IF (SELECT (XPATH('//instrument-sound', score_part[j]))[1]) IS NULL THEN
 			    
