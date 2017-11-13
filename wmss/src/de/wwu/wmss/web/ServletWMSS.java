@@ -366,7 +366,7 @@ public class ServletWMSS extends HttpServlet
 											  + "ahs|bhs|chs|dhs|ehs|fhs|ghs|"	// half sharp
 											  + "as|bs|cs|ds|es|fs|gs|"			// sharp					  
 											  + "ash|bsh|csh|dsh|esh|fsh|gsh|"	// sharp and a half							  
-											  + "ass|bss|css|dss|ess|fss|gss");	// double sharp
+											  + "ass|bss|css|dss|ess|fss|gss|rest");	// double sharp
 				
 				validDurations = element[1].matches("0|ow|qw|dw|w|h|4|8|16|32|64|128|256");	
 				validOctaves = element[2].matches("0|1|2|3|4|5|6|7|8|9");

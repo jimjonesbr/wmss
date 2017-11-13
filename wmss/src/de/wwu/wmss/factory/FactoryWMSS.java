@@ -12,6 +12,7 @@ import de.wwu.wmss.core.DataSource;
 import de.wwu.wmss.core.Format;
 import de.wwu.wmss.core.Interval;
 import de.wwu.wmss.core.MelodyLocation;
+import de.wwu.wmss.core.MelodyLocationGroup;
 import de.wwu.wmss.core.Movement;
 import de.wwu.wmss.core.MusicScore;
 import de.wwu.wmss.core.PerformanceMedium;
@@ -553,7 +554,6 @@ public class FactoryWMSS {
 				
 				rs.close();
 
-
 			}
 
 
@@ -775,6 +775,8 @@ public class FactoryWMSS {
 			ArrayList<MelodyLocation> tmpMelodyLocation = new ArrayList<MelodyLocation>();
 			ArrayList<MusicScore> tmpScorelist = new ArrayList<MusicScore>();			
 			
+			ArrayList<MelodyLocationGroup> tmpMelodyLocationGroup = new ArrayList<MelodyLocationGroup>();
+			
 			String identifiers = "";
 			
 			for (int i = 0; i < scoreList.size(); i++) {
@@ -788,7 +790,14 @@ public class FactoryWMSS {
 			}
 			
 			tmpMelodyLocation = findMelody(melody, identifiers, dataSource);
-			//System.out.println("size > "+tmpMelodyLocation.size());
+			
+			
+			
+			boolean found2 = false;
+			
+			
+			
+			
 			boolean found = false;
 			
 			for (int i = 0; i < scoreList.size(); i++) {
@@ -796,7 +805,7 @@ public class FactoryWMSS {
 				for (int j = 0; j < tmpMelodyLocation.size(); j++) {
 					
 					if(tmpMelodyLocation.get(j).getScoreId().equals(scoreList.get(i).getScoreId())) {
-						//System.out.println(tmpMelodyLocation.get(j).getScoreId());
+
 						found = true;
 						
 					}
@@ -804,17 +813,17 @@ public class FactoryWMSS {
 				}
 				
 				if(found) {
+					
 					tmpScorelist.add(scoreList.get(i));
-					//System.out.println(scoreList.get(i).getScoreId());
 					found = false;
+					
 				}
 				
 			}
 			
-			//System.out.println(">>> "+ tmpScorelist.size());
 			scoreList = tmpScorelist;
 			melodyLocationList = tmpMelodyLocation;
-			//System.out.println(">>> "+ scoreList.size());
+
 		}
 		
 		
@@ -829,18 +838,13 @@ public class FactoryWMSS {
 		
 		if(!melody.equals("")) {
 
-			//System.out.println("melody > " +melody);
-			//System.out.println("size > " + melodyLocationList.size());
-			
 			for (int i = 0; i < melodyLocationList.size(); i++) {
 				
-				//System.out.println(">>"+melodyLocationList.get(i));
 				for (int j = 0; j < scoreList.size(); j++) {
 					
 					if(melodyLocationList.get(i).getScoreId().equals(scoreList.get(j).getScoreId())) {
 						
 						scoreList.get(j).getMelodyLocation().add(melodyLocationList.get(i));
-						//System.out.println(">>" +melodyLocationList.get(i));
 						
 					}
 					
@@ -850,11 +854,7 @@ public class FactoryWMSS {
 			
 		}
 		
-		
-		
-		//System.out.println(scoreList.size());
-		
-		
+
 		
 		for (int i = 0; i < scoreList.size(); i++) {
 

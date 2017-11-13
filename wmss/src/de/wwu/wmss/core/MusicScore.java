@@ -22,6 +22,7 @@ public class MusicScore {
 	private ArrayList<Format> formats;
 	private ArrayList<Person> persons;
 	private ArrayList<MelodyLocation> melodyLocation;
+	private ArrayList<MelodyLocationGroup> melodyLocation2;
 	
 	public MusicScore() {
 		super();
@@ -30,6 +31,8 @@ public class MusicScore {
 		this.formats = new ArrayList<Format>();
 		this.persons = new ArrayList<Person>();
 		this.melodyLocation = new ArrayList<MelodyLocation>();
+		this.melodyLocation2 = new ArrayList<MelodyLocationGroup>();
+		
 	}
 
 
@@ -149,6 +152,10 @@ public class MusicScore {
 
 	public ArrayList<MelodyLocation> getMelodyLocation() {
 		return melodyLocation;
+	}
+	
+	public ArrayList<MelodyLocationGroup> getMelodyLocation2() {
+		return melodyLocation2;
 	}
 
 
