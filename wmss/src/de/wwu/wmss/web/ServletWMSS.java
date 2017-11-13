@@ -341,7 +341,7 @@ public class ServletWMSS extends HttpServlet
 
 	private static boolean isMelodyRequestValid(String melody) {
 
-		String[] melodyElements = melody.split("/");
+		String[] melodyElements = melody.split(">");
 
 		boolean validNotes = false;
 		boolean validDurations = false;

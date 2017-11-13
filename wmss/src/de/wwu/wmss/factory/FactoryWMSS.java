@@ -497,7 +497,10 @@ public class FactoryWMSS {
 					rec.setTonalityTonic(rs.getString("score_tonality_note"));;
 					rec.setCollectionId(rs.getString("collection_id"));
 					rec.setCollectionDescription(rs.getString("collection_description"));
-
+					rec.setThumbnail(rs.getString("score_thumbnail"));
+					rec.setPrintResource(rs.getString("score_print_resource"));
+					rec.setOnlineResource(rs.getString("score_online_resource"));
+					
 					Movement mov = new Movement();					
 					mov.setMovementIdentifier(rs.getString("movement_id"));
 					mov.setMovementName(rs.getString("score_movement_description"));

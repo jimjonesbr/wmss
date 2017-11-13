@@ -12,7 +12,10 @@ public class MusicScore {
 	private String collectionDescription;
 	private String collectionId;
 	private String tonalityTonic;
-	private String tonalityMode;	
+	private String tonalityMode;
+	private String thumbnail;
+	private String printResource;
+	private String onlineResource;
 	private Date creationDateFrom;
 	private Date creationDateTo;
 	private ArrayList<Movement> movements;
@@ -146,6 +149,36 @@ public class MusicScore {
 
 	public ArrayList<MelodyLocation> getMelodyLocation() {
 		return melodyLocation;
+	}
+
+
+	public String getThumbnail() {
+		return thumbnail;
+	}
+
+
+	public void setThumbnail(String thumbnail) {
+		this.thumbnail = thumbnail;
+	}
+
+
+	public String getPrintResource() {
+		return printResource;
+	}
+
+
+	public void setPrintResource(String printResource) {
+		this.printResource = printResource;
+	}
+
+
+	public String getOnlineResource() {
+		return onlineResource;
+	}
+
+
+	public void setOnlineResource(String onlineResource) {
+		this.onlineResource = onlineResource;
 	}
 		
 	

@@ -46,7 +46,7 @@ BEGIN
 	DROP TABLE IF EXISTS tmp_result;
 	CREATE TEMPORARY TABLE tmp_result (tmp_score VARCHAR, tmp_movement VARCHAR, tmp_movement_name VARCHAR, tmp_measure VARCHAR, tmp_staff VARCHAR, tmp_voice VARCHAR, tmp_instrument VARCHAR, tmp_instrument_name VARCHAR);
 
-	array_input_melody := REGEXP_SPLIT_TO_ARRAY(melody,'/');
+	array_input_melody := REGEXP_SPLIT_TO_ARRAY(melody,'>');
 
 	FOR i IN 1 .. ARRAY_UPPER(array_input_melody, 1) LOOP
 	
@@ -177,6 +177,6 @@ END;$$
 LANGUAGE plpgsql;
 ALTER FUNCTION wmss.wmss_find_melody(VARCHAR,VARCHAR) OWNER TO postgres;
 
-SELECT DISTINCT * FROM wmss.wmss_find_melody('c-8-0/b-8-0','121')
+SELECT DISTINCT * FROM wmss.wmss_find_melody('c-8-0>b-8-0','121')
 
 
