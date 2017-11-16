@@ -82,6 +82,7 @@ public class ServiceMessagingHandler {
 			ds.put("formats", FactoryWMSS.getFormats(SystemSettings.sourceList.get(i)));
 			ds.put("tonalities", FactoryWMSS.getTonalities(SystemSettings.sourceList.get(i)));
 			ds.put("creationRange", FactoryWMSS.getCreationInterval(SystemSettings.sourceList.get(i)));
+			ds.put("roles", FactoryWMSS.getRoles(SystemSettings.sourceList.get(i)));
 			dsArray.add(ds);
 		}
 

@@ -148,15 +148,15 @@ Selects all music scores containing specific persons and optionally with their r
 
 The __personRole__ parameter may contain the following values:
 
-* Composer
-* Arranger
-* Encoder
-* Dedicatee
-* Librettist
-* Editor
-* Lyricist
-* Translator
-* Performer
+* `composer`
+* `arranger`
+* `encoder`
+* `dedicatee`
+* `librettist`
+* `editor`
+* `lyricist`
+* `translator`
+* `performer`
 
 
 #### Performance Medium (Instrument)
@@ -206,12 +206,12 @@ The performanceMediumType parameter expects the following codes:
 
 | code|medium type| code|medium type|
 |:-:|:-:|:-:|:-:|
-|brass|Brass|pitched-percussion|Pitched Percussion|
-|drum|Drums|pluck|Plucked|
-|key|Keyboard|rattle|Rattle|
-|metal|Metals|strings|Strings|
-|synth|Synthesizer|voice|Voices|
-|wind|Wind|wood|wood|
+|`brass`|Brass|`pitched-percussion`|Pitched Percussion|
+|`drum`|Drums|`pluck`|Plucked|
+|`key`|Keyboard|`rattle`|Rattle|
+|`metal`|Metals|`strings`|Strings|
+|`synth`|Synthesizer|`voice`|Voices|
+|`wind`|Wind|`wood`|wood|
 
 
 #### Tonalities
@@ -243,8 +243,8 @@ http://localhost:8295/wmss?request=ListScores&creationDateFrom=1700&creationDate
  
 Selects records available in a specific format. The supported formats are:
 
-  * mei (Music Encoding Initiative files)
-  * musicxml (MusicXML files)
+  * `mei` (Music Encoding Initiative files)
+  * `musicxml` (MusicXML files)
   
  ```http
 http://localhost:8295/wmss?request=ListScores&format=mei
@@ -264,15 +264,15 @@ Notes can be encoded using one of the following codes:
 
 |Note   | Code ||Note | Code | |Note | Code | |Note | Code | |Note | Code | |Note | Code | |Note | Code | 
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:
-| C __♮__  | c  || D __♮__  | d  || E __♮__  | e  || F __♮__  | f  || G __♮__  | g  || A __♮__  | a  || B __♮__  | b  |
-| C ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | chs  || D ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | dhs  || E ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | ehs  || F ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | fhs  || G ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | ghs  || A ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | ahs  || B ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | bhs  |
-| C __#__  | cs  || D __#__  | ds  || E __#__  | es  || F __#__  | fs  || G __#__  | gs  || A __#__  | as  || B __#__  | bs  |
-| C ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | csh  || D ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | dsh  || E ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | esh  || F ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | fsh  || G ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | gsh  || A ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | ash  || B ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | bsh  |
-| C ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | css || D ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | dss || E ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | ess || F ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | fss || G ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | gss || A ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | ass || B ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | bss |
-| C ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | chb || D ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | dhb || E ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | ehb || F ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | fhb || G ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | ghb || A ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | ahb || B ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | bhb |  
-| C __♭__  | cb  || D __♭__  | db  || E __♭__  | eb  || F __♭__  | fb  || G __♭__  | gb  || A __♭__  | ab  || B __♭__  | bb  |
-| C ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | cbh  || D ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | dbh  || E ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | dbh  || F ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | fbh  || G ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | gbh  || A ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | abh  || B ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | bbh  |
-| C __𝄫__  | cbb  || D __𝄫__  | dbb  || E __𝄫__  | ebb  || F __𝄫__  | fbb  || G __𝄫__  | gbb  || A __𝄫__  | abb  || B __𝄫__  | bbb  |
+| C __♮__  | `c`  || D __♮__  | `d`  || E __♮__  | `e`  || F __♮__  | `f` || G __♮__  | `g`  || A __♮__  | `a`  || B __♮__  | `b`  |
+| C ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | `chs`  || D ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | `dhs`  || E ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | `ehs`  || F ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | `fhs`  || G ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | `ghs`  || A ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  |`ahs`  || B ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | `bhs`  |
+| C __#__  | `cs`  || D __#__  | `ds`  || E __#__  | `es`  || F __#__  | `fs`  || G __#__  | `gs`  || A __#__  | `as`  || B __#__  | `bs`  |
+| C ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | `csh`  || D ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | `dsh`  || E ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | `esh`  || F ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | `fsh`  || G ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | `gsh`  || A ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | `ash`  || B ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | `bsh`  |
+| C ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | `css` || D ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | `dss` || E ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | `ess` || F ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | `fss` || G ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | `gss` || A ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | `ass` || B ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | `bss` |
+| C ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | `chb` || D ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | `dhb` || E ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | `ehb` || F ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | `fhb` || G ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | `ghb` || A ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | `ahb` || B ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  |`bhb` |  
+| C __♭__  | `cb`  || D __♭__  | `db`  || E __♭__  | `eb`  || F __♭__  | `fb`  || G __♭__  | `gb`  || A __♭__  | `ab`  || B __♭__  | `bb`  |
+| C ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | `cbh`  || D ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | `dbh`  || E ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | `dbh`  || F ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | `fbh ` || G ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | `gbh`  || A ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | `abh`  || B ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  |` bbh`  |
+| C __𝄫__  | `cbb`  || D __𝄫__  | `dbb`  || E __𝄫__  | `ebb`  || F __𝄫__  | `fbb`  || G __𝄫__  | `gbb`  || A __𝄫__  | `abb`  || B __𝄫__  | `bbb`  |
 
 For unknown notes use `*`.
 
@@ -309,14 +309,8 @@ Attributes correspond to dynamics and articulations attached to a note or notese
 
 |Attribute   |Code |
 |:-:|:-:|
-|piano|`p`|
-|pianissimo|`pp`|
-|pianississimo|`ppp`|
-|piano pianississimo|`pppp`|
-|forte|`f`|
-|fortissimo|`ff`|
-|fortessissimo|`ffff`|
-|forte fortessissimo|`ffff`|
+|piano|`p` *| 
+|forte|`f` *| 
 |forte-piano|`fp`|
 |forzato|`fz`|
 |mezzo-forte|`mf`|
@@ -327,6 +321,8 @@ Attributes correspond to dynamics and articulations attached to a note or notese
 |dot|`dot`|
 |double-dot|`dot2`|
 |triple-dot|`dot3`|
+
+\* The basic dynamics scale normally goes from `pppppp` (*pianissississississimo*) to `ffff` (*fortissississimo*), but some composers go beyond this range, such as Ligeti's Études No. 9, where he uses `pppppppp` (8x `p`) and `ffffffff` (8x `f`). Therefore, just increase the loudness or quietness by adding as much `p` or `f` as needed in your query.
 
 ##### Operators 
 

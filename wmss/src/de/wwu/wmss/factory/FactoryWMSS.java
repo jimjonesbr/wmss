@@ -144,6 +144,47 @@ public class FactoryWMSS {
 
 	}
 	
+	
+	public static ArrayList<String> getRoles(DataSource dataSource){
+
+		ArrayList<String> result = new ArrayList<String>(); 
+
+		try {
+
+			if (dataSource.getStorage().equals("postgresql")){
+
+				String sql = "SELECT DISTINCT role_description \n" + 
+							 "FROM wmss.wmss_roles rol \n" + 
+							 "JOIN wmss.wmss_score_persons scrper ON scrper.role_id = rol.role_id \n" + 
+							 "JOIN wmss.wmss_scores scr ON scrper.score_id = scr.score_id \n" + 
+							 "JOIN wmss.wmss_persons per ON scrper.person_id = per.person_id ";
+
+				ResultSet rs = PostgreSQLConnector.executeQuery(sql, dataSource);
+
+
+				while (rs.next()){
+
+					String rec = "";
+					rec = rs.getString("role_description");
+					
+					result.add(rec);
+				}
+
+				rs.close();
+			}
+
+		} catch (Exception e) {
+
+			logger.error("Unexpected error ocurred at the PostgreSQL roles retrieval.");
+			logger.error(e.getMessage());
+			e.printStackTrace();
+		}
+
+		
+		return result;
+
+	}
+	
 	public static ArrayList<Tonality> getTonalities(DataSource dataSource){
 
 		ArrayList<Tonality> result = new ArrayList<Tonality>(); 
