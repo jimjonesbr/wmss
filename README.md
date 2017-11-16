@@ -252,27 +252,15 @@ http://localhost:8295/wmss?request=ListScores&format=mei
 
 #### Melody
 
-Selects records containing a specific melody (a sequence of notes). Each element of the melody has to be enconded in the following pattern: 
+Selects records containing a specific melody (a sequence of notes or phrases). Each element of the melody has to be enconded in the following pattern: 
 
 ```
-note-duration-octave/note-duration-octave
+note-duration-octave(attributes)
 ```
 
-Example:
+##### Notes (mandatory)
 
-E♭ whole note, 3rd octave followed by E, whole note, 3rd octave:
-
-```
-http://localhost:8295/wmss?request=ListScores&melody=eb-w-3/e-w-3
-```
-
-Notes duration, pitch and octave can be ignored by placing a 0 (zero) in its position:
-
-```
-eb-w-0/e-w-0
-```
-
-##### Note list
+Notes can be encoded using one of the following codes:
 
 |Note   | Code ||Note | Code | |Note | Code | |Note | Code | |Note | Code | |Note | Code | |Note | Code | 
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:
@@ -286,23 +274,111 @@ eb-w-0/e-w-0
 | C ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | cbh  || D ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | dbh  || E ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | dbh  || F ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | fbh  || G ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | gbh  || A ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | abh  || B ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | bbh  |
 | C __𝄫__  | cbb  || D __𝄫__  | dbb  || E __𝄫__  | ebb  || F __𝄫__  | fbb  || G __𝄫__  | gbb  || A __𝄫__  | abb  || B __𝄫__  | bbb  |
 
+For unknown notes use `*`.
 
-##### Note Duration List
+##### Duration (mandatory)
+
+Durations can be encoded using one of the following codes:
+
 |Duration name (US)   |Duration name (UK) | Code  | Notation  |
 |:-:|:-:|:-:|:-:|
-| octuple whole note | large | ow  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Music-octwholenote.svg/100px-Music-octwholenote.svg.png" width="75">
-| quadruple whole note| longa | qw  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Music-quadwholenote.svg/100px-Music-quadwholenote.svg.png" width="75">
-| double whole note| breve | dw  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Music-alt-doublewholenote.svg/100px-Music-alt-doublewholenote.svg.png" width="75">
-| whole note| semibreve | w  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Music-wholenote.svg/100px-Music-wholenote.svg.png" width="75">
-| half note|  minim | h  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Music-halfnote.svg/100px-Music-halfnote.svg.png" width="75">
-| quarter| crotchet | 4  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Music-quarternote.svg/100px-Music-quarternote.svg.png" width="75">
-| eighth| quaver | 8  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Music-eighthnote.svg/100px-Music-eighthnote.svg.png" width="75">
-| sixteenth| semiquaver | 16  |<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Music-eighthnote.svg/100px-Music-eighthnote.svg.png" width="75">
-| thirty-second| demisemiquaver	| 32  |<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Music-thirtysecondnote.svg/100px-Music-thirtysecondnote.svg.png" width="75">
-| sixty-fourth| hemidemisemiquaver  | 64  |<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Sixtyfourth-note.svg/100px-Sixtyfourth-note.svg.png" width="75">
-| hundred twenty-eighth| semihemidemisemiquaver | 128  |<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Music-hundredtwentyeighthnote.svg/100px-Music-hundredtwentyeighthnote.svg.png" width="75">
-| two hundred fifty-sixth note| demisemihemidemisemiquaver | 256  |<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Semigarrapatea.svg/100px-Semigarrapatea.svg.png" width="75">
-| unknown  |   |0
+| octuple whole note | large | `ow`  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Music-octwholenote.svg/100px-Music-octwholenote.svg.png" width="75">
+| quadruple whole note| longa | `qw`  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Music-quadwholenote.svg/100px-Music-quadwholenote.svg.png" width="75">
+| double whole note| breve | `dw`  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Music-alt-doublewholenote.svg/100px-Music-alt-doublewholenote.svg.png" width="75">
+| whole note| semibreve | `w`  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Music-wholenote.svg/100px-Music-wholenote.svg.png" width="75">
+| half note|  minim | `h`  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Music-halfnote.svg/100px-Music-halfnote.svg.png" width="75">
+| quarter| crotchet | `4`  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Music-quarternote.svg/100px-Music-quarternote.svg.png" width="75">
+| eighth| quaver | `8`  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Music-eighthnote.svg/100px-Music-eighthnote.svg.png" width="75">
+| sixteenth| semiquaver | `16`  |<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Music-eighthnote.svg/100px-Music-eighthnote.svg.png" width="75">
+| thirty-second| demisemiquaver	| `32`  |<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Music-thirtysecondnote.svg/100px-Music-thirtysecondnote.svg.png" width="75">
+| sixty-fourth| hemidemisemiquaver  | `64`  |<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Sixtyfourth-note.svg/100px-Sixtyfourth-note.svg.png" width="75">
+| hundred twenty-eighth| semihemidemisemiquaver | `128`  |<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Music-hundredtwentyeighthnote.svg/100px-Music-hundredtwentyeighthnote.svg.png" width="75">
+| two hundred fifty-sixth note| demisemihemidemisemiquaver | `256`  |<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Semigarrapatea.svg/100px-Semigarrapatea.svg.png" width="75">
+
+For unknown note durations use `*`.
+##### Octave (mandatory)
+
+Octaves consist of numeric values from `0` to `9`. For unknown octaves use `*`.
+
+A sequence of notes or notesets is encoded with the connector `>`, as in the following example:
+
+
+##### Attribute (Optional) 
+
+Attributes correspond to dynamics and articulations attached to a note or noteset. 
+
+|Attribute   |Code |
+|:-:|:-:|
+|piano|`p`|
+|pianissimo|`pp`|
+|pianississimo|`ppp`|
+|piano pianississimo|`pppp`|
+|forte|`f`|
+|fortissimo|`ff`|
+|fortessissimo|`ffff`|
+|forte fortessissimo|`ffff`|
+|forte-piano|`fp`|
+|forzato|`fz`|
+|mezzo-forte|`mf`|
+|mezzo-piano|`mp`|
+|sforzando|`sfz`|
+|sforzando-piano|`sfzp`|
+|sforzando-pianissimo|`sfzpp`|
+|dot|`dot`|
+|double-dot|`dot2`|
+|triple-dot|`dot3`|
+
+##### Operators 
+
+Notes or notesets can be encoded using one of the following operators:
+
+|Connector   |Code 
+|:-:|:-:|
+|Sequence |`>`
+|Melody separator |`/`
+|Noteset separator |`+`
+
+##### Noteset
+
+Notesets enable searches for multiple notes played simultaneously, e.g. triads or tetrads. This group of notes can be encoded by means of placing the notes between squared brackets `[]` and using the note set separator `+`. 
+
+For instance, the noteset __A eighth, B eighth and G eighth__ can be encoded as follows:
+
+`
+[a-8-*+b-8-*+g-8-*]
+`
+
+##### Examples
+
+__E♭ whole note, 3rd octave__ followed by __E, whole note, 3rd octave__:
+
+```
+http://localhost:8295/wmss?request=ListScores&melody=eb-w-3>e-w-3
+```
+__E♭ whole note, unknown octave__ followed by __E, whole note, unknown octave__:
+
+```
+http://localhost:8295/wmss?request=ListScores&melody=eb-w-*>e-w-*
+```
+__E♭ unknown duration, unknown octave__ followed by __E, unknown duration, unknown octave__:
+
+```
+http://localhost:8295/wmss?request=ListScores&melody=eb-*-*>e-*-*
+```
+Noteset of __E♭ whole note, unknown octave__ and __E, whole note, unknown octave__:
+
+```
+http://localhost:8295/wmss?request=ListScores&melody=[eb-w-*+e-w-*]
+```
+
+A sequence of two notesets, each one as __E♭ whole note, unknown octave__ and __E, whole note, unknown octave__:
+
+```
+http://localhost:8295/wmss?request=ListScores&melody=[eb-w-*+e-w-*]>[eb-w-*+e-w-*]
+```
+
+
+
 
 
 #### [Score List Report](https://github.com/jimjonesbr/wmss/blob/master/README.md#score-list-report)
