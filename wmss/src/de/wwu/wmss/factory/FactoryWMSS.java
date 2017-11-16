@@ -440,7 +440,6 @@ public class FactoryWMSS {
 				
 				
 				
-				///////////////// B
 								
 				if(filters.isEmpty() && !melody.equals("")) {
 					
@@ -462,10 +461,7 @@ public class FactoryWMSS {
 					
 				}
 				
-				
-				
-				
-				/////////////////// E
+
 				
 				
 				
@@ -975,7 +971,7 @@ public class FactoryWMSS {
 				rec.setStaff(rs.getString("res_staff"));
 				rec.setVoice(rs.getString("res_voice"));
 				rec.setInstrumentName(rs.getString("res_instrument_name"));
-				
+				rec.setMelody(melody);
 				result.add(rec);
 
 			}		

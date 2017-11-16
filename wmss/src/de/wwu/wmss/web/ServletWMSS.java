@@ -358,14 +358,14 @@ public class ServletWMSS extends HttpServlet
 				
 			} else {
 				
-				validNotes = element[0].matches("/|.*|a|b|c|d|e|f|g|" 				// natural
-											  + "ahb|bhb|chb|dhb|ehb|fhb|ghb|"	// half flat
-											  + "ab|bb|cb|db|eb|fb|gb|"			// flat
-											  + "abh|bbh|cbh|dbh|ebh|fbh|gbh|"	// flat and a half										  
-											  + "abb|bbb|cbb|dbb|ebb|fbb|gbb|"	// double flat
-											  + "ahs|bhs|chs|dhs|ehs|fhs|ghs|"	// half sharp
-											  + "as|bs|cs|ds|es|fs|gs|"			// sharp					  
-											  + "ash|bsh|csh|dsh|esh|fsh|gsh|"	// sharp and a half							  
+				validNotes = element[0].matches("/|.*|a|b|c|d|e|f|g|" 					// natural
+											  + "ahb|bhb|chb|dhb|ehb|fhb|ghb|"			// half flat
+											  + "ab|bb|cb|db|eb|fb|gb|"					// flat
+											  + "abh|bbh|cbh|dbh|ebh|fbh|gbh|"			// flat and a half										  
+											  + "abb|bbb|cbb|dbb|ebb|fbb|gbb|"			// double flat
+											  + "ahs|bhs|chs|dhs|ehs|fhs|ghs|"			// half sharp
+											  + "as|bs|cs|ds|es|fs|gs|"					// sharp					  
+											  + "ash|bsh|csh|dsh|esh|fsh|gsh|"			// sharp and a half							  
 											  + "ass|bss|css|dss|ess|fss|gss|rest");	// double sharp
 				
 				validDurations = element[1].matches("/|.*|ow|qw|dw|w|h|4|8|16|32|64|128|256");	
