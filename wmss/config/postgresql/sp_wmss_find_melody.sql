@@ -123,9 +123,9 @@ BEGIN
 				        score_id = j.score_id AND 
 					movement_id = j.movement_id LIMIT 1 LOOP
 
-		    IF l.pitch = array_notes[k].pitch OR array_notes[k].pitch = '0' THEN matches_pitch := TRUE; END IF;
-		    IF l.duration = array_notes[k].duration OR array_notes[k].duration = '0' THEN matches_duration := TRUE; END IF;
-		    IF l.octave = array_notes[k].octave OR array_notes[k].octave = '0' THEN matches_octave := TRUE; END IF;
+		    IF l.pitch = array_notes[k].pitch OR array_notes[k].pitch = '*' THEN matches_pitch := TRUE; END IF;
+		    IF l.duration = array_notes[k].duration OR array_notes[k].duration = '*' THEN matches_duration := TRUE; END IF;
+		    IF l.octave = array_notes[k].octave OR array_notes[k].octave = '*' THEN matches_octave := TRUE; END IF;
 
 		    current_note.next_noteset = l.next_noteset_id;
 		    
@@ -177,6 +177,6 @@ END;$$
 LANGUAGE plpgsql;
 ALTER FUNCTION wmss.wmss_find_melody(VARCHAR,VARCHAR) OWNER TO postgres;
 
-SELECT DISTINCT * FROM wmss.wmss_find_melody('c-8-0>b-8-0','121')
+SELECT DISTINCT * FROM wmss.wmss_find_melody('c-8-*>b-8-*','*')
 
 

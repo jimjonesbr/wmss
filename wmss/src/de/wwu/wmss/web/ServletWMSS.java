@@ -358,7 +358,7 @@ public class ServletWMSS extends HttpServlet
 				
 			} else {
 				
-				validNotes = element[0].matches(".*|a|b|c|d|e|f|g|" 				// natural
+				validNotes = element[0].matches("/|.*|a|b|c|d|e|f|g|" 				// natural
 											  + "ahb|bhb|chb|dhb|ehb|fhb|ghb|"	// half flat
 											  + "ab|bb|cb|db|eb|fb|gb|"			// flat
 											  + "abh|bbh|cbh|dbh|ebh|fbh|gbh|"	// flat and a half										  
@@ -368,8 +368,8 @@ public class ServletWMSS extends HttpServlet
 											  + "ash|bsh|csh|dsh|esh|fsh|gsh|"	// sharp and a half							  
 											  + "ass|bss|css|dss|ess|fss|gss|rest");	// double sharp
 				
-				validDurations = element[1].matches(".*|ow|qw|dw|w|h|4|8|16|32|64|128|256");	
-				validOctaves = element[2].matches(".*|1|2|3|4|5|6|7|8|9");
+				validDurations = element[1].matches("/|.*|ow|qw|dw|w|h|4|8|16|32|64|128|256");	
+				validOctaves = element[2].matches("/|.*|1|2|3|4|5|6|7|8|9");
 				
 			}
 			
