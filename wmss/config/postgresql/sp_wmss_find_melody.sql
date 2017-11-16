@@ -62,22 +62,22 @@ BEGIN
 
 	melody_query := 'SELECT * FROM wmss.wmss_notes WHERE next_noteset_id IS NOT NULL AND ';
 	
-	IF start_note.octave <> '0' THEN 
+	IF start_note.octave <> '*' THEN 
 	    melody_query := melody_query || 'octave=' || QUOTE_LITERAL(start_note.octave); 
 	END IF;
 	
-	IF start_note.pitch <> '0' THEN 
+	IF start_note.pitch <> '*' THEN 
 	
-	    IF start_note.octave <> '0' THEN 
+	    IF start_note.octave <> '*' THEN 
 	        melody_query := melody_query || ' AND '; 
 	    END IF;
 	    
 	    melody_query := melody_query || 'pitch=' || QUOTE_LITERAL(start_note.pitch); 
 	END IF;
 	
-	IF start_note.duration <> '0' THEN 
+	IF start_note.duration <> '*' THEN 
 	
-	    IF start_note.octave <> '0' OR start_note.pitch <> '0'  THEN 
+	    IF start_note.octave <> '*' OR start_note.pitch <> '*'  THEN 
 	        melody_query := melody_query || ' AND '; 
 	    END IF;
 	    

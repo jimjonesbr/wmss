@@ -10,6 +10,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import de.wwu.wmss.core.DataSource;
+import de.wwu.wmss.core.RequestParameter;
 
 public class SystemSettings {
 
@@ -25,6 +26,7 @@ public class SystemSettings {
 	private static Logger logger = Logger.getLogger("System Settings");
 	public static ArrayList<DataSource> sourceList = new ArrayList<DataSource>();
 	public static ArrayList<String> protocolVersions = new ArrayList<String>();
+	private static ArrayList<String> requests = new ArrayList<String>();
 	
 	public static void main(String[] args) {
 
@@ -127,7 +129,6 @@ public class SystemSettings {
 				ds.getFilters().setIdentifier((boolean)filters.get("identifier"));
 				ds.getFilters().setFormat((boolean)filters.get("format"));
 				
-
 				sourceList.add(ds);            	
 			}
 
@@ -139,6 +140,14 @@ public class SystemSettings {
 		}
 	}
 
+	public static boolean isParameterValid(RequestParameter parameter) {
+		
+		boolean result = false;
+		
+		
+		return result;
+		
+	}
 	public SystemSettings() {
 		super();
 

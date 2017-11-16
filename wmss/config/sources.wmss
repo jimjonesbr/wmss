@@ -23,9 +23,9 @@
               "tonalityTonic": true,
               "tonalityMode": true,
               "tempo": true,
-              "creationDate": false,
-              "creationDateFrom": false,
-              "creationDateTo": false,
+              "creationDate": true,
+              "creationDateFrom": true,
+              "creationDateTo": true,
               "source": true,
               "identifier": true,
               "format": true              
