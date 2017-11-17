@@ -480,7 +480,9 @@ public class FactoryWMSS {
 				
 				
 				
-				
+				/**
+				 * Melody search without any other filter
+				 */
 								
 				if(filters.isEmpty() && !melody.equals("")) {
 					
@@ -491,11 +493,94 @@ public class FactoryWMSS {
 					
 					for (int j = 0; j < melodyRequests.length; j++) {
 												
-						tmpMelodyLocationList = findMelody(melodyRequests[j], "*", dataSource);
 						
-						for (int k = 0; k < tmpMelodyLocationList.size(); k++) {
+						String[] melodyExpressions = melodyRequests[j].split("/");
+						
+						/**
+						 * If there is no multiple melody expressions
+						 */
+						if(melodyExpressions.length == 1) { 
+						
+							tmpMelodyLocationList = findMelody(melodyRequests[j], "*", dataSource);
 							
-							melodyLocationList.add(tmpMelodyLocationList.get(k));
+							for (int k = 0; k < tmpMelodyLocationList.size(); k++) {
+
+								melodyLocationList.add(tmpMelodyLocationList.get(k));
+
+							}
+							
+						}
+						
+						/**
+						 * multiple melody expressions
+						 */						
+						else {
+																					
+							boolean matchesExpressions = false;							
+							String identifiers = "";
+							
+							for (int k = 0; k < melodyExpressions.length; k++) {
+							
+								if (k == 0) {
+								
+									melodyLocationList = findMelody(melodyExpressions[k], "*", dataSource);
+									identifiers = getIdentifiersFromMelodyLocationList(melodyLocationList);
+									
+									if (!identifiers.equals("")) {
+										matchesExpressions = true;
+									}
+								
+								} else {
+									
+									/**
+									 * If the previous iteration returned any result...
+									 */
+									if (matchesExpressions) {
+										
+										ArrayList<MelodyLocation> nextMelodyLocationList = findMelody(melodyExpressions[k], identifiers, dataSource);																			
+										ArrayList<MelodyLocation> tmp = melodyLocationList;
+										melodyLocationList = new ArrayList<MelodyLocation>();
+										
+										/**
+										 * If the current iteration returns any melody location ...
+										 */
+										if(nextMelodyLocationList.size() != 0) {
+
+											matchesExpressions = true;
+											melodyLocationList.addAll(nextMelodyLocationList);
+											
+											for (int l = 0; l < nextMelodyLocationList.size(); l++) {
+												
+												for (int m = 0; m < tmp.size(); m++) {
+													
+													if(tmp.get(m).getScoreId().equals(nextMelodyLocationList.get(l).getScoreId())) {
+														
+														melodyLocationList.add(tmp.get(m));
+													}
+													
+												}
+												
+											}
+											
+
+
+										} else {
+
+											matchesExpressions = false;
+										}
+									}
+									
+								}
+								
+								/**
+								 * If one of the iterations returns an empty resultset, the whole request is ignored.
+								 */
+								if(!matchesExpressions) {
+									
+									melodyLocationList = new ArrayList<MelodyLocation>();
+								}
+							}
+												
 							
 						}
 						
@@ -827,68 +912,147 @@ public class FactoryWMSS {
 		
 		
 		
-		
+
 		if(!filters.isEmpty() && !melody.equals("")) {
-		
-											
-			//ArrayList<MelodyLocationGroup> tmpMelodyLocationGroup = new ArrayList<MelodyLocationGroup>();
-			
-			String identifiers = "";
-			
-			for (int i = 0; i < scoreList.size(); i++) {
-				
-				identifiers = identifiers + scoreList.get(i).getScoreId();
-				
-				if ((i+1) != scoreList.size()) {
-					identifiers = identifiers + ",";
-				}
-				
-			}
-						
+
+			String identifiers = getIdentifiersFromScoreList(scoreList);
+
 			ArrayList<MelodyLocation> tmpMelodyLocation = new ArrayList<MelodyLocation>();
 			String[] melodyRequests = melody.split("[|]");
-			
+
 			for (int i = 0; i < melodyRequests.length; i++) {
-				
-				ArrayList<MelodyLocation> melodyRequestResult = new ArrayList<MelodyLocation>();
-				
-				melodyRequestResult = findMelody(melodyRequests[i], identifiers, dataSource);
-				
-				for (int k = 0; k < melodyRequestResult.size(); k++) {
+
+
+				String[] melodyExpressions = melodyRequests[i].split("/");
+
+				/**
+				 * No multiple melody expressions
+				 */
+				if(melodyExpressions.length == 1) { 
+
+					tmpMelodyLocation = findMelody(melodyRequests[i], identifiers, dataSource);
+
+					for (int j = 0; j < tmpMelodyLocation.size(); j++) {
+
+						melodyLocationList.add(tmpMelodyLocation.get(j));
+
+					}
+
+				} else {
+
+					boolean matchesExpressions = false;							
+
+
+					for (int k = 0; k < melodyExpressions.length; k++) {
+
+						if (k == 0) {
+
+							melodyLocationList = findMelody(melodyExpressions[k], identifiers, dataSource);
+							identifiers = getIdentifiersFromMelodyLocationList(melodyLocationList);
+
+							if (!identifiers.equals("")) {
+								matchesExpressions = true;
+							}
+
+						} else {
+
+
+							if (matchesExpressions) {
+
+								ArrayList<MelodyLocation> nextMelodyLocationList = findMelody(melodyExpressions[k], identifiers, dataSource);																			
+								ArrayList<MelodyLocation> tmp = melodyLocationList;
+								melodyLocationList = new ArrayList<MelodyLocation>();
+
+								/**
+								 * If the current iteration returns any melody location ...
+								 */
+								if(nextMelodyLocationList.size() != 0) {
+
+									matchesExpressions = true;
+									melodyLocationList.addAll(nextMelodyLocationList);
+
+									for (int l = 0; l < nextMelodyLocationList.size(); l++) {
+
+										for (int m = 0; m < tmp.size(); m++) {
+
+											if(tmp.get(m).getScoreId().equals(nextMelodyLocationList.get(l).getScoreId())) {
+
+												melodyLocationList.add(tmp.get(m));
+											}
+
+										}
+
+									}
+
+
+
+								} else {
+									
+									matchesExpressions = false;
+								}				
+
+							} 
+
+						}
+
+						/**
+						 * If one of the iterations returns an empty resultset, the whole request is ignored.
+						 */
+						if(!matchesExpressions) {
+
+							melodyLocationList = new ArrayList<MelodyLocation>();
+						}
+
+					}
+
 					
-					tmpMelodyLocation.add(melodyRequestResult.get(k));
-					
+
+
+
+					//					ArrayList<MelodyLocation> melodyRequestResult = new ArrayList<MelodyLocation>();			
+					//
+					//					melodyRequestResult = findMelody(melodyRequests[i], identifiers, dataSource);
+					//
+					//					for (int k = 0; k < melodyRequestResult.size(); k++) {
+					//
+					//						tmpMelodyLocation.add(melodyRequestResult.get(k));
+					//
+					//					}
+
+
 				}
-				//tmpMelodyLocation = findMelody(melodyRequests[i], identifiers, dataSource);	
-				
+
+
 			}
-			
-			
-			
+
+
+
+			tmpMelodyLocation = melodyLocationList;
+
 			ArrayList<MusicScore> tmpScorelist = new ArrayList<MusicScore>();
 			boolean found = false;
-			
+
 			for (int i = 0; i < scoreList.size(); i++) {
-				
+
 				for (int j = 0; j < tmpMelodyLocation.size(); j++) {
-					
+
 					if(tmpMelodyLocation.get(j).getScoreId().equals(scoreList.get(i).getScoreId())) {
 
 						found = true;
-						
+
 					}
-					
+
 				}
-				
+
 				if(found) {
-					
+
 					tmpScorelist.add(scoreList.get(i));
 					found = false;
-					
+
 				}
-				
+
 			}
-			
+
 			scoreList = tmpScorelist;
 			melodyLocationList = tmpMelodyLocation;
 
@@ -945,6 +1109,41 @@ public class FactoryWMSS {
 	}
 
 
+	private static String getIdentifiersFromScoreList(ArrayList<MusicScore> scoreList) {
+		
+		String result = "";
+		
+		for (int i = 0; i < scoreList.size(); i++) {
+			
+			result = result + scoreList.get(i).getScoreId();
+			
+			if ((i+1) != scoreList.size()) {
+				result = result + ",";
+			}
+			
+		}	
+		
+		return result;
+	}
+	
+
+	private static String getIdentifiersFromMelodyLocationList(ArrayList<MelodyLocation> melodyLocationList) {
+		
+		String result = "";
+		
+		for (int i = 0; i < melodyLocationList.size(); i++) {
+			
+			result = result + melodyLocationList.get(i).getScoreId();
+			
+			if ((i+1) != melodyLocationList.size()) {
+				result = result + ",";
+			}
+			
+		}	
+		
+		return result;
+	}
+	
 	public static String getScore(ArrayList<RequestParameter> parameters){
 
 		String result = "";
