@@ -339,7 +339,7 @@ Notes or notesets can be encoded using one of the following operators:
 |Operator |Name   | Description | 
 |:-:|:-:|:-:|
 |`>`|Sequence | Connect notes or notesets sequences in a melody expression
-|`|`|Request concatenator |Concatenates multiple melody requests
+|`\|`|Request concatenator |Concatenates multiple melody requests
 |`/`|Melody concatenator |Concatenates multiple melody expressions in a single request (to be implemented)
 |`+`|Noteset aggregator | Aggregates multiple notes to form a noteset (to be implemented).
 
