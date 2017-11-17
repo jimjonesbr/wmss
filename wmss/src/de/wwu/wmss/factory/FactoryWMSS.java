@@ -548,6 +548,7 @@ public class FactoryWMSS {
 
 											matchesExpressions = true;
 											melodyLocationList.addAll(nextMelodyLocationList);
+											identifiers = getIdentifiersFromMelodyLocationList(nextMelodyLocationList);
 											
 											for (int l = 0; l < nextMelodyLocationList.size(); l++) {
 												
@@ -568,6 +569,8 @@ public class FactoryWMSS {
 
 											matchesExpressions = false;
 										}
+										
+										
 									}
 									
 								}
@@ -604,8 +607,12 @@ public class FactoryWMSS {
 						}
 					}
 					
-					sqlFilter = " WHERE scr.score_id IN ("+ idsRetrievedFromMelodySearch +")";
 					
+					if (!idsRetrievedFromMelodySearch.equals("")) {
+					
+						sqlFilter = " WHERE scr.score_id IN ("+ idsRetrievedFromMelodySearch +")";
+						
+					}
 				}
 				
 
@@ -970,7 +977,8 @@ public class FactoryWMSS {
 
 									matchesExpressions = true;
 									melodyLocationList.addAll(nextMelodyLocationList);
-
+									identifiers = getIdentifiersFromMelodyLocationList(nextMelodyLocationList);
+									
 									for (int l = 0; l < nextMelodyLocationList.size(); l++) {
 
 										for (int m = 0; m < tmp.size(); m++) {
