@@ -566,7 +566,7 @@ public class FactoryWMSS {
 
 
 										} else {
-
+											System.out.println("#################");
 											matchesExpressions = false;
 										}
 										
@@ -579,7 +579,7 @@ public class FactoryWMSS {
 								 * If one of the iterations returns an empty resultset, the whole request is ignored.
 								 */
 								if(!matchesExpressions) {
-									
+									System.out.println("#################");
 									melodyLocationList = new ArrayList<MelodyLocation>();
 								}
 							}
@@ -612,7 +612,11 @@ public class FactoryWMSS {
 					
 						sqlFilter = " WHERE scr.score_id IN ("+ idsRetrievedFromMelodySearch +")";
 						
+					} else {
+						
+						sqlFilter = " WHERE scr.score_id IN ('')";
 					}
+					
 				}
 				
 
