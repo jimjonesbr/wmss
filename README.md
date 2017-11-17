@@ -324,56 +324,59 @@ Attributes correspond to dynamics and articulations attached to a note or notese
 
 \* The basic dynamics scale normally goes from `pppppp` (*pianissississississimo*) to `ffff` (*fortissississimo*), but some composers go beyond this range, such as Ligeti's Études No. 9, where he uses `pppppppp` (8x `p`) and `ffffffff` (8x `f`). Therefore, just increase the loudness or quietness by adding as much `p` or `f` as needed in your query.
 
-##### Operators 
-
-Notes or notesets can be encoded using one of the following operators:
-
-|Connector   |Code 
-|:-:|:-:|
-|Sequence |`>`
-|Melody separator |`/`
-|Noteset separator |`+`
-
 ##### Noteset
 
 Notesets enable searches for multiple notes played simultaneously, e.g. triads or tetrads. This group of notes can be encoded by means of placing the notes between squared brackets `[]` and using the note set separator `+`. 
 
 For instance, the noteset __A eighth, B eighth and G eighth__ can be encoded as follows:
 
-`
-[a-8-*+b-8-*+g-8-*]
-`
+`[a-8-*+b-8-*+g-8-*]`
+
+##### Melody Request Operators 
+
+Notes or notesets can be encoded using one of the following operators:
+
+|Operator |Name   | Description | 
+|:-:|:-:|:-:|
+|`>`|Sequence | Connect notes or notesets sequences in a melody expression
+|`|`|Request concatenator |Concatenates multiple melody requests
+|`/`|Melody concatenator |Concatenates multiple melody expressions in a single request (to be implemented)
+|`+`|Noteset aggregator | Aggregates multiple notes to form a noteset (to be implemented).
+
+
+
 
 ##### Examples
 
-__E♭ whole note, 3rd octave__ followed by __E, whole note, 3rd octave__:
+1. __Note sequence__. *E♭ whole note, 3rd octave* followed by *E, whole note, 3rd octave*:
 
 ```
 http://localhost:8295/wmss?request=ListScores&melody=eb-w-3>e-w-3
 ```
-__E♭ whole note, unknown octave__ followed by __E, whole note, unknown octave__:
+2. __Note sequence with unknown octaves__. *E♭ whole note, unknown octave* followed by *E, whole note, unknown octave*:
 
 ```
 http://localhost:8295/wmss?request=ListScores&melody=eb-w-*>e-w-*
 ```
-__E♭ unknown duration, unknown octave__ followed by __E, unknown duration, unknown octave__:
+3. __Note sequence with unknown octaves and durations__. *E♭ unknown duration, unknown octave* followed by *E, unknown duration, unknown octave*:
 
 ```
 http://localhost:8295/wmss?request=ListScores&melody=eb-*-*>e-*-*
 ```
-Noteset of __E♭ whole note, unknown octave__ and __E, whole note, unknown octave__:
+4. __Noteset with unknown octave__. Noteset of *E♭ whole note, unknown octave* and *E, whole note, unknown octave*:
 
 ```
 http://localhost:8295/wmss?request=ListScores&melody=[eb-w-*+e-w-*]
 ```
 
-A sequence of two notesets, each one as __E♭ whole note, unknown octave__ and __E, whole note, unknown octave__:
+5. __Noteset sequence with unknown octaves__. A sequence of two notesets, each one as *E♭ whole note, unknown octave* and *E, whole note, unknown octave*:
 
 ```
 http://localhost:8295/wmss?request=ListScores&melody=[eb-w-*+e-w-*]>[eb-w-*+e-w-*]
 ```
+6. __Multiple Melody Requests__. *E♭ whole note, 3rd octave* followed by *E, whole note, 3rd octave* __and__ *E♭ quarter note, 3rd octave* followed by *F quarter note, 3rd octave*:
 
-
+`http://localhost:8295/wmss/?request=ListScores&melody=eb-w-3>e-w-3|eb-4-3>f-4-3`
 
 
 

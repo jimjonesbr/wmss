@@ -484,7 +484,27 @@ public class FactoryWMSS {
 								
 				if(filters.isEmpty() && !melody.equals("")) {
 					
-					melodyLocationList = findMelody(melody, "*", dataSource);
+					//melodyLocationList = findMelody(melody, "*", dataSource);					
+					//System.out.println("split > "+melody.split("[|]")[0]);
+					String[] melodyRequests = melody.split("[|]");
+					ArrayList<MelodyLocation> tmpMelodyLocationList = new ArrayList<MelodyLocation>();	
+					
+					for (int j = 0; j < melodyRequests.length; j++) {
+												
+						tmpMelodyLocationList = findMelody(melodyRequests[j], "*", dataSource);
+						
+						for (int k = 0; k < tmpMelodyLocationList.size(); k++) {
+							
+							melodyLocationList.add(tmpMelodyLocationList.get(k));
+							
+						}
+						
+						
+					}
+					
+									
+					
+					
 					
 					String idsRetrievedFromMelodySearch = "";
 					
@@ -495,6 +515,7 @@ public class FactoryWMSS {
 						if((j+1)< melodyLocationList.size()) {
 							
 							idsRetrievedFromMelodySearch = idsRetrievedFromMelodySearch + ",";
+							
 						}
 					}
 					
@@ -809,10 +830,8 @@ public class FactoryWMSS {
 		
 		if(!filters.isEmpty() && !melody.equals("")) {
 		
-			ArrayList<MelodyLocation> tmpMelodyLocation = new ArrayList<MelodyLocation>();
-			ArrayList<MusicScore> tmpScorelist = new ArrayList<MusicScore>();			
-			
-			ArrayList<MelodyLocationGroup> tmpMelodyLocationGroup = new ArrayList<MelodyLocationGroup>();
+											
+			//ArrayList<MelodyLocationGroup> tmpMelodyLocationGroup = new ArrayList<MelodyLocationGroup>();
 			
 			String identifiers = "";
 			
@@ -825,16 +844,28 @@ public class FactoryWMSS {
 				}
 				
 			}
+						
+			ArrayList<MelodyLocation> tmpMelodyLocation = new ArrayList<MelodyLocation>();
+			String[] melodyRequests = melody.split("[|]");
 			
-			tmpMelodyLocation = findMelody(melody, identifiers, dataSource);
+			for (int i = 0; i < melodyRequests.length; i++) {
+				
+				ArrayList<MelodyLocation> melodyRequestResult = new ArrayList<MelodyLocation>();
+				
+				melodyRequestResult = findMelody(melodyRequests[i], identifiers, dataSource);
+				
+				for (int k = 0; k < melodyRequestResult.size(); k++) {
+					
+					tmpMelodyLocation.add(melodyRequestResult.get(k));
+					
+				}
+				//tmpMelodyLocation = findMelody(melodyRequests[i], identifiers, dataSource);	
+				
+			}
 			
 			
 			
-			boolean found2 = false;
-			
-			
-			
-			
+			ArrayList<MusicScore> tmpScorelist = new ArrayList<MusicScore>();
 			boolean found = false;
 			
 			for (int i = 0; i < scoreList.size(); i++) {
