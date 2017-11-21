@@ -305,22 +305,7 @@ A sequence of notes or notesets is encoded with the connector `>`, as in the fol
 
 ##### Attribute (Optional) 
 
-Attributes correspond to dynamics and articulations attached to a note or noteset. 
-
-|Attribute   |Code |
-|:-:|:-:|
-|piano|`p` *| 
-|forte|`f` *| 
-|forte-piano|`fp`|
-|forzato|`fz`|
-|mezzo-forte|`mf`|
-|mezzo-piano|`mp`|
-|sforzando|`sfz`|
-|sforzando-piano|`sfzp`|
-|sforzando-pianissimo|`sfzpp`|
-|dot|`dot`|
-|double-dot|`dot2`|
-|triple-dot|`dot3`|
+Attributes correspond to dynamics and articulations attached to a note or noteset (Click [here](https://github.com/jimjonesbr/wmss/tree/master/wmss/data/system/attributes.csv) for a complete list of attributes)*.
 
 \* The basic dynamics scale normally goes from `pppppp` (*pianissississississimo*) to `ffff` (*fortissississimo*), but some composers go beyond this range, such as Ligeti's Études No. 9, where he uses `pppppppp` (8x `p`) and `ffffffff` (8x `f`). Therefore, just increase the loudness or quietness by adding as much `p` or `f` as needed in your query.
 
