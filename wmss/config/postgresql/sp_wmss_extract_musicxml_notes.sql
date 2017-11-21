@@ -21,6 +21,7 @@ DECLARE ext_accidental VARCHAR;
 DECLARE ext_movement INTEGER DEFAULT 0;
 DECLARE ext_key_mode VARCHAR;
 DECLARE ext_key_fifth VARCHAR;
+DECLARE ext_dynamics VARCHAR[];
 DECLARE ext_is_chord BOOLEAN DEFAULT FALSE;
 DECLARE noteset BIGINT;
 DECLARE current_tonality VARCHAR;
@@ -93,6 +94,7 @@ BEGIN
 		IF ext_measure_id = '1' THEN ext_movement := ext_movement + 1; END IF;
 
 		ext_notes := (SELECT XPATH('//measure/note', ext_measures[j]));		
+	
 
 		FOR k IN 1 .. ARRAY_LENGTH(ext_notes, 1) LOOP
 
@@ -236,6 +238,7 @@ BEGIN
 		    ext_octave := (SELECT XPATH('//pitch/octave/text()', ext_notes[k]))[1];
 		    ext_duration := (SELECT XPATH('//type/text()', ext_notes[k]))[1];
 		    ext_accidental := (SELECT XPATH('//accidental/text()', ext_notes[k]))[1];
+		    ext_dynamics := (SELECT XPATH('//direction-type/dynamics/node()', ext_measures[j]))::TEXT[];
 
 		    ext_instrument := (SELECT XPATH('//instrument/@id', ext_notes[k]))[1];
 		    IF ext_instrument IS NULL THEN ext_instrument := ext_parts[i]::TEXT || '-I1'; END IF;
@@ -282,8 +285,22 @@ BEGIN
 		    INSERT INTO wmss.wmss_notes (score_id, movement_id, measure, octave, pitch, duration, voice, instrument,staff,chord,noteset_id,document_type_id) 
 		    VALUES (document_id, ext_movement, ext_measure_id, ext_octave, ext_pitch||ext_accidental, ext_duration, ext_voice::INTEGER, ext_instrument, ext_staff::INTEGER,ext_is_chord,noteset,'musicxml');
 
+
+		    IF ARRAY_LENGTH(ext_dynamics, 1) IS NOT NULL THEN 
+
+		        FOR l IN 1 .. ARRAY_LENGTH(ext_dynamics, 1) LOOP
+
+			    --TODO implement insert for attributes/noteset
+		            --RAISE INFO 'measure > % noteset > % dynamic > %',ext_measure_id, noteset,ext_dynamics[l];
+
+		        END LOOP;
+
+		    END IF;
+		    
+
+
 		    ext_is_chord := FALSE;
-		    --raise notice '[Part: % Movement: % Measure: %] pitch: % | octave: % | duration: % | staff: % | voice: % | instrument: %',parts[i], movement, measure_id, pitch, octave,duration,staff,voice,instrument;
+		    
 		END LOOP;
 
 	    END LOOP;
@@ -294,19 +311,7 @@ BEGIN
 	
 	RAISE NOTICE '	Creating note sequences. This might take a while ...';
 
-	--UPDATE wmss_notes note 
-	--SET next = (SELECT note_id 
-	--	    FROM wmss_notes 
-	--	    WHERE note_id > note.note_id AND
-	--		  staff = note.staff AND
-	--		  voice = note.voice AND
-	--		  score_id = note.score_id AND
-	--		  movement_id = note.movement_id AND
-	--		  instrument = note.instrument AND 
-	--		  chord IS FALSE
-	--	    ORDER BY note_id
-	--	    LIMIT 1)
-	--WHERE score_id = document_id;
+
 
 
 	UPDATE wmss.wmss_notes note 

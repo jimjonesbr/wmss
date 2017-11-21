@@ -1,0 +1,31 @@
+noteset_attribute_value,noteset_attribute_description
+dot,dot
+dot2,double-dot
+dot3,triple-dot
+f,forte
+ff,fortissimo
+fff,fortississimo
+ffff,fortissississimo
+fffff,forte 5x
+ffffff,forte 6x
+fffffff,forte 7x
+ffffffff,forte 8x
+fffffffff,forte 9x
+ffffffffff,forte 10x
+mf,mezzo-forte
+mp,mezzo-piano
+p,piano
+pp,pianissimo
+ppp,pianississimo
+pppp,pianissississimo
+ppppp,pianississississimo
+pppppp,pianissississississimo
+ppppppp,piano 7x
+pppppppp,piano 8x
+ppppppppp,piano 9x
+pppppppppp,piano 10x
+sfz,sforzando
+fp,forte-piano
+fz,forzato
+sfzpp,sforzando-pianissimo
+sfzp,sforzando-piano

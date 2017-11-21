@@ -1,894 +1,894 @@
-"instrument id","instrument type","instrument description"
-"brass.alphorn","brass","Alphorn"
-"brass.alto-horn","brass","Alto Horn"
-"brass.baritone-horn","brass","Baritone Horn"
-"brass.bugle","brass","Bugle"
-"brass.bugle.alto","brass","Alto Bugle"
-"brass.bugle.baritone","brass","Baritone Bugle"
-"brass.bugle.contrabass","brass","Contrabass Bugle"
-"brass.bugle.euphonium-bugle","brass","Euphonium-Bugle"
-"brass.bugle.mellophone-bugle","brass","Mellophone-Bugle"
-"brass.bugle.soprano","brass","Soprano Bugle"
-"brass.cimbasso","brass","Cimbasso"
-"brass.conch-shell","brass","Conch Shell"
-"brass.cornet","brass","Cornet"
-"brass.cornet.soprano","brass","Soprano Cornet"
-"brass.cornett","brass","Cornett"
-"brass.cornett.tenor","brass","Tenor Cornett"
-"brass.cornettino","brass","Comettino"
-"brass.didgeridoo","brass","Didgeridoo"
-"brass.euphonium","brass","Euphonium"
-"brass.fiscorn","brass","Fiscom"
-"brass.horn.b","brass","Horn in B"
-"brass.flugelhorn","brass","Flugelhorn"
-"brass.french-horn","brass","French Horn"
-"brass.group","brass","Group (Brass)"
-"brass.group.synth","brass","Group Synth. (Brass)"
-"brass.helicon","brass","Helicon"
-"brass.horagai","brass","Horagai"
-"brass.kuhlohorn","brass","Kuhlohorn"
-"brass.mellophone","brass","Mellophone"
-"brass.natural-horn","brass","Natural Horn"
-"brass.ophicleide","brass","Ophicleide"
-"brass.posthorn","brass","Posthorn"
-"brass.rag-dung","brass","Rag Dung"
-"brass.sackbutt","brass","Sackbutt"
-"brass.sackbutt.alto","brass","Alto Sackbutt"
-"brass.sackbutt.bass","brass","Bass Sackbutt"
-"brass.sackbutt.tenor","brass","Tenor Sackbutt"
-"brass.saxhorn","brass","Saxohorn"
-"brass.serpent","brass","Serpent"
-"brass.shofar","brass","Shofar"
-"brass.sousaphone","brass","Sousaphone"
-"brass.trombone","brass","Trombone"
-"brass.trombone.alto","brass","Alto Trombone"
-"brass.trombone.bass","brass","Bass Trombone"
-"brass.trombone.contrabass","brass","Contrabass Trombone"
-"brass.trombone.tenor","brass","Tenor Trombone"
-"brass.trumpet","brass","Trumpet"
-"brass.trumpet.baroque","brass","Baroque Trumpet"
-"brass.trumpet.bass","brass","Bass Trumpet"
-"brass.trumpet.bflat","brass","Trumpet in B flat"
-"brass.trumpet.c","brass","Trumpet in C"
-"brass.trumpet.d","brass","Trumpet in D"
-"brass.trumpet.b","brass","Trumpet in B"
-"brass.trumpet.piccolo","brass","Piccolo Trumpet"
-"brass.trumpet.pocket","brass","Pocket Trumpet"
-"brass.trumpet.slide","brass","Slide Trumpet"
-"brass.trumpet.tenor","brass","Tenor Trumpet"
-"brass.tuba","brass","Tuba"
-"brass.tuba.bass","brass","Bass Tuba"
-"brass.tuba.subcontrabass","brass","Subcontrabass Tuba"
-"brass.vienna-horn","brass","Vienna Horn"
-"brass.vuvuzela","brass","Vuvuzela"
-"brass.wagner-tuba","brass","Wagner Tuba"
-"drum.drum","drum","Drums"
-"drum.side-drum","drum","Side Drum"
-"drum.apentemma","drum","Apentemma"
-"drum.ashiko","drum","Ashiko"
-"drum.atabaque","drum","Atabaque"
-"drum.atoke","drum","Atoke"
-"drum.atsimevu","drum","Atsimevu"
-"drum.axatse","drum","Axatse"
-"drum.bass-drum","drum","Bass Drum"
-"drum.bata","drum","Bata"
-"drum.bata.itotele","drum","Itolele Bata"
-"drum.bata.iya","drum","Iya Bata"
-"drum.bata.okonkolo","drum","Okonkolo Bata"
-"drum.bendir","drum","Bendir"
-"drum.bodhran","drum","Bodhran"
-"drum.bombo","drum","Bombo"
-"drum.bongo","drum","Bongo"
-"drum.bougarabou","drum","Bougarabou"
-"drum.buffalo-drum","drum","Buffalo Drum"
-"drum.cajon","drum","Cajon"
-"drum.chenda","drum","Chenda"
-"drum.chu-daiko","drum","Chu Daiko"
-"drum.conga","drum","Conga"
-"drum.cuica","drum","Cuica"
-"drum.dabakan","drum","Dabakan"
-"drum.daff","drum","Daff"
-"drum.dafli","drum","Dafli"
-"drum.daibyosi","drum","Daibyosi"
-"drum.damroo","drum","Damroo"
-"drum.darabuka","drum","Darabuka"
-"drum.def","drum","Def"
-"drum.dhol","drum","Dhol"
-"drum.dholak","drum","Dholak"
-"drum.djembe","drum","Djembe"
-"drum.doira","drum","Doira"
-"drum.dondo","drum","Dondo"
-"drum.doun-doun-ba","drum","Doun Doun Ba"
-"drum.duff","drum","Duff"
-"drum.dumbek","drum","Dumbek"
-"drum.fontomfrom","drum","Fontomfrom"
-"drum.frame-drum","drum","Frame Drum"
-"drum.frame-drum.arabian","drum","Arabian Frame Drum"
-"drum.geduk","drum","Geduk"
-"drum.ghatam","drum","Ghatam"
-"drum.gome","drum","Gome"
-"drum.group","drum","Group (Drums)"
-"drum.group.chinese","drum","Chinese Group (Drums)"
-"drum.group.ewe","drum","Ewe Group (Drums)"
-"drum.group.indian","drum","Indian Group (Drums)"
-"drum.group.set","drum","Set Group (Drums)"
-"drum.hand-drum","drum","Hand Drum"
-"drum.hira-daiko","drum","Hira Daiko"
-"drum.ibo","drum","Ibo"
-"drum.igihumurizo","drum","Igihumurizo"
-"drum.inyahura","drum","Inyahura"
-"drum.ishakwe","drum","Ishakwe"
-"drum.jang-gu","drum","Jang-gu"
-"drum.kagan","drum","Kagan"
-"drum.kakko","drum","Kakko"
-"drum.kanjira","drum","Kanjira"
-"drum.kendhang","drum","Kendhang"
-"drum.kendhang.ageng","drum","Ageng Kendhang"
-"drum.kendhang.ciblon","drum","Ciblon Kendhang"
-"drum.kenkeni","drum","Kenkeni"
-"drum.khol","drum","Khol"
-"drum.kick-drum","drum","Kick-drum"
-"drum.kidi","drum","Kidi"
-"drum.ko-daiko","drum","Ko-daiko"
-"drum.kpanlogo","drum","Kpanlogo"
-"drum.kudum","drum","Kudum"
-"drum.lambeg","drum","Lambeg"
-"drum.lion-drum","drum","Lion Drum"
-"drum.log-drum","drum","Log Drum"
-"drum.log-drum.african","drum","African Log Drum"
-"drum.log-drum.native","drum","Native Log Drum"
-"drum.log-drum.nigerian","drum","Ngerian Log Drum"
-"drum.madal","drum","Madal"
-"drum.maddale","drum","Maddale"
-"drum.mridangam","drum","Mridangam"
-"drum.naal","drum","Naal"
-"drum.nagado-daiko","drum","Nagado Daiko"
-"drum.nagara","drum","Nagara"
-"drum.naqara","drum","Naqara"
-"drum.o-daiko","drum","O-daiko"
-"drum.okawa","drum","Okawa"
-"drum.okedo-daiko","drum","Okedo-daiko"
-"drum.pahu-hula","drum","Pahu-hula"
-"drum.pakhawaj","drum","Pakhawaj"
-"drum.pandeiro","drum","Pandeiro"
-"drum.pandero","drum","Pandero"
-"drum.powwow","drum","Powwow"
-"drum.pueblo","drum","Pueblo"
-"drum.repinique","drum","Repinique"
-"drum.riq","drum","Riq"
-"drum.rototom","drum","Rototom"
-"drum.sabar","drum","Sabar"
-"drum.sakara","drum","Sakara"
-"drum.sampho","drum","Sampho"
-"drum.sangban","drum","Sangban"
-"drum.shime-daiko","drum","Shime-daiko"
-"drum.slit-drum","drum","Slit-drum"
-"drum.slit-drum.krin","drum","Krin Slit-drum"
-"drum.snare-drum","drum","Sanre Drum"
-"drum.snare-drum.electric","drum","Electric Sanre Drum"
-"drum.sogo","drum","Sogo"
-"drum.surdo","drum","Surdo"
-"drum.tabla","drum","Tabla"
-"drum.tabla.bayan","drum","Bayan Tabla"
-"drum.tabla.dayan","drum","Dayan Tabla"
-"drum.taiko","drum","Taiko"
-"drum.talking","drum","Talking"
-"drum.tama","drum","Tama"
-"drum.tamborita","drum","Tamborita"
-"drum.tambourine","drum","Tambourine"
-"drum.tamte","drum","Tamte"
-"drum.tangku","drum","Tangku"
-"drum.tan-tan","drum","Tan-tan"
-"drum.taphon","drum","Taphon"
-"drum.tar","drum","Tar"
-"drum.tasha","drum","Tasha"
-"drum.tenor-drum","drum","Tenor Drum"
-"drum.teponaxtli","drum","Teponaxtli"
-"drum.thavil","drum","Thavil"
-"drum.the-box","drum","The Box"
-"drum.timbale","drum","Timbale"
-"drum.timpani","drum","Timpani"
-"drum.tinaja","drum","Tinaja"
-"drum.toere","drum","Toere"
-"drum.tombak","drum","Tombak"
-"drum.tom-tom","drum","Tom-tom"
-"drum.tom-tom.synth","drum","Synth. Tom-tom"
-"drum.tsuzumi","drum","Tsuzumi"
-"drum.tumbak","drum","Tumbak"
-"drum.uchiwa-daiko","drum","Uchiwa-daiko"
-"drum.udaku","drum","Udaku"
-"drum.udu","drum","Udu"
-"drum.zarb","drum","Zarb"
-"effect.aeolian-harp","effect","Aeolian Harp"
-"effect.air-horn","effect","Air Horn"
-"effect.applause","effect","Applause"
-"effect.bass-string-slap","effect","Bass String Slap"
-"effect.bird","effect","Bird"
-"effect.bird.nightingale","effect","Nightingale Bird"
-"effect.bird.tweet","effect","Bird Tweet"
-"effect.breath","effect","Breath"
-"effect.bubble","effect","Bubble"
-"effect.bullroarer","effect","Bullroarer"
-"effect.burst","effect","Burst"
-"effect.car","effect","Car"
-"effect.car.crash","effect","Car Crash"
-"effect.car.engine","effect","Car Engine"
-"effect.car.pass","effect","Car Pass"
-"effect.car.stop","effect","Car Stop"
-"effect.crickets","effect","Crickets"
-"effect.dog","effect","Dog"
-"effect.door.creak","effect","Door Creak"
-"effect.door.slam","effect","Door Slam"
-"effect.explosion","effect","Explosion"
-"effect.flute-key-click","effect","Flute Key Click"
-"effect.footsteps","effect","Footsteps"
-"effect.frogs","effect","Frogs"
-"effect.guitar-cutting","effect","Guitar Cutting"
-"effect.guitar-fret","effect","Guitar Fret"
-"effect.gunshot","effect","Gunshot"
-"effect.hand-clap","effect","Hand Clap"
-"effect.heartbeat","effect","Heartbeat"
-"effect.helicopter","effect","Helicopter"
-"effect.high-q","effect","High Q"
-"effect.horse-gallop","effect","Horse Gallop"
-"effect.jet-plane","effect","Jep Plane"
-"effect.laser-gun","effect","Laser Gun"
-"effect.laugh","effect","Laugh"
-"effect.lions-roar","effect","Lions Roar"
-"effect.machine-gun","effect","Machine Gun"
-"effect.marching-machine","effect","Marching Machine"
-"effect.metronome-bell","effect","Menotrnome Bell"
-"effect.metronome-click","effect","Menotrnome Click"
-"effect.pat","effect","Pat"
-"effect.punch","effect","Punch"
-"effect.rain","effect","Rain"
-"effect.scratch","effect","Stratch"
-"effect.scream","effect","Scream"
-"effect.seashore","effect","Seashore"
-"effect.siren","effect","Siren"
-"effect.slap","effect","Slap"
-"effect.snap","effect","Snap"
-"effect.stamp","effect","Stamp"
-"effect.starship","effect","Starship"
-"effect.stream","effect","Stream"
-"effect.telephone-ring","effect","Telephone Ring"
-"effect.thunder","effect","Thunder"
-"effect.train","effect","Train"
-"effect.trash-can","effect","Train Crash"
-"effect.whip","effect","Whip"
-"effect.whistle","effect","Whistle"
-"effect.whistle.mouth-siren","effect","Mouth Siren"
-"effect.whistle.police","effect","Police (Whistle)"
-"effect.whistle.slide","effect","Slide (Whistle)"
-"effect.whistle.train","effect","Train (Whistle)"
-"effect.wind","effect","Wind"
-"keyboard.accordion","keyboard","Accordion"
-"keyboard.bandoneon","keyboard","Bandoneon"
-"keyboard.celesta","keyboard","Celesta"
-"keyboard.clavichord","keyboard","Clavichord"
-"keyboard.clavichord.synth","keyboard","Synth. Clavichord"
-"keyboard.concertina","keyboard","Concertina"
-"keyboard.fortepiano","keyboard","Fortepiano"
-"keyboard.harmonium","keyboard","Harmonium"
-"keyboard.harpsichord","keyboard","Harpsichord"
-"keyboard.ondes-martenot","keyboard","Ondes Martenot"
-"keyboard.organ","keyboard","Organ"
-"keyboard.organ.drawbar","keyboard","Drawbar Organ"
-"keyboard.organ.percussive","keyboard","Percussive Organ"
-"keyboard.organ.pipe","keyboard","Pipe Organ"
-"keyboard.organ.reed","keyboard","Reed Organ"
-"keyboard.organ.rotary","keyboard","Rotary Organ"
-"keyboard.piano","keyboard","Piano"
-"keyboard.piano.electric","keyboard","Electric Piano"
-"keyboard.piano.grand","keyboard","Grand Piano"
-"keyboard.piano.honky-tonk","keyboard","Honky-tonk Piano"
-"keyboard.piano.prepared","keyboard","Prepared Piano"
-"keyboard.piano.toy","keyboard","Piano Toy"
-"keyboard.piano.upright","keyboard","Upright Piano"
-"keyboard.virginal","keyboard","Virginal"
-"metal.adodo","metal","Adodo"
-"metal.anvil","metal","Anvil"
-"metal.babendil","metal","Babendil"
-"metal.bells.agogo","metal","Agogo"
-"metal.bells.almglocken","metal","Almglocken"
-"metal.bells.bell-plate","metal","Bell Plate"
-"metal.bells.bell-tree","metal","Bell Tree"
-"metal.bells.carillon","metal","Carillon Bell"
-"metal.bells.chimes","metal","Chimes Bell"
-"metal.bells.chimta","metal","Chimta Bell"
-"metal.bells.chippli","metal","Chippli Bell"
-"metal.bells.church","metal","Church Bell"
-"metal.bells.cowbell","metal","Cowbell"
-"metal.bells.dawuro","metal","Dawuro Bell"
-"metal.bells.gankokwe","metal","Gankokwe Bell"
-"metal.bells.ghungroo","metal","Ghungroo Bell"
-"metal.bells.hatheli","metal","Hatheli Bell"
-"metal.bells.jingle-bell","metal","Jingle Bell"
-"metal.bells.khartal","metal","Khartal Bell"
-"metal.bells.mark-tree","metal","Mark Tree Bell"
-"metal.bells.sistrum","metal","Sistrum Bell"
-"metal.bells.sleigh-bells","metal","Sleigh Bell"
-"metal.bells.temple","metal","Temple Bell"
-"metal.bells.tibetan","metal","Tibetan Bell"
-"metal.bells.tinklebell","metal","Tinklebell"
-"metal.bells.trychel","metal","Trychel Bell"
-"metal.bells.wind-chimes","metal","Wind Chimes Bell"
-"metal.bells.zills","metal","Zills Bell"
-"metal.berimbau","metal","Berimbau"
-"metal.brake-drums","metal","Brame Drums"
-"metal.crotales","metal","Crotales"
-"metal.cymbal","metal","Cymbals"
-"metal.cymbal.bo","metal","Bo Cymbal"
-"metal.cymbal.ceng-ceng","metal","Ceng-Ceng Cymbal"
-"metal.cymbal.chabara","metal","Chabara Cymbal"
-"metal.cymbal.chinese","metal","Chinese Cymbal"
-"metal.cymbal.ching","metal","Ching Cymbal"
-"metal.cymbal.clash","metal","Clash Cymbal"
-"metal.cymbal.crash","metal","Crash Cymbal"
-"metal.cymbal.finger","metal","Finger Cymbal"
-"metal.cymbal.hand","metal","Hand Cymbal"
-"metal.cymbal.kesi","metal","Kesi Cymbal"
-"metal.cymbal.manjeera","metal","Manjeera Cymbal"
-"metal.cymbal.reverse","metal","Reverse Cymbal"
-"metal.cymbal.ride","metal","Ride Cymbal"
-"metal.cymbal.sizzle","metal","Sizzle Cymbal"
-"metal.cymbal.splash","metal","Splash Cymbal"
-"metal.cymbal.suspended","metal","Suspended Cymbal"
-"metal.cymbal.tebyoshi","metal","Tebyoshi Cymbal"
-"metal.cymbal.tibetan","metal","Tibetan Cymbal"
-"metal.cymbal.tingsha","metal","Tingsha Cymbal"
-"metal.flexatone","metal","Flexatone"
-"metal.gong","metal","Gong"
-"metal.gong.ageng","metal","Ageng Gong"
-"metal.gong.agung","metal","Agung Gong"
-"metal.gong.chanchiki","metal","Chanchiki Gong"
-"metal.gong.chinese","metal","Chinese Gong"
-"metal.gong.gandingan","metal","Gandingan Gong"
-"metal.gong.kempul","metal","Kempul Gong"
-"metal.gong.kempyang","metal","Kempyang Gong"
-"metal.gong.ketuk","metal","Ketuk Gong"
-"metal.gong.kkwenggwari","metal","Kkwenggwari Gong"
-"metal.gong.luo","metal","Luo Gong"
-"metal.gong.singing","metal","Singing Gong"
-"metal.gong.thai","metal","Thai Gong"
-"metal.guira","metal","Guira"
-"metal.hang","metal","Hang"
-"metal.hi-hat","metal","Hi Hat"
-"metal.jaw-harp","metal","Jaw Harp"
-"metal.kengong","metal","Kengong"
-"metal.murchang","metal","Murchang"
-"metal.musical-saw","metal","Musical Saw"
-"metal.singing-bowl","metal","Singing Bowl"
-"metal.spoons","metal","Spoons"
-"metal.steel-drums","metal","Steel Drums"
-"metal.tamtam","metal","Tamtam"
-"metal.thundersheet","metal","Thundersheet"
-"metal.triangle","metal","Triangle"
-"metal.washboard","metal","Washboard"
-"pitched-percussion.angklung","pitched-percussion","Angklung"
-"pitched-percussion.balafon","pitched-percussion","Balafon"
-"pitched-percussion.bell-lyre","pitched-percussion","Lyre Bell"
-"pitched-percussion.bells","pitched-percussion","Bells"
-"pitched-percussion.bianqing","pitched-percussion","Bianqing"
-"pitched-percussion.bianzhong","pitched-percussion","Bianzhong"
-"pitched-percussion.bonang","pitched-percussion","Bonang"
-"pitched-percussion.cimbalom","pitched-percussion","Cimbalom"
-"pitched-percussion.crystal-glasses","pitched-percussion","Crystal Glasses"
-"pitched-percussion.dan-tam-thap-luc","pitched-percussion","Dan tam thap luc"
-"pitched-percussion.fangxiang","pitched-percussion","Fangxiang"
-"pitched-percussion.gandingan-a-kayo","pitched-percussion","Gandingan-a-kayo"
-"pitched-percussion.gangsa","pitched-percussion","Gangsa"
-"pitched-percussion.gender","pitched-percussion","Gender"
-"pitched-percussion.giying","pitched-percussion","Giying"
-"pitched-percussion.glass-harmonica","pitched-percussion","Glass Harmonica"
-"pitched-percussion.glockenspiel","pitched-percussion","Glockenspiel"
-"pitched-percussion.glockenspiel.alto","pitched-percussion","Alto Glockenspiel"
-"pitched-percussion.glockenspiel.soprano","pitched-percussion","Soprano Glockenspiel"
-"pitched-percussion.gyil","pitched-percussion","Gyil"
-"pitched-percussion.hammer-dulcimer","pitched-percussion","Hammer Dulcimer"
-"pitched-percussion.handbells","pitched-percussion","Handbells"
-"pitched-percussion.kalimba","pitched-percussion","Kalimba"
-"pitched-percussion.kantil","pitched-percussion","Kantil"
-"pitched-percussion.khim","pitched-percussion","Khim"
-"pitched-percussion.kulintang","pitched-percussion","Kulintang"
-"pitched-percussion.kulintang-a-kayo","pitched-percussion","Kulintang-a-kayo"
-"pitched-percussion.kulintang-a-tiniok","pitched-percussion","Kulintang-a-tiniok"
-"pitched-percussion.likembe","pitched-percussion","Likembe"
-"pitched-percussion.luntang","pitched-percussion","Luntang"
-"pitched-percussion.marimba","pitched-percussion","Marimba"
-"pitched-percussion.marimba.bass","pitched-percussion","Bass Marimba"
-"pitched-percussion.mbira","pitched-percussion","Mbira"
-"pitched-percussion.mbira.array","pitched-percussion","Arraz Mbira"
-"pitched-percussion.metallophone","pitched-percussion","Metallophone"
-"pitched-percussion.metallophone.alto","pitched-percussion","Alto Metallophone"
-"pitched-percussion.metallophone.bass","pitched-percussion","Bass Metallophone"
-"pitched-percussion.metallophone.soprano","pitched-percussion","Soprano Metallophone"
-"pitched-percussion.music-box","pitched-percussion","Music Box"
-"pitched-percussion.pelog-panerus","pitched-percussion","Pelog-panerus"
-"pitched-percussion.pemade","pitched-percussion","Pemade"
-"pitched-percussion.penyacah","pitched-percussion","Penyacah"
-"pitched-percussion.ranat.ek","pitched-percussion","Ranat ek"
-"pitched-percussion.ranat.ek-lek","pitched-percussion","Ranat ek-lek"
-"pitched-percussion.ranat.thum","pitched-percussion","Ranat Thum"
-"pitched-percussion.ranat.thum-lek","pitched-percussion","Ranat Thum-lek"
-"pitched-percussion.reyong","pitched-percussion","Reyong"
-"pitched-percussion.sanza","pitched-percussion","Sanza"
-"pitched-percussion.saron-barung","pitched-percussion","Saron Barung"
-"pitched-percussion.saron-demong","pitched-percussion","Saron Demong"
-"pitched-percussion.saron-panerus","pitched-percussion","Saron Panerus"
-"pitched-percussion.slendro-panerus","pitched-percussion","Slendro Panerus"
-"pitched-percussion.slentem","pitched-percussion","Slentem"
-"pitched-percussion.tsymbaly","pitched-percussion","Tsymbaly"
-"pitched-percussion.tubes","pitched-percussion","Tubes"
-"pitched-percussion.tubular-bells","pitched-percussion","Tubular Bells"
-"pitched-percussion.vibraphone","pitched-percussion","Vibraphone"
-"pitched-percussion.xylophone","pitched-percussion","Xylophone"
-"pitched-percussion.xylophone.alto","pitched-percussion","Alto Xylophone"
-"pitched-percussion.xylophone.bass","pitched-percussion","Bass Xylophone"
-"pitched-percussion.xylophone.soprano","pitched-percussion","Soprano Xylophone"
-"pitched-percussion.xylorimba","pitched-percussion","Xylorimba"
-"pitched-percussion.yangqin","pitched-percussion","Yangqin"
-"pluck.archlute","pluck","Archlute"
-"pluck.autoharp","pluck","Autoharp"
-"pluck.baglama","pluck","Baglama"
-"pluck.bajo","pluck","Bajo"
-"pluck.balalaika","pluck","Balalaika"
-"pluck.balalaika.alto","pluck","Alto Balalaika"
-"pluck.balalaika.bass","pluck","Bass Balalaika"
-"pluck.balalaika.contrabass","pluck","pluck.balalaika.contrabass"
-"pluck.balalaika.piccolo","pluck","Piccolo Balalaika"
-"pluck.balalaika.prima","pluck","Prima Balalaika"
-"pluck.balalaika.secunda","pluck","Secunda Balalaika"
-"pluck.bandola","pluck","Bandola"
-"pluck.bandura","pluck","Bandura"
-"pluck.bandurria","pluck","Bandurria"
-"pluck.banjo","pluck","Banjo"
-"pluck.banjo.tenor","pluck","Tenor Banjo"
-"pluck.banjolele","pluck","Banjolele"
-"pluck.barbat","pluck","Barbat"
-"pluck.bass","pluck","Bass (Pluck)"
-"pluck.bass.acoustic","pluck","Acoustic Bass"
-"pluck.bass.bolon","pluck","Bolon Bass"
-"pluck.bass.electric","pluck","Electric Bass"
-"pluck.bass.fretless","pluck","Fretless Bass"
-"pluck.bass.guitarron","pluck","Guitarron Bass"
-"pluck.bass.synth","pluck","Synth Bass"
-"pluck.bass.synth.lead","pluck","Synth Lead Bass"
-"pluck.bass.washtub","pluck","Washtube Bass"
-"pluck.bass.whamola","pluck","Whamola Bass"
-"pluck.begena","pluck","Begena"
-"pluck.biwa","pluck","Biwa"
-"pluck.bordonua","pluck","Bordonua"
-"pluck.bouzouki","pluck","Bouzouki"
-"pluck.bouzouki.irish","pluck","Irish Bouzouki"
-"pluck.celtic-harp","pluck","Celtic Harp"
-"pluck.charango","pluck","Charango"
-"pluck.chitarra-battente","pluck","Chitarra Battente"
-"pluck.cithara","pluck","Cithara"
-"pluck.cittern","pluck","Cittern"
-"pluck.cuatro","pluck","Cuatro"
-"pluck.dan-bau","pluck","Dan-bau"
-"pluck.dan-nguyet","pluck","Dan-nguyet"
-"pluck.dan-tranh","pluck","Dan-tranh"
-"pluck.dan-ty-ba","pluck","Dan-ty-ba"
-"pluck.diddley-bow","pluck","Diddley-bow"
-"pluck.domra","pluck","Domra"
-"pluck.domu","pluck","Domu"
-"pluck.dulcimer","pluck","Dulcimer"
-"pluck.dutar","pluck","Dutar"
-"pluck.duxianqin","pluck","Duxianqin"
-"pluck.ektara","pluck","Ektara"
-"pluck.geomungo","pluck","Geomungo"
-"pluck.gottuvadhyam","pluck","Gottuvadhyam"
-"pluck.guitar","pluck","Guitar"
-"pluck.guitar.acoustic","pluck","Acoustic Guitar"
-"pluck.guitar.electric","pluck","Electric Guitar"
-"pluck.guitar.nylon-string","pluck","Nylon String Guitar"
-"pluck.guitar.pedal-steel","pluck","Guitar Pedal-Steel"
-"pluck.guitar.portuguese","pluck","Portuguese Guitar"
-"pluck.guitar.requinto","pluck","Requinto"
-"pluck.guitar.resonator","pluck","Resonator"
-"pluck.guitar.steel-string","pluck","Steel String Guitar"
-"pluck.guitjo","pluck","Guitjo"
-"pluck.guitjo.double-neck","pluck","Double Neck Guitjo"
-"pluck.guqin","pluck","Gugin"
-"pluck.guzheng","pluck","Guzheng"
-"pluck.guzheng.choazhou","pluck","Choazhou Guzheng"
-"pluck.harp","pluck","Harp"
-"pluck.harp-guitar","pluck","Harp-Guitar"
-"pluck.huapanguera","pluck","Huapanguera"
-"pluck.jarana-huasteca","pluck","Jarana Huasteca"
-"pluck.jarana-jarocha","pluck","Jarana Jarocha"
-"pluck.jarana-jarocha.mosquito","pluck","Jarana Jarocha Mosquito"
-"pluck.jarana-jarocha.primera","pluck","Jarana Jarocha Primera"
-"pluck.jarana-jarocha.segunda","pluck","Jarana Jarocha Segunda"
-"pluck.jarana-jarocha.tercera","pluck","Jarana Jarocha Tercera"
-"pluck.kabosy","pluck","Kabosy"
-"pluck.kantele","pluck","Kantele"
-"pluck.kanun","pluck","Kanun"
-"pluck.kayagum","pluck","Kayagum"
-"pluck.kobza","pluck","Kobza"
-"pluck.komuz","pluck","Komuy"
-"pluck.kora","pluck","Kora"
-"pluck.koto","pluck","Koto"
-"pluck.kutiyapi","pluck","Kutiyapi"
-"pluck.langeleik","pluck","Langeleik"
-"pluck.laud","pluck","Laud"
-"pluck.lute","pluck","Lute"
-"pluck.lyre","pluck","Lyre"
-"pluck.mandobass","pluck","Mandobass"
-"pluck.mandocello","pluck","Mandocello"
-"pluck.mandola","pluck","Mandola"
-"pluck.mandolin","pluck","Mandolin"
-"pluck.mandolin.octave","pluck","Mandolin Octave"
-"pluck.mandora","pluck","Mandora"
-"pluck.mandore","pluck","Mandore"
-"pluck.marovany","pluck","Marovany"
-"pluck.musical-bow","pluck","Musical Bow"
-"pluck.ngoni","pluck","Ngoni"
-"pluck.oud","pluck","Oud"
-"pluck.pipa","pluck","Pipa"
-"pluck.psaltery","pluck","Psaltery"
-"pluck.ruan","pluck","Ruan"
-"pluck.sallaneh","pluck","Sallaneh"
-"pluck.sanshin","pluck","Sanshin"
-"pluck.santoor","pluck","Santoor"
-"pluck.sanxian","pluck","Sanxian"
-"pluck.sarod","pluck","Sarod"
-"pluck.saung","pluck","Saung"
-"pluck.saz","pluck","Saz"
-"pluck.se","pluck","Se"
-"pluck.setar","pluck","Setar"
-"pluck.shamisen","pluck","Shamisen"
-"pluck.sitar","pluck","Sitar"
-"pluck.synth","pluck","Synth (Pluck)"
-"pluck.synth.charang","pluck","pluck.synth.charang"
-"pluck.synth.chiff","pluck","pluck.synth.chiff"
-"pluck.synth.stick","pluck","pluck.synth.stick"
-"pluck.tambura","pluck","pluck.tambura"
-"pluck.tambura.bulgarian","pluck","pluck.tambura.bulgarian"
-"pluck.tambura.female","pluck","pluck.tambura.female"
-"pluck.tambura.male","pluck","pluck.tambura.male"
-"pluck.tar","pluck","pluck.tar"
-"pluck.theorbo","pluck","pluck.theorbo"
-"pluck.timple","pluck","pluck.timple"
-"pluck.tiple","pluck","pluck.tiple"
-"pluck.tres","pluck","pluck.tres"
-"pluck.ukulele","pluck","pluck.ukulele"
-"pluck.ukulele.tenor","pluck","pluck.ukulele.tenor"
-"pluck.valiha","pluck","pluck.valiha"
-"pluck.veena","pluck","pluck.veena"
-"pluck.veena.mohan","pluck","pluck.veena.mohan"
-"pluck.veena.rudra","pluck","pluck.veena.rudra"
-"pluck.veena.vichitra","pluck","pluck.veena.vichitra"
-"pluck.vihuela","pluck","pluck.vihuela"
-"pluck.vihuela.mexican","pluck","pluck.vihuela.mexican"
-"pluck.xalam","pluck","pluck.xalam"
-"pluck.yueqin","pluck","pluck.yueqin"
-"pluck.zither","pluck","pluck.zither"
-"pluck.zither.overtone","pluck","pluck.zither.overtone"
-"rattle.afoxe","rattle","rattle.afoxe"
-"rattle.birds","rattle","rattle.birds"
-"rattle.cabasa","rattle","rattle.cabasa"
-"rattle.caxixi","rattle","rattle.caxixi"
-"rattle.cog","rattle","rattle.cog"
-"rattle.ganza","rattle","rattle.ganza"
-"rattle.hosho","rattle","rattle.hosho"
-"rattle.jawbone","rattle","rattle.jawbone"
-"rattle.kayamba","rattle","rattle.kayamba"
-"rattle.kpoko-kpoko","rattle","rattle.kpoko-kpoko"
-"rattle.lava-stones","rattle","rattle.lava-stones"
-"rattle.maraca","rattle","rattle.maraca"
-"rattle.rain-stick","rattle","rattle.rain-stick"
-"rattle.ratchet","rattle","rattle.ratchet"
-"rattle.rattle","rattle","rattle.rattle"
-"rattle.shaker","rattle","rattle.shaker"
-"rattle.shaker.egg","rattle","rattle.shaker.egg"
-"rattle.shekere","rattle","rattle.shekere"
-"rattle.sistre","rattle","rattle.sistre"
-"rattle.televi","rattle","rattle.televi"
-"rattle.vibraslap","rattle","rattle.vibraslap"
-"rattle.wasembe","rattle","rattle.wasembe"
-"strings.ajaeng","strings","Ajaeng"
-"strings.arpeggione","strings","Arpeggione"
-"strings.baryton","strings","Baryton"
-"strings.cello","strings","Violoncello"
-"strings.cello.piccolo","strings","Piccolo Violoncello"
-"strings.contrabass","strings","Contrabass"
-"strings.crwth","strings","Crwth"
-"strings.dan-gao","strings","Dan Gao"
-"strings.dihu","strings","Djhu"
-"strings.erhu","strings","Erhu"
-"strings.erxian","strings","Erxian"
-"strings.esraj","strings","Esraj"
-"strings.fiddle","strings","Fiddle"
-"strings.fiddle.hardanger","strings","Hardanger Fiddle"
-"strings.gadulka","strings","Gadulka"
-"strings.gaohu","strings","Gaohu"
-"strings.gehu","strings","Gehu"
-"strings.group","strings","Group (String)"
-"strings.group.synth","strings","Synth Group (String)"
-"strings.haegeum","strings","Haegeum"
-"strings.hurdy-gurdy","strings","Hurdy Gurdy"
-"strings.igil","strings","Igil"
-"strings.kamancha","strings","Kamancha"
-"strings.kokyu","strings","Kokyu"
-"strings.laruan","strings","Laruan"
-"strings.leiqin","strings","Leigin"
-"strings.lirone","strings","Lirone"
-"strings.lyra.byzantine","strings","Byzantine Lyra"
-"strings.lyra.cretan","strings","Cretan Lyra"
-"strings.morin-khuur","strings","Morin Khuur"
-"strings.nyckelharpa","strings","Nyckelharpa"
-"strings.octobass","strings","Octobass"
-"strings.rebab","strings","Rebab"
-"strings.rebec","strings","Rebec"
-"strings.sarangi","strings","Sarangi"
-"strings.stroh-violin","strings","Stroh Violin"
-"strings.tromba-marina","strings","Tromba Marina"
-"strings.vielle","strings","Vielle"
-"strings.viol","strings","Viol"
-"strings.viol.alto","strings","Alto Viol"
-"strings.viol.bass","strings","Bass Viol"
-"strings.viol.tenor","strings","Tenor Viol"
-"strings.viol.treble","strings","Trebble Viol"
-"strings.viol.violone","strings","Violone"
-"strings.viola","strings","Viola"
-"strings.viola-damore","strings","Viola d`Amore"
-"strings.violin","strings","Violin"
-"strings.violono.piccolo","strings","Piccolo Violino"
-"strings.violotta","strings","Violotta"
-"strings.yayli-tanbur","strings","Yayli Tanbur"
-"strings.yazheng","strings","Yazheng"
-"strings.zhonghu","strings","Zhonghu"
-"synth.effects","synth","Synth Effects"
-"synth.effects.atmosphere","synth","Synth Effects Atmosphere"
-"synth.effects.brightness","synth","Synth Effects Brightness"
-"synth.effects.crystal","synth","Synth Effects Crystal"
-"synth.effects.echoes","synth","Synth Effects Echoes"
-"synth.effects.goblins","synth","Synth Effects Goblins"
-"synth.effects.rain","synth","Synth Effects Rain"
-"synth.effects.sci-fi","synth","Synth Effects Sci-fi"
-"synth.effects.soundtrack","synth","Synth Effects Soundtrack"
-"synth.group","synth","Group (Synth)"
-"synth.group.fifths","synth","Group Fiftha (Synth)"
-"synth.group.orchestra","synth","Group Orchestra (Synth)"
-"synth.pad","synth","Pad"
-"synth.pad.bowed","synth","Bowed Pad"
-"synth.pad.choir","synth","Choir Pad"
-"synth.pad.halo","synth","Halo Pad"
-"synth.pad.metallic","synth","Metallic Pad"
-"synth.pad.polysynth","synth","Polysynth Pad"
-"synth.pad.sweep","synth","Sweep Pad"
-"synth.pad.warm","synth","Warm Pad"
-"synth.theremin","synth","Theremin"
-"synth.tone.sawtooth","synth","Sawtooth Tone"
-"synth.tone.sine","synth","Sine Tone"
-"synth.tone.square","synth","Square Tone"
-"voice.aa","voice","Aa"
-"voice.alto","voice","Alto"
-"voice.aw","voice","Aw"
-"voice.baritone","voice","Baritone"
-"voice.bass","voice","Bass"
-"voice.child","voice","Child"
-"voice.countertenor","voice","Countertenor"
-"voice.doo","voice","Doo"
-"voice.ee","voice","Ee"
-"voice.female","voice","Female Voice"
-"voice.kazoo","voice","Kazoo"
-"voice.male","voice","Male Voice"
-"voice.mezzo-soprano","voice","Mezzo-Soprano"
-"voice.mm","voice","Mm"
-"voice.oo","voice","Oo"
-"voice.percussion","voice","Percussion (Voice)"
-"voice.percussion.beatbox","voice","Beatbox Percussion (Voice)"
-"voice.soprano","voice","Soprano"
-"voice.synth","voice","Synth Voice"
-"voice.talk-box","voice","Talk-Box"
-"voice.tenor","voice","Tenor"
-"voice.vocals","voice","Voice"
-"wind.flutes.bansuri","wind","Bansuri"
-"wind.flutes.blown-bottle","wind","Blow-Bottle"
-"wind.flutes.calliope","wind","Calliope"
-"wind.flutes.danso","wind","Danso"
-"wind.flutes.di-zi","wind","Di-zi"
-"wind.flutes.dvojnice","wind","Dvojnice"
-"wind.flutes.fife","wind","Fife"
-"wind.flutes.flageolet","wind","Flageolet"
-"wind.flutes.flute","wind","Flute"
-"wind.flutes.flute.alto","wind","Alto Flute"
-"wind.flutes.flute.bass","wind","Bass Flute"
-"wind.flutes.flute.contra-alto","wind","Contra-alto Flute"
-"wind.flutes.flute.contrabass","wind","Contrabass Flute"
-"wind.flutes.flute.double-contrabass","wind","Double Contrabass Flute"
-"wind.flutes.flute.irish","wind","Irish Flute"
-"wind.flutes.flute.piccolo","wind","Piccolo Flute"
-"wind.flutes.flute.subcontrabass","wind","Subcontrabass Flute"
-"wind.flutes.fujara","wind","Fujara Flute"
-"wind.flutes.gemshorn","wind","Gemshorn Flute"
-"wind.flutes.hocchiku","wind","Hocchiku Flute"
-"wind.flutes.hun","wind","Hun Flute"
-"wind.flutes.kaval","wind","Kaval Flute"
-"wind.flutes.kawala","wind","Kawala Flute"
-"wind.flutes.khlui","wind","Khlui Flute"
-"wind.flutes.knotweed","wind","Knotweed Flute"
-"wind.flutes.koncovka.alto","wind","Alto Koncovka"
-"wind.flutes.koudi","wind","Koudi"
-"wind.flutes.ney","wind","Ney"
-"wind.flutes.nohkan","wind","Nohkan"
-"wind.flutes.nose","wind","Nose (Flutes)"
-"wind.flutes.ocarina","wind","Ocarina"
-"wind.flutes.overtone.tenor","wind","Tenor Overtone (Flutes)"
-"wind.flutes.palendag","wind","Palendag"
-"wind.flutes.panpipes","wind","Panpipes"
-"wind.flutes.quena","wind","Quena"
-"wind.flutes.recorder","wind","Recorder"
-"wind.flutes.recorder.alto","wind","Alto Recorder"
-"wind.flutes.recorder.bass","wind","Bass Recorder"
-"wind.flutes.recorder.contrabass","wind","Contrabass Recorder"
-"wind.flutes.recorder.descant","wind","Descant Recorder"
-"wind.flutes.recorder.garklein","wind","Garklein Recorder"
-"wind.flutes.recorder.great-bass","wind","Great Bass Recorder"
-"wind.flutes.recorder.sopranino","wind","Sopranino Recorder"
-"wind.flutes.recorder.soprano","wind","Soprano Recorder"
-"wind.flutes.recorder.tenor","wind","Tenor Recorder"
-"wind.flutes.ryuteki","wind","Ryuteki"
-"wind.flutes.shakuhachi","wind","Shakuhachi"
-"wind.flutes.shepherds-pipe","wind","Shepherds Pipe"
-"wind.flutes.shinobue","wind","Shinobue"
-"wind.flutes.shvi","wind","Shvi"
-"wind.flutes.suling","wind","Suling"
-"wind.flutes.tarka","wind","Tarka"
-"wind.flutes.tumpong","wind","Tumpong"
-"wind.flutes.venu","wind","Venu"
-"wind.flutes.whistle","wind","Whistle"
-"wind.flutes.whistle.alto","wind","Alto Whistle"
-"wind.flutes.whistle.low-irish","wind","Low Irish Whistle"
-"wind.flutes.whistle.shiva","wind","Shiva Whistle"
-"wind.flutes.whistle.slide","wind","Slide Whistle"
-"wind.flutes.whistle.tin","wind","Tin Whistle"
-"wind.flutes.whistle.tin.bflat","wind","Tin Whistle in B flat"
-"wind.flutes.whistle.tin.d","wind","Tin Whistle in D"
-"wind.flutes.xiao","wind","Xiao"
-"wind.flutes.xun","wind","Xun"
-"wind.group","wind","Group (Wind)"
-"wind.jug","wind","Jug"
-"wind.pipes.bagpipes","wind","Bagpipe"
-"wind.pipes.gaida","wind","Gaida"
-"wind.pipes.highland","wind","Highland Pipes"
-"wind.pipes.uilleann","wind","Uilleann"
-"wind.pungi","wind","Pungi"
-"wind.reed.albogue","wind","Alboque"
-"wind.reed.alboka","wind","Alboka"
-"wind.reed.algaita","wind","Algaita"
-"wind.reed.arghul","wind","Arghul"
-"wind.reed.basset-horn","wind","Basset Horn"
-"wind.reed.bassoon","wind","Basson"
-"wind.reed.bawu","wind","Bawu"
-"wind.reed.bifora","wind","Bifora"
-"wind.reed.bombarde","wind","Bombarde"
-"wind.reed.chalumeau","wind","Chalumeau"
-"wind.reed.clarinet","wind","Clarinet"
-"wind.reed.clarinet.a","wind","Clarinet in A"
-"wind.reed.clarinet.alto","wind","Alto Clarinet"
-"wind.reed.clarinet.bass","wind","Bass Clarinet"
-"wind.reed.clarinet.basset","wind","Basset Clarinet"
-"wind.reed.clarinet.bflat","wind","Clarinet in B flat"
-"wind.reed.clarinet.contra-alto","wind","Contra-alto Clarinet"
-"wind.reed.clarinet.contrabass","wind","Contrabass Clarinet"
-"wind.reed.clarinet.eflat","wind","Clarinet in E flat"
-"wind.reed.clarinet.piccolo.aflat","wind","Clarinet Piccolo in A flat"
-"wind.reed.clarinette-damour","wind","Clarinet D`Amour"
-"wind.reed.contrabass","wind","Contrabass (Wind)"
-"wind.reed.contrabassoon","wind","Contrabassoon"
-"wind.reed.cornamuse","wind","Cornamuse"
-"wind.reed.cromorne","wind","Cromorne"
-"wind.reed.crumhorn","wind","Crumhorn"
-"wind.reed.crumhorn.alto","wind","Alto Crumhorn"
-"wind.reed.crumhorn.bass","wind","Bass Crumhorn"
-"wind.reed.crumhorn.great-bass","wind","Great Bass Crumhorn"
-"wind.reed.crumhorn.soprano","wind","Soprano Crumhorn"
-"wind.reed.crumhorn.tenor","wind","Tenor Crumhorn"
-"wind.reed.diple","wind","Diple"
-"wind.reed.diplica","wind","Diplica"
-"wind.reed.duduk","wind","Duduk"
-"wind.reed.dulcian","wind","Dulcian"
-"wind.reed.dulzaina","wind","Dulzaina"
-"wind.reed.english-horn","wind","English Horn"
-"wind.reed.guanzi","wind","Guanzi"
-"wind.reed.harmonica","wind","Harmonica"
-"wind.reed.harmonica.bass","wind","Bass Harmonica"
-"wind.reed.heckel-clarina","wind","Heckel-clarina"
-"wind.reed.heckelphone","wind","Heckelphone"
-"wind.reed.heckelphone.piccolo","wind","Piccolo Heckelphone"
-"wind.reed.heckelphone-clarinet","wind","Heckelphone Clarinet"
-"wind.reed.hichiriki","wind","Hichiriki"
-"wind.reed.hirtenschalmei","wind","Hirtenschalmei"
-"wind.reed.hne","wind","Hne"
-"wind.reed.hornpipe","wind","Hornpipe"
-"wind.reed.houguan","wind","Houguan"
-"wind.reed.hulusi","wind","Hulusi"
-"wind.reed.jogi-baja","wind","Jogi-baja"
-"wind.reed.ken-bau","wind","Ken-bau"
-"wind.reed.khaen-mouth-organ","wind","Khaen mouth organ"
-"wind.reed.launeddas","wind","Launeddas"
-"wind.reed.maqrunah","wind","Maqrunah"
-"wind.reed.melodica","wind","Melodica"
-"wind.reed.mijwiz","wind","Mijwiz"
-"wind.reed.mizmar","wind","Mizmar"
-"wind.reed.nadaswaram","wind","Nadaswaram"
-"wind.reed.oboe","wind","Oboe"
-"wind.reed.oboe.bass","wind","Bass Oboe"
-"wind.reed.oboe.piccolo","wind","Piccolo Oboe"
-"wind.reed.oboe-da-caccia","wind","Oboe da Caccia"
-"wind.reed.oboe-damore","wind","Oboe D`Amore"
-"wind.reed.octavin","wind","Octavin"
-"wind.reed.pi","wind","Pi"
-"wind.reed.pibgorn","wind","Pibgorn"
-"wind.reed.piri","wind","Piri"
-"wind.reed.rackett","wind","Racket"
-"wind.reed.rauschpfeife","wind","Rauschpfeife"
-"wind.reed.rhaita","wind","Rhaita"
-"wind.reed.rothphone","wind","Rothphone"
-"wind.reed.sarrusaphone","wind","Sarrusaphone"
-"wind.reed.saxonette","wind","Saxonette"
-"wind.reed.saxophone","wind","Saxophone"
-"wind.reed.saxophone.alto","wind","Alto Saxophone"
-"wind.reed.saxophone.aulochrome","wind","Aulochrome Saxophone"
-"wind.reed.saxophone.baritone","wind","Baritone Saxophone"
-"wind.reed.saxophone.bass","wind","Bass Saxophone"
-"wind.reed.saxophone.contrabass","wind","Contrabass Saxophone"
-"wind.reed.saxophone.melody","wind","Melody Saxophone"
-"wind.reed.saxophone.mezzo-soprano","wind","Mezzo-Soprano Saxophone"
-"wind.reed.saxophone.sopranino","wind","Sopranino Saxophone"
-"wind.reed.saxophone.sopranissimo","wind","Sopranissimo Saxophone"
-"wind.reed.saxophone.soprano","wind","Soprano Saxophone"
-"wind.reed.saxophone.subcontrabass","wind","Subcontrabass Saxophone"
-"wind.reed.saxophone.tenor","wind","Tenor Saxophone"
-"wind.reed.shawm","wind","Shawm"
-"wind.reed.shenai","wind","Shenai"
-"wind.reed.sheng","wind","Sheng"
-"wind.reed.sipsi","wind","Sipsi"
-"wind.reed.sopila","wind","Sopila"
-"wind.reed.sorna","wind","Sorna"
-"wind.reed.sralai","wind","Sralai"
-"wind.reed.suona","wind","Suona"
-"wind.reed.surnai","wind","Surnai"
-"wind.reed.taepyeongso","wind","Taepyeongso"
-"wind.reed.tarogato","wind","Tarogato"
-"wind.reed.tarogato.ancient","wind","Ancient Tarogato"
-"wind.reed.trompeta-china","wind","Trompeta-china"
-"wind.reed.tubax","wind","Tubax"
-"wind.reed.xaphoon","wind","Xaphoon"
-"wind.reed.zhaleika","wind","Zhaleika"
-"wind.reed.zurla","wind","Zurla"
-"wind.reed.zurna","wind","Zurna"
-"wood.agogo-block","wood","Agogo Block"
-"wood.agung-a-tamlang","wood","Agung-a-tamlang"
-"wood.ahoko","wood","Ahoko"
-"wood.bones","wood","Bones"
-"wood.castanets","wood","Castanets"
-"wood.claves","wood","Claves"
-"wood.drum-sticks","wood","Drum Sticks"
-"wood.gourd","wood","Gourd"
-"wood.granite-block","wood","Granite Block"
-"wood.guban","wood","Guban"
-"wood.guiro","wood","Guiro"
-"wood.hyoushigi","wood","Hyoushigi"
-"wood.ipu","wood","Ipu"
-"wood.jam-block","wood","Jam Block"
-"wood.kaekeeke","wood","Kaekeeke"
-"wood.kagul","wood","Kagul"
-"wood.kalaau","wood","Kalaau"
-"wood.kashiklar","wood","Kashiklar"
-"wood.kubing","wood","Kubing"
-"wood.pan-clappers","wood","Pan Clappers"
-"wood.sand-block","wood","Sand Block"
-"wood.slapstick","wood","Slapstick"
-"wood.stir-drum","wood","Stir Drum"
-"wood.temple-block","wood","Temple Block"
-"wood.tic-toc-block","wood","Tic-toc Block"
-"wood.tonetang","wood","Tonetang"
-"wood.wood-block","wood","Wood Block"
-"unspecified.basso.continuo","unspecified","Basso Continuo"
-"unspecified.unspecified","unspecified","Unspecified"
+performance_medium_id,performance_medium_type_id,performance_medium_description
+brass.alphorn,brass,Alphorn
+brass.alto-horn,brass,Alto Horn
+brass.baritone-horn,brass,Baritone Horn
+brass.bugle,brass,Bugle
+brass.bugle.alto,brass,Alto Bugle
+brass.bugle.baritone,brass,Baritone Bugle
+brass.bugle.contrabass,brass,Contrabass Bugle
+brass.bugle.euphonium-bugle,brass,Euphonium-Bugle
+brass.bugle.mellophone-bugle,brass,Mellophone-Bugle
+brass.bugle.soprano,brass,Soprano Bugle
+brass.cimbasso,brass,Cimbasso
+brass.conch-shell,brass,Conch Shell
+brass.cornet,brass,Cornet
+brass.cornet.soprano,brass,Soprano Cornet
+brass.cornett,brass,Cornett
+brass.cornett.tenor,brass,Tenor Cornett
+brass.cornettino,brass,Cornettino
+brass.didgeridoo,brass,Didgeridoo
+brass.euphonium,brass,Euphonium
+brass.fiscorn,brass,Fiscom
+brass.horn.b,brass,Horn in B
+brass.flugelhorn,brass,Flugelhorn
+brass.french-horn,brass,French Horn
+brass.group,brass,Group (Brass)
+brass.group.synth,brass,Group Synth. (Brass)
+brass.helicon,brass,Helicon
+brass.horagai,brass,Horagai
+brass.kuhlohorn,brass,Kuhlohorn
+brass.mellophone,brass,Mellophone
+brass.natural-horn,brass,Natural Horn
+brass.ophicleide,brass,Ophicleide
+brass.posthorn,brass,Posthorn
+brass.rag-dung,brass,Rag Dung
+brass.sackbutt,brass,Sackbutt
+brass.sackbutt.alto,brass,Alto Sackbutt
+brass.sackbutt.bass,brass,Bass Sackbutt
+brass.sackbutt.tenor,brass,Tenor Sackbutt
+brass.saxhorn,brass,Saxohorn
+brass.serpent,brass,Serpent
+brass.shofar,brass,Shofar
+brass.sousaphone,brass,Sousaphone
+brass.trombone,brass,Trombone
+brass.trombone.alto,brass,Alto Trombone
+brass.trombone.bass,brass,Bass Trombone
+brass.trombone.contrabass,brass,Contrabass Trombone
+brass.trombone.tenor,brass,Tenor Trombone
+brass.trumpet,brass,Trumpet
+brass.trumpet.baroque,brass,Baroque Trumpet
+brass.trumpet.bass,brass,Bass Trumpet
+brass.trumpet.bflat,brass,Trumpet in B flat
+brass.trumpet.c,brass,Trumpet in C
+brass.trumpet.d,brass,Trumpet in D
+brass.trumpet.b,brass,Trumpet in B
+brass.trumpet.piccolo,brass,Piccolo Trumpet
+brass.trumpet.pocket,brass,Pocket Trumpet
+brass.trumpet.slide,brass,Slide Trumpet
+brass.trumpet.tenor,brass,Tenor Trumpet
+brass.tuba,brass,Tuba
+brass.tuba.bass,brass,Bass Tuba
+brass.tuba.subcontrabass,brass,Subcontrabass Tuba
+brass.vienna-horn,brass,Vienna Horn
+brass.vuvuzela,brass,Vuvuzela
+brass.wagner-tuba,brass,Wagner Tuba
+drum.drum,drum,Drums
+drum.side-drum,drum,Side Drum
+drum.apentemma,drum,Apentemma
+drum.ashiko,drum,Ashiko
+drum.atabaque,drum,Atabaque
+drum.atoke,drum,Atoke
+drum.atsimevu,drum,Atsimevu
+drum.axatse,drum,Axatse
+drum.bass-drum,drum,Bass Drum
+drum.bata,drum,Bata
+drum.bata.itotele,drum,Itolele Bata
+drum.bata.iya,drum,Iya Bata
+drum.bata.okonkolo,drum,Okonkolo Bata
+drum.bendir,drum,Bendir
+drum.bodhran,drum,Bodhran
+drum.bombo,drum,Bombo
+drum.bongo,drum,Bongo
+drum.bougarabou,drum,Bougarabou
+drum.buffalo-drum,drum,Buffalo Drum
+drum.cajon,drum,Cajon
+drum.chenda,drum,Chenda
+drum.chu-daiko,drum,Chu Daiko
+drum.conga,drum,Conga
+drum.cuica,drum,Cuica
+drum.dabakan,drum,Dabakan
+drum.daff,drum,Daff
+drum.dafli,drum,Dafli
+drum.daibyosi,drum,Daibyosi
+drum.damroo,drum,Damroo
+drum.darabuka,drum,Darabuka
+drum.def,drum,Def
+drum.dhol,drum,Dhol
+drum.dholak,drum,Dholak
+drum.djembe,drum,Djembe
+drum.doira,drum,Doira
+drum.dondo,drum,Dondo
+drum.doun-doun-ba,drum,Doun Doun Ba
+drum.duff,drum,Duff
+drum.dumbek,drum,Dumbek
+drum.fontomfrom,drum,Fontomfrom
+drum.frame-drum,drum,Frame Drum
+drum.frame-drum.arabian,drum,Arabian Frame Drum
+drum.geduk,drum,Geduk
+drum.ghatam,drum,Ghatam
+drum.gome,drum,Gome
+drum.group,drum,Group (Drums)
+drum.group.chinese,drum,Chinese Group (Drums)
+drum.group.ewe,drum,Ewe Group (Drums)
+drum.group.indian,drum,Indian Group (Drums)
+drum.group.set,drum,Set Group (Drums)
+drum.hand-drum,drum,Hand Drum
+drum.hira-daiko,drum,Hira Daiko
+drum.ibo,drum,Ibo
+drum.igihumurizo,drum,Igihumurizo
+drum.inyahura,drum,Inyahura
+drum.ishakwe,drum,Ishakwe
+drum.jang-gu,drum,Jang-gu
+drum.kagan,drum,Kagan
+drum.kakko,drum,Kakko
+drum.kanjira,drum,Kanjira
+drum.kendhang,drum,Kendhang
+drum.kendhang.ageng,drum,Ageng Kendhang
+drum.kendhang.ciblon,drum,Ciblon Kendhang
+drum.kenkeni,drum,Kenkeni
+drum.khol,drum,Khol
+drum.kick-drum,drum,Kick-drum
+drum.kidi,drum,Kidi
+drum.ko-daiko,drum,Ko-daiko
+drum.kpanlogo,drum,Kpanlogo
+drum.kudum,drum,Kudum
+drum.lambeg,drum,Lambeg
+drum.lion-drum,drum,Lion Drum
+drum.log-drum,drum,Log Drum
+drum.log-drum.african,drum,African Log Drum
+drum.log-drum.native,drum,Native Log Drum
+drum.log-drum.nigerian,drum,Ngerian Log Drum
+drum.madal,drum,Madal
+drum.maddale,drum,Maddale
+drum.mridangam,drum,Mridangam
+drum.naal,drum,Naal
+drum.nagado-daiko,drum,Nagado Daiko
+drum.nagara,drum,Nagara
+drum.naqara,drum,Naqara
+drum.o-daiko,drum,O-daiko
+drum.okawa,drum,Okawa
+drum.okedo-daiko,drum,Okedo-daiko
+drum.pahu-hula,drum,Pahu-hula
+drum.pakhawaj,drum,Pakhawaj
+drum.pandeiro,drum,Pandeiro
+drum.pandero,drum,Pandero
+drum.powwow,drum,Powwow
+drum.pueblo,drum,Pueblo
+drum.repinique,drum,Repinique
+drum.riq,drum,Riq
+drum.rototom,drum,Rototom
+drum.sabar,drum,Sabar
+drum.sakara,drum,Sakara
+drum.sampho,drum,Sampho
+drum.sangban,drum,Sangban
+drum.shime-daiko,drum,Shime-daiko
+drum.slit-drum,drum,Slit-drum
+drum.slit-drum.krin,drum,Krin Slit-drum
+drum.snare-drum,drum,Sanre Drum
+drum.snare-drum.electric,drum,Electric Sanre Drum
+drum.sogo,drum,Sogo
+drum.surdo,drum,Surdo
+drum.tabla,drum,Tabla
+drum.tabla.bayan,drum,Bayan Tabla
+drum.tabla.dayan,drum,Dayan Tabla
+drum.taiko,drum,Taiko
+drum.talking,drum,Talking
+drum.tama,drum,Tama
+drum.tamborita,drum,Tamborita
+drum.tambourine,drum,Tambourine
+drum.tamte,drum,Tamte
+drum.tangku,drum,Tangku
+drum.tan-tan,drum,Tan-tan
+drum.taphon,drum,Taphon
+drum.tar,drum,Tar
+drum.tasha,drum,Tasha
+drum.tenor-drum,drum,Tenor Drum
+drum.teponaxtli,drum,Teponaxtli
+drum.thavil,drum,Thavil
+drum.the-box,drum,The Box
+drum.timbale,drum,Timbale
+drum.timpani,drum,Timpani
+drum.tinaja,drum,Tinaja
+drum.toere,drum,Toere
+drum.tombak,drum,Tombak
+drum.tom-tom,drum,Tom-tom
+drum.tom-tom.synth,drum,Synth. Tom-tom
+drum.tsuzumi,drum,Tsuzumi
+drum.tumbak,drum,Tumbak
+drum.uchiwa-daiko,drum,Uchiwa-daiko
+drum.udaku,drum,Udaku
+drum.udu,drum,Udu
+drum.zarb,drum,Zarb
+effect.aeolian-harp,effect,Aeolian Harp
+effect.air-horn,effect,Air Horn
+effect.applause,effect,Applause
+effect.bass-string-slap,effect,Bass String Slap
+effect.bird,effect,Bird
+effect.bird.nightingale,effect,Nightingale Bird
+effect.bird.tweet,effect,Bird Tweet
+effect.breath,effect,Breath
+effect.bubble,effect,Bubble
+effect.bullroarer,effect,Bullroarer
+effect.burst,effect,Burst
+effect.car,effect,Car
+effect.car.crash,effect,Car Crash
+effect.car.engine,effect,Car Engine
+effect.car.pass,effect,Car Pass
+effect.car.stop,effect,Car Stop
+effect.crickets,effect,Crickets
+effect.dog,effect,Dog
+effect.door.creak,effect,Door Creak
+effect.door.slam,effect,Door Slam
+effect.explosion,effect,Explosion
+effect.flute-key-click,effect,Flute Key Click
+effect.footsteps,effect,Footsteps
+effect.frogs,effect,Frogs
+effect.guitar-cutting,effect,Guitar Cutting
+effect.guitar-fret,effect,Guitar Fret
+effect.gunshot,effect,Gunshot
+effect.hand-clap,effect,Hand Clap
+effect.heartbeat,effect,Heartbeat
+effect.helicopter,effect,Helicopter
+effect.high-q,effect,High Q
+effect.horse-gallop,effect,Horse Gallop
+effect.jet-plane,effect,Jep Plane
+effect.laser-gun,effect,Laser Gun
+effect.laugh,effect,Laugh
+effect.lions-roar,effect,Lions Roar
+effect.machine-gun,effect,Machine Gun
+effect.marching-machine,effect,Marching Machine
+effect.metronome-bell,effect,Menotrnome Bell
+effect.metronome-click,effect,Menotrnome Click
+effect.pat,effect,Pat
+effect.punch,effect,Punch
+effect.rain,effect,Rain
+effect.scratch,effect,Stratch
+effect.scream,effect,Scream
+effect.seashore,effect,Seashore
+effect.siren,effect,Siren
+effect.slap,effect,Slap
+effect.snap,effect,Snap
+effect.stamp,effect,Stamp
+effect.starship,effect,Starship
+effect.stream,effect,Stream
+effect.telephone-ring,effect,Telephone Ring
+effect.thunder,effect,Thunder
+effect.train,effect,Train
+effect.trash-can,effect,Train Crash
+effect.whip,effect,Whip
+effect.whistle,effect,Whistle
+effect.whistle.mouth-siren,effect,Mouth Siren
+effect.whistle.police,effect,Police (Whistle)
+effect.whistle.slide,effect,Slide (Whistle)
+effect.whistle.train,effect,Train (Whistle)
+effect.wind,effect,Wind
+keyboard.accordion,keyboard,Accordion
+keyboard.bandoneon,keyboard,Bandoneon
+keyboard.celesta,keyboard,Celesta
+keyboard.clavichord,keyboard,Clavichord
+keyboard.clavichord.synth,keyboard,Synth. Clavichord
+keyboard.concertina,keyboard,Concertina
+keyboard.fortepiano,keyboard,Fortepiano
+keyboard.harmonium,keyboard,Harmonium
+keyboard.harpsichord,keyboard,Harpsichord
+keyboard.ondes-martenot,keyboard,Ondes Martenot
+keyboard.organ,keyboard,Organ
+keyboard.organ.drawbar,keyboard,Drawbar Organ
+keyboard.organ.percussive,keyboard,Percussive Organ
+keyboard.organ.pipe,keyboard,Pipe Organ
+keyboard.organ.reed,keyboard,Reed Organ
+keyboard.organ.rotary,keyboard,Rotary Organ
+keyboard.piano,keyboard,Piano
+keyboard.piano.electric,keyboard,Electric Piano
+keyboard.piano.grand,keyboard,Grand Piano
+keyboard.piano.honky-tonk,keyboard,Honky-tonk Piano
+keyboard.piano.prepared,keyboard,Prepared Piano
+keyboard.piano.toy,keyboard,Piano Toy
+keyboard.piano.upright,keyboard,Upright Piano
+keyboard.virginal,keyboard,Virginal
+metal.adodo,metal,Adodo
+metal.anvil,metal,Anvil
+metal.babendil,metal,Babendil
+metal.bells.agogo,metal,Agogo
+metal.bells.almglocken,metal,Almglocken
+metal.bells.bell-plate,metal,Bell Plate
+metal.bells.bell-tree,metal,Bell Tree
+metal.bells.carillon,metal,Carillon Bell
+metal.bells.chimes,metal,Chimes Bell
+metal.bells.chimta,metal,Chimta Bell
+metal.bells.chippli,metal,Chippli Bell
+metal.bells.church,metal,Church Bell
+metal.bells.cowbell,metal,Cowbell
+metal.bells.dawuro,metal,Dawuro Bell
+metal.bells.gankokwe,metal,Gankokwe Bell
+metal.bells.ghungroo,metal,Ghungroo Bell
+metal.bells.hatheli,metal,Hatheli Bell
+metal.bells.jingle-bell,metal,Jingle Bell
+metal.bells.khartal,metal,Khartal Bell
+metal.bells.mark-tree,metal,Mark Tree Bell
+metal.bells.sistrum,metal,Sistrum Bell
+metal.bells.sleigh-bells,metal,Sleigh Bell
+metal.bells.temple,metal,Temple Bell
+metal.bells.tibetan,metal,Tibetan Bell
+metal.bells.tinklebell,metal,Tinklebell
+metal.bells.trychel,metal,Trychel Bell
+metal.bells.wind-chimes,metal,Wind Chimes Bell
+metal.bells.zills,metal,Zills Bell
+metal.berimbau,metal,Berimbau
+metal.brake-drums,metal,Brame Drums
+metal.crotales,metal,Crotales
+metal.cymbal,metal,Cymbals
+metal.cymbal.bo,metal,Bo Cymbal
+metal.cymbal.ceng-ceng,metal,Ceng-Ceng Cymbal
+metal.cymbal.chabara,metal,Chabara Cymbal
+metal.cymbal.chinese,metal,Chinese Cymbal
+metal.cymbal.ching,metal,Ching Cymbal
+metal.cymbal.clash,metal,Clash Cymbal
+metal.cymbal.crash,metal,Crash Cymbal
+metal.cymbal.finger,metal,Finger Cymbal
+metal.cymbal.hand,metal,Hand Cymbal
+metal.cymbal.kesi,metal,Kesi Cymbal
+metal.cymbal.manjeera,metal,Manjeera Cymbal
+metal.cymbal.reverse,metal,Reverse Cymbal
+metal.cymbal.ride,metal,Ride Cymbal
+metal.cymbal.sizzle,metal,Sizzle Cymbal
+metal.cymbal.splash,metal,Splash Cymbal
+metal.cymbal.suspended,metal,Suspended Cymbal
+metal.cymbal.tebyoshi,metal,Tebyoshi Cymbal
+metal.cymbal.tibetan,metal,Tibetan Cymbal
+metal.cymbal.tingsha,metal,Tingsha Cymbal
+metal.flexatone,metal,Flexatone
+metal.gong,metal,Gong
+metal.gong.ageng,metal,Ageng Gong
+metal.gong.agung,metal,Agung Gong
+metal.gong.chanchiki,metal,Chanchiki Gong
+metal.gong.chinese,metal,Chinese Gong
+metal.gong.gandingan,metal,Gandingan Gong
+metal.gong.kempul,metal,Kempul Gong
+metal.gong.kempyang,metal,Kempyang Gong
+metal.gong.ketuk,metal,Ketuk Gong
+metal.gong.kkwenggwari,metal,Kkwenggwari Gong
+metal.gong.luo,metal,Luo Gong
+metal.gong.singing,metal,Singing Gong
+metal.gong.thai,metal,Thai Gong
+metal.guira,metal,Guira
+metal.hang,metal,Hang
+metal.hi-hat,metal,Hi Hat
+metal.jaw-harp,metal,Jaw Harp
+metal.kengong,metal,Kengong
+metal.murchang,metal,Murchang
+metal.musical-saw,metal,Musical Saw
+metal.singing-bowl,metal,Singing Bowl
+metal.spoons,metal,Spoons
+metal.steel-drums,metal,Steel Drums
+metal.tamtam,metal,Tamtam
+metal.thundersheet,metal,Thundersheet
+metal.triangle,metal,Triangle
+metal.washboard,metal,Washboard
+pitched-percussion.angklung,pitched-percussion,Angklung
+pitched-percussion.balafon,pitched-percussion,Balafon
+pitched-percussion.bell-lyre,pitched-percussion,Lyre Bell
+pitched-percussion.bells,pitched-percussion,Bells
+pitched-percussion.bianqing,pitched-percussion,Bianqing
+pitched-percussion.bianzhong,pitched-percussion,Bianzhong
+pitched-percussion.bonang,pitched-percussion,Bonang
+pitched-percussion.cimbalom,pitched-percussion,Cimbalom
+pitched-percussion.crystal-glasses,pitched-percussion,Crystal Glasses
+pitched-percussion.dan-tam-thap-luc,pitched-percussion,Dan tam thap luc
+pitched-percussion.fangxiang,pitched-percussion,Fangxiang
+pitched-percussion.gandingan-a-kayo,pitched-percussion,Gandingan-a-kayo
+pitched-percussion.gangsa,pitched-percussion,Gangsa
+pitched-percussion.gender,pitched-percussion,Gender
+pitched-percussion.giying,pitched-percussion,Giying
+pitched-percussion.glass-harmonica,pitched-percussion,Glass Harmonica
+pitched-percussion.glockenspiel,pitched-percussion,Glockenspiel
+pitched-percussion.glockenspiel.alto,pitched-percussion,Alto Glockenspiel
+pitched-percussion.glockenspiel.soprano,pitched-percussion,Soprano Glockenspiel
+pitched-percussion.gyil,pitched-percussion,Gyil
+pitched-percussion.hammer-dulcimer,pitched-percussion,Hammer Dulcimer
+pitched-percussion.handbells,pitched-percussion,Handbells
+pitched-percussion.kalimba,pitched-percussion,Kalimba
+pitched-percussion.kantil,pitched-percussion,Kantil
+pitched-percussion.khim,pitched-percussion,Khim
+pitched-percussion.kulintang,pitched-percussion,Kulintang
+pitched-percussion.kulintang-a-kayo,pitched-percussion,Kulintang-a-kayo
+pitched-percussion.kulintang-a-tiniok,pitched-percussion,Kulintang-a-tiniok
+pitched-percussion.likembe,pitched-percussion,Likembe
+pitched-percussion.luntang,pitched-percussion,Luntang
+pitched-percussion.marimba,pitched-percussion,Marimba
+pitched-percussion.marimba.bass,pitched-percussion,Bass Marimba
+pitched-percussion.mbira,pitched-percussion,Mbira
+pitched-percussion.mbira.array,pitched-percussion,Arraz Mbira
+pitched-percussion.metallophone,pitched-percussion,Metallophone
+pitched-percussion.metallophone.alto,pitched-percussion,Alto Metallophone
+pitched-percussion.metallophone.bass,pitched-percussion,Bass Metallophone
+pitched-percussion.metallophone.soprano,pitched-percussion,Soprano Metallophone
+pitched-percussion.music-box,pitched-percussion,Music Box
+pitched-percussion.pelog-panerus,pitched-percussion,Pelog-panerus
+pitched-percussion.pemade,pitched-percussion,Pemade
+pitched-percussion.penyacah,pitched-percussion,Penyacah
+pitched-percussion.ranat.ek,pitched-percussion,Ranat ek
+pitched-percussion.ranat.ek-lek,pitched-percussion,Ranat ek-lek
+pitched-percussion.ranat.thum,pitched-percussion,Ranat Thum
+pitched-percussion.ranat.thum-lek,pitched-percussion,Ranat Thum-lek
+pitched-percussion.reyong,pitched-percussion,Reyong
+pitched-percussion.sanza,pitched-percussion,Sanza
+pitched-percussion.saron-barung,pitched-percussion,Saron Barung
+pitched-percussion.saron-demong,pitched-percussion,Saron Demong
+pitched-percussion.saron-panerus,pitched-percussion,Saron Panerus
+pitched-percussion.slendro-panerus,pitched-percussion,Slendro Panerus
+pitched-percussion.slentem,pitched-percussion,Slentem
+pitched-percussion.tsymbaly,pitched-percussion,Tsymbaly
+pitched-percussion.tubes,pitched-percussion,Tubes
+pitched-percussion.tubular-bells,pitched-percussion,Tubular Bells
+pitched-percussion.vibraphone,pitched-percussion,Vibraphone
+pitched-percussion.xylophone,pitched-percussion,Xylophone
+pitched-percussion.xylophone.alto,pitched-percussion,Alto Xylophone
+pitched-percussion.xylophone.bass,pitched-percussion,Bass Xylophone
+pitched-percussion.xylophone.soprano,pitched-percussion,Soprano Xylophone
+pitched-percussion.xylorimba,pitched-percussion,Xylorimba
+pitched-percussion.yangqin,pitched-percussion,Yangqin
+pluck.archlute,pluck,Archlute
+pluck.autoharp,pluck,Autoharp
+pluck.baglama,pluck,Baglama
+pluck.bajo,pluck,Bajo
+pluck.balalaika,pluck,Balalaika
+pluck.balalaika.alto,pluck,Alto Balalaika
+pluck.balalaika.bass,pluck,Bass Balalaika
+pluck.balalaika.contrabass,pluck,pluck.balalaika.contrabass
+pluck.balalaika.piccolo,pluck,Piccolo Balalaika
+pluck.balalaika.prima,pluck,Prima Balalaika
+pluck.balalaika.secunda,pluck,Secunda Balalaika
+pluck.bandola,pluck,Bandola
+pluck.bandura,pluck,Bandura
+pluck.bandurria,pluck,Bandurria
+pluck.banjo,pluck,Banjo
+pluck.banjo.tenor,pluck,Tenor Banjo
+pluck.banjolele,pluck,Banjolele
+pluck.barbat,pluck,Barbat
+pluck.bass,pluck,Bass (Pluck)
+pluck.bass.acoustic,pluck,Acoustic Bass
+pluck.bass.bolon,pluck,Bolon Bass
+pluck.bass.electric,pluck,Electric Bass
+pluck.bass.fretless,pluck,Fretless Bass
+pluck.bass.guitarron,pluck,Guitarron Bass
+pluck.bass.synth,pluck,Synth Bass
+pluck.bass.synth.lead,pluck,Synth Lead Bass
+pluck.bass.washtub,pluck,Washtube Bass
+pluck.bass.whamola,pluck,Whamola Bass
+pluck.begena,pluck,Begena
+pluck.biwa,pluck,Biwa
+pluck.bordonua,pluck,Bordonua
+pluck.bouzouki,pluck,Bouzouki
+pluck.bouzouki.irish,pluck,Irish Bouzouki
+pluck.celtic-harp,pluck,Celtic Harp
+pluck.charango,pluck,Charango
+pluck.chitarra-battente,pluck,Chitarra Battente
+pluck.cithara,pluck,Cithara
+pluck.cittern,pluck,Cittern
+pluck.cuatro,pluck,Cuatro
+pluck.dan-bau,pluck,Dan-bau
+pluck.dan-nguyet,pluck,Dan-nguyet
+pluck.dan-tranh,pluck,Dan-tranh
+pluck.dan-ty-ba,pluck,Dan-ty-ba
+pluck.diddley-bow,pluck,Diddley-bow
+pluck.domra,pluck,Domra
+pluck.domu,pluck,Domu
+pluck.dulcimer,pluck,Dulcimer
+pluck.dutar,pluck,Dutar
+pluck.duxianqin,pluck,Duxianqin
+pluck.ektara,pluck,Ektara
+pluck.geomungo,pluck,Geomungo
+pluck.gottuvadhyam,pluck,Gottuvadhyam
+pluck.guitar,pluck,Guitar
+pluck.guitar.acoustic,pluck,Acoustic Guitar
+pluck.guitar.electric,pluck,Electric Guitar
+pluck.guitar.nylon-string,pluck,Nylon String Guitar
+pluck.guitar.pedal-steel,pluck,Guitar Pedal-Steel
+pluck.guitar.portuguese,pluck,Portuguese Guitar
+pluck.guitar.requinto,pluck,Requinto
+pluck.guitar.resonator,pluck,Resonator
+pluck.guitar.steel-string,pluck,Steel String Guitar
+pluck.guitjo,pluck,Guitjo
+pluck.guitjo.double-neck,pluck,Double Neck Guitjo
+pluck.guqin,pluck,Gugin
+pluck.guzheng,pluck,Guzheng
+pluck.guzheng.choazhou,pluck,Choazhou Guzheng
+pluck.harp,pluck,Harp
+pluck.harp-guitar,pluck,Harp-Guitar
+pluck.huapanguera,pluck,Huapanguera
+pluck.jarana-huasteca,pluck,Jarana Huasteca
+pluck.jarana-jarocha,pluck,Jarana Jarocha
+pluck.jarana-jarocha.mosquito,pluck,Jarana Jarocha Mosquito
+pluck.jarana-jarocha.primera,pluck,Jarana Jarocha Primera
+pluck.jarana-jarocha.segunda,pluck,Jarana Jarocha Segunda
+pluck.jarana-jarocha.tercera,pluck,Jarana Jarocha Tercera
+pluck.kabosy,pluck,Kabosy
+pluck.kantele,pluck,Kantele
+pluck.kanun,pluck,Kanun
+pluck.kayagum,pluck,Kayagum
+pluck.kobza,pluck,Kobza
+pluck.komuz,pluck,Komuy
+pluck.kora,pluck,Kora
+pluck.koto,pluck,Koto
+pluck.kutiyapi,pluck,Kutiyapi
+pluck.langeleik,pluck,Langeleik
+pluck.laud,pluck,Laud
+pluck.lute,pluck,Lute
+pluck.lyre,pluck,Lyre
+pluck.mandobass,pluck,Mandobass
+pluck.mandocello,pluck,Mandocello
+pluck.mandola,pluck,Mandola
+pluck.mandolin,pluck,Mandolin
+pluck.mandolin.octave,pluck,Mandolin Octave
+pluck.mandora,pluck,Mandora
+pluck.mandore,pluck,Mandore
+pluck.marovany,pluck,Marovany
+pluck.musical-bow,pluck,Musical Bow
+pluck.ngoni,pluck,Ngoni
+pluck.oud,pluck,Oud
+pluck.pipa,pluck,Pipa
+pluck.psaltery,pluck,Psaltery
+pluck.ruan,pluck,Ruan
+pluck.sallaneh,pluck,Sallaneh
+pluck.sanshin,pluck,Sanshin
+pluck.santoor,pluck,Santoor
+pluck.sanxian,pluck,Sanxian
+pluck.sarod,pluck,Sarod
+pluck.saung,pluck,Saung
+pluck.saz,pluck,Saz
+pluck.se,pluck,Se
+pluck.setar,pluck,Setar
+pluck.shamisen,pluck,Shamisen
+pluck.sitar,pluck,Sitar
+pluck.synth,pluck,Synth (Pluck)
+pluck.synth.charang,pluck,pluck.synth.charang
+pluck.synth.chiff,pluck,pluck.synth.chiff
+pluck.synth.stick,pluck,pluck.synth.stick
+pluck.tambura,pluck,pluck.tambura
+pluck.tambura.bulgarian,pluck,pluck.tambura.bulgarian
+pluck.tambura.female,pluck,pluck.tambura.female
+pluck.tambura.male,pluck,pluck.tambura.male
+pluck.tar,pluck,pluck.tar
+pluck.theorbo,pluck,pluck.theorbo
+pluck.timple,pluck,pluck.timple
+pluck.tiple,pluck,pluck.tiple
+pluck.tres,pluck,pluck.tres
+pluck.ukulele,pluck,pluck.ukulele
+pluck.ukulele.tenor,pluck,pluck.ukulele.tenor
+pluck.valiha,pluck,pluck.valiha
+pluck.veena,pluck,pluck.veena
+pluck.veena.mohan,pluck,pluck.veena.mohan
+pluck.veena.rudra,pluck,pluck.veena.rudra
+pluck.veena.vichitra,pluck,pluck.veena.vichitra
+pluck.vihuela,pluck,pluck.vihuela
+pluck.vihuela.mexican,pluck,pluck.vihuela.mexican
+pluck.xalam,pluck,pluck.xalam
+pluck.yueqin,pluck,pluck.yueqin
+pluck.zither,pluck,pluck.zither
+pluck.zither.overtone,pluck,pluck.zither.overtone
+rattle.afoxe,rattle,rattle.afoxe
+rattle.birds,rattle,rattle.birds
+rattle.cabasa,rattle,rattle.cabasa
+rattle.caxixi,rattle,rattle.caxixi
+rattle.cog,rattle,rattle.cog
+rattle.ganza,rattle,rattle.ganza
+rattle.hosho,rattle,rattle.hosho
+rattle.jawbone,rattle,rattle.jawbone
+rattle.kayamba,rattle,rattle.kayamba
+rattle.kpoko-kpoko,rattle,rattle.kpoko-kpoko
+rattle.lava-stones,rattle,rattle.lava-stones
+rattle.maraca,rattle,rattle.maraca
+rattle.rain-stick,rattle,rattle.rain-stick
+rattle.ratchet,rattle,rattle.ratchet
+rattle.rattle,rattle,rattle.rattle
+rattle.shaker,rattle,rattle.shaker
+rattle.shaker.egg,rattle,rattle.shaker.egg
+rattle.shekere,rattle,rattle.shekere
+rattle.sistre,rattle,rattle.sistre
+rattle.televi,rattle,rattle.televi
+rattle.vibraslap,rattle,rattle.vibraslap
+rattle.wasembe,rattle,rattle.wasembe
+strings.ajaeng,strings,Ajaeng
+strings.arpeggione,strings,Arpeggione
+strings.baryton,strings,Baryton
+strings.cello,strings,Violoncello
+strings.cello.piccolo,strings,Piccolo Violoncello
+strings.contrabass,strings,Contrabass
+strings.crwth,strings,Crwth
+strings.dan-gao,strings,Dan Gao
+strings.dihu,strings,Djhu
+strings.erhu,strings,Erhu
+strings.erxian,strings,Erxian
+strings.esraj,strings,Esraj
+strings.fiddle,strings,Fiddle
+strings.fiddle.hardanger,strings,Hardanger Fiddle
+strings.gadulka,strings,Gadulka
+strings.gaohu,strings,Gaohu
+strings.gehu,strings,Gehu
+strings.group,strings,Group (String)
+strings.group.synth,strings,Synth Group (String)
+strings.haegeum,strings,Haegeum
+strings.hurdy-gurdy,strings,Hurdy Gurdy
+strings.igil,strings,Igil
+strings.kamancha,strings,Kamancha
+strings.kokyu,strings,Kokyu
+strings.laruan,strings,Laruan
+strings.leiqin,strings,Leigin
+strings.lirone,strings,Lirone
+strings.lyra.byzantine,strings,Byzantine Lyra
+strings.lyra.cretan,strings,Cretan Lyra
+strings.morin-khuur,strings,Morin Khuur
+strings.nyckelharpa,strings,Nyckelharpa
+strings.octobass,strings,Octobass
+strings.rebab,strings,Rebab
+strings.rebec,strings,Rebec
+strings.sarangi,strings,Sarangi
+strings.stroh-violin,strings,Stroh Violin
+strings.tromba-marina,strings,Tromba Marina
+strings.vielle,strings,Vielle
+strings.viol,strings,Viol
+strings.viol.alto,strings,Alto Viol
+strings.viol.bass,strings,Bass Viol
+strings.viol.tenor,strings,Tenor Viol
+strings.viol.treble,strings,Trebble Viol
+strings.viol.violone,strings,Violone
+strings.viola,strings,Viola
+strings.viola-damore,strings,Viola d`Amore
+strings.violin,strings,Violin
+strings.violono.piccolo,strings,Piccolo Violino
+strings.violotta,strings,Violotta
+strings.yayli-tanbur,strings,Yayli Tanbur
+strings.yazheng,strings,Yazheng
+strings.zhonghu,strings,Zhonghu
+synth.effects,synth,Synth Effects
+synth.effects.atmosphere,synth,Synth Effects Atmosphere
+synth.effects.brightness,synth,Synth Effects Brightness
+synth.effects.crystal,synth,Synth Effects Crystal
+synth.effects.echoes,synth,Synth Effects Echoes
+synth.effects.goblins,synth,Synth Effects Goblins
+synth.effects.rain,synth,Synth Effects Rain
+synth.effects.sci-fi,synth,Synth Effects Sci-fi
+synth.effects.soundtrack,synth,Synth Effects Soundtrack
+synth.group,synth,Group (Synth)
+synth.group.fifths,synth,Group Fiftha (Synth)
+synth.group.orchestra,synth,Group Orchestra (Synth)
+synth.pad,synth,Pad
+synth.pad.bowed,synth,Bowed Pad
+synth.pad.choir,synth,Choir Pad
+synth.pad.halo,synth,Halo Pad
+synth.pad.metallic,synth,Metallic Pad
+synth.pad.polysynth,synth,Polysynth Pad
+synth.pad.sweep,synth,Sweep Pad
+synth.pad.warm,synth,Warm Pad
+synth.theremin,synth,Theremin
+synth.tone.sawtooth,synth,Sawtooth Tone
+synth.tone.sine,synth,Sine Tone
+synth.tone.square,synth,Square Tone
+voice.aa,voice,Aa
+voice.alto,voice,Alto
+voice.aw,voice,Aw
+voice.baritone,voice,Baritone
+voice.bass,voice,Bass
+voice.child,voice,Child
+voice.countertenor,voice,Countertenor
+voice.doo,voice,Doo
+voice.ee,voice,Ee
+voice.female,voice,Female Voice
+voice.kazoo,voice,Kazoo
+voice.male,voice,Male Voice
+voice.mezzo-soprano,voice,Mezzo-Soprano
+voice.mm,voice,Mm
+voice.oo,voice,Oo
+voice.percussion,voice,Percussion (Voice)
+voice.percussion.beatbox,voice,Beatbox Percussion (Voice)
+voice.soprano,voice,Soprano
+voice.synth,voice,Synth Voice
+voice.talk-box,voice,Talk-Box
+voice.tenor,voice,Tenor
+voice.vocals,voice,Voice
+wind.flutes.bansuri,wind,Bansuri
+wind.flutes.blown-bottle,wind,Blow-Bottle
+wind.flutes.calliope,wind,Calliope
+wind.flutes.danso,wind,Danso
+wind.flutes.di-zi,wind,Di-zi
+wind.flutes.dvojnice,wind,Dvojnice
+wind.flutes.fife,wind,Fife
+wind.flutes.flageolet,wind,Flageolet
+wind.flutes.flute,wind,Flute
+wind.flutes.flute.alto,wind,Alto Flute
+wind.flutes.flute.bass,wind,Bass Flute
+wind.flutes.flute.contra-alto,wind,Contra-alto Flute
+wind.flutes.flute.contrabass,wind,Contrabass Flute
+wind.flutes.flute.double-contrabass,wind,Double Contrabass Flute
+wind.flutes.flute.irish,wind,Irish Flute
+wind.flutes.flute.piccolo,wind,Piccolo Flute
+wind.flutes.flute.subcontrabass,wind,Subcontrabass Flute
+wind.flutes.fujara,wind,Fujara Flute
+wind.flutes.gemshorn,wind,Gemshorn Flute
+wind.flutes.hocchiku,wind,Hocchiku Flute
+wind.flutes.hun,wind,Hun Flute
+wind.flutes.kaval,wind,Kaval Flute
+wind.flutes.kawala,wind,Kawala Flute
+wind.flutes.khlui,wind,Khlui Flute
+wind.flutes.knotweed,wind,Knotweed Flute
+wind.flutes.koncovka.alto,wind,Alto Koncovka
+wind.flutes.koudi,wind,Koudi
+wind.flutes.ney,wind,Ney
+wind.flutes.nohkan,wind,Nohkan
+wind.flutes.nose,wind,Nose (Flutes)
+wind.flutes.ocarina,wind,Ocarina
+wind.flutes.overtone.tenor,wind,Tenor Overtone (Flutes)
+wind.flutes.palendag,wind,Palendag
+wind.flutes.panpipes,wind,Panpipes
+wind.flutes.quena,wind,Quena
+wind.flutes.recorder,wind,Recorder
+wind.flutes.recorder.alto,wind,Alto Recorder
+wind.flutes.recorder.bass,wind,Bass Recorder
+wind.flutes.recorder.contrabass,wind,Contrabass Recorder
+wind.flutes.recorder.descant,wind,Descant Recorder
+wind.flutes.recorder.garklein,wind,Garklein Recorder
+wind.flutes.recorder.great-bass,wind,Great Bass Recorder
+wind.flutes.recorder.sopranino,wind,Sopranino Recorder
+wind.flutes.recorder.soprano,wind,Soprano Recorder
+wind.flutes.recorder.tenor,wind,Tenor Recorder
+wind.flutes.ryuteki,wind,Ryuteki
+wind.flutes.shakuhachi,wind,Shakuhachi
+wind.flutes.shepherds-pipe,wind,Shepherds Pipe
+wind.flutes.shinobue,wind,Shinobue
+wind.flutes.shvi,wind,Shvi
+wind.flutes.suling,wind,Suling
+wind.flutes.tarka,wind,Tarka
+wind.flutes.tumpong,wind,Tumpong
+wind.flutes.venu,wind,Venu
+wind.flutes.whistle,wind,Whistle
+wind.flutes.whistle.alto,wind,Alto Whistle
+wind.flutes.whistle.low-irish,wind,Low Irish Whistle
+wind.flutes.whistle.shiva,wind,Shiva Whistle
+wind.flutes.whistle.slide,wind,Slide Whistle
+wind.flutes.whistle.tin,wind,Tin Whistle
+wind.flutes.whistle.tin.bflat,wind,Tin Whistle in B flat
+wind.flutes.whistle.tin.d,wind,Tin Whistle in D
+wind.flutes.xiao,wind,Xiao
+wind.flutes.xun,wind,Xun
+wind.group,wind,Group (Wind)
+wind.jug,wind,Jug
+wind.pipes.bagpipes,wind,Bagpipe
+wind.pipes.gaida,wind,Gaida
+wind.pipes.highland,wind,Highland Pipes
+wind.pipes.uilleann,wind,Uilleann
+wind.pungi,wind,Pungi
+wind.reed.albogue,wind,Alboque
+wind.reed.alboka,wind,Alboka
+wind.reed.algaita,wind,Algaita
+wind.reed.arghul,wind,Arghul
+wind.reed.basset-horn,wind,Basset Horn
+wind.reed.bassoon,wind,Basson
+wind.reed.bawu,wind,Bawu
+wind.reed.bifora,wind,Bifora
+wind.reed.bombarde,wind,Bombarde
+wind.reed.chalumeau,wind,Chalumeau
+wind.reed.clarinet,wind,Clarinet
+wind.reed.clarinet.a,wind,Clarinet in A
+wind.reed.clarinet.alto,wind,Alto Clarinet
+wind.reed.clarinet.bass,wind,Bass Clarinet
+wind.reed.clarinet.basset,wind,Basset Clarinet
+wind.reed.clarinet.bflat,wind,Clarinet in B flat
+wind.reed.clarinet.contra-alto,wind,Contra-alto Clarinet
+wind.reed.clarinet.contrabass,wind,Contrabass Clarinet
+wind.reed.clarinet.eflat,wind,Clarinet in E flat
+wind.reed.clarinet.piccolo.aflat,wind,Clarinet Piccolo in A flat
+wind.reed.clarinette-damour,wind,Clarinet D`Amour
+wind.reed.contrabass,wind,Contrabass (Wind)
+wind.reed.contrabassoon,wind,Contrabassoon
+wind.reed.cornamuse,wind,Cornamuse
+wind.reed.cromorne,wind,Cromorne
+wind.reed.crumhorn,wind,Crumhorn
+wind.reed.crumhorn.alto,wind,Alto Crumhorn
+wind.reed.crumhorn.bass,wind,Bass Crumhorn
+wind.reed.crumhorn.great-bass,wind,Great Bass Crumhorn
+wind.reed.crumhorn.soprano,wind,Soprano Crumhorn
+wind.reed.crumhorn.tenor,wind,Tenor Crumhorn
+wind.reed.diple,wind,Diple
+wind.reed.diplica,wind,Diplica
+wind.reed.duduk,wind,Duduk
+wind.reed.dulcian,wind,Dulcian
+wind.reed.dulzaina,wind,Dulzaina
+wind.reed.english-horn,wind,English Horn
+wind.reed.guanzi,wind,Guanzi
+wind.reed.harmonica,wind,Harmonica
+wind.reed.harmonica.bass,wind,Bass Harmonica
+wind.reed.heckel-clarina,wind,Heckel-clarina
+wind.reed.heckelphone,wind,Heckelphone
+wind.reed.heckelphone.piccolo,wind,Piccolo Heckelphone
+wind.reed.heckelphone-clarinet,wind,Heckelphone Clarinet
+wind.reed.hichiriki,wind,Hichiriki
+wind.reed.hirtenschalmei,wind,Hirtenschalmei
+wind.reed.hne,wind,Hne
+wind.reed.hornpipe,wind,Hornpipe
+wind.reed.houguan,wind,Houguan
+wind.reed.hulusi,wind,Hulusi
+wind.reed.jogi-baja,wind,Jogi-baja
+wind.reed.ken-bau,wind,Ken-bau
+wind.reed.khaen-mouth-organ,wind,Khaen mouth organ
+wind.reed.launeddas,wind,Launeddas
+wind.reed.maqrunah,wind,Maqrunah
+wind.reed.melodica,wind,Melodica
+wind.reed.mijwiz,wind,Mijwiz
+wind.reed.mizmar,wind,Mizmar
+wind.reed.nadaswaram,wind,Nadaswaram
+wind.reed.oboe,wind,Oboe
+wind.reed.oboe.bass,wind,Bass Oboe
+wind.reed.oboe.piccolo,wind,Piccolo Oboe
+wind.reed.oboe-da-caccia,wind,Oboe da Caccia
+wind.reed.oboe-damore,wind,Oboe D`Amore
+wind.reed.octavin,wind,Octavin
+wind.reed.pi,wind,Pi
+wind.reed.pibgorn,wind,Pibgorn
+wind.reed.piri,wind,Piri
+wind.reed.rackett,wind,Racket
+wind.reed.rauschpfeife,wind,Rauschpfeife
+wind.reed.rhaita,wind,Rhaita
+wind.reed.rothphone,wind,Rothphone
+wind.reed.sarrusaphone,wind,Sarrusaphone
+wind.reed.saxonette,wind,Saxonette
+wind.reed.saxophone,wind,Saxophone
+wind.reed.saxophone.alto,wind,Alto Saxophone
+wind.reed.saxophone.aulochrome,wind,Aulochrome Saxophone
+wind.reed.saxophone.baritone,wind,Baritone Saxophone
+wind.reed.saxophone.bass,wind,Bass Saxophone
+wind.reed.saxophone.contrabass,wind,Contrabass Saxophone
+wind.reed.saxophone.melody,wind,Melody Saxophone
+wind.reed.saxophone.mezzo-soprano,wind,Mezzo-Soprano Saxophone
+wind.reed.saxophone.sopranino,wind,Sopranino Saxophone
+wind.reed.saxophone.sopranissimo,wind,Sopranissimo Saxophone
+wind.reed.saxophone.soprano,wind,Soprano Saxophone
+wind.reed.saxophone.subcontrabass,wind,Subcontrabass Saxophone
+wind.reed.saxophone.tenor,wind,Tenor Saxophone
+wind.reed.shawm,wind,Shawm
+wind.reed.shenai,wind,Shenai
+wind.reed.sheng,wind,Sheng
+wind.reed.sipsi,wind,Sipsi
+wind.reed.sopila,wind,Sopila
+wind.reed.sorna,wind,Sorna
+wind.reed.sralai,wind,Sralai
+wind.reed.suona,wind,Suona
+wind.reed.surnai,wind,Surnai
+wind.reed.taepyeongso,wind,Taepyeongso
+wind.reed.tarogato,wind,Tarogato
+wind.reed.tarogato.ancient,wind,Ancient Tarogato
+wind.reed.trompeta-china,wind,Trompeta-china
+wind.reed.tubax,wind,Tubax
+wind.reed.xaphoon,wind,Xaphoon
+wind.reed.zhaleika,wind,Zhaleika
+wind.reed.zurla,wind,Zurla
+wind.reed.zurna,wind,Zurna
+wood.agogo-block,wood,Agogo Block
+wood.agung-a-tamlang,wood,Agung-a-tamlang
+wood.ahoko,wood,Ahoko
+wood.bones,wood,Bones
+wood.castanets,wood,Castanets
+wood.claves,wood,Claves
+wood.drum-sticks,wood,Drum Sticks
+wood.gourd,wood,Gourd
+wood.granite-block,wood,Granite Block
+wood.guban,wood,Guban
+wood.guiro,wood,Guiro
+wood.hyoushigi,wood,Hyoushigi
+wood.ipu,wood,Ipu
+wood.jam-block,wood,Jam Block
+wood.kaekeeke,wood,Kaekeeke
+wood.kagul,wood,Kagul
+wood.kalaau,wood,Kalaau
+wood.kashiklar,wood,Kashiklar
+wood.kubing,wood,Kubing
+wood.pan-clappers,wood,Pan Clappers
+wood.sand-block,wood,Sand Block
+wood.slapstick,wood,Slapstick
+wood.stir-drum,wood,Stir Drum
+wood.temple-block,wood,Temple Block
+wood.tic-toc-block,wood,Tic-toc Block
+wood.tonetang,wood,Tonetang
+wood.wood-block,wood,Wood Block
+unspecified.basso.continuo,unspecified,Basso Continuo
+unspecified.unspecified,unspecified,Unspecified

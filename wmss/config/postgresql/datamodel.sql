@@ -1107,24 +1107,38 @@ noteset_attribute_value VARCHAR PRIMARY KEY,
 noteset_attribute_description VARCHAR
 );
 
-INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('.','dot');
-INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('..','double-dot');
-INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('...','triple-dot');
+INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('dot','dot');
+INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('dot2','double-dot');
+INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('dot3','triple-dot');
 INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('f','forte');
 INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('ff','fortissimo');
 INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('fff','fortississimo');
-INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('ffff','forte fortississimo');
+INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('ffff','fortissississimo');
+INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('fffff','forte 5x');
+INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('ffffff','forte 6x');
+INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('fffffff','forte 7x');
+INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('ffffffff','forte 8x');
+INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('fffffffff','forte 9x');
+INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('ffffffffff','forte 10x');
+INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('mf','mezzo-forte');
+INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('mp','mezzo-piano');
 INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('p','piano');
 INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('pp','pianissimo');
 INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('ppp','pianississimo');
-INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('pppp','piano pianississimo');
+INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('pppp','pianissississimo');
+INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('ppppp','pianississississimo');
+INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('pppppp','pianissississississimo');
+INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('ppppppp','piano 7x');
+INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('pppppppp','piano 8x');
+INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('ppppppppp','piano 9x');
+INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('pppppppppp','piano 10x');
+INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('sfz','sforzato');
 INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('fp','forte-piano');
 INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('fz','forzato');
-INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('mz','mezzo-forte');
-INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('mp','mezzo-piano');
-INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('sfz','sforzando');
 INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('sfzpp','sforzando-pianissimo');
+INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('sf','sforzando');
 INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('sfzp','sforzando-piano');
+INSERT INTO wmss.wmss_noteset_attributes (noteset_attribute_value,noteset_attribute_description) VALUES ('rfz','rinforzando');
 
 
 CREATE TABLE wmss.wmss_notes_noteset_attributes (
