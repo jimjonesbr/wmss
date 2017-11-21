@@ -305,22 +305,7 @@ A sequence of notes or notesets is encoded with the connector `>`, as in the fol
 
 ##### Attribute (Optional) 
 
-Attributes correspond to dynamics and articulations attached to a note or noteset. 
-
-|Attribute   |Code |
-|:-:|:-:|
-|piano|`p` *| 
-|forte|`f` *| 
-|forte-piano|`fp`|
-|forzato|`fz`|
-|mezzo-forte|`mf`|
-|mezzo-piano|`mp`|
-|sforzando|`sfz`|
-|sforzando-piano|`sfzp`|
-|sforzando-pianissimo|`sfzpp`|
-|dot|`dot`|
-|double-dot|`dot2`|
-|triple-dot|`dot3`|
+Attributes correspond to dynamics and articulations attached to a note or noteset (Click [here](https://github.com/jimjonesbr/wmss/tree/master/wmss/data/system/attributes.csv) for a complete list of attributes)*.
 
 \* The basic dynamics scale normally goes from `pppppp` (*pianissississississimo*) to `ffff` (*fortissississimo*), but some composers go beyond this range, such as Ligeti's Études No. 9, where he uses `pppppppp` (8x `p`) and `ffffffff` (8x `f`). Therefore, just increase the loudness or quietness by adding as much `p` or `f` as needed in your query.
 
@@ -339,8 +324,8 @@ Notes or notesets can be encoded using one of the following operators:
 |Operator |Name   | Description | 
 |:-:|:-:|:-:|
 |`>`|Sequence | Connect notes or notesets sequences in a melody expression
-|`\|`|Request concatenator |Concatenates multiple melody requests
-|`/`|Melody concatenator |Concatenates multiple melody expressions in a single request 
+|`\|`|Request concatenator |Concatenates multiple melody requests. Result set contains records that fulfil at least one of the given melody expressions.
+|`/`|Melody concatenator |Concatenates multiple melody expressions in a single request. Result set contains records that fulfil all given expressions.
 |`+`|Noteset aggregator | Aggregates multiple notes to form a noteset (to be implemented).
 
 
@@ -374,9 +359,13 @@ http://localhost:8295/wmss?request=ListScores&melody=[eb-w-*+e-w-*]
 ```
 http://localhost:8295/wmss?request=ListScores&melody=[eb-w-*+e-w-*]>[eb-w-*+e-w-*]
 ```
-6. __Multiple Melody Requests__. *E♭ whole note, 3rd octave* followed by *E, whole note, 3rd octave* __and__ *E♭ quarter note, 3rd octave* followed by *F quarter note, 3rd octave*:
+6. __Multiple melody requests__. *E♭ whole note, 3rd octave* followed by *E, whole note, 3rd octave* __or__ *E♭ quarter note, 3rd octave* followed by *F quarter note, 3rd octave*:
 
 `http://localhost:8295/wmss/?request=ListScores&melody=eb-w-3>e-w-3|eb-4-3>f-4-3`
+
+7. __Melody request with multiple conditions__. *E♭ whole note, 3rd octave* followed by *E, whole note, 3rd octave* __and__ *E♭ quarter note, 3rd octave* followed by *F quarter note, 3rd octave*:
+
+`http://localhost:8295/wmss/?request=ListScores&melody=eb-w-3>e-w-3/eb-4-3>f-4-3`
 
 
 
