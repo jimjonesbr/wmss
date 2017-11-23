@@ -13,18 +13,18 @@ DROP SCHEMA IF EXISTS wmss CASCADE;
 CREATE SCHEMA wmss;
 
 
-DROP TABLE IF EXISTS wmss.wmss_movement_performance_medium;
-DROP TABLE IF EXISTS wmss.wmss_score_persons;
-DROP TABLE IF EXISTS wmss.wmss_persons;
-DROP TABLE IF EXISTS wmss.wmss_roles;
-DROP TABLE IF EXISTS wmss.wmss_performance_medium;
-DROP TABLE IF EXISTS wmss.wmss_performance_medium_type;
-DROP TABLE IF EXISTS wmss.wmss_document;
-DROP TABLE IF EXISTS wmss.wmss_score_movements;
-DROP TABLE IF EXISTS wmss.wmss_scores;
-DROP TABLE IF EXISTS wmss.wmss_document_type ;
-DROP TABLE IF EXISTS wmss.wmss_collections;
-DROP SEQUENCE IF EXISTS wmss.seq_scores;
+--DROP TABLE IF EXISTS wmss.wmss_movement_performance_medium;
+--DROP TABLE IF EXISTS wmss.wmss_score_persons;
+--DROP TABLE IF EXISTS wmss.wmss_persons;
+--DROP TABLE IF EXISTS wmss.wmss_roles;
+--DROP TABLE IF EXISTS wmss.wmss_performance_medium;
+--DROP TABLE IF EXISTS wmss.wmss_performance_medium_type;
+--DROP TABLE IF EXISTS wmss.wmss_document;
+--DROP TABLE IF EXISTS wmss.wmss_score_movements;
+--DROP TABLE IF EXISTS wmss.wmss_scores;
+--DROP TABLE IF EXISTS wmss.wmss_document_type ;
+--DROP TABLE IF EXISTS wmss.wmss_collections;
+--DROP SEQUENCE IF EXISTS wmss.seq_scores;
 CREATE SEQUENCE wmss.seq_scores START WITH 1;
 
 -- wwms_performance_medium_type 

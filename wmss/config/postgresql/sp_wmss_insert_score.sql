@@ -75,7 +75,7 @@ BEGIN
 
 
 	    IF document_id = '' THEN 
-	        main_id := (SELECT nextval('wmss.seq_scores')); 
+	        main_id := 'genid_' || (SELECT nextval('wmss.seq_scores')); 
 	    ELSE
 	        main_id := document_id;
 	    END IF;

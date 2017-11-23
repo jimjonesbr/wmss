@@ -881,6 +881,7 @@ public class FactoryWMSS {
 
 		}
 
+		
 		/**
 		 * Selecting formats available for a given score
 		 */
@@ -1018,20 +1019,6 @@ public class FactoryWMSS {
 					}
 
 					
-
-
-
-					//					ArrayList<MelodyLocation> melodyRequestResult = new ArrayList<MelodyLocation>();			
-					//
-					//					melodyRequestResult = findMelody(melodyRequests[i], identifiers, dataSource);
-					//
-					//					for (int k = 0; k < melodyRequestResult.size(); k++) {
-					//
-					//						tmpMelodyLocation.add(melodyRequestResult.get(k));
-					//
-					//					}
-
-
 				}
 
 
@@ -1073,14 +1060,91 @@ public class FactoryWMSS {
 		
 		
 		
+	
+		
+//		ArrayList<MelodyLocationGroup> melodyGroups = new ArrayList<MelodyLocationGroup>();
+//		boolean exists = false;	
+//		
+//		for (int i = 0; i < melodyLocationList.size(); i++) {
+//					
+//			MelodyLocationGroup g = new MelodyLocationGroup();
+//
+//			
+//					
+//			for (int j = 0; j < melodyGroups.size(); j++) {
+//
+//				g.setScoreId(melodyLocationList.get(i).getScoreId());
+//				g.setMovementId(melodyLocationList.get(i).getMovementId());
+//				g.setMovementName(melodyLocationList.get(i).getMovementName());
+//				
+//				if(melodyGroups.get(j).getScoreId().equals(g.getScoreId())) {
+//
+//					exists = true;
+//
+//					
+//				}
+//
+//			}
+//
+//
+//
+//			if(!exists) {
+//
+//				melodyGroups.add(g);
+//				System.out.println(">>>> score_id " + g.getScoreId());
+//				exists = true;
+//				
+//			}
+//
+//		}
 		
 		
 		
+		
+		
+//		for (int i = 0; i < melodyLocationList.size(); i++) {
+//
+//			for (int j = 0; j < melodyGroups.size(); j++) {
+//
+//				if (melodyGroups.get(j).getScoreId().equals(melodyLocationList.get(i).getScoreId())) {
+//					
+//					melodyGroups.get(j).getMelodyLocation().add(melodyLocationList.get(i));				
+//
+//				}
+//			}
+//
+//		}
 		
 		
 		
 		
 		if(!melody.equals("")) {
+			
+			
+			ArrayList<MelodyLocationGroup> l = groupMelodyLocations(melodyLocationList);
+			
+			for (int i = 0; i < l.size(); i++) {
+				
+				for (int j = 0; j < scoreList.size(); j++) {
+					
+					if(l.get(i).getScoreId().equals(scoreList.get(j).getScoreId())) {
+						
+						scoreList.get(j).getMelodyLocation2().add(l.get(i));
+						
+					}
+					
+				}
+				
+			}
+			
+
+
+			
+			
+			
+			
+			
+/*			
 
 			for (int i = 0; i < melodyLocationList.size(); i++) {
 				
@@ -1096,7 +1160,19 @@ public class FactoryWMSS {
 				
 			}
 			
+*/			
+			
 		}
+		
+		
+		
+		
+		
+
+				
+		
+		
+		
 		
 
 		
@@ -1306,4 +1382,48 @@ public class FactoryWMSS {
 		return result;
 	}
 
+	
+	private static ArrayList<MelodyLocationGroup> groupMelodyLocations(ArrayList<MelodyLocation> locations) {
+		
+		ArrayList<MelodyLocationGroup> result = new ArrayList<MelodyLocationGroup>();
+		
+		
+		
+		for (int i = 0; i < locations.size(); i++) {
+
+			boolean alreadyAdded = false;
+						
+			for (int j = 0; j < result.size(); j++) {
+				
+				if(result.get(j).getScoreId().equals(locations.get(i).getScoreId()) && result.get(j).getMovementId().equals(locations.get(i).getMovementId())) {
+					
+					alreadyAdded = true;
+				}
+				
+			}
+			
+			if(!alreadyAdded) {
+				MelodyLocationGroup g = new MelodyLocationGroup();
+				g.setScoreId(locations.get(i).getScoreId());
+				g.setMovementName(locations.get(i).getMovementName());
+				g.setMovementId(locations.get(i).getMovementId());
+				
+				for (int k = 0; k < locations.size(); k++) {
+					
+					if(locations.get(k).getScoreId().equals(g.getScoreId()) && locations.get(k).getMovementId().equals(g.getMovementId())) {
+						
+						g.getMelodyLocation().add(locations.get(k));
+						
+					}
+					
+				}
+				
+				result.add(g);				
+				
+			}
+			
+		}
+		
+		return result;
+	}
 }

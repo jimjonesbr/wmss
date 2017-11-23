@@ -7,6 +7,7 @@ public class MelodyLocationGroup {
 	ArrayList<MelodyLocation> melodyLocation = new ArrayList<MelodyLocation>();
 	String movementId;
 	String movementName;
+	String scoreId;
 	
 	public MelodyLocationGroup() {
 		super();
@@ -31,6 +32,14 @@ public class MelodyLocationGroup {
 
 	public ArrayList<MelodyLocation> getMelodyLocation() {
 		return melodyLocation;
+	}
+
+	public String getScoreId() {
+		return scoreId;
+	}
+
+	public void setScoreId(String scoreId) {
+		this.scoreId = scoreId;
 	}
 	
 	

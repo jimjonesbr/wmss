@@ -140,6 +140,7 @@ SELECT wmss.wmss_import_score('e73f74ec-6711-499f-b3eb-503ca99c6b14','/home/jone
 SELECT wmss.wmss_import_score('ebb4d5a6-3096-492f-934a-bc7c0e6644bf','/home/jones/git/wmss/wmss/data/musicxml/wwu/ebb4d5a6-3096-492f-934a-bc7c0e6644bf@AndenMond.xml','musicxml',3);
 SELECT wmss.wmss_import_score('4339837','/home/jones/git/wmss/wmss/data/musicxml/wwu/4339837@PolonoisepourlaHarpe.xml','musicxml',2);
 SELECT wmss.wmss_import_score('974543','/home/jones/git/wmss/wmss/data/musicxml/wwu/974543@Pot-pourrisurdesmélodiesdeloperaDonJuan.xml','musicxml',2);
+SELECT wmss.wmss_import_score('1964013','/home/jones/git/wmss/wmss/data/musicxml/wwu/1964013@TroisQuintettipourflute,violon,deuxaltosetvioloncelle.xml','musicxml',2);
 
 
 -- MusicXML Official Samples
@@ -216,5 +217,6 @@ WHERE collection_id = 3;
 UPDATE wmss.wmss_scores SET score_name = '' WHERE score_name IS NULL;
 
 --TRUNCATE TABLE wmss.wmss_notes;
+--ALTER SEQUENCE wmss.seq_noteset  RESTART WITH 1;
 
 SELECT wmss.wmss_extract_musicxml_notes(score_id) FROM wmss.wmss_document WHERE document_type_id = 'musicxml'-- AND score_id = '4307727' ;-- limit 10;
