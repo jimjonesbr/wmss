@@ -1055,7 +1055,7 @@ INSERT INTO wmss.wmss_roles (role_id,role_description) VALUES (99,'Unknown');
 -- wmss.wmss_person_roles
 
 CREATE TABLE wmss.wmss_persons (
-person_id SERIAL,
+person_id VARCHAR,
 person_name VARCHAR,
 person_uri VARCHAR,
 person_codedval VARCHAR,
@@ -1067,7 +1067,7 @@ CONSTRAINT persons_pkey PRIMARY KEY (person_id)
 
 CREATE TABLE wmss.wmss_score_persons (
 role_id INTEGER REFERENCES wmss.wmss_roles (role_id),
-person_id INTEGER REFERENCES wmss.wmss_persons (person_id),
+person_id VARCHAR REFERENCES wmss.wmss_persons (person_id),
 score_id VARCHAR REFERENCES wmss.wmss_scores (score_id)
 );
 
@@ -1218,3 +1218,10 @@ CREATE TRIGGER wmss_trigger_insert_notes
     BEFORE INSERT ON wmss.wmss_notes
     FOR EACH ROW EXECUTE PROCEDURE wmss.wmss_notes_insert_trigger();
 
+
+
+
+-- Importing composers and musicians from the German National Library
+--COPY wmss.wmss_persons (person_authority, person_id, person_name) FROM '/home/jones/git/wmss/wmss/data/system/persons.csv' DELIMITER ',' CSV HEADER;
+COPY wmss.wmss_persons (person_authority, person_id, person_name) FROM '/home/jones/wmss_persons.csv' DELIMITER ',' CSV HEADER;
+UPDATE wmss.wmss_persons SET person_uri = person_authority, person_codedval = '';

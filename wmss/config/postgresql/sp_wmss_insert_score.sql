@@ -99,16 +99,16 @@ BEGIN
 	        FOR i IN 1 .. ARRAY_UPPER(array_persons, 1) LOOP
 
 		    composer := TRIM(regexp_replace(array_persons[i]::TEXT,E'[\\n\\r\\t]+', '', 'g'));		
-		    exist := (SELECT person_id FROM wmss.wmss_persons WHERE person_name = composer);
+		    exist := (SELECT person_id FROM wmss.wmss_persons WHERE person_name = composer LIMIT 1);
 
 		    IF exist IS NULL THEN 
 			
-			INSERT INTO wmss.wmss_persons (person_name, person_authority, person_uri, person_codedval) 
-			VALUES (composer,'', '', '');
+			INSERT INTO wmss.wmss_persons (person_id, person_name, person_authority, person_uri, person_codedval) 
+			VALUES (md5(composer),composer,'', '', '');
 			
 		    END IF;
 
-		    INSERT INTO wmss.wmss_score_persons (score_id,person_id,role_id) VALUES (main_id,(SELECT DISTINCT person_id FROM wmss.wmss_persons WHERE person_name = composer),1);
+		    INSERT INTO wmss.wmss_score_persons (score_id,person_id,role_id) VALUES (main_id,(SELECT DISTINCT person_id FROM wmss.wmss_persons WHERE person_name = composer LIMIT 1),1);
 
 	        END LOOP;
 
@@ -128,8 +128,8 @@ BEGIN
 
 		    IF exist IS NULL THEN 
 			
-			INSERT INTO wmss.wmss_persons (person_name, person_authority, person_uri, person_codedval) 
-			VALUES (lyricist,'', '', '');
+			INSERT INTO wmss.wmss_persons (person_id, person_name, person_authority, person_uri, person_codedval) 
+			VALUES (md5(lyricist),lyricist,'', '', '');
 			
 		    END IF;
 		    RAISE NOTICE '    Adding lyricist: %',lyricist;
@@ -154,8 +154,8 @@ BEGIN
 
 		    IF exist IS NULL THEN 
 			
-			INSERT INTO wmss.wmss_persons (person_name, person_authority, person_uri, person_codedval) 
-			VALUES (arranger,'', '', '');
+			INSERT INTO wmss.wmss_persons (person_id, person_name, person_authority, person_uri, person_codedval) 
+			VALUES (MD5(arranger),arranger,'', '', '');
 			
 		    END IF;
 		    RAISE NOTICE '    Adding arranger: %',arranger;
@@ -179,8 +179,8 @@ BEGIN
 
 		    IF exist IS NULL THEN 
 			
-			INSERT INTO wmss.wmss_persons (person_name, person_authority, person_uri, person_codedval) 
-			VALUES (encoder,'', '', '');
+			INSERT INTO wmss.wmss_persons (person_id,person_name, person_authority, person_uri, person_codedval) 
+			VALUES (MD5(encoder),encoder,'', '', '');
 			
 		    END IF;
 		    RAISE NOTICE '    Adding encoder: %',encoder;
@@ -353,8 +353,8 @@ BEGIN
 
 				IF exist IS NULL THEN 
 					
-					INSERT INTO wmss.wmss_persons (person_name, person_authority, person_uri, person_codedval) 
-					VALUES (TRIM(person_name_array[i]),TRIM(person_authority_array[i]), TRIM(person_uri_array[i]), TRIM(person_codedval_array[i]));
+					INSERT INTO wmss.wmss_persons (person_id, person_name, person_authority, person_uri, person_codedval) 
+					VALUES (MD5(TRIM(person_name_array[i])),TRIM(person_name_array[i]),TRIM(person_authority_array[i]), TRIM(person_uri_array[i]), TRIM(person_codedval_array[i]));
 					
 				END IF;
 				raise notice ' %: % ',TRIM(person_name_array[i]), TRIM(person_role_array[i]);
