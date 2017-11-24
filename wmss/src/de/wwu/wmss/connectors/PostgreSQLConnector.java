@@ -22,14 +22,14 @@ public class PostgreSQLConnector {
 		try {
 			
 			
-			logger.info("SQL Query fired: \n\n"+ SQL +"\n");
+			logger.info("SQL Query fired ["+ds.getHost()+"]: \n\n"+ SQL +"\n");
 			Date start = new Date();
 			
 			Connection con = DriverManager.getConnection("jdbc:postgresql://"+ds.getHost()+":"+ds.getPort()+"/"+ds.getRepository(), ds.getUser(), ds.getPassword());			
 			Statement st = con.createStatement();
 			rs = st.executeQuery(SQL);
 			
-			logger.info("SQL Query time: " + Util.timeElapsed(start, new Date()));
+			logger.info("SQL Query time ["+ds.getHost()+"]: " + Util.timeElapsed(start, new Date()));
 			//rs.close();
 			//st.close();
 			
