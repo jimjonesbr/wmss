@@ -2,8 +2,8 @@ package de.wwu.wmss.core;
 
 public class RequestParameter {
 
-	String request = "";
-	String value ="";
+	private String request = "";
+	private String value ="";
 	public RequestParameter() {
 		super();
 	}

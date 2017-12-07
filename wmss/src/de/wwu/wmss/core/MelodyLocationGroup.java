@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 public class MelodyLocationGroup {
 	
-	ArrayList<MelodyLocation> melodyLocation = new ArrayList<MelodyLocation>();
-	String movementId;
-	String movementName;
-	String scoreId;
+	private ArrayList<MelodyLocation> melodyLocation = new ArrayList<MelodyLocation>();
+	private String movementId;
+	private String movementName;
+	private String scoreId;
 	
 	public MelodyLocationGroup() {
 		super();

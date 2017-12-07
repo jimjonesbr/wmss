@@ -2,8 +2,9 @@ package de.wwu.wmss.core;
 
 public class Collection {
 
-	int id;
-	String description;
+	private int id;
+	private String description;
+	
 	public Collection() {
 		super();
 

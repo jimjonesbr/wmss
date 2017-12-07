@@ -4,8 +4,8 @@ import java.util.Date;
 
 public class Interval {
 
-	Date from;
-	Date to;
+	private Date from;
+	private Date to;
 	
 	public Interval() {
 		super();

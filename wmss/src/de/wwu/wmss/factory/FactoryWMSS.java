@@ -1138,29 +1138,7 @@ public class FactoryWMSS {
 			}
 			
 
-
 			
-			
-			
-			
-			
-/*			
-
-			for (int i = 0; i < melodyLocationList.size(); i++) {
-				
-				for (int j = 0; j < scoreList.size(); j++) {
-					
-					if(melodyLocationList.get(i).getScoreId().equals(scoreList.get(j).getScoreId())) {
-						
-						scoreList.get(j).getMelodyLocation().add(melodyLocationList.get(i));
-						
-					}
-					
-				}
-				
-			}
-			
-*/			
 			
 		}
 		

@@ -1222,6 +1222,6 @@ CREATE TRIGGER wmss_trigger_insert_notes
 
 
 -- Importing composers and musicians from the German National Library
---COPY wmss.wmss_persons (person_authority, person_id, person_name) FROM '/home/jones/git/wmss/wmss/data/system/persons.csv' DELIMITER ',' CSV HEADER;
-COPY wmss.wmss_persons (person_authority, person_id, person_name) FROM '/home/jones/wmss_persons.csv' DELIMITER ',' CSV HEADER;
+COPY wmss.wmss_persons (person_authority, person_id, person_name) FROM '/home/jones/git/wmss/wmss/data/system/persons.csv' DELIMITER ',' CSV HEADER;
+--COPY wmss.wmss_persons (person_authority, person_id, person_name) FROM '/home/jones/wmss_persons.csv' DELIMITER ',' CSV HEADER;
 UPDATE wmss.wmss_persons SET person_uri = person_authority, person_codedval = '';
