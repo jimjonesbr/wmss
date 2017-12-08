@@ -22,7 +22,7 @@ import de.wwu.wmss.core.RequestParameter;
 import de.wwu.wmss.core.Tonality;
 import de.wwu.wmss.settings.SystemSettings;
 
-public class FactoryWMSS {
+public class FactoryPostgreSQL {
 
 	private static Logger logger = Logger.getLogger("Factory-WMSS");
 

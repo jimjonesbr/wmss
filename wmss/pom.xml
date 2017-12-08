@@ -27,7 +27,6 @@
 		    <version>9.4.6.v20170531</version>
 		</dependency>
 
-
 		<dependency>
 		    <groupId>com.googlecode.json-simple</groupId>
 		    <artifactId>json-simple</artifactId>
@@ -54,6 +53,14 @@
 			<version>9.4-1200-jdbc41</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.apache.jena/apache-jena-libs -->
+		<dependency>
+		    <groupId>org.apache.jena</groupId>
+		    <artifactId>apache-jena-libs</artifactId>
+		    <version>3.5.0</version>
+		    <type>pom</type>
+		</dependency>
+				
 					
 	</dependencies> 
   <build>

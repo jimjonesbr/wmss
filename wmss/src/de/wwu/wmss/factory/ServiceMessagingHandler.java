@@ -76,13 +76,13 @@ public class ServiceMessagingHandler {
 			ds.put("version", SystemSettings.sourceList.get(i).getVersion());
 			ds.put("user", SystemSettings.sourceList.get(i).getUser());
 			ds.put("filterCapabilities", SystemSettings.sourceList.get(i).getFilters());
-			ds.put("collections", FactoryWMSS.getCollections(SystemSettings.sourceList.get(i)));
-			ds.put("performanceMediums", FactoryWMSS.getPerformanceMediumList(SystemSettings.sourceList.get(i)));
-			ds.put("tempoMarkings", FactoryWMSS.getTempoMarkings(SystemSettings.sourceList.get(i)));
-			ds.put("formats", FactoryWMSS.getFormats(SystemSettings.sourceList.get(i)));
-			ds.put("tonalities", FactoryWMSS.getTonalities(SystemSettings.sourceList.get(i)));
-			ds.put("creationRange", FactoryWMSS.getCreationInterval(SystemSettings.sourceList.get(i)));
-			ds.put("roles", FactoryWMSS.getRoles(SystemSettings.sourceList.get(i)));
+			ds.put("collections", FactoryPostgreSQL.getCollections(SystemSettings.sourceList.get(i)));
+			ds.put("performanceMediums", FactoryPostgreSQL.getPerformanceMediumList(SystemSettings.sourceList.get(i)));
+			ds.put("tempoMarkings", FactoryPostgreSQL.getTempoMarkings(SystemSettings.sourceList.get(i)));
+			ds.put("formats", FactoryPostgreSQL.getFormats(SystemSettings.sourceList.get(i)));
+			ds.put("tonalities", FactoryPostgreSQL.getTonalities(SystemSettings.sourceList.get(i)));
+			ds.put("creationRange", FactoryPostgreSQL.getCreationInterval(SystemSettings.sourceList.get(i)));
+			ds.put("roles", FactoryPostgreSQL.getRoles(SystemSettings.sourceList.get(i)));
 			dsArray.add(ds);
 		}
 
@@ -154,7 +154,7 @@ public class ServiceMessagingHandler {
 
 					if(source.equals(SystemSettings.sourceList.get(i).getId()) || source.equals("")){
 
-						listScores = FactoryWMSS.getScoreList(parameterList, SystemSettings.sourceList.get(i));
+						listScores = FactoryPostgreSQL.getScoreList(parameterList, SystemSettings.sourceList.get(i));
 
 						JSONObject repo = new JSONObject();
 						repo.put("identifier", SystemSettings.sourceList.get(i).getId());
@@ -196,7 +196,7 @@ public class ServiceMessagingHandler {
 
 	public static String getScore(ArrayList<RequestParameter> parameterList){
 
-		return FactoryWMSS.getScore(parameterList);
+		return FactoryPostgreSQL.getScore(parameterList);
 
 	}
 
