@@ -1,6 +1,6 @@
 {
     "datasource": [{
-      "id": "postgres_wwu",
+      "id": "postgres_local",
 	  "info": "Universität Münster - PostgreSQL repository.",
       "active": true,
       "type": "database",
@@ -31,7 +31,41 @@
               "format": true              
             }
           
-    },{
+    },
+    {
+      "id": "postgres_production",
+	  "info": "ULB - PostgreSQL repository.",
+      "active": false,
+      "type": "database",
+      "storage": "postgresql",
+      "port": "5432",
+      "host": "postgis.uni-muenster.de",
+      "repository": "disco2",
+      "version": "9.5",
+      "user": "disco2",
+      "password": "Feierabend",
+      "filterCapabilities": 
+            {
+              "melody": true,
+              "group": true,
+              "person": true,
+              "personRole": true,
+              "performanceMedium": true,
+              "performanceMediumType": true,
+              "solo": true,
+              "tonalityTonic": true,
+              "tonalityMode": true,
+              "tempo": true,
+              "creationDate": true,
+              "creationDateFrom": true,
+              "creationDateTo": true,
+              "source": true,
+              "identifier": true,
+              "format": true              
+            }
+          
+    }
+    ,{
       "id": "graphdb_wwu",
       "info": "Universität Münster - GraphDB repository.",
       "active": false,

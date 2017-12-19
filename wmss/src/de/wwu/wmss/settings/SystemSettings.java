@@ -26,7 +26,7 @@ public class SystemSettings {
 	private static Logger logger = Logger.getLogger("System Settings");
 	public static ArrayList<DataSource> sourceList = new ArrayList<DataSource>();
 	public static ArrayList<String> protocolVersions = new ArrayList<String>();
-	private static ArrayList<String> requests = new ArrayList<String>();
+	//private static ArrayList<String> requests = new ArrayList<String>();
 	
 	public static void main(String[] args) {
 
@@ -47,7 +47,7 @@ public class SystemSettings {
 			protocolVersions.add("1.0");
 			protocolVersions.add("1.1");
 			//TODO Create versioning system
-			serviceVersion = "Dev-0.0.1";
+			serviceVersion = "Dev-Unstable-0.0.1";
 
 			port = Integer.parseInt(jsonObject.get("port").toString());
 			timeout = Integer.parseInt(jsonObject.get("timeout").toString());

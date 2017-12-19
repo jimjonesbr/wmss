@@ -41,7 +41,6 @@ public class FactoryPostgreSQL {
 
 				ResultSet rs = PostgreSQLConnector.executeQuery(sql, dataSource);
 
-
 				while (rs.next()){
 
 					Collection rec = new Collection();
@@ -75,7 +74,7 @@ public class FactoryPostgreSQL {
 			if (dataSource.getStorage().equals("postgresql")){
 
 				String sql = "SELECT MIN(score_creation_date_min) AS min_date, \n"+
-						     "       MAX(score_creation_date_max) AS max_date \n" + 
+						     "       MAX(score_creation_date_max) AS max_date  \n" + 
 						     "FROM wmss.wmss_scores; ";
 
 				ResultSet rs = PostgreSQLConnector.executeQuery(sql, dataSource);
@@ -105,6 +104,7 @@ public class FactoryPostgreSQL {
 		return result;
 
 	}
+	
 	public static ArrayList<Format> getFormats(DataSource dataSource){
 
 		ArrayList<Format> result = new ArrayList<Format>(); 
@@ -143,8 +143,7 @@ public class FactoryPostgreSQL {
 		return result;
 
 	}
-	
-	
+		
 	public static ArrayList<String> getRoles(DataSource dataSource){
 
 		ArrayList<String> result = new ArrayList<String>(); 

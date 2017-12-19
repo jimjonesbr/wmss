@@ -1,12 +1,11 @@
 package de.wwu.wmss.tests;
 
 import java.util.Date;
-
-import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.log4j.Logger;
 
-import de.wwu.wmss.connectors.JenaConnector;
+import de.wwu.wmss.connectors.SPARQLConnector;
+import de.wwu.wmss.core.DataSource;
 import de.wwu.wmss.settings.Util;
 
 public class TestSPARQL {
@@ -82,10 +81,17 @@ public class TestSPARQL {
 		
 		Date start = new Date();
 		//String endpoint = "http://linkeddata.uni-muenster.de:7200/repositories/wwu";
-		String endpoint = "http://localhost:8989/solr/store/sparql";
+		//String endpoint = "http://localhost:8989/solr/store/sparql";
+		String endpoint = "http://localhost:7200/repositories/wwu";
 		System.out.println("Query running ... ");
 		
-		ResultSet rs = JenaConnector.executeQuery(query,endpoint );		
+		DataSource ds = new DataSource();
+		ds.setHost("http://localhost");
+		ds.setPort(7200);
+		ds.setRepository("wwu");
+		ds.setStorage("graphdb");
+		
+		ResultSet rs = SPARQLConnector.executeQuery(query,ds);		
 		
 		logger.info("SQL Query time: " + Util.timeElapsed(start, new Date()));
 		
