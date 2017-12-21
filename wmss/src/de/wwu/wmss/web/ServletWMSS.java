@@ -152,7 +152,7 @@ public class ServletWMSS extends HttpServlet
 				
 				identifier=request.getParameter(parameter).toLowerCase();
 				req.setRequest("identifier");
-				req.setValue(request.getParameter(parameter).toLowerCase());
+				req.setValue(request.getParameter(parameter));
 
 			} else if (parameter.toLowerCase().equals("version")) {
 				

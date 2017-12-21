@@ -2,7 +2,11 @@ package de.wwu.wmss.settings;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import de.wwu.wmss.core.DataSource;
+import de.wwu.wmss.core.MusicScore;
+import de.wwu.wmss.core.RequestParameter;
 
 public class Util {
 	
@@ -81,4 +85,48 @@ public class Util {
 		return result; 
 
 	}
+
+	public static DataSource getDataSource(ArrayList<RequestParameter> parameters) {
+		
+		String dataSourceId = "";
+		DataSource dataSource = new DataSource();
+		
+		for (int i = 0; i < parameters.size(); i++) {
+			if(parameters.get(i).getRequest().equals("identifier")){			
+				dataSourceId = parameters.get(i).getValue().split(":")[0];				
+			}
+		}
+
+		for (int i = 0; i < SystemSettings.sourceList.size(); i++) {
+			if(SystemSettings.sourceList.get(i).getId().equals(dataSourceId)){			
+				dataSource = SystemSettings.sourceList.get(i); 
+			}
+		}
+		
+		return dataSource;
+	}
+	
+	public static MusicScore getScoreRequestData(ArrayList<RequestParameter> parameters) {
+		
+		MusicScore result = new MusicScore();
+		
+		for (int i = 0; i < parameters.size(); i++) {
+			
+			if(parameters.get(i).getRequest().equals("identifier")){
+				
+				//System.out.println(">>>> " + parameters.get(i).getValue().indexOf(":"));
+				int index = parameters.get(i).getValue().indexOf(":");
+				
+				result.setSource(parameters.get(i).getValue().substring(0, index));
+				result.setScoreId(parameters.get(i).getValue().substring(index+1, parameters.get(i).getValue().length()));
+				
+//				result.setScoreId(parameters.get(i).getValue().split(":")[1]);
+//				result.setSource(parameters.get(i).getValue().split(":")[0]);
+
+			}
+
+		}
+		return result;
+	}
+	
 }

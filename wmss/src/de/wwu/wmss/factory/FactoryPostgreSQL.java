@@ -24,7 +24,7 @@ import de.wwu.wmss.settings.SystemSettings;
 
 public class FactoryPostgreSQL {
 
-	private static Logger logger = Logger.getLogger("Factory-WMSS");
+	private static Logger logger = Logger.getLogger("Factory-PostgreSQL");
 
 
 	public static ArrayList<Collection> getCollections(DataSource dataSource){

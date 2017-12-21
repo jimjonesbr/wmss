@@ -11,6 +11,7 @@ import de.wwu.wmss.core.Filter;
 import de.wwu.wmss.core.MusicScore;
 import de.wwu.wmss.core.RequestParameter;
 import de.wwu.wmss.settings.SystemSettings;
+import de.wwu.wmss.settings.Util;
 
 public class ServiceMessagingHandler {
 
@@ -194,9 +195,25 @@ public class ServiceMessagingHandler {
 
 	}
 
-	public static String getScore(ArrayList<RequestParameter> parameterList){
+	public static String getScore(ArrayList<RequestParameter> parameters){
 
-		return FactoryPostgreSQL.getScore(parameterList);
+		String result = "";
+		DataSource ds = Util.getDataSource(parameters);
+		
+		if(ds.getType().equals("triplestore")) {
+			
+			result = FactoryTripleStore.getScore(parameters);
+			
+		}
+		
+		if(ds.getType().equals("postgresql")) {
+			
+			result = FactoryPostgreSQL.getScore(parameters);
+			
+		}
+
+		
+		return result;
 
 	}
 

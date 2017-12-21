@@ -68,11 +68,11 @@
     ,{
       "id": "graphdb_wwu",
       "info": "Universität Münster - GraphDB repository.",
-      "active": false,
+      "active": true,
       "type": "triplestore",
       "storage": "graphdb",
       "port": "7200",
-      "host": "linkeddata.uni-muenster.de",
+      "host": "http://localhost",
       "repository": "wwu",
       "version": "8",
       "user": "",
