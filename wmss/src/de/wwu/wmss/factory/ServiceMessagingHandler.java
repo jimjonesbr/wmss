@@ -154,8 +154,29 @@ public class ServiceMessagingHandler {
 
 
 					if(source.equals(SystemSettings.sourceList.get(i).getId()) || source.equals("")){
+						
+						//System.out.println("SystemSettings.sourceList.get(i).getId() >"+SystemSettings.sourceList.get(i).getType());
+						//if(SystemSettings.sourceList.get(i).getId().equals(anObject))
+						
+						if(SystemSettings.sourceList.get(i).getType().equals("database")) {
+							
+							if(SystemSettings.sourceList.get(i).getStorage().equals("postgresql")){
+								
+								listScores = FactoryPostgreSQL.getScoreList(parameterList, SystemSettings.sourceList.get(i));
+							}
+							
+						}
+						
+						if(SystemSettings.sourceList.get(i).getType().equals("lpg")) {
 
-						listScores = FactoryPostgreSQL.getScoreList(parameterList, SystemSettings.sourceList.get(i));
+							if(SystemSettings.sourceList.get(i).getStorage().equals("neo4j")){
+								
+								listScores = FactoryNeo4j.getScoreList(parameterList, SystemSettings.sourceList.get(i));
+							}
+
+						}
+						
+//						listScores = FactoryPostgreSQL.getScoreList(parameterList, SystemSettings.sourceList.get(i));
 
 						JSONObject repo = new JSONObject();
 						repo.put("identifier", SystemSettings.sourceList.get(i).getId());

@@ -358,8 +358,7 @@ public class FactoryPostgreSQL {
 		return mediumTypeList;
 		
 	}
-	
-	
+		
 	public static ArrayList<MusicScore> getScoreList(ArrayList<RequestParameter> parameters, DataSource dataSource){
 
 		ArrayList<MusicScore> scoreList = new ArrayList<MusicScore>();
@@ -390,13 +389,14 @@ public class FactoryPostgreSQL {
 						"	JOIN wmss.wmss_collections grp ON grp.collection_id = scr.collection_id \n" +
 						"	JOIN wmss.wmss_document doc ON doc.score_id = scr.score_id \n" +
 						"	JOIN wmss.wmss_document_type doctype ON doctype.document_type_id = doc.document_type_id \n ";
+				
 				String sqlFilter = "";
 
 				
 
 				for (int i = 0; i < parameters.size(); i++) {
 
-
+					
 					if(parameters.get(i).getRequest().equals("person")){
 
 						filters.add(" LOWER(per.person_name) LIKE '%" + parameters.get(i).getValue().toLowerCase() +  "%' ");

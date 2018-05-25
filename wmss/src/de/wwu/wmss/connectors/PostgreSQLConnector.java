@@ -20,8 +20,7 @@ public class PostgreSQLConnector {
 		ResultSet rs = null;
 		
 		try {
-			
-			
+				
 			logger.info("SQL Query fired ["+ds.getHost()+"]: \n\n"+ SQL +"\n");
 			Date start = new Date();
 			
