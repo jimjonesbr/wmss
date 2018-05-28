@@ -342,7 +342,7 @@ public class ServiceMessagingHandler {
 				
 			}
 
-			System.out.println(prm.get(i).getRequest() + " > " + prm.get(i).getValue());
+			//System.out.println(prm.get(i).getRequest() + " > " + prm.get(i).getValue());
 			
 		}
 

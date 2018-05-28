@@ -31,8 +31,8 @@ public class FactoryNeo4j {
 			} else {
 				note.setPitch(null);
 			}
-			
-			
+
+
 			if(melodyElement[1]=="*") {
 				note.setDuration(null);
 			} else if (melodyElement[1].equals("ow")) {
@@ -60,21 +60,21 @@ public class FactoryNeo4j {
 			} else if (melodyElement[1].equals("256")) {
 				note.setDuration("256th");
 			}
-			
+
 			if(melodyElement[2]!="*") {
 				note.setOctave(melodyElement[2]);
 			} else {
 				note.setOctave(null);
 			}
-			
+
 			//TODO: parse accidentals
 			//TODO: parse chords
 			note.setChord(false);
 			note.setAccidental(null);
-			
+
 			result.add(note);
-			
-			
+
+
 		}
 
 		return result;
@@ -84,10 +84,13 @@ public class FactoryNeo4j {
 
 	public static ArrayList<MusicScore> getScoreList(ArrayList<RequestParameter> parameters, DataSource dataSource){
 
+		ArrayList<MusicScore> result = new ArrayList<MusicScore>();		
 		String melody = "";
 		String match = "";
 		String where = "";
 		String ret = "";
+
+
 
 		for (int i = 0; i < parameters.size(); i++) {
 
@@ -104,27 +107,35 @@ public class FactoryNeo4j {
 			//ArrayList<MelodyLocation> tmpMelodyLocationList = new ArrayList<MelodyLocation>();	
 			ArrayList<Note> noteSequence = createNoteSequence(melody);
 
-			match = "MATCH (creator:foaf__Person)<-[:dc__creator]-(scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(ns0:mso__NoteSet)\n" + 
+			match = "\nMATCH (creator:foaf__Person)<-[:dc__creator]-(scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(ns0:mso__NoteSet)\n" + 
 					"MATCH (scr:mo__Score)-[:foaf__thumbnail]->(thumbnail) \n" +
 					"MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n";
 
 			for (int i = 0; i < noteSequence.size(); i++) {
+
+				if(i==0) {
+					match = match +
+							"MATCH (ns0:mso__NoteSet)-[:mso__hasNote]->(n0)-[:chord__natural]->(val0 {uri:'http://purl.org/ontology/chord/note/"+noteSequence.get(i).getPitch()+"'}) \n" + 
+							"MATCH (ns0:mso__NoteSet)-[:mso__hasDuration]->(:mso__"+ noteSequence.get(i).getDuration() +") \n";
+					
+				} else {
 				
-				match = match + 
-						"MATCH (ns"+i+":mso__NoteSet)-[:mso__hasNote]->(n"+i+")-[:chord__natural]->(val"+i+" {uri:'http://purl.org/ontology/chord/note/"+noteSequence.get(i).getPitch()+"'}) \n" + 
+					match = match + 						
+						"MATCH (ns"+i+":mso__NoteSet)-[:mso__hasNote]->(n"+i+":chord__Note)-[:chord__natural]->(val"+i+" {uri:'http://purl.org/ontology/chord/note/"+noteSequence.get(i).getPitch()+"'}) \n" + 
 						"MATCH (ns"+i+":mso__NoteSet)-[:mso__hasDuration]->(:mso__"+ noteSequence.get(i).getDuration() +") \n";
+				}
 				
-				if(i <= noteSequence.size()-1 && i > 0) match = match + "MATCH (ns"+(i-1)+":mso__NoteSet)-[:mso__nextNoteSet]->(ns"+i+":mso__NoteSet)\n";
-				
+				if(i <= noteSequence.size()-1 && i > 0) match = match + "MATCH (ns"+(i-1)+":mso__NoteSet)-[:mso__nextNoteSet]->(ns"+i+":mso__NoteSet) \n";
+
 				if(noteSequence.get(i).getAccidental() == null) {
 					where = where + "NOT EXISTS ((n"+i+")-[:chord__modifier]->()) ";
-					
+
 					if(i < noteSequence.size()-1) where = where + "AND \n";
 				}
-				 
+
 			}
-			
-			 ret = "RETURN \n" + 
+
+			ret = "\nRETURN \n" + 
 					"    scr.dc__title AS title,\n" + 
 					"    scr.uri AS identifier,\n" + 
 					"    thumbnail.uri AS thumbnail,\n" + 
@@ -140,13 +151,13 @@ public class FactoryNeo4j {
 					"       instrumentName: part.dc__description \n" + 
 					"      })    \n" + 
 					"    } AS locations\n" + 
-					"ORDER BY scr.dc__title "; 
+					"ORDER BY scr.dc__title \n"; 
 
 		}
 
 
 
-		String cypher = match + "\n WHERE \n" + where  + ret;
+		String cypher = match + "WHERE \n" + where  + ret;
 
 		System.out.println(cypher);
 
@@ -155,11 +166,15 @@ public class FactoryNeo4j {
 		while ( rs.hasNext() )
 		{
 			Record record = rs.next();
-			System.out.println( record.get( "identifier" ).asString() + " > " + record.get( "title" ).asString());    
+			MusicScore score = new MusicScore();
+			score.setTitle(record.get("title").asString());
+			score.setScoreId(record.get("identifier").asString());
+			result.add(score);
+			//			System.out.println( record.get( "identifier" ).asString() + " > " + record.get( "title" ).asString());    
 
 		}
 
 
-		return null;
+		return result;
 	}
 }
