@@ -277,6 +277,8 @@ public class FactoryNeo4j {
 					location.setInstrumentName(locationJsonObject.get("instrumentName").toString());
 					location.setVoice(locationJsonObject.get("voice").toString());
 					location.setStaff(locationJsonObject.get("staff").toString());
+					location.setMovementName(locationJsonObject.get("movementName").toString());
+					location.setMovementIdentifier(locationJsonObject.get("movementIdentifier").toString());
 					location.setStartingMeasure(locationJsonObject.get("startingMeasure").toString());
 
 					boolean movementAdded = false;
