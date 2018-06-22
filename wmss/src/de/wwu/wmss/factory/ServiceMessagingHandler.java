@@ -1,9 +1,14 @@
 package de.wwu.wmss.factory;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.postgresql.core.Utils;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.wwu.wmss.core.DataSource;
@@ -198,7 +203,14 @@ public class ServiceMessagingHandler {
 				listScoresJSON.put("protocolVersion", "1.0");
 				listScoresJSON.put("size", repoArray.size());
 
+								
 				result = gson.toJson(listScoresJSON);
+
+				
+				//byte[] utf8JsonString = result.getBytes("ASCII");				
+				//String str = new String(utf8JsonString, StandardCharsets.US_ASCII);
+				//System.out.println(str);
+				//responseToClient.write(utf8JsonString, 0, utf8JsonString.Length);
 
 
 			} catch (Exception e) {

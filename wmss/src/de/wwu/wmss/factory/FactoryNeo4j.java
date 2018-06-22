@@ -14,8 +14,10 @@ import de.wwu.wmss.core.MelodyLocationGroup;
 import de.wwu.wmss.core.Movement;
 import de.wwu.wmss.core.MusicScore;
 import de.wwu.wmss.core.Note;
+import de.wwu.wmss.core.PerformanceMedium;
 import de.wwu.wmss.core.Person;
 import de.wwu.wmss.core.RequestParameter;
+import de.wwu.wmss.settings.Util;
 
 public class FactoryNeo4j {
 
@@ -88,6 +90,52 @@ public class FactoryNeo4j {
 	}
 
 
+	public static ArrayList<PerformanceMedium> getPerformanceMedium(String movementURI, DataSource dataSource){
+		
+		ArrayList<PerformanceMedium> result = new ArrayList<PerformanceMedium>();		
+		String cypher = "MATCH (x:mo__Movement {uri:\""+movementURI+"\"})-[:mso__hasScorePart]->(instrument:mo__Instrument) RETURN {instruments: COLLECT(DISTINCT {instrument: instrument})} AS instruments";
+		
+		System.out.println(cypher);
+
+		StatementResult rs = Neo4jConnector.executeQuery(cypher, dataSource);
+
+		while ( rs.hasNext() )
+		{
+			Record record = rs.next();
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			
+			JSONParser parser = new JSONParser();
+			
+			try {
+			
+				Object obj = parser.parse(gson.toJson(record.get("instruments").asMap()));
+						
+				JSONObject jsonObject = (JSONObject) obj;
+				JSONArray mediumJsonArray = (JSONArray) jsonObject.get("instruments");
+				
+				
+				for (int i = 0; i < mediumJsonArray.size(); i++) {
+					
+					PerformanceMedium medium = new PerformanceMedium();
+					
+					JSONObject mediumJsonObject = (JSONObject) mediumJsonArray.get(i);
+					medium.setMediumScoreDescription(mediumJsonObject.get("dc__description").toString());
+					medium.setMediumDescription(mediumJsonObject.get("skos__prefLabel").toString());
+					medium.setMediumId(mediumJsonObject.get("uri").toString());
+					
+					result.add(medium);
+				}
+			
+			} catch (org.json.simple.parser.ParseException e) {
+				e.printStackTrace();
+			}
+			
+		}
+
+		return result;
+	
+	}
+	
 	public static ArrayList<MusicScore> getScoreList(ArrayList<RequestParameter> parameters, DataSource dataSource){
 
 		ArrayList<MusicScore> result = new ArrayList<MusicScore>();		
@@ -112,10 +160,10 @@ public class FactoryNeo4j {
 	
 			ArrayList<Note> noteSequence = createNoteSequence(melody);
 
-			match = "\nMATCH (role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-(scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(ns0:mso__NoteSet)\n" + 
+			match = "\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-(scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(ns0:mso__NoteSet)\n" + 
 					"MATCH (scr:mo__Score)-[:foaf__thumbnail]->(thumbnail) \n" +
 					"MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n" +
-					"WITH creator,role,scr,part,mov,measure,staff,voice,ns0,thumbnail \n" + 
+					"WITH creator,role,scr,part,mov,measure,staff,voic(e,ns0,thumbnail \n" + 
 					"MATCH (scr:mo__Score)-[:mo__movement]->(movements:mo__Movement) \n" +
 					//"MATCH (scr:mo__Score)-[:prov__wasGeneratedBy]->(activity:prov__Activity)-[:prov__wasAssociatedWith]->(encoder:foaf__Person) \n" + 
 					"\n";
@@ -157,8 +205,8 @@ public class FactoryNeo4j {
 					"     	 identifier: creator.uri, \n" +
 					"	     role: role.gndo__preferredNameForTheSubjectHeading} \n" + 
 					"    )} AS persons,\n" + 
-					"    {encoders: \n" +
-					"		COLLECT(DISTINCT {name: encoder.foaf__name})} AS encoders, \n" +
+					"    {persons: \n" +
+					"		COLLECT(DISTINCT {name: encoder.foaf__name, identifier: encoder.uri, role: \"Encoder\"})} AS encoders, \n" +
 					"	 {locations: \n" +
 					"    COLLECT(DISTINCT{ \n" + 
 					"	   	  movementIdentifier: movements.uri,\n" + 
@@ -191,15 +239,24 @@ public class FactoryNeo4j {
 			score.setThumbnail(record.get("thumbnail").asString());
 			
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			System.out.println(record.get("title").asString());		
-			score.getMelodyLocation2().addAll(getMelodyLocations(gson.toJson(record.get("locations").asMap())));
+			
+			System.out.println("DEBUG: "+record.get("title").asString());		
+			
+			score.getMelodyLocation().addAll(getMelodyLocations(gson.toJson(record.get("locations").asMap()),melody));
 			score.getPersons().addAll(getPersons(gson.toJson(record.get("persons").asMap())));
+			score.getPersons().addAll(getPersons(gson.toJson(record.get("encoders").asMap())));
 			score.getMovements().addAll(getMovements(gson.toJson(record.get("movements").asMap())));
+			
+			for (int i = 0; i < score.getMovements().size(); i++) {
+			
+				//score.getMovements().get(i).getPerformanceMediumList().addAll(getPerformanceMedium(score.getMovements().get(i).getMovementId(), dataSource));
+			}
 			
 			result.add(score);
 		}
 
 		return result;
+		
 	}
 	
 	private static ArrayList<Movement> getMovements(String json){
@@ -250,14 +307,14 @@ public class FactoryNeo4j {
 				person.setUrl(personsJsonObject.get("identifier").toString()); 
 				result.add(person);
 			}
-		
+					
 		} catch (org.json.simple.parser.ParseException e) {
 			e.printStackTrace();
 		}
 		return result;
 	}
 	
-	private static ArrayList<MelodyLocationGroup> getMelodyLocations (String json){
+	private static ArrayList<MelodyLocationGroup> getMelodyLocations (String json, String melodyQuery){
 
 		JSONParser parser = new JSONParser();
 		ArrayList<MelodyLocationGroup> result = new ArrayList<MelodyLocationGroup>();
@@ -277,10 +334,11 @@ public class FactoryNeo4j {
 					location.setInstrumentName(locationJsonObject.get("instrumentName").toString());
 					location.setVoice(locationJsonObject.get("voice").toString());
 					location.setStaff(locationJsonObject.get("staff").toString());
-					location.setMovementName(locationJsonObject.get("movementName").toString());
+					location.setMovementName(locationJsonObject.get("movementName").toString().trim());
 					location.setMovementIdentifier(locationJsonObject.get("movementIdentifier").toString());
 					location.setStartingMeasure(locationJsonObject.get("startingMeasure").toString());
-
+					location.setMelody(melodyQuery);
+					
 					boolean movementAdded = false;
 
 					for (int j = 0; j < result.size(); j++) {
@@ -293,7 +351,7 @@ public class FactoryNeo4j {
 					if(!movementAdded) {    					
 						MelodyLocationGroup loc = new MelodyLocationGroup();    					
 						loc.setMovementId(locationJsonObject.get("movementIdentifier").toString());
-						loc.setMovementName(locationJsonObject.get("movementName").toString());
+						loc.setMovementName(locationJsonObject.get("movementName").toString().trim());
 						loc.getMelodyLocation().add(location);
 						result.add(loc);
 					}    					    			

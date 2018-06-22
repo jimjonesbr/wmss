@@ -154,7 +154,7 @@ public class MusicScore {
 //		return melodyLocation;
 //	}
 	
-	public ArrayList<MelodyLocationGroup> getMelodyLocation2() {
+	public ArrayList<MelodyLocationGroup> getMelodyLocation() {
 		return melodyLocations;
 	}
 

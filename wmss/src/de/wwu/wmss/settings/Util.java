@@ -129,4 +129,25 @@ public class Util {
 		return result;
 	}
 	
+    private static final char[] hexChar = {
+            '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
+        };
+    
+    public static String unicodeEscape(String s) {
+	StringBuilder sb = new StringBuilder();
+	for (int i = 0; i < s.length(); i++) {
+	    char c = s.charAt(i);
+	    if ((c >> 7) > 0) {
+		sb.append("\\u");
+		sb.append(hexChar[(c >> 12) & 0xF]); 
+		sb.append(hexChar[(c >> 8) & 0xF]);  
+		sb.append(hexChar[(c >> 4) & 0xF]);  
+		sb.append(hexChar[c & 0xF]); 
+	    }
+	    else {
+		sb.append(c);
+	    }
+	}
+	return sb.toString();
+    }
 }
