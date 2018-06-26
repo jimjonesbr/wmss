@@ -18,6 +18,8 @@ public class MusicScore {
 	private String onlineResource;
 	private Date creationDateFrom;
 	private Date creationDateTo;
+	private String documentCreationDate;
+	private Provenance provenance;
 	private ArrayList<Movement> movements;
 	private ArrayList<Format> formats;
 	private ArrayList<Person> persons;
@@ -32,6 +34,7 @@ public class MusicScore {
 		this.persons = new ArrayList<Person>();
 		//this.melodyLocation = new ArrayList<MelodyLocation>();
 		this.melodyLocations = new ArrayList<MelodyLocationGroup>();
+		this.provenance = new Provenance();
 		
 	}
 
@@ -187,7 +190,28 @@ public class MusicScore {
 	public void setOnlineResource(String onlineResource) {
 		this.onlineResource = onlineResource;
 	}
+
+
+	public String getDocumentCreationDate() {
+		return documentCreationDate;
+	}
+
+
+	public void setDocumentCreationDate(String documentCreationDate) {
+		this.documentCreationDate = documentCreationDate;
+	}
+
+	
+	public Provenance getProvenance() {
+		return provenance;
+	}
+
+
+	public void setProvenance(Provenance provenance) {
+		this.provenance = provenance;
+	}
 		
+	
 	
 	
 }

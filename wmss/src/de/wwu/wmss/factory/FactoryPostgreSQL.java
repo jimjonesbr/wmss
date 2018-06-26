@@ -1128,7 +1128,7 @@ public class FactoryPostgreSQL {
 					
 					if(l.get(i).getScoreId().equals(scoreList.get(j).getScoreId())) {
 						
-						scoreList.get(j).getMelodyLocation2().add(l.get(i));
+						scoreList.get(j).getMelodyLocation().add(l.get(i));
 						
 					}
 					
