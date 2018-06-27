@@ -9,7 +9,8 @@ public class PerformanceMedium {
 	private String mediumScoreDescription;	
 	private String movementId;
 	private String scoreId;
-	private String solo;
+	private boolean solo;
+	private boolean ensemble;
 	
 	public PerformanceMedium() {
 		super();
@@ -47,11 +48,11 @@ public class PerformanceMedium {
 		this.mediumId = mediumClassification;
 	}
 
-	public String isSolo() {
+	public boolean isSolo() {
 		return solo;
 	}
 
-	public void setSolo(String solo) {
+	public void setSolo(boolean solo) {
 		this.solo = solo;
 	}
 
@@ -79,6 +80,12 @@ public class PerformanceMedium {
 		this.mediumScoreDescription = mediumScoreDescription;
 	}
 
-	
-	
+	public boolean isEnsemble() {
+		return ensemble;
+	}
+
+	public void setEnsemble(boolean ensemble) {
+		this.ensemble = ensemble;
+	}
+
 }

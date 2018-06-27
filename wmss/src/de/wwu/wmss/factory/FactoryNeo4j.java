@@ -1,5 +1,7 @@
 package de.wwu.wmss.factory;
 import java.util.ArrayList;
+
+import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -23,6 +25,7 @@ import de.wwu.wmss.core.RequestParameter;
 
 public class FactoryNeo4j {
 
+	private static Logger logger = Logger.getLogger("Neo4j-Factory");
 
 	private static ArrayList<Note> createNoteSequence(String melody){
 
@@ -36,7 +39,11 @@ public class FactoryNeo4j {
 			Note note = new Note();
 
 			if(melodyElement[0]!="*") {
-				note.setPitch(melodyElement[0].substring(0, 1).toUpperCase());
+				if(melodyElement[0].equals("r")) {
+					note.setPitch("Rest");
+				} else {
+					note.setPitch(melodyElement[0].substring(0, 1).toUpperCase());
+				}
 			} else {
 				note.setPitch(null);
 			}
@@ -81,7 +88,7 @@ public class FactoryNeo4j {
 				note.setDuration("128th");
 			} else if (melodyElement[1].equals("256")) {
 				note.setDuration("256th");
-			}
+			} 
 
 			if(melodyElement[2]!="*") {
 				note.setOctave(melodyElement[2]);
@@ -109,12 +116,12 @@ public class FactoryNeo4j {
 						"		CASE WHEN scr.mso__asMEI IS NULL THEN FALSE ELSE TRUE END AS mei";
 		StatementResult rs = Neo4jConnector.executeQuery(cypher, dataSource);
 		
-		//System.out.println(cypher);
+		logger.debug("[getFormats(String scoreIdentifier, DataSource dataSource)]: \n"+cypher);
 		
 		while ( rs.hasNext() )
 		{
 			Record record = rs.next();			
-			//System.out.println("MEI > "+record.get("mei") + "\nMusicXML > "+record.get("musicxml"));			
+	
 			if(record.get("mei").asBoolean()) {
 
 				Format format = new Format();
@@ -141,20 +148,19 @@ public class FactoryNeo4j {
 		PerformanceMediumType result = new PerformanceMediumType();
 
 		String cypher = "MATCH (x:mo__Movement {uri:\""+movementURI+"\"})-[:mso__hasScorePart]->(instrument:mo__Instrument) \n" + 
-				"OPTIONAL MATCH (instrument:mo__Instrument)-[:skos__broader]->(type) \n" +
-				"OPTIONAL MATCH (instrument:mo__Instrument)-[:mso__isSolo]->(solo) \n" +
-				"RETURN\n" + 
-				"  {mediumsList :\n" + 
-				"     {type: type.skos__prefLabel, \n" + 
-				"      typeIdentifier: type.uri,\n" + 
-				"      performanceMediums: COLLECT(DISTINCT {\n" + 
-				"      mediumIdentifier: instrument.uri,\n" + 
-				"      mediumName: instrument.skos__prefLabel,\n" +
-				"	   mediumLabel: instrument.dc__description,\n" +
-				"	   solo: solo}\n" + 
-				"      )}} AS mediumsListResultset \n";
+						"OPTIONAL MATCH (instrument:mo__Instrument)-[:skos__broader]->(type) \n" +				
+						"RETURN\n" + 
+						"  {mediumsList :\n" + 
+						"     {type: type.skos__prefLabel, \n" + 
+						"      typeIdentifier: type.uri,\n" + 
+						"      performanceMediums: COLLECT(DISTINCT {\n" + 
+						"      mediumIdentifier: instrument.uri,\n" + 
+						"      mediumName: instrument.skos__prefLabel,\n" +
+						"	   mediumLabel: instrument.dc__description,\n" +
+						"	   solo: instrument.mso__isSolo}\n" + 
+						"      )}} AS mediumsListResultset \n";
 
-		//System.out.println(cypher);
+		logger.debug("[getPerformanceMediums(String movementURI, DataSource dataSource)]: \n"+cypher);
 
 		StatementResult rs = Neo4jConnector.executeQuery(cypher, dataSource);
 
@@ -195,7 +201,11 @@ public class FactoryNeo4j {
 					medium.setMediumDescription(mediumJsonObject.get("mediumName").toString());
 					medium.setMediumId(mediumJsonObject.get("mediumIdentifier").toString());
 					medium.setMediumScoreDescription(mediumJsonObject.get("mediumLabel").toString());
-					if(mediumJsonObject.get("solo")!=null) medium.setSolo(mediumJsonObject.get("solo").toString());
+					
+					
+					if(mediumJsonObject.get("solo")!=null) {
+						medium.setSolo(Boolean.parseBoolean(mediumJsonObject.get("solo").toString()));
+					}
 					
 					result.getMediums().add(medium);
 					
@@ -263,24 +273,41 @@ public class FactoryNeo4j {
 			for (int i = 0; i < noteSequence.size(); i++) {
 
 				if(i==0) {
-					match = match +
-							"MATCH (ns0:mso__NoteSet)-[:mso__hasNote]->(n0)-[:chord__natural]->(val0 {uri:'http://purl.org/ontology/chord/note/"+noteSequence.get(i).getPitch()+"'}) \n" + 
-							"MATCH (ns0:mso__NoteSet)-[:mso__hasDuration]->(:mso__"+ noteSequence.get(i).getDuration() +") \n";					
+					
+					if(!noteSequence.get(i).getPitch().equals("*")) {
+						match = match +	"MATCH (ns0:mso__NoteSet)-[:mso__hasNote]->(n0)-[:chord__natural]->(val0 {uri:'http://purl.org/ontology/chord/note/"+noteSequence.get(i).getPitch()+"'}) \n";
+					}
+					if(!noteSequence.get(i).getDuration().equals("*")) {
+						match = match +	"MATCH (ns0:mso__NoteSet)-[:mso__hasDuration]->(:mso__"+ noteSequence.get(i).getDuration() +") \n";
+					}
+					
 				} else {
-				
-					match = match + 						
-						"MATCH (ns"+i+":mso__NoteSet)-[:mso__hasNote]->(n"+i+":chord__Note)-[:chord__natural]->(val"+i+" {uri:'http://purl.org/ontology/chord/note/"+noteSequence.get(i).getPitch()+"'}) \n" + 
-						"MATCH (ns"+i+":mso__NoteSet)-[:mso__hasDuration]->(:mso__"+ noteSequence.get(i).getDuration() +")\n";
+					
+					if(!noteSequence.get(i).getPitch().equals("*")) {						
+						match = match + "MATCH (ns"+i+":mso__NoteSet)-[:mso__hasNote]->(n"+i+":chord__Note)-[:chord__natural]->(val"+i+" {uri:'http://purl.org/ontology/chord/note/"+noteSequence.get(i).getPitch()+"'}) \n";
+					}
+					
+					if(!noteSequence.get(i).getDuration().equals("*")) {				
+						match = match + "MATCH (ns"+i+":mso__NoteSet)-[:mso__hasDuration]->(:mso__"+ noteSequence.get(i).getDuration() +")\n";				
+					}
 				}
-				
+								
 				if(i <= noteSequence.size()-1 && i > 0) match = match + "MATCH (ns"+(i-1)+":mso__NoteSet)-[:mso__nextNoteSet]->(ns"+i+":mso__NoteSet) \n";
 
-				if(noteSequence.get(i).getAccidental() == null) {
-					where = where + "AND NOT EXISTS ((n"+i+")-[:chord__modifier]->()) ";
-					//if(i < noteSequence.size()-1) where = where + "AND \n";
-				} else {					
-					match = match + "MATCH (n"+i+":chord__Note)-[:chord__modifier]->(mod"+i+" {uri:\"http://purl.org/ontology/chord/"+noteSequence.get(i).getAccidental()+"\"})\n ";					
-				}
+				if(!noteSequence.get(i).getPitch().equals("*")) {
+										
+					if(noteSequence.get(i).getAccidental() == null) {
+						where = where + "AND NOT EXISTS ((n"+i+")-[:chord__modifier]->()) \n";
+						//if(i < noteSequence.size()-1) where = where + "AND \n";
+					} else {					
+						match = match + "MATCH (n"+i+":chord__Note)-[:chord__modifier]->(mod"+i+" {uri:\"http://purl.org/ontology/chord/"+noteSequence.get(i).getAccidental()+"\"})\n ";					
+					}
+					
+				} 
+				
+//				else {				
+//					where = where + "AND NOT EXISTS ((ns"+i+":mso__NoteSet)-[:mso__hasNote]->(n"+i+":chord__Note)-[:chord__natural]->(val"+i+" {uri:'http://purl.org/ontology/chord/note/Rest'})) \n";
+//				}
 
 			}
 
@@ -315,15 +342,12 @@ public class FactoryNeo4j {
 		}
 
 		String optionalMatch = "MATCH (scr:mo__Score)-[:prov__wasGeneratedBy]->(activity:prov__Activity)-[:prov__wasAssociatedWith]->(encoder:foaf__Person) \n";
-		
-		
 		String cypher = match + optionalMatch + "WHERE TRUE\n" + where  + ret;
 
-		System.out.println(cypher);
+		logger.info("\n"+cypher+"\n");
 
 		StatementResult rs = Neo4jConnector.executeQuery(cypher, dataSource);
-		
-		
+				
 		while ( rs.hasNext() )
 		{
 			Record record = rs.next();
