@@ -191,7 +191,6 @@ public class FactoryNeo4j {
 
 				JSONArray mediumListJsonArray = (JSONArray) mediumList.get("performanceMediums");
 
-
 				for (int j = 0; j < mediumListJsonArray.size(); j++) {
 
 					PerformanceMedium medium = new PerformanceMedium();	
@@ -275,21 +274,28 @@ public class FactoryNeo4j {
 				if(i==0) {
 					
 					if(!noteSequence.get(i).getPitch().equals("*")) {
-						match = match +	"MATCH (ns0:mso__NoteSet)-[:mso__hasNote]->(n0)-[:chord__natural]->(val0 {uri:'http://purl.org/ontology/chord/note/"+noteSequence.get(i).getPitch()+"'}) \n";
+						match = match +	"MATCH (ns0:mso__NoteSet)-[:mso__hasNote]->(n0)-[:chord__natural]->(:chord__Natural {uri:'http://purl.org/ontology/chord/note/"+noteSequence.get(i).getPitch()+"'}) \n";
 					}
 					if(!noteSequence.get(i).getDuration().equals("*")) {
 						match = match +	"MATCH (ns0:mso__NoteSet)-[:mso__hasDuration]->(:mso__"+ noteSequence.get(i).getDuration() +") \n";
+					}					
+					if(!noteSequence.get(i).getOctave().equals("*")) {
+						match = match +	"MATCH (n0:chord__Note {mso__hasOctave:"+noteSequence.get(i).getOctave()+"}) \n";
 					}
 					
 				} else {
 					
 					if(!noteSequence.get(i).getPitch().equals("*")) {						
-						match = match + "MATCH (ns"+i+":mso__NoteSet)-[:mso__hasNote]->(n"+i+":chord__Note)-[:chord__natural]->(val"+i+" {uri:'http://purl.org/ontology/chord/note/"+noteSequence.get(i).getPitch()+"'}) \n";
+						match = match + "MATCH (ns"+i+":mso__NoteSet)-[:mso__hasNote]->(n"+i+":chord__Note)-[:chord__natural]->(:chord__Natural {uri:'http://purl.org/ontology/chord/note/"+noteSequence.get(i).getPitch()+"'}) \n";
 					}
 					
 					if(!noteSequence.get(i).getDuration().equals("*")) {				
 						match = match + "MATCH (ns"+i+":mso__NoteSet)-[:mso__hasDuration]->(:mso__"+ noteSequence.get(i).getDuration() +")\n";				
 					}
+					if(!noteSequence.get(i).getOctave().equals("*")) {
+						match = match +	"MATCH (n"+i+":chord__Note {mso__hasOctave:"+noteSequence.get(i).getOctave()+"}) \n";
+					}
+
 				}
 								
 				if(i <= noteSequence.size()-1 && i > 0) match = match + "MATCH (ns"+(i-1)+":mso__NoteSet)-[:mso__nextNoteSet]->(ns"+i+":mso__NoteSet) \n";
@@ -455,8 +461,8 @@ public class FactoryNeo4j {
 					location.setInstrumentName(locationJsonObject.get("instrumentName").toString());
 					location.setVoice(locationJsonObject.get("voice").toString());
 					location.setStaff(locationJsonObject.get("staff").toString());
-					location.setMovementName(locationJsonObject.get("movementName").toString().trim());
-					location.setMovementIdentifier(locationJsonObject.get("movementIdentifier").toString());
+					//location.setMovementName(locationJsonObject.get("movementName").toString().trim());
+					//location.setMovementIdentifier(locationJsonObject.get("movementIdentifier").toString());
 					location.setStartingMeasure(locationJsonObject.get("startingMeasure").toString());
 					location.setMelody(melodyQuery);
 					

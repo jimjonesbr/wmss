@@ -1,14 +1,9 @@
 package de.wwu.wmss.factory;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.postgresql.core.Utils;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.wwu.wmss.core.DataSource;
