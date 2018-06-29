@@ -42,18 +42,17 @@ public class FactoryNeo4j {
 				if(melodyElement[0].equals("r")) {
 					note.setPitch("Rest");
 				} else {
-					note.setPitch(melodyElement[0].substring(0, 1).toUpperCase());
+					note.setPitch(melodyElement[0].toLowerCase());
 				}
 			} else {
 				note.setPitch(null);
 			}
 			
-			//System.out.println("completa: "+melodyElement[0]+" >1,1:"+melodyElement[0].trim().substring(1, 2));
 			
 			if(melodyElement[0].length()>1) {
 				
 				if(melodyElement[0].substring(1, 2).toLowerCase().equals("s")) {					
-					note.setAccidental("sharp");
+					note.setAccidental("sharp");					
 				}
 				if(melodyElement[0].substring(1, 2).toLowerCase().equals("b")) {
 					note.setAccidental("flat");
@@ -71,23 +70,23 @@ public class FactoryNeo4j {
 			} else if (melodyElement[1].equals("dw")) {
 				note.setDuration("");
 			} else if (melodyElement[1].equals("w")) {
-				note.setDuration("Whole");
+				note.setDuration("0");
 			} else if (melodyElement[1].equals("h")) {
-				note.setDuration("Half");
+				note.setDuration("2");
 			} else if (melodyElement[1].equals("4")) {
-				note.setDuration("Quarter");
+				note.setDuration("4");
 			} else if (melodyElement[1].equals("8")) {
-				note.setDuration("Eighth");
+				note.setDuration("8");
 			} else if (melodyElement[1].equals("16")) {
-				note.setDuration("16th");
+				note.setDuration("16");
 			} else if (melodyElement[1].equals("32")) {
-				note.setDuration("32nd");
+				note.setDuration("32");
 			} else if (melodyElement[1].equals("64")) {
-				note.setDuration("64th");
+				note.setDuration("64");
 			} else if (melodyElement[1].equals("128")) {
-				note.setDuration("128th");
+				note.setDuration("128");
 			} else if (melodyElement[1].equals("256")) {
-				note.setDuration("256th");
+				note.setDuration("256");
 			} 
 
 			if(melodyElement[2]!="*") {
@@ -274,10 +273,12 @@ public class FactoryNeo4j {
 				if(i==0) {
 					
 					if(!noteSequence.get(i).getPitch().equals("*")) {
-						match = match +	"MATCH (ns0:mso__NoteSet)-[:mso__hasNote]->(n0)-[:chord__natural]->(:chord__Natural {uri:'http://purl.org/ontology/chord/note/"+noteSequence.get(i).getPitch()+"'}) \n";
+						//match = match +	"MATCH (ns0:mso__NoteSet)-[:mso__hasNote]->(n0)-[:chord__natural]->(:chord__Natural {uri:'http://purl.org/ontology/chord/note/"+noteSequence.get(i).getPitch()+"'}) \n";
+						match = match +	"MATCH (ns0:mso__NoteSet)-[:mso__hasNote]->(n0:chord__Note {note:'"+noteSequence.get(i).getPitch()+"'}) \n";
 					}
 					if(!noteSequence.get(i).getDuration().equals("*")) {
-						match = match +	"MATCH (ns0:mso__NoteSet)-[:mso__hasDuration]->(:mso__"+ noteSequence.get(i).getDuration() +") \n";
+						//match = match +	"MATCH (ns0:mso__NoteSet)-[:mso__hasDuration]->(:mso__"+ noteSequence.get(i).getDuration() +") \n";
+						where = where +	"AND ns0.duration = "+noteSequence.get(i).getDuration()+" \n";
 					}					
 					if(!noteSequence.get(i).getOctave().equals("*")) {
 						match = match +	"MATCH (n0:chord__Note {mso__hasOctave:"+noteSequence.get(i).getOctave()+"}) \n";
@@ -286,11 +287,13 @@ public class FactoryNeo4j {
 				} else {
 					
 					if(!noteSequence.get(i).getPitch().equals("*")) {						
-						match = match + "MATCH (ns"+i+":mso__NoteSet)-[:mso__hasNote]->(n"+i+":chord__Note)-[:chord__natural]->(:chord__Natural {uri:'http://purl.org/ontology/chord/note/"+noteSequence.get(i).getPitch()+"'}) \n";
+						//match = match + "MATCH (ns"+i+":mso__NoteSet)-[:mso__hasNote]->(n"+i+":chord__Note)-[:chord__natural]->(:chord__Natural {uri:'http://purl.org/ontology/chord/note/"+noteSequence.get(i).getPitch()+"'}) \n";
+						match = match + "MATCH (ns"+i+":mso__NoteSet)-[:mso__hasNote]->(n"+i+":chord__Note {note:'"+noteSequence.get(i).getPitch()+"'}) \n";
 					}
 					
 					if(!noteSequence.get(i).getDuration().equals("*")) {				
-						match = match + "MATCH (ns"+i+":mso__NoteSet)-[:mso__hasDuration]->(:mso__"+ noteSequence.get(i).getDuration() +")\n";				
+						//match = match + "MATCH (ns"+i+":mso__NoteSet)-[:mso__hasDuration]->(:mso__"+ noteSequence.get(i).getDuration() +")\n";
+						where = where +	"AND ns"+i+".duration = "+noteSequence.get(i).getDuration()+" \n";
 					}
 					if(!noteSequence.get(i).getOctave().equals("*")) {
 						match = match +	"MATCH (n"+i+":chord__Note {mso__hasOctave:"+noteSequence.get(i).getOctave()+"}) \n";
@@ -300,6 +303,8 @@ public class FactoryNeo4j {
 								
 				if(i <= noteSequence.size()-1 && i > 0) match = match + "MATCH (ns"+(i-1)+":mso__NoteSet)-[:mso__nextNoteSet]->(ns"+i+":mso__NoteSet) \n";
 
+				/**
+				 * 
 				if(!noteSequence.get(i).getPitch().equals("*")) {
 										
 					if(noteSequence.get(i).getAccidental() == null) {
@@ -310,6 +315,7 @@ public class FactoryNeo4j {
 					}
 					
 				} 
+				*/
 				
 //				else {				
 //					where = where + "AND NOT EXISTS ((ns"+i+":mso__NoteSet)-[:mso__hasNote]->(n"+i+":chord__Note)-[:chord__natural]->(val"+i+" {uri:'http://purl.org/ontology/chord/note/Rest'})) \n";
