@@ -678,7 +678,7 @@ public class FactoryPostgreSQL {
 					med.setTypeDescription(rs.getString("performance_medium_type_description"));
 					med.setMovementId(rs.getString("movement_id"));
 					med.setScoreId(rs.getString("score_id"));
-					med.setSolo(rs.getString("movement_performance_medium_solo"));
+					med.setSolo(Boolean.parseBoolean(rs.getString("movement_performance_medium_solo")));
 					med.setMediumScoreDescription(rs.getString("movement_performance_medium_description"));
 
 					mediumList.add(med);

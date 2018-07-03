@@ -252,9 +252,7 @@ public class ServletWMSS extends HttpServlet
 					!tonalityTonic.equals("g") &&
 					!tonalityTonic.equals("gflat") &&
 					!tonalityTonic.equals("gsharp") &&
-					!tonalityTonic.equals("") 
-				){
-
+					!tonalityTonic.equals("")){
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
@@ -316,8 +314,14 @@ public class ServletWMSS extends HttpServlet
 				response.setStatus(HttpServletResponse.SC_OK);
 				response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0008", "No identifier provided for GetScore request.","The GetScore request expects a valid score identifier."));
 
+			} else if (source.equals("")){
+				
+				response.setContentType("text/javascript");
+				response.setStatus(HttpServletResponse.SC_OK);
+				response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0009", "Invalid data source.","Data source either invalid or not provided."));				
+				
 			} else {
-						
+				
 				response.setContentType("text/xml");
 				response.setStatus(HttpServletResponse.SC_OK);
 				response.getWriter().println(ServiceMessagingHandler.getScore(parametersList));

@@ -92,9 +92,13 @@ public class Util {
 		DataSource dataSource = new DataSource();
 		
 		for (int i = 0; i < parameters.size(); i++) {
-			if(parameters.get(i).getRequest().equals("identifier")){			
-				dataSourceId = parameters.get(i).getValue().split(":")[0];				
+//			if(parameters.get(i).getRequest().equals("identifier")){			
+//				dataSourceId = parameters.get(i).getValue().split(":")[0];				
+//			}
+			if(parameters.get(i).getRequest().equals("source")){			
+				dataSourceId = parameters.get(i).getValue();				
 			}
+			
 		}
 
 		for (int i = 0; i < SystemSettings.sourceList.size(); i++) {

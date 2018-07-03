@@ -1,6 +1,8 @@
 package de.wwu.wmss.factory;
 import java.util.ArrayList;
 
+import javax.management.relation.Role;
+
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -22,6 +24,7 @@ import de.wwu.wmss.core.PerformanceMediumType;
 import de.wwu.wmss.core.Person;
 import de.wwu.wmss.core.Provenance;
 import de.wwu.wmss.core.RequestParameter;
+import de.wwu.wmss.settings.SystemSettings;
 
 public class FactoryNeo4j {
 
@@ -64,11 +67,11 @@ public class FactoryNeo4j {
 			if(melodyElement[1]=="*") {
 				note.setDuration(null);
 			} else if (melodyElement[1].equals("ow")) {
-				note.setDuration("");
+				note.setDuration("80");
 			} else if (melodyElement[1].equals("qw")) {
-				note.setDuration("");
+				note.setDuration("40");
 			} else if (melodyElement[1].equals("dw")) {
-				note.setDuration("");
+				note.setDuration("20");
 			} else if (melodyElement[1].equals("w")) {
 				note.setDuration("0");
 			} else if (melodyElement[1].equals("h")) {
@@ -106,47 +109,142 @@ public class FactoryNeo4j {
 
 	}
 
-	public static ArrayList<Format> getFormats(String scoreIdentifier, DataSource dataSource){
+	//public static String getMusicXML(String scoreIdentifier, String format, DataSource dataSource){
 		
-		ArrayList<Format> result = new ArrayList<Format>();
+	public static String getMusicXML(ArrayList<RequestParameter> parameters){
 		
-		String cypher = "MATCH (scr:mo__Score {uri:\""+scoreIdentifier+"\"})\n" + 
-						"RETURN CASE WHEN scr.mso__asMusicXML IS NULL THEN FALSE ELSE TRUE END AS musicxml,\n"+
-						"		CASE WHEN scr.mso__asMEI IS NULL THEN FALSE ELSE TRUE END AS mei";
-		StatementResult rs = Neo4jConnector.executeQuery(cypher, dataSource);
+		String result = "";		
+		String format = "";
+		String source = "";
+		String scoreIdentifier = "";
 		
-		logger.debug("[getFormats(String scoreIdentifier, DataSource dataSource)]: \n"+cypher);
-		
-		while ( rs.hasNext() )
-		{
-			Record record = rs.next();			
-	
-			if(record.get("mei").asBoolean()) {
+		DataSource dataSource = new DataSource();
 
-				Format format = new Format();
-				format.setFormatId("mei");
-				format.setFormatDescription("Music Encoding Initiative 3.0"); //TODO: create triples for describing MEI version
-				result.add(format);			
-			}
-						
-			if(record.get("musicxml").asBoolean()) {
+		for (int i = 0; i < parameters.size(); i++) {
 
-				Format format = new Format();
-				format.setFormatId("musicxml");
-				format.setFormatDescription("MusicXML 3.0"); //TODO: create triples for describing MusicXML version
-				result.add(format);			
+
+			if(parameters.get(i).getRequest().equals("identifier")){
+
+				scoreIdentifier = parameters.get(i).getValue();
+
 			}
 			
+			if(parameters.get(i).getRequest().equals("source")){
+
+				source = parameters.get(i).getValue();
+
+			}
 			
+			if(parameters.get(i).getRequest().equals("format")){
+				
+				format = parameters.get(i).getValue();
+//				if(format.equals("")) {
+//					format = "musicxml";
+//				}
+
+			}
+
 		}
+
+
+		for (int i = 0; i < SystemSettings.sourceList.size(); i++) {
+
+			if(SystemSettings.sourceList.get(i).getId().equals(source)){
+
+				dataSource = SystemSettings.sourceList.get(i); 
+
+			}
+
+		}
+
+		String cypher = "\n\nMATCH (score:mo__Score {uri:\""+scoreIdentifier+"\"})\n";
+
+		if(format.equals("musicxml")||format.equals("")) {
+			cypher = cypher +"RETURN score.mso__asMusicXML AS xml\n"; 
+		} else if (format.equals("mei")) {
+			cypher = cypher +"RETURN score.mso__asMEI AS xml\n";
+		}
+
+		logger.info(cypher);
+		
+		StatementResult rs = Neo4jConnector.executeQuery(cypher, dataSource);
+
+		while ( rs.hasNext() ){
+			Record record = rs.next();
+
+			result = record.get("xml").asString();
+		}
+
 		return result;
 	}
 
-	public static PerformanceMediumType getPerformanceMediums(String movementURI, DataSource dataSource){
+
+//	public static ArrayList<Format> getFormats(String scoreIdentifier, DataSource dataSource){
+//		
+//		ArrayList<Format> result = new ArrayList<Format>();
+//		
+//		String cypher = "MATCH (scr:mo__Score {uri:\""+scoreIdentifier+"\"})\n" + 
+//						"RETURN CASE WHEN scr.mso__asMusicXML IS NULL THEN FALSE ELSE TRUE END AS musicxml,\n"+
+//						"		CASE WHEN scr.mso__asMEI IS NULL THEN FALSE ELSE TRUE END AS mei";
+//		StatementResult rs = Neo4jConnector.executeQuery(cypher, dataSource);
+//		
+//		logger.info("[getFormats(String scoreIdentifier, DataSource dataSource)]: \n"+cypher);
+//		
+//		while ( rs.hasNext() )
+//		{
+//			Record record = rs.next();			
+//	
+//			if(record.get("mei").asBoolean()) {
+//
+//				Format format = new Format();
+//				format.setFormatId("mei");
+//				format.setFormatDescription("Music Encoding Initiative 3.0"); //TODO: create triples for describing MEI version
+//				result.add(format);			
+//			}
+//						
+//			if(record.get("musicxml").asBoolean()) {
+//
+//				Format format = new Format();
+//				format.setFormatId("musicxml");
+//				format.setFormatDescription("MusicXML 3.0"); //TODO: create triples for describing MusicXML version
+//				result.add(format);			
+//			}
+//			
+//			
+//		}
+//		return result;
+//	}
+
+	public static ArrayList<Person> getRoles(DataSource ds){
+	
+		ArrayList<Person> result = new ArrayList<Person>();
+		
+		String cypher = "MATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-(scr:mo__Score)\n" + 
+						"RETURN DISTINCT creator.uri AS identifier, creator.foaf__name AS name, role.gndo__preferredNameForTheSubjectHeading AS role";
+
+		StatementResult rs = Neo4jConnector.executeQuery(cypher, ds);
+		
+		while ( rs.hasNext() )
+		{
+			Record record = rs.next();
+			Person person = new Person();
+			
+			person.setName(record.get("name").toString().trim());
+			person.setRole(record.get("role").toString().trim());
+			person.setUrl(record.get("identifier").toString().trim());
+			
+			result.add(person);
+		}
+		
+		return result;
+		
+	}
+	
+	public static PerformanceMediumType getPerformanceMediums(String scoreURI, String movementURI, DataSource dataSource){
 
 		PerformanceMediumType result = new PerformanceMediumType();
 
-		String cypher = "MATCH (x:mo__Movement {uri:\""+movementURI+"\"})-[:mso__hasScorePart]->(instrument:mo__Instrument) \n" + 
+		String cypher = "MATCH (:mo__Score {uri:\""+scoreURI+"\"})-[:mo__movement]->(:mo__Movement {uri:\""+movementURI+"\"})-[:mso__hasScorePart]->(instrument:mo__Instrument) \n" + 
 						"OPTIONAL MATCH (instrument:mo__Instrument)-[:skos__broader]->(type) \n" +				
 						"RETURN\n" + 
 						"  {mediumsList :\n" + 
@@ -159,14 +257,14 @@ public class FactoryNeo4j {
 						"	   solo: instrument.mso__isSolo}\n" + 
 						"      )}} AS mediumsListResultset \n";
 
-		logger.debug("[getPerformanceMediums(String movementURI, DataSource dataSource)]: \n"+cypher);
+		logger.info("[getPerformanceMediums(String movementURI, DataSource dataSource)]: \n"+cypher);
 
 		StatementResult rs = Neo4jConnector.executeQuery(cypher, dataSource);
 
 		while ( rs.hasNext() )
 		{
 			Record record = rs.next();
-			Gson gson = new GsonBuilder().setPrettyPrinting().create();					
+			Gson gson = new GsonBuilder().create();					
 			JSONParser parser = new JSONParser();
 
 			try {
@@ -228,8 +326,8 @@ public class FactoryNeo4j {
 
 			Object obj = parser.parse(json);						
 			JSONObject provenanceJsonObject = (JSONObject) obj;
-			result.setGeneratedAtTime(provenanceJsonObject.get("prov__startedAtTime").toString());
-			result.setComments(provenanceJsonObject.get("rdfs__comment").toString());			
+			result.setGeneratedAtTime(provenanceJsonObject.get("prov__startedAtTime").toString().trim());
+			result.setComments(provenanceJsonObject.get("rdfs__comment").toString().trim());			
 
 		} catch (org.json.simple.parser.ParseException e) {
 			e.printStackTrace();
@@ -255,19 +353,18 @@ public class FactoryNeo4j {
 			}	
 
 		}
-
+		
+		
 		if(!melody.equals("")) {
 	
 			ArrayList<Note> noteSequence = createNoteSequence(melody);
 
 			match = "\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-(scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(ns0:mso__NoteSet)\n" + 
 					"MATCH (scr:mo__Score)-[:foaf__thumbnail]->(thumbnail) \n" +
-					"MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n" +
-					"WITH creator,role,scr,part,mov,measure,staff,voice,ns0,thumbnail \n" + 
-					"MATCH (scr:mo__Score)-[:mo__movement]->(movements:mo__Movement) \n" +
-					//"MATCH (scr:mo__Score)-[:prov__wasGeneratedBy]->(activity:prov__Activity)-[:prov__wasAssociatedWith]->(encoder:foaf__Person) \n" + 
-					"\n";
-
+					"MATCH (scr:mo__Score)-[:mo__movement]->(movements:mo__Movement) \n"+
+					"MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n";
+			
+			//match = match + "MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n";
 			for (int i = 0; i < noteSequence.size(); i++) {
 
 				if(i==0) {
@@ -298,7 +395,7 @@ public class FactoryNeo4j {
 					if(!noteSequence.get(i).getOctave().equals("*")) {
 						match = match +	"MATCH (n"+i+":chord__Note {mso__hasOctave:"+noteSequence.get(i).getOctave()+"}) \n";
 					}
-
+					 
 				}
 								
 				if(i <= noteSequence.size()-1 && i > 0) match = match + "MATCH (ns"+(i-1)+":mso__NoteSet)-[:mso__nextNoteSet]->(ns"+i+":mso__NoteSet) \n";
@@ -322,41 +419,55 @@ public class FactoryNeo4j {
 //				}
 
 			}
+			
 
-			ret = "\nRETURN \n" + 
-					"    scr.dc__title AS title,\n" + 
-					"    scr.uri AS identifier,\n" +
-					"    activity,\n" + 
-					"    thumbnail.uri AS thumbnail,\n " +
-					"    {movements: COLLECT(DISTINCT \n" + 
-					"    	{movementIdentifier: movements.uri,\n" + 
-					"        movementName: movements.dc__title }\n" + 
-					"    )} AS movements,\n" + 
-					"    {persons: COLLECT(DISTINCT\n" + 
-					"       {name: creator.foaf__name, \n" + 
-					"     	 identifier: creator.uri, \n" +
-					"	     role: role.gndo__preferredNameForTheSubjectHeading} \n" + 
-					"    )} AS persons,\n" + 
-					"    {persons: \n" +
-					"		COLLECT(DISTINCT {name: encoder.foaf__name, identifier: encoder.uri, role: \"Encoder\"})} AS encoders, \n" +
-					"	 {locations: \n" +
-					"    COLLECT(DISTINCT{ \n" + 
-					"	   	  movementIdentifier: mov.uri,\n" + 
-					"		  movementName: mov.dc__title,\n" + 
-					"      startingMeasure: measure.rdfs__ID, \n" + 
-					"      staff: staff.rdfs__ID , \n" + 
-					"      voice: voice.rdfs__ID, \n" + 
-					"      instrumentName: part.dc__description \n" + 
-					"      })    \n" + 
-					"    } AS locations\n" + 
-					"ORDER BY scr.dc__title"; 
-
+		} else {
+			
+			match = "\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-(scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)\n" + 
+					"MATCH (scr:mo__Score)-[:foaf__thumbnail]->(thumbnail) \n" +
+					"MATCH (scr:mo__Score)-[:mo__movement]->(movements:mo__Movement) \n";	
 		}
+		
+		ret = "\nRETURN \n" + 
+				"    scr.dc__title AS title,\n" + 
+				"    scr.uri AS identifier,\n" +
+				"    activity,\n" + 
+				"    thumbnail.uri AS thumbnail,\n " +
+				"    {movements: COLLECT(DISTINCT \n" + 
+				"    	{movementIdentifier: movements.uri,\n" + 
+				"        movementName: movements.dc__title }\n" + 
+				"    )} AS movements,\n" + 
+				"    {persons: COLLECT(DISTINCT\n" + 
+				"       {name: creator.foaf__name, \n" + 
+				"     	 identifier: creator.uri, \n" +
+				"	     role: role.gndo__preferredNameForTheSubjectHeading} \n" + 
+				"    )} AS persons,\n" + 
+				"    {persons: \n" +
+				"		COLLECT(DISTINCT {name: encoder.foaf__name, identifier: encoder.uri, role: \"Encoder\"})} AS encoders, \n";
+		
+		if(!melody.equals("")) {
+			
+				ret = ret +"	 {locations: \n" +
+				"    COLLECT(DISTINCT{ \n" + 
+				"	   	  movementIdentifier: mov.uri,\n" + 
+				"		  movementName: mov.dc__title,\n" + 
+				"      startingMeasure: measure.rdfs__ID, \n" + 
+				"      staff: staff.rdfs__ID , \n" + 
+				"      voice: voice.rdfs__ID, \n" + 
+				"      instrumentName: part.dc__description \n" + 
+				"      })} AS locations, \n";
+				
+		}		
+		
+		
+		ret = ret +	"   CASE WHEN scr.mso__asMusicXML IS NULL THEN FALSE ELSE TRUE END AS musicxml,\n" + 
+					"   CASE WHEN scr.mso__asMEI IS NULL THEN FALSE ELSE TRUE END AS mei \n" + 
+					"ORDER BY scr.dc__title "; 
 
 		String optionalMatch = "MATCH (scr:mo__Score)-[:prov__wasGeneratedBy]->(activity:prov__Activity)-[:prov__wasAssociatedWith]->(encoder:foaf__Person) \n";
 		String cypher = match + optionalMatch + "WHERE TRUE\n" + where  + ret;
 
-		logger.info("\n"+cypher+"\n");
+		logger.info("\n[main]:\n"+cypher+"\n");
 
 		StatementResult rs = Neo4jConnector.executeQuery(cypher, dataSource);
 				
@@ -370,7 +481,9 @@ public class FactoryNeo4j {
 			
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			
-			score.getMelodyLocation().addAll(getMelodyLocations(gson.toJson(record.get("locations").asMap()),melody));
+			if(!melody.equals("")) {
+				score.getMelodyLocation().addAll(getMelodyLocations(gson.toJson(record.get("locations").asMap()),melody));
+			}
 			score.getPersons().addAll(getPersons(gson.toJson(record.get("persons").asMap())));
 			score.getPersons().addAll(getPersons(gson.toJson(record.get("encoders").asMap())));
 			score.getMovements().addAll(getMovements(gson.toJson(record.get("movements").asMap())));
@@ -378,11 +491,24 @@ public class FactoryNeo4j {
 			
 			for (int i = 0; i < score.getMovements().size(); i++) {
 			
-				score.getMovements().get(i).getPerformanceMediumList().add(getPerformanceMediums(score.getMovements().get(i).getMovementId(),dataSource));
+				score.getMovements().get(i).getPerformanceMediumList().add(getPerformanceMediums(score.getScoreId(),score.getMovements().get(i).getMovementId(),dataSource));
 
 			}
 			
-			score.getFormats().addAll(getFormats(score.getScoreId(), dataSource));
+			if(record.get("musicxml").asBoolean()) {
+				Format format = new Format();
+				format.setFormatId("musicxml");
+				format.setFormatDescription("MusicXML 3.0"); //TODO: create triples for describing MusicXML version
+				score.getFormats().add(format);	
+			} else if(record.get("mei").asBoolean()) {
+				Format format = new Format();
+				format.setFormatId("mei");
+				format.setFormatDescription("Music Encoding Initiative 3.0"); //TODO: create triples for describing MusicXML version
+				score.getFormats().add(format);	
+				
+			}
+			
+//			score.getFormats().addAll(getFormats(score.getScoreId(), dataSource));
 			
 			result.add(score);
 		}

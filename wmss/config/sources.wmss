@@ -2,7 +2,7 @@
     "datasource": [{
       "id": "postgres_local",
 	  "info": "Universität Münster - PostgreSQL repository.",
-      "active": true,
+      "active": false,
       "type": "database",
       "storage": "postgresql",
       "port": "5432",
@@ -69,7 +69,7 @@
     {
       "id": "graphdb_wwu",
       "info": "Universität Münster - GraphDB repository.",
-      "active": true,
+      "active": false,
       "type": "triplestore",
       "storage": "graphdb",
       "port": "7200",

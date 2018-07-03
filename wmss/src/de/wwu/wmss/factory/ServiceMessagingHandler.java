@@ -65,26 +65,42 @@ public class ServiceMessagingHandler {
 		for (int i = 0; i < SystemSettings.sourceList.size(); i++) {
 
 			JSONObject ds = new JSONObject();
-
-			ds.put("id", SystemSettings.sourceList.get(i).getId());
-			ds.put("info", SystemSettings.sourceList.get(i).getInfo());
-			ds.put("active", SystemSettings.sourceList.get(i).isActive());
-			ds.put("type", SystemSettings.sourceList.get(i).getType());
-			ds.put("storage", SystemSettings.sourceList.get(i).getStorage());
-			ds.put("port", SystemSettings.sourceList.get(i).getPort());
-			ds.put("host", SystemSettings.sourceList.get(i).getHost());
-			ds.put("repository", SystemSettings.sourceList.get(i).getRepository());
-			ds.put("version", SystemSettings.sourceList.get(i).getVersion());
-			ds.put("user", SystemSettings.sourceList.get(i).getUser());
-			ds.put("filterCapabilities", SystemSettings.sourceList.get(i).getFilters());
-			ds.put("collections", FactoryPostgreSQL.getCollections(SystemSettings.sourceList.get(i)));
-			ds.put("performanceMediums", FactoryPostgreSQL.getPerformanceMediumList(SystemSettings.sourceList.get(i)));
-			ds.put("tempoMarkings", FactoryPostgreSQL.getTempoMarkings(SystemSettings.sourceList.get(i)));
-			ds.put("formats", FactoryPostgreSQL.getFormats(SystemSettings.sourceList.get(i)));
-			ds.put("tonalities", FactoryPostgreSQL.getTonalities(SystemSettings.sourceList.get(i)));
-			ds.put("creationRange", FactoryPostgreSQL.getCreationInterval(SystemSettings.sourceList.get(i)));
-			ds.put("roles", FactoryPostgreSQL.getRoles(SystemSettings.sourceList.get(i)));
-			dsArray.add(ds);
+			
+			if(SystemSettings.sourceList.get(i).isActive()) {
+			
+				ds.put("id", SystemSettings.sourceList.get(i).getId());
+				ds.put("info", SystemSettings.sourceList.get(i).getInfo());
+				ds.put("active", SystemSettings.sourceList.get(i).isActive());
+				ds.put("type", SystemSettings.sourceList.get(i).getType());
+				ds.put("storage", SystemSettings.sourceList.get(i).getStorage());
+				ds.put("port", SystemSettings.sourceList.get(i).getPort());
+				ds.put("host", SystemSettings.sourceList.get(i).getHost());
+				ds.put("repository", SystemSettings.sourceList.get(i).getRepository());
+				ds.put("version", SystemSettings.sourceList.get(i).getVersion());
+				ds.put("user", SystemSettings.sourceList.get(i).getUser());
+				ds.put("filterCapabilities", SystemSettings.sourceList.get(i).getFilters());
+				
+				if(SystemSettings.sourceList.get(i).getStorage().equals("postgresql")) {
+				
+					ds.put("collections", FactoryPostgreSQL.getCollections(SystemSettings.sourceList.get(i)));
+					ds.put("performanceMediums", FactoryPostgreSQL.getPerformanceMediumList(SystemSettings.sourceList.get(i)));
+					ds.put("tempoMarkings", FactoryPostgreSQL.getTempoMarkings(SystemSettings.sourceList.get(i)));
+					ds.put("formats", FactoryPostgreSQL.getFormats(SystemSettings.sourceList.get(i)));
+					ds.put("tonalities", FactoryPostgreSQL.getTonalities(SystemSettings.sourceList.get(i)));
+					ds.put("creationRange", FactoryPostgreSQL.getCreationInterval(SystemSettings.sourceList.get(i)));
+					ds.put("roles", FactoryPostgreSQL.getRoles(SystemSettings.sourceList.get(i)));
+				
+				}
+				
+				if(SystemSettings.sourceList.get(i).getStorage().equals("neo4j")) {
+					
+					ds.put("roles", FactoryNeo4j.getRoles(SystemSettings.sourceList.get(i)));
+					
+				}
+				
+				dsArray.add(ds);
+			}
+			
 		}
 
 
@@ -227,20 +243,31 @@ public class ServiceMessagingHandler {
 
 		String result = "";
 		DataSource ds = Util.getDataSource(parameters);
-		
-		if(ds.getType().equals("triplestore")) {
-			
-			result = FactoryTripleStore.getScore(parameters);
-			
-		}
-		
-		if(ds.getType().equals("postgresql")) {
-			
-			result = FactoryPostgreSQL.getScore(parameters);
-			
-		}
 
-		
+		if(ds.getType().equals("triplestore")) {
+
+			result = FactoryTripleStore.getScore(parameters);
+
+		} else
+
+			if(ds.getType().equals("postgresql")) {
+
+				result = FactoryPostgreSQL.getScore(parameters);
+
+			} else 
+
+				if(ds.getType().equals("lpg")) {
+
+					if(ds.getStorage().equals("neo4j")) {
+						
+						result = FactoryNeo4j.getMusicXML(parameters);
+						
+					}
+
+				}
+
+
+
 		return result;
 
 	}
