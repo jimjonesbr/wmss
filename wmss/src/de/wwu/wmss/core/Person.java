@@ -9,7 +9,6 @@ public class Person {
 
 	public Person() {
 		super();
-
 	}
 	public String getName() {
 		return name;
@@ -35,7 +34,5 @@ public class Person {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	
-	
 	
 }

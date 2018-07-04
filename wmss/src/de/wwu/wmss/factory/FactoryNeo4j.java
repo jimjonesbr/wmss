@@ -1,8 +1,5 @@
 package de.wwu.wmss.factory;
 import java.util.ArrayList;
-
-import javax.management.relation.Role;
-
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -12,6 +9,7 @@ import org.neo4j.driver.v1.StatementResult;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.wwu.wmss.connectors.Neo4jConnector;
+import de.wwu.wmss.core.Collection;
 import de.wwu.wmss.core.DataSource;
 import de.wwu.wmss.core.Format;
 import de.wwu.wmss.core.MelodyLocation;
@@ -24,6 +22,7 @@ import de.wwu.wmss.core.PerformanceMediumType;
 import de.wwu.wmss.core.Person;
 import de.wwu.wmss.core.Provenance;
 import de.wwu.wmss.core.RequestParameter;
+import de.wwu.wmss.core.Tonality;
 import de.wwu.wmss.settings.SystemSettings;
 
 public class FactoryNeo4j {
@@ -219,9 +218,11 @@ public class FactoryNeo4j {
 	
 		ArrayList<Person> result = new ArrayList<Person>();
 		
-		String cypher = "MATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-(scr:mo__Score)\n" + 
-						"RETURN DISTINCT creator.uri AS identifier, creator.foaf__name AS name, role.gndo__preferredNameForTheSubjectHeading AS role";
+		String cypher = "\n\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-(scr:mo__Score)\n" + 
+						"RETURN DISTINCT creator.uri AS identifier, creator.foaf__name AS name, role.gndo__preferredNameForTheSubjectHeading AS role\n";
 
+		logger.info(cypher);
+		
 		StatementResult rs = Neo4jConnector.executeQuery(cypher, ds);
 		
 		while ( rs.hasNext() )
@@ -229,11 +230,99 @@ public class FactoryNeo4j {
 			Record record = rs.next();
 			Person person = new Person();
 			
-			person.setName(record.get("name").toString().trim());
-			person.setRole(record.get("role").toString().trim());
-			person.setUrl(record.get("identifier").toString().trim());
+			person.setName(record.get("name").asString().trim());
+			person.setRole(record.get("role").asString().trim());
+			person.setUrl(record.get("identifier").asString().trim());
 			
 			result.add(person);
+		}
+		
+		return result;
+		
+		
+	}
+	
+	public static ArrayList<Format> getFormats(DataSource ds){
+
+		ArrayList<Format> result = new ArrayList<Format>();
+
+		String cypher = "\n\nMATCH (scr:mo__Score)\n" + 
+				"RETURN DISTINCT CASE WHEN scr.mso__asMusicXML IS NULL THEN FALSE ELSE TRUE END AS musicxml\n";
+
+		logger.info(cypher);
+
+		StatementResult rs = Neo4jConnector.executeQuery(cypher, ds);
+		Record record = rs.next();
+
+		if(record.get("musicxml").asBoolean()) {
+			Format musicxml = new Format();
+			musicxml.setFormatId("musicxml");
+			musicxml.setFormatDescription("MusicXML");
+			result.add(musicxml);
+		}
+
+		cypher = "\n\nMATCH (scr:mo__Score)\n" + 
+				 "RETURN DISTINCT CASE WHEN scr.mso__asMEI IS NULL THEN FALSE ELSE TRUE END AS mei\n";
+
+		logger.info(cypher);
+
+		rs = Neo4jConnector.executeQuery(cypher, ds);
+		record = rs.next();
+
+		if(record.get("mei").asBoolean()) {
+			Format musicxml = new Format();
+			musicxml.setFormatId("mei");
+			musicxml.setFormatDescription("MEI");
+			result.add(musicxml);
+		}
+
+		return result;
+	}
+	
+	
+	public static ArrayList<Tonality> getTonalities(DataSource ds){
+		
+		ArrayList<Tonality> result = new ArrayList<Tonality>();
+		
+		String cypher = "\n\nMATCH (mode)<-[:ton__mode]-(key:ton__Key)-[:ton__tonic]->(tonic)\n" + 
+					    "RETURN DISTINCT LOWER(SUBSTRING(tonic.uri,36)) AS tonic, LOWER(SUBSTRING(mode.uri,39)) AS mode\n";
+
+		StatementResult rs = Neo4jConnector.executeQuery(cypher, ds);
+		
+		while ( rs.hasNext() )
+		{
+			Record record = rs.next();
+			Tonality tonality = new Tonality();
+			
+			tonality.setMode(record.get("mode").asString().trim());
+			tonality.setTonic(record.get("tonic").asString().trim());
+			
+			result.add(tonality);
+		}
+		
+		
+		
+		return result;
+	}
+	
+	public static ArrayList<Collection> getCollections(DataSource ds){
+		
+		ArrayList<Collection> result = new ArrayList<Collection>();
+		
+		String cypher = "\n\nMATCH (collection:prov__Collection)-[:prov__hadMember]->(scr:mo__Score)\n" + 
+					    "RETURN DISTINCT collection.uri AS identifier, collection.rdfs__label AS label \n";
+		
+		StatementResult rs = Neo4jConnector.executeQuery(cypher, ds);		
+		
+		while ( rs.hasNext() )
+		{
+			Record record = rs.next();
+			Collection collection = new Collection();
+			
+			collection.setId(record.get("identifier").asString().trim());
+			collection.setDescription(record.get("label").asString().trim());
+			
+			result.add(collection);
 		}
 		
 		return result;
@@ -294,13 +383,13 @@ public class FactoryNeo4j {
 
 					JSONObject mediumJsonObject = (JSONObject) mediumListJsonArray.get(j);
 					//medium.setMediumScoreDescription(mediumJsonObject.get("dc__description").toString());
-					medium.setMediumDescription(mediumJsonObject.get("mediumName").toString());
-					medium.setMediumId(mediumJsonObject.get("mediumIdentifier").toString());
-					medium.setMediumScoreDescription(mediumJsonObject.get("mediumLabel").toString());
+					medium.setMediumDescription(mediumJsonObject.get("mediumName").toString().trim());
+					medium.setMediumId(mediumJsonObject.get("mediumIdentifier").toString().trim());
+					medium.setMediumScoreDescription(mediumJsonObject.get("mediumLabel").toString().trim());
 					
 					
 					if(mediumJsonObject.get("solo")!=null) {
-						medium.setSolo(Boolean.parseBoolean(mediumJsonObject.get("solo").toString()));
+						medium.setSolo(Boolean.parseBoolean(mediumJsonObject.get("solo").toString().trim()));
 					}
 					
 					result.getMediums().add(medium);

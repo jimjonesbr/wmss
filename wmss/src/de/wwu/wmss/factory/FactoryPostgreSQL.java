@@ -44,7 +44,7 @@ public class FactoryPostgreSQL {
 				while (rs.next()){
 
 					Collection rec = new Collection();
-					rec.setId(rs.getInt("collection_id"));
+					rec.setId(Integer.toString(rs.getInt("collection_id")));
 					rec.setDescription(rs.getString("collection_description"));
 
 					result.add(rec);
