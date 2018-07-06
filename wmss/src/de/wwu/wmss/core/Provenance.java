@@ -4,7 +4,7 @@ public class Provenance {
 	
 	private String generatedAtTime;
 	private String wasGeneratedBy; 
-	private String wasAssociatedWith; 
+	private String wasAssociatedWith;
 	private String comments;
 	
 	public Provenance() {
@@ -43,5 +43,6 @@ public class Provenance {
 		this.comments = comments;
 	}
 
+	
 	
 }

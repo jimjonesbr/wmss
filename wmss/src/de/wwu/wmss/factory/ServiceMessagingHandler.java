@@ -102,9 +102,6 @@ public class ServiceMessagingHandler {
 					ds.put("creationRange", null);
 					ds.put("roles", FactoryNeo4j.getRoles(SystemSettings.sourceList.get(i)));
 					
-					
-					
-					
 				}
 				
 				dsArray.add(ds);
