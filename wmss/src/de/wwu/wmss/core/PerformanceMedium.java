@@ -6,6 +6,7 @@ public class PerformanceMedium {
 	private String mediumTypeId;
 	private String mediumDescription;
 	private String mediumId;
+	private String mediumCode;
 	private String mediumScoreDescription;	
 	private String movementId;
 	private String scoreId;
@@ -88,4 +89,14 @@ public class PerformanceMedium {
 		this.ensemble = ensemble;
 	}
 
+	public String getMediumCode() {
+		return mediumCode;
+	}
+
+	public void setMediumCode(String mediumCode) {
+		this.mediumCode = mediumCode;
+	}
+
+	
 }
+

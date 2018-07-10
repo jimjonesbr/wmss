@@ -214,6 +214,64 @@ public class FactoryNeo4j {
 //		return result;
 //	}
 
+	public static ArrayList<PerformanceMediumType> getPerformanceMedium(DataSource ds){
+		
+		ArrayList<PerformanceMediumType> result = new ArrayList<PerformanceMediumType>();
+		
+		String cypher = "\n\nMATCH (instrument:mo__Instrument)-[:skos__broader]->(type)\n" + 
+						"RETURN DISTINCT\n" + 
+						"     {performanceMediumList: {mediumTypeId: type.uri,\n" + 
+						"      mediumTypeDescription: type.skos__prefLabel,\n" + 
+						"      instruments: COLLECT(DISTINCT\n" + 
+						"         {\n" + 
+						"          mediumCode: instrument.rdfs__label,\n" + 
+						"          mediumDescription: instrument.skos__prefLabel\n" + 
+						"         })}} AS performanceMediumList\n";
+		logger.info(cypher);
+		StatementResult rs = Neo4jConnector.executeQuery(cypher, ds);
+		
+		while ( rs.hasNext() )
+		{
+			Record record = rs.next();
+			Gson gson = new GsonBuilder().create();					
+			JSONParser parser = new JSONParser();
+
+			try {
+
+				Object objResultset = parser.parse(gson.toJson(record.get("performanceMediumList").asMap()));
+
+				JSONObject jsonObject = (JSONObject) objResultset;
+				JSONObject mediumList = (JSONObject) jsonObject.get("performanceMediumList");
+
+				PerformanceMediumType type = new PerformanceMediumType();
+				type.setMediumTypeId(mediumList.get("mediumTypeId").toString().trim());
+				type.setMediumTypeDescription(mediumList.get("mediumTypeDescription").toString());
+								
+				JSONArray mediumListJsonArray = (JSONArray) mediumList.get("instruments");
+				
+				for (int j = 0; j < mediumListJsonArray.size(); j++) {
+
+					PerformanceMedium medium = new PerformanceMedium();	
+
+					JSONObject mediumJsonObject = (JSONObject) mediumListJsonArray.get(j);
+					medium.setMediumDescription(mediumJsonObject.get("mediumDescription").toString().trim());
+					medium.setMediumCode(mediumJsonObject.get("mediumCode").toString().trim());
+														
+					type.getMediums().add(medium);					
+				
+				}
+				
+				result.add(type);
+
+			} catch (org.json.simple.parser.ParseException e) {
+				e.printStackTrace();
+			}
+
+		}
+		
+		return result;
+	}
+	
 	public static ArrayList<Person> getRoles(DataSource ds){
 	
 		ArrayList<Person> result = new ArrayList<Person>();
@@ -221,8 +279,7 @@ public class FactoryNeo4j {
 		String cypher = "\n\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-(scr:mo__Score)\n" + 
 						"RETURN DISTINCT creator.uri AS identifier, creator.foaf__name AS name, role.gndo__preferredNameForTheSubjectHeading AS role\n";
 
-		logger.info(cypher);
-		
+		logger.info(cypher);		
 		StatementResult rs = Neo4jConnector.executeQuery(cypher, ds);
 		
 		while ( rs.hasNext() )
@@ -340,6 +397,7 @@ public class FactoryNeo4j {
 						"     {type: type.skos__prefLabel, \n" + 
 						"      typeIdentifier: type.uri,\n" + 
 						"      performanceMediums: COLLECT(DISTINCT {\n" + 
+						"	   mediumCode: instrument.rdfs__label,\n"+
 						"      mediumIdentifier: instrument.uri,\n" + 
 						"      mediumName: instrument.skos__prefLabel,\n" +
 						"	   mediumLabel: instrument.dc__description,\n" +
@@ -386,6 +444,7 @@ public class FactoryNeo4j {
 					medium.setMediumDescription(mediumJsonObject.get("mediumName").toString().trim());
 					medium.setMediumId(mediumJsonObject.get("mediumIdentifier").toString().trim());
 					medium.setMediumScoreDescription(mediumJsonObject.get("mediumLabel").toString().trim());
+					medium.setMediumCode(mediumJsonObject.get("mediumCode").toString().trim());
 					
 					
 					if(mediumJsonObject.get("solo")!=null) {
@@ -451,7 +510,7 @@ public class FactoryNeo4j {
 			match = "\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-(scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(ns0:mso__NoteSet)\n" + 
 					"MATCH (scr:mo__Score)-[:foaf__thumbnail]->(thumbnail) \n" +
 					"MATCH (scr:mo__Score)-[:mo__movement]->(movements:mo__Movement) \n"+
-					"MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n";
+					"MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n"; 
 			
 			//match = match + "MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n";
 			for (int i = 0; i < noteSequence.size(); i++) {
@@ -517,7 +576,7 @@ public class FactoryNeo4j {
 					"MATCH (scr:mo__Score)-[:mo__movement]->(movements:mo__Movement) \n";	
 		}
 		
-		ret = "\nRETURN \n" + 
+		ret =   "\nRETURN \n" + 				
 				"    scr.dc__title AS title,\n" + 
 				"    scr.uri AS identifier,\n" +
 				"    activity,\n" + 
