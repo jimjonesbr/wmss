@@ -4,14 +4,12 @@ import de.wwu.wmss.core.DataSource;
 import de.wwu.wmss.settings.Util;
 import java.util.Date;
 import java.util.logging.LogManager;
-
 import org.apache.log4j.Logger;
 import org.neo4j.driver.v1.AuthTokens;
 import org.neo4j.driver.v1.Driver;
 import org.neo4j.driver.v1.GraphDatabase;
 import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.StatementResult;
-
 
 public class Neo4jConnector {
 	private static Driver driver;

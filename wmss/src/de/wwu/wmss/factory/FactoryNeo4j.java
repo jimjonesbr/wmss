@@ -491,15 +491,15 @@ public class FactoryNeo4j {
 		String match = "";
 		String where = "";
 		String ret = "";
-
+		boolean ignoreChords = true;
+		
 		for (int i = 0; i < parameters.size(); i++) {
-
 			if(parameters.get(i).getRequest().equals("melody")){
-
 				melody = parameters.get(i).getValue();
-
-			}	
-
+			}			
+			if(parameters.get(i).getRequest().equals("ignorechords")){
+				ignoreChords = Boolean.valueOf(parameters.get(i).getValue());
+			}
 		}
 		
 		
@@ -546,8 +546,14 @@ public class FactoryNeo4j {
 					 
 				}
 								
-				if(i <= noteSequence.size()-1 && i > 0) match = match + "MATCH (ns"+(i-1)+":mso__NoteSet)-[:mso__nextNoteSet]->(ns"+i+":mso__NoteSet) \n";
-
+				if(i <= noteSequence.size()-1 && i > 0) {
+					match = match + "MATCH (ns"+(i-1)+":mso__NoteSet)-[:mso__nextNoteSet]->(ns"+i+":mso__NoteSet) \n";
+				}
+				
+				if(ignoreChords) {
+					where = where  + "AND ns"+i+".size = 1 \n";
+				}
+				
 				/**
 				 * 
 				if(!noteSequence.get(i).getPitch().equals("*")) {
@@ -561,13 +567,10 @@ public class FactoryNeo4j {
 					
 				} 
 				*/
-				
-//				else {				
-//					where = where + "AND NOT EXISTS ((ns"+i+":mso__NoteSet)-[:mso__hasNote]->(n"+i+":chord__Note)-[:chord__natural]->(val"+i+" {uri:'http://purl.org/ontology/chord/note/Rest'})) \n";
-//				}
 
 			}
 			
+
 
 		} else {
 			
@@ -655,8 +658,6 @@ public class FactoryNeo4j {
 				score.getFormats().add(format);	
 				
 			}
-			
-//			score.getFormats().addAll(getFormats(score.getScoreId(), dataSource));
 			
 			result.add(score);
 		}

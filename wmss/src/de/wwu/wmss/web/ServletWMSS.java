@@ -50,6 +50,7 @@ public class ServletWMSS extends HttpServlet
 		String melody = "";
 		String source = "";
 		String score = "";
+		String ignoreChords = "";
 
 		response.addHeader("Access-Control-Allow-Origin","*");
 		response.addHeader("Access-Control-Allow-Methods","GET,POST");
@@ -172,7 +173,14 @@ public class ServletWMSS extends HttpServlet
 				req.setRequest("score");
 				req.setValue(request.getParameter(parameter).toLowerCase());
 
-			}
+			} else if (parameter.toLowerCase().equals("ignorechords")) {
+				
+				ignoreChords=request.getParameter(parameter).toLowerCase();
+				req.setRequest("ignorechords");
+				req.setValue(request.getParameter(parameter).toLowerCase());
+				
+			} 
+ 
 
 			parametersList.add(req);
 		}
