@@ -335,8 +335,7 @@ public class FactoryNeo4j {
 
 		return result;
 	}
-	
-	
+		
 	public static ArrayList<Tonality> getTonalities(DataSource ds){
 		
 		ArrayList<Tonality> result = new ArrayList<Tonality>();
@@ -510,7 +509,8 @@ public class FactoryNeo4j {
 			match = "\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-(scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(ns0:mso__NoteSet)\n" + 
 					"MATCH (scr:mo__Score)-[:foaf__thumbnail]->(thumbnail) \n" +
 					"MATCH (scr:mo__Score)-[:mo__movement]->(movements:mo__Movement) \n"+
-					"MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n"; 
+					"MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n" +
+					"MATCH (collection:prov__Collection)-[:prov__hadMember]->(scr:mo__Score)\n"; 
 			
 			//match = match + "MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n";
 			for (int i = 0; i < noteSequence.size(); i++) {
@@ -584,6 +584,8 @@ public class FactoryNeo4j {
 				"    scr.uri AS identifier,\n" +
 				"    activity,\n" + 
 				"    thumbnail.uri AS thumbnail,\n " +
+				"	 collection.uri AS collectionIdentifier, \n"+
+				"	 collection.rdfs__label AS collectionLabel, \n"+
 				"    {movements: COLLECT(DISTINCT \n" + 
 				"    	{movementIdentifier: movements.uri,\n" + 
 				"        movementName: movements.dc__title }\n" + 
@@ -628,7 +630,9 @@ public class FactoryNeo4j {
 			MusicScore score = new MusicScore();
 			score.setTitle(record.get("title").asString());
 			score.setScoreId(record.get("identifier").asString());
-			score.setThumbnail(record.get("thumbnail").asString());
+			score.setThumbnail(record.get("thumbnail").asString());					
+			score.getCollection().setId(record.get("collectionIdentifier").asString());
+			score.getCollection().setDescription(record.get("collectionLabel").asString());
 			
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			

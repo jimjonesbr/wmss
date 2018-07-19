@@ -23,8 +23,8 @@ public class MusicScore {
 	private ArrayList<Movement> movements;
 	private ArrayList<Format> formats;
 	private ArrayList<Person> persons;
-	//private ArrayList<MelodyLocation> melodyLocation;
 	private ArrayList<MelodyLocationGroup> melodyLocations;
+	private Collection collection;
 	
 	public MusicScore() {
 		super();
@@ -32,9 +32,9 @@ public class MusicScore {
 		this.movements = new ArrayList<Movement>();
 		this.formats = new ArrayList<Format>();
 		this.persons = new ArrayList<Person>();
-		//this.melodyLocation = new ArrayList<MelodyLocation>();
 		this.melodyLocations = new ArrayList<MelodyLocationGroup>();
 		this.provenance = new Provenance();
+		this.collection = new Collection();
 		
 	}
 
@@ -152,11 +152,6 @@ public class MusicScore {
 		this.collectionId = groupId;
 	}
 
-
-//	public ArrayList<MelodyLocation> getMelodyLocation() {
-//		return melodyLocation;
-//	}
-	
 	public ArrayList<MelodyLocationGroup> getMelodyLocation() {
 		return melodyLocations;
 	}
@@ -210,8 +205,11 @@ public class MusicScore {
 	public void setProvenance(Provenance provenance) {
 		this.provenance = provenance;
 	}
-		
-	
+
+
+	public Collection getCollection() {
+		return collection;
+	}
 	
 	
 }
