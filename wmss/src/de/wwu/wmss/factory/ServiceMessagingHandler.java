@@ -100,7 +100,7 @@ public class ServiceMessagingHandler {
 					ds.put("formats", FactoryNeo4j.getFormats(SystemSettings.sourceList.get(i)));
 					ds.put("tonalities", FactoryNeo4j.getTonalities(SystemSettings.sourceList.get(i)));
 					ds.put("creationRange", null);
-					ds.put("roles", FactoryNeo4j.getRoles(SystemSettings.sourceList.get(i)));
+					ds.put("persons", FactoryNeo4j.getRoles(SystemSettings.sourceList.get(i)));
 					
 				}
 				
@@ -292,9 +292,9 @@ public class ServiceMessagingHandler {
 				
 			}
 			
-			if(prm.get(i).getRequest().equals("group") && !ds.getFilters().isGroupEnabled() )	{
+			if(prm.get(i).getRequest().equals("collection") && !ds.getFilters().isCollectionEnabled() )	{
 			
-				result.setFilter("group");
+				result.setFilter("collection");
 				result.setValue(false);
 				
 			}

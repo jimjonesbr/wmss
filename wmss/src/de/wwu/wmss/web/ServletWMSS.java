@@ -293,11 +293,10 @@ public class ServletWMSS extends HttpServlet
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0012", "Invalid melody '" + melody +"'","The provided melody is not valid. For more information go to: https://github.com/jimjonesbr/wmss/blob/master/README.md#melody"));
 
-		} else if (!collection.equals("") && !isCollectionValid(collection)) {
-			
-			response.setContentType("text/javascript");
-			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0013", "Invalid collection string '" + collection +"'","The provided collection string is not valid. Provided either a single numeric identifier '1' or multiple separated by comma '1,2,3'."));
+//		} else if (!collection.equals("") && !isCollectionValid(collection)) {					
+//			response.setContentType("text/javascript");
+//			response.setStatus(HttpServletResponse.SC_OK);
+//			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0013", "Invalid collection string '" + collection +"'","The provided collection string is not valid. Provided either a single numeric identifier '1' or multiple separated by comma '1,2,3'."));
 
 			
 		} else if (requestType.equals("checklog")) {
@@ -405,6 +404,7 @@ public class ServletWMSS extends HttpServlet
 	
 	private static boolean isCollectionValid(String collectionString) {
 
+		//TODO: Listar todos as colecoes em cada datasource e criar um
 		boolean result = true;
 
 		result = collectionString.matches("^[0-9,]+$");

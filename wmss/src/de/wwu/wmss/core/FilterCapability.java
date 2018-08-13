@@ -3,7 +3,7 @@ package de.wwu.wmss.core;
 public class FilterCapability {
 
 	boolean melody;
-	boolean group;
+	boolean collection;
 	boolean personRole;
 	boolean performanceMedium;
 	boolean performanceMediumType;
@@ -31,12 +31,12 @@ public class FilterCapability {
 		this.melody = melody;
 	}
 
-	public boolean isGroupEnabled() {
-		return group;
+	public boolean isCollectionEnabled() {
+		return collection;
 	}
 
-	public void setGroup(boolean group) {
-		this.group = group;
+	public void setCollection(boolean group) {
+		this.collection = group;
 	}
 
 	public boolean isPersonRoleEnabled() {

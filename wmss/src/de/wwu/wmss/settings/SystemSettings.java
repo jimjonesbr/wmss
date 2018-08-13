@@ -115,7 +115,7 @@ public class SystemSettings {
 				JSONObject filters = (JSONObject) record.get("filterCapabilities");
 				
 				ds.getFilters().setMelody((boolean)filters.get("melody"));
-				ds.getFilters().setGroup((boolean)filters.get("group"));
+				ds.getFilters().setCollection((boolean)filters.get("collection"));
 				ds.getFilters().setPersonRole((boolean)filters.get("personRole"));
 				ds.getFilters().setPerformanceMedium((boolean)filters.get("performanceMedium"));
 				ds.getFilters().setPerformanceMediumType((boolean)filters.get("performanceMediumType"));

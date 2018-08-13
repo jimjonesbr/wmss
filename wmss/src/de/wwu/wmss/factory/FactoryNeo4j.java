@@ -490,6 +490,10 @@ public class FactoryNeo4j {
 		String match = "";
 		String where = "";
 		String ret = "";
+		String collection = "";
+		String person = "";
+		String personRole = "";
+		
 		boolean ignoreChords = true;
 		
 		for (int i = 0; i < parameters.size(); i++) {
@@ -499,19 +503,59 @@ public class FactoryNeo4j {
 			if(parameters.get(i).getRequest().equals("ignorechords")){
 				ignoreChords = Boolean.valueOf(parameters.get(i).getValue());
 			}
+			if(parameters.get(i).getRequest().equals("collection")){
+				collection = parameters.get(i).getValue();
+			}
+			if(parameters.get(i).getRequest().equals("person")){
+				person = parameters.get(i).getValue().toString();
+			}
+			if(parameters.get(i).getRequest().equals("personRole")){
+				personRole = parameters.get(i).getValue().toString();
+			}
 		}
+		
+		
+		String personNode;
+		
+		if(!person.equals("")) {
+			personNode = "(creator:foaf__Person {uri:\""+person+"\"})";
+		} else {
+			personNode = "(creator:foaf__Person)";
+		}
+		
+		String personRoleNode;
+
+		if(!personRole.equals("")) {
+			personRoleNode = "(role:prov__Role {gndo__preferredNameForTheSubjectHeading:\""+personRole+"\"})";
+		} else {
+			personRoleNode = "(role:prov__Role)";
+		}
+				
+		//match = match + "\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-(scr:mo__Score)\n";
+		match = "\nMATCH (scr:mo__Score)-[:dc__creator]->"+personNode+"-[:gndo__professionOrOccupation]->"+personRoleNode+"\n";
 		
 		
 		if(!melody.equals("")) {
 	
 			ArrayList<Note> noteSequence = createNoteSequence(melody);
 
-			match = "\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-(scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(ns0:mso__NoteSet)\n" + 
-					"MATCH (scr:mo__Score)-[:foaf__thumbnail]->(thumbnail) \n" +
-					"MATCH (scr:mo__Score)-[:mo__movement]->(movements:mo__Movement) \n"+
-					"MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n" +
-					"MATCH (collection:prov__Collection)-[:prov__hadMember]->(scr:mo__Score)\n"; 
-			
+			match = match + "MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(ns0:mso__NoteSet)\n" + 
+							"MATCH (scr:mo__Score)-[:foaf__thumbnail]->(thumbnail) \n" +
+							"MATCH (scr:mo__Score)-[:mo__movement]->(movements:mo__Movement) \n"+
+							"MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n"; 
+					
+//			if(!person.equals("") || !personRole.equals("")) {
+////				String cypher = "\n\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-(scr:mo__Score)\n" + 
+////						"RETURN DISTINCT creator.uri AS identifier, creator.foaf__name AS name, role.gndo__preferredNameForTheSubjectHeading AS role\n";
+//				if(!person.equals("")) {
+//					match = match + "(scr:mo__Score)-[:dc__creator]->(creator:foaf__Person)\n";
+//				}
+//				
+//				
+//			} else {
+//				
+//			}
+						
 			//match = match + "MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n";
 			for (int i = 0; i < noteSequence.size(); i++) {
 
@@ -579,6 +623,13 @@ public class FactoryNeo4j {
 					"MATCH (scr:mo__Score)-[:mo__movement]->(movements:mo__Movement) \n";	
 		}
 		
+		
+		if(collection.equals("")) {
+			match = match + "MATCH (collection:prov__Collection)-[:prov__hadMember]->(scr:mo__Score)\n";
+		} else {
+			match = match + "MATCH (collection:prov__Collection {uri:\""+collection+"\"})-[:prov__hadMember]->(scr:mo__Score)\n";
+		}
+
 		ret =   "\nRETURN \n" + 				
 				"    scr.dc__title AS title,\n" + 
 				"    scr.uri AS identifier,\n" +
