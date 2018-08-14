@@ -66,14 +66,23 @@ SET noteset.size = size
 RETURN COUNT(noteset);
 
 
+MATCH (score:mo__Score)
+WITH  score, 
+  CASE 
+    WHEN NOT score.mso__asMusicXML = '' THEN 'musicxml'
+    WHEN NOT score.mso__asMEI = '' THEN 'mei'
+  END AS docFormat
+SET score.format = docFormat
+RETURN score.uri, docFormat;
+
+
+
 CREATE INDEX ON :chord__Note(mso__hasOctave);
 CREATE INDEX ON :chord__Note(note);
 CREATE INDEX ON :mso__NoteSet(duration);
 CREATE INDEX ON :mso__NoteSet(size);
 CREATE INDEX ON :prov__Role(gndo__preferredNameForTheSubjectHeading);
-
-
-
+CREATE INDEX ON :mo__Score(format);
 
 
 MATCH (:mo__Score)-[:mo__movement]->(movement:mo__Movement)-[:mso__hasScorePart]->(instrument:mo__Instrument) 

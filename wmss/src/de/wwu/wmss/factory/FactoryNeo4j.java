@@ -493,6 +493,7 @@ public class FactoryNeo4j {
 		String collection = "";
 		String person = "";
 		String personRole = "";
+		String docFormat = "";
 		
 		boolean ignoreChords = true;
 		
@@ -512,6 +513,9 @@ public class FactoryNeo4j {
 			if(parameters.get(i).getRequest().equals("personRole")){
 				personRole = parameters.get(i).getValue().toString();
 			}
+			if(parameters.get(i).getRequest().equals("format")){
+				docFormat= parameters.get(i).getValue().toString();
+			}
 		}
 		
 		
@@ -530,18 +534,25 @@ public class FactoryNeo4j {
 		} else {
 			personRoleNode = "(role:prov__Role)";
 		}
-				
+		
+		String scoreNode = "";
+		
+		if(!docFormat.equals("")) {
+			scoreNode = "(scr:mo__Score {format:\""+docFormat+"\"})";
+		} else {
+			scoreNode = "(scr:mo__Score)";
+		}
+		
 		//match = match + "\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-(scr:mo__Score)\n";
-		match = "\nMATCH (scr:mo__Score)-[:dc__creator]->"+personNode+"-[:gndo__professionOrOccupation]->"+personRoleNode+"\n";
-		
-		
+		match = "\nMATCH "+scoreNode+"-[:dc__creator]->"+personNode+"-[:gndo__professionOrOccupation]->"+personRoleNode+"\n";
+				
 		if(!melody.equals("")) {
 	
 			ArrayList<Note> noteSequence = createNoteSequence(melody);
 
-			match = match + "MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(ns0:mso__NoteSet)\n" + 
-							"MATCH (scr:mo__Score)-[:foaf__thumbnail]->(thumbnail) \n" +
-							"MATCH (scr:mo__Score)-[:mo__movement]->(movements:mo__Movement) \n"+
+			match = match + "MATCH "+scoreNode+"-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(ns0:mso__NoteSet)\n" + 
+							"MATCH "+scoreNode+"-[:foaf__thumbnail]->(thumbnail) \n" +
+							"MATCH "+scoreNode+"-[:mo__movement]->(movements:mo__Movement) \n"+
 							"MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n"; 
 					
 //			if(!person.equals("") || !personRole.equals("")) {
@@ -618,16 +629,16 @@ public class FactoryNeo4j {
 
 		} else {
 			
-			match = "\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-(scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)\n" + 
-					"MATCH (scr:mo__Score)-[:foaf__thumbnail]->(thumbnail) \n" +
-					"MATCH (scr:mo__Score)-[:mo__movement]->(movements:mo__Movement) \n";	
+			match = match + "\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-"+scoreNode+"-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)\n" + 
+							"MATCH "+scoreNode+"-[:foaf__thumbnail]->(thumbnail) \n" +
+							"MATCH "+scoreNode+"-[:mo__movement]->(movements:mo__Movement) \n";	
 		}
 		
 		
 		if(collection.equals("")) {
-			match = match + "MATCH (collection:prov__Collection)-[:prov__hadMember]->(scr:mo__Score)\n";
+			match = match + "MATCH (collection:prov__Collection)-[:prov__hadMember]->"+scoreNode+"\n";
 		} else {
-			match = match + "MATCH (collection:prov__Collection {uri:\""+collection+"\"})-[:prov__hadMember]->(scr:mo__Score)\n";
+			match = match + "MATCH (collection:prov__Collection {uri:\""+collection+"\"})-[:prov__hadMember]->"+scoreNode+"\n";
 		}
 
 		ret =   "\nRETURN \n" + 				
