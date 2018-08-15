@@ -395,7 +395,8 @@ public class FactoryNeo4j {
 						"      mediumIdentifier: instrument.uri,\n" + 
 						"      mediumName: instrument.skos__prefLabel,\n" +
 						"	   mediumLabel: instrument.dc__description,\n" +
-						"	   solo: instrument.mso__isSolo}\n" + 
+						"	   solo: instrument.mso__isSolo,\n" +
+						"	   ensemble: instrument.mso__isEnsemble}\n" + 
 						"      )}} AS mediumsListResultset \n";
 
 		logger.info("[getPerformanceMediums(String movementURI, DataSource dataSource)]: \n"+cypher);
@@ -445,6 +446,11 @@ public class FactoryNeo4j {
 						medium.setSolo(Boolean.parseBoolean(mediumJsonObject.get("solo").toString().trim()));
 					}
 					
+					if(mediumJsonObject.get("ensemble")!=null) {
+						medium.setEnsemble(Boolean.parseBoolean(mediumJsonObject.get("ensemble").toString().trim()));
+					}
+
+					
 					result.getMediums().add(medium);
 					
 				}
@@ -491,13 +497,15 @@ public class FactoryNeo4j {
 		String docFormat = "";
 		String instrument = "";
 		String instrumentType = "";
+		String solo = "";
+		String ensemble = "";
 		
 		boolean ignoreChords = true;
 		
 		for (int i = 0; i < parameters.size(); i++) {
 			if(parameters.get(i).getRequest().equals("melody")){
 				melody = parameters.get(i).getValue();
-			}			
+			}
 			if(parameters.get(i).getRequest().equals("ignorechords")){
 				ignoreChords = Boolean.valueOf(parameters.get(i).getValue());
 			}
@@ -511,15 +519,20 @@ public class FactoryNeo4j {
 				personRole = parameters.get(i).getValue().toString();
 			}
 			if(parameters.get(i).getRequest().equals("format")){
-				docFormat= parameters.get(i).getValue().toString();
+				docFormat = parameters.get(i).getValue().toString();
 			}
 			if(parameters.get(i).getRequest().equals("performancemedium")){
-				instrument= parameters.get(i).getValue().toString();				
+				instrument = parameters.get(i).getValue().toString();				
 			}
 			if(parameters.get(i).getRequest().equals("performancemediumtype")){
-				instrumentType= parameters.get(i).getValue().toString();				
-			}
-
+				instrumentType = parameters.get(i).getValue().toString();				
+			} 
+			if(parameters.get(i).getRequest().equals("solo")){
+				solo = parameters.get(i).getValue().toString();				
+			} 
+			if(parameters.get(i).getRequest().equals("ensemble")){
+				ensemble = parameters.get(i).getValue().toString();				
+			} 
 		}
 		
 		
@@ -560,9 +573,8 @@ public class FactoryNeo4j {
 		}
 		
 		
-		
 		match = "\nMATCH "+scoreNode+"-[:dc__creator]->"+personNode+"-[:gndo__professionOrOccupation]->"+personRoleNode+"\n";
-				
+		 
 		if(!melody.equals("")) {
 	
 			ArrayList<Note> noteSequence = createNoteSequence(melody);
@@ -619,6 +631,13 @@ public class FactoryNeo4j {
 							"MATCH "+scoreNode+"-[:mo__movement]->(movements:mo__Movement) \n";	
 		}
 		
+		if(!solo.equals("")) {
+			match = match + "\nMATCH (part:mso__ScorePart {mso__isSolo:\""+solo+"\"})";	
+		}
+		
+		if(!ensemble.equals("")) {
+			match = match + "\nMATCH (part:mso__ScorePart {mso__isEnsemble:\""+ensemble+"\"})";	
+		}
 		
 		if(collection.equals("")) {
 			match = match + "MATCH (collection:prov__Collection)-[:prov__hadMember]->"+scoreNode+"\n";
@@ -657,8 +676,7 @@ public class FactoryNeo4j {
 				"      })} AS locations, \n";
 				
 		}		
-		
-		
+				
 		ret = ret +	"   CASE WHEN scr.mso__asMusicXML IS NULL THEN FALSE ELSE TRUE END AS musicxml,\n" + 
 					"   CASE WHEN scr.mso__asMEI IS NULL THEN FALSE ELSE TRUE END AS mei \n" + 
 					"ORDER BY scr.dc__title "; 

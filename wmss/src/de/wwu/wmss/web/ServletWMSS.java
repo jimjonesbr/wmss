@@ -179,6 +179,12 @@ public class ServletWMSS extends HttpServlet
 				req.setRequest("ignorechords");
 				req.setValue(request.getParameter(parameter).toLowerCase());
 				
+			} else if (parameter.toLowerCase().equals("ensemble")) {
+				
+				//ignoreChords=request.getParameter(parameter).toLowerCase();
+				req.setRequest("ensemble");
+				req.setValue(request.getParameter(parameter).toLowerCase());
+				
 			} 
  
 
