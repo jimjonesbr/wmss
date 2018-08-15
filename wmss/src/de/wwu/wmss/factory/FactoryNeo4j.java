@@ -490,6 +490,7 @@ public class FactoryNeo4j {
 		String personRole = "";
 		String docFormat = "";
 		String instrument = "";
+		String instrumentType = "";
 		
 		boolean ignoreChords = true;
 		
@@ -515,6 +516,10 @@ public class FactoryNeo4j {
 			if(parameters.get(i).getRequest().equals("performancemedium")){
 				instrument= parameters.get(i).getValue().toString();				
 			}
+			if(parameters.get(i).getRequest().equals("performancemediumtype")){
+				instrumentType= parameters.get(i).getValue().toString();				
+			}
+
 		}
 		
 		
@@ -547,7 +552,11 @@ public class FactoryNeo4j {
 		if(!instrument.equals("")) {
 			instrumentNode = "(part:mso__ScorePart {rdfs__label:\""+instrument+"\"})";
 		} else {
-			instrumentNode = "(part:mso__ScorePart)";
+			if(!instrumentType.equals("")) {
+				instrumentNode = "(part:mso__ScorePart {typeLabel:\""+instrumentType+"\"})";
+			} else {
+				instrumentNode = "(part:mso__ScorePart)";
+			}
 		}
 		
 		
