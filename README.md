@@ -1,4 +1,4 @@
-# Web Music Score Service (beta)
+# Web Music Score Service (currently under development)
 
 The Web Music Score Service (WMSS) provides an interface allowing requests for music scores on the web using platform-independent clients, working on top of relational databases and triple stores. It serves as an intermediate layer between data sets and application clients, providing standard access to MEI and MusicXML files. 
 
