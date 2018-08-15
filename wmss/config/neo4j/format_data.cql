@@ -1,4 +1,3 @@
-
 CREATE INDEX ON :Resource(uri);
 CREATE INDEX ON :URI(uri);
 CREATE INDEX ON :BNode(uri);
@@ -21,9 +20,7 @@ CREATE (:NamespacePrefixDefinition {
   `http://purl.org/ontology/mo/mit#`: 'mit'
   });
 
-
 CALL semantics.importRDF("file:///home/jones/Downloads/statements.nt","N-Triples",{shortenUrls: true});
-
 
 MATCH (note:chord__Note)-[:chord__natural]->(natural:chord__Natural) 
 OPTIONAL MATCH (note:chord__Note)-[:chord__modifier]->(modifier)
@@ -35,8 +32,6 @@ WITH note, CASE SUBSTRING(modifier.uri,31)
        LOWER(SUBSTRING(natural.uri,36)) AS natural           
 SET note.note = natural + modifier
 return COUNT(note);
-
-
 
 MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)
 WITH  noteset,CASE SUBSTRING(labels(duration)[1],5)
@@ -56,7 +51,6 @@ WITH  noteset,CASE SUBSTRING(labels(duration)[1],5)
 SET noteset.duration = duration_numeric
 RETURN COUNT(noteset);
 
-
 MATCH (noteset:mso__NoteSet)-[r:mso__hasNote]-()
 WITH noteset,COUNT(r) AS size,
   CASE 
@@ -75,15 +69,14 @@ WITH  score,
 SET score.format = docFormat
 RETURN score.uri, docFormat;
 
-
-
 CREATE INDEX ON :chord__Note(mso__hasOctave);
 CREATE INDEX ON :chord__Note(note);
 CREATE INDEX ON :mso__NoteSet(duration);
 CREATE INDEX ON :mso__NoteSet(size);
 CREATE INDEX ON :prov__Role(gndo__preferredNameForTheSubjectHeading);
 CREATE INDEX ON :mo__Score(format);
-
+CREATE INDEX ON :mso__ScorePart(rdfs__label);
+CREATE INDEX ON :mso__ScorePart(typeLabel);
 
 MATCH (:mo__Score)-[:mo__movement]->(movement:mo__Movement)-[:mso__hasScorePart]->(instrument:mo__Instrument) 
 OPTIONAL MATCH (instrument:mo__Instrument)-[:skos__broader]->(type) 
