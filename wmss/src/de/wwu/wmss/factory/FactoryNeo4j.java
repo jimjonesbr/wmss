@@ -173,42 +173,6 @@ public class FactoryNeo4j {
 	}
 
 
-//	public static ArrayList<Format> getFormats(String scoreIdentifier, DataSource dataSource){
-//		
-//		ArrayList<Format> result = new ArrayList<Format>();
-//		
-//		String cypher = "MATCH (scr:mo__Score {uri:\""+scoreIdentifier+"\"})\n" + 
-//						"RETURN CASE WHEN scr.mso__asMusicXML IS NULL THEN FALSE ELSE TRUE END AS musicxml,\n"+
-//						"		CASE WHEN scr.mso__asMEI IS NULL THEN FALSE ELSE TRUE END AS mei";
-//		StatementResult rs = Neo4jConnector.executeQuery(cypher, dataSource);
-//		
-//		logger.info("[getFormats(String scoreIdentifier, DataSource dataSource)]: \n"+cypher);
-//		
-//		while ( rs.hasNext() )
-//		{
-//			Record record = rs.next();			
-//	
-//			if(record.get("mei").asBoolean()) {
-//
-//				Format format = new Format();
-//				format.setFormatId("mei");
-//				format.setFormatDescription("Music Encoding Initiative 3.0"); //TODO: create triples for describing MEI version
-//				result.add(format);			
-//			}
-//						
-//			if(record.get("musicxml").asBoolean()) {
-//
-//				Format format = new Format();
-//				format.setFormatId("musicxml");
-//				format.setFormatDescription("MusicXML 3.0"); //TODO: create triples for describing MusicXML version
-//				result.add(format);			
-//			}
-//			
-//			
-//		}
-//		return result;
-//	}
-
 	public static ArrayList<PerformanceMediumType> getPerformanceMedium(DataSource ds){
 		
 		ArrayList<PerformanceMediumType> result = new ArrayList<PerformanceMediumType>();
@@ -290,8 +254,7 @@ public class FactoryNeo4j {
 		}
 		
 		return result;
-		
-		
+
 	}
 	
 	public static ArrayList<Format> getFormats(DataSource ds){
@@ -299,9 +262,9 @@ public class FactoryNeo4j {
 		ArrayList<Format> result = new ArrayList<Format>();
 
 		String cypher = "\n\nMATCH (scr:mo__Score)\n" + 
-				"RETURN DISTINCT CASE WHEN scr.mso__asMusicXML IS NULL THEN FALSE ELSE TRUE END AS musicxml\n";
+					    "RETURN DISTINCT CASE WHEN scr.mso__asMusicXML IS NULL THEN FALSE ELSE TRUE END AS musicxml\n";
 
-		logger.info(cypher);
+		logger.info("getFormats:" + cypher);
 
 		StatementResult rs = Neo4jConnector.executeQuery(cypher, ds);
 		Record record = rs.next();
@@ -330,7 +293,8 @@ public class FactoryNeo4j {
 
 		return result;
 	}
-		
+	
+	
 	public static ArrayList<Tonality> getTonalities(DataSource ds){
 		
 		ArrayList<Tonality> result = new ArrayList<Tonality>();
@@ -809,8 +773,6 @@ public class FactoryNeo4j {
 					location.setInstrumentName(locationJsonObject.get("instrumentName").toString());
 					location.setVoice(locationJsonObject.get("voice").toString());
 					location.setStaff(locationJsonObject.get("staff").toString());
-					//location.setMovementName(locationJsonObject.get("movementName").toString().trim());
-					//location.setMovementIdentifier(locationJsonObject.get("movementIdentifier").toString());
 					location.setStartingMeasure(locationJsonObject.get("startingMeasure").toString());
 					location.setMelody(melodyQuery);
 					

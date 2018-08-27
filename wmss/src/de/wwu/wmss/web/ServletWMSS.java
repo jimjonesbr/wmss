@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
-
 import de.wwu.wmss.core.RequestParameter;
 import de.wwu.wmss.factory.ServiceMessagingHandler;
 import de.wwu.wmss.settings.SystemSettings;

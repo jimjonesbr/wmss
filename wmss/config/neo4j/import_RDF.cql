@@ -20,7 +20,7 @@ CREATE (:NamespacePrefixDefinition {
   `http://purl.org/ontology/mo/mit#`: 'mit'
   });
 
-CALL semantics.importRDF("file:///home/jones/Downloads/statements.nt","N-Triples",{shortenUrls: true});
+CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements2.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
 
 MATCH (note:chord__Note)-[:chord__natural]->(natural:chord__Natural) 
 OPTIONAL MATCH (note:chord__Note)-[:chord__modifier]->(modifier)

@@ -223,13 +223,6 @@ public class ServiceMessagingHandler {
 								
 				result = gson.toJson(listScoresJSON);
 
-				
-				//byte[] utf8JsonString = result.getBytes("ASCII");				
-				//String str = new String(utf8JsonString, StandardCharsets.US_ASCII);
-				//System.out.println(str);
-				//responseToClient.write(utf8JsonString, 0, utf8JsonString.Length);
-
-
 			} catch (Exception e) {
 				e.printStackTrace();
 				logger.error("Unexpected error at the ListScores request.");
@@ -381,8 +374,6 @@ public class ServiceMessagingHandler {
 				result.setValue(false);
 				
 			}
-
-			//System.out.println(prm.get(i).getRequest() + " > " + prm.get(i).getValue());
 			
 		}
 

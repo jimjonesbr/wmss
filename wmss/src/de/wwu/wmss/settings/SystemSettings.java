@@ -26,7 +26,6 @@ public class SystemSettings {
 	private static Logger logger = Logger.getLogger("System Settings");
 	public static ArrayList<DataSource> sourceList = new ArrayList<DataSource>();
 	public static ArrayList<String> protocolVersions = new ArrayList<String>();
-	//private static ArrayList<String> requests = new ArrayList<String>();
 	
 	public static void main(String[] args) {
 
