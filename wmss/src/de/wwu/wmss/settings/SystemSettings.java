@@ -54,7 +54,7 @@ public class SystemSettings {
 			contact = jsonObject.get("contact").toString();
 			title = jsonObject.get("title").toString();
 			defaultProtocol= jsonObject.get("defaultProtocol").toString();
-			logPreview= Integer.parseInt(jsonObject.get("logpreview").toString());
+			logPreview = Integer.parseInt(jsonObject.get("logpreview").toString());
 
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			Date date = new Date();

@@ -81,48 +81,42 @@
 		</dependency>
 
 	</dependencies>
+
+
 	<build>
-		<finalName>wmss-development</finalName>
-		<sourceDirectory>src</sourceDirectory>
+		<defaultGoal>install</defaultGoal>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.9</version>
-				<configuration>
-					<downloadSources>true</downloadSources>
-					<downloadJavadocs>false</downloadJavadocs>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>3.5.1</version>
 				<configuration>
 					<source>${jdk.version}</source>
 					<target>${jdk.version}</target>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
-			    <groupId>org.apache.maven.plugins</groupId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
+			</plugin>
+			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>3.1.0</version>
 				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<finalName>wmss-unstable</finalName>
+					<appendAssemblyId>false</appendAssemblyId>
 					<archive>
 						<manifest>
 							<mainClass>de.wwu.wmss.web.Start</mainClass>
 						</manifest>
 					</archive>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
 				</configuration>
 				<executions>
 					<execution>
-						<id>make-assembly</id>
-						<!-- bind to the packaging phase -->
 						<phase>package</phase>
 						<goals>
 							<goal>single</goal>

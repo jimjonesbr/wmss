@@ -159,7 +159,7 @@ public class FactoryNeo4j {
 			cypher = cypher +"RETURN score.mso__asMEI AS xml\n";
 		}
 
-		logger.info(cypher);
+		//logger.info(cypher);
 		
 		StatementResult rs = Neo4jConnector.executeQuery(cypher, dataSource);
 
@@ -186,7 +186,7 @@ public class FactoryNeo4j {
 						"          mediumCode: instrument.rdfs__label,\n" + 
 						"          mediumDescription: instrument.skos__prefLabel\n" + 
 						"         })}} AS performanceMediumList\n";
-		logger.info(cypher);
+		//logger.info(cypher);
 		StatementResult rs = Neo4jConnector.executeQuery(cypher, ds);
 		
 		while ( rs.hasNext() )
@@ -279,7 +279,7 @@ public class FactoryNeo4j {
 		cypher = "\n\nMATCH (scr:mo__Score)\n" + 
 				 "RETURN DISTINCT CASE WHEN scr.mso__asMEI IS NULL THEN FALSE ELSE TRUE END AS mei\n";
 
-		logger.info(cypher);
+		//logger.info(cypher);
 
 		rs = Neo4jConnector.executeQuery(cypher, ds);
 		record = rs.next();
@@ -363,7 +363,7 @@ public class FactoryNeo4j {
 						"	   ensemble: instrument.mso__isEnsemble}\n" + 
 						"      )}} AS mediumsListResultset \n";
 
-		logger.info("[getPerformanceMediums(String movementURI, DataSource dataSource)]: \n"+cypher);
+		//logger.info("[getPerformanceMediums(String movementURI, DataSource dataSource)]: \n"+cypher);
 
 		StatementResult rs = Neo4jConnector.executeQuery(cypher, dataSource);
 

@@ -20,7 +20,7 @@ CREATE (:NamespacePrefixDefinition {
   `http://purl.org/ontology/mo/mit#`: 'mit'
   });
 
-CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements2.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
+CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
 
 MATCH (note:chord__Note)-[:chord__natural]->(natural:chord__Natural) 
 OPTIONAL MATCH (note:chord__Note)-[:chord__modifier]->(modifier)
@@ -83,3 +83,15 @@ OPTIONAL MATCH (instrument:mo__Instrument)-[:skos__broader]->(type)
 SET instrument.typeUri = type.uri,
     instrument.typeLabel = type.skos__prefLabel
 RETURN COUNT(instrument);
+
+MATCH (noteset:mso__NoteSet)-[predicate:mso__hasDuration]->(duration:mso__Duration)
+DELETE predicate, duration
+RETURN COUNT(*);
+
+MATCH (note:chord__Note)-[predicate:chord__natural]->(natural:chord__Natural)
+DETACH DELETE predicate, natural
+RETURN COUNT(*);
+
+MATCH (note:chord__Note)-[predicate:chord__modifier]->(modifier)
+DETACH DELETE predicate, modifier
+RETURN COUNT(*);
