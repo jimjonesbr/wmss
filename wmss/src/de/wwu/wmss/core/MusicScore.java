@@ -19,9 +19,9 @@ public class MusicScore {
 	private Date creationDateFrom;
 	private Date creationDateTo;
 	private String documentCreationDate;
-	private Provenance provenance;
 	private ArrayList<Movement> movements;
 	private ArrayList<Format> formats;
+	private Provenance provenance;
 	private ArrayList<Person> persons;
 	private ArrayList<MelodyLocationGroup> melodyLocations;
 	private Collection collection;

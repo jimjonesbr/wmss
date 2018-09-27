@@ -231,6 +231,21 @@ public class FactoryNeo4j {
 		return result;
 	}
 	
+	
+	public static int getScoresCount(DataSource ds) {
+	
+		String cypher = "MATCH (score:mo__Score) RETURN COUNT(score) AS total";
+		
+		logger.debug("getScoresCount:" + cypher);	
+		
+		StatementResult rs = Neo4jConnector.executeQuery(cypher, ds);
+		Record record = rs.next();
+				
+		return record.get("total").asInt();
+		
+	}
+	
+	
 	public static ArrayList<Person> getRoles(DataSource ds){
 	
 		ArrayList<Person> result = new ArrayList<Person>();
@@ -238,7 +253,8 @@ public class FactoryNeo4j {
 		String cypher = "\n\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-(scr:mo__Score)\n" + 
 						"RETURN DISTINCT creator.uri AS identifier, creator.foaf__name AS name, role.gndo__preferredNameForTheSubjectHeading AS role\n";
 
-		logger.info(cypher);		
+		logger.debug("getRoles:" + cypher);
+		
 		StatementResult rs = Neo4jConnector.executeQuery(cypher, ds);
 		
 		while ( rs.hasNext() )
@@ -264,7 +280,7 @@ public class FactoryNeo4j {
 		String cypher = "\n\nMATCH (scr:mo__Score)\n" + 
 					    "RETURN DISTINCT CASE WHEN scr.mso__asMusicXML IS NULL THEN FALSE ELSE TRUE END AS musicxml\n";
 
-		logger.info("getFormats:" + cypher);
+		logger.debug("getFormats:" + cypher);
 
 		StatementResult rs = Neo4jConnector.executeQuery(cypher, ds);
 		Record record = rs.next();
@@ -661,6 +677,7 @@ public class FactoryNeo4j {
 			score.setThumbnail(record.get("thumbnail").asString());					
 			score.getCollection().setId(record.get("collectionIdentifier").asString());
 			score.getCollection().setDescription(record.get("collectionLabel").asString());
+			score.setOnlineResource(record.get("identifier").asString());
 			
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			

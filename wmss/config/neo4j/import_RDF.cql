@@ -1,3 +1,6 @@
+MATCH ()-[r]-() DELETE r;
+MATCH (n) DELETE n;
+
 CREATE INDEX ON :Resource(uri);
 CREATE INDEX ON :URI(uri);
 CREATE INDEX ON :BNode(uri);

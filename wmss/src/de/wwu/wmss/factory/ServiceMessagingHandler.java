@@ -94,6 +94,7 @@ public class ServiceMessagingHandler {
 				
 				if(SystemSettings.sourceList.get(i).getStorage().equals("neo4j")) {
 					
+					ds.put("total", FactoryNeo4j.getScoresCount(SystemSettings.sourceList.get(i)));
 					ds.put("collections", FactoryNeo4j.getCollections(SystemSettings.sourceList.get(i)));					
 					ds.put("performanceMediums", FactoryNeo4j.getPerformanceMedium(SystemSettings.sourceList.get(i)));
 					ds.put("tempoMarkings", null);
