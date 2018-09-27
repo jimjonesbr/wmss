@@ -6,7 +6,8 @@ public class Person {
 	private String role;
 	private String scoreId; 
 	private String url;
-
+	private int totalScores;
+	
 	public Person() {
 		super();
 	}
@@ -33,6 +34,12 @@ public class Person {
 	}
 	public void setUrl(String url) {
 		this.url = url;
+	}
+	public int getTotalScores() {
+		return totalScores;
+	}
+	public void setTotalScores(int totalScores) {
+		this.totalScores = totalScores;
 	}
 	
 }

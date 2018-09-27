@@ -28,7 +28,7 @@ public class ServletWMSS extends HttpServlet
 		Enumeration<String> listParameters = request.getParameterNames();
 		ArrayList<RequestParameter> parametersList = new ArrayList<RequestParameter>(); 
 		
-		logger.info("Query String -> "+request.getQueryString());
+		logger.info("Request String -> "+request.getQueryString());
 		
 		String identifier = "";
 		String version = "";

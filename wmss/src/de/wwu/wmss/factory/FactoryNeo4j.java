@@ -159,7 +159,7 @@ public class FactoryNeo4j {
 			cypher = cypher +"RETURN score.mso__asMEI AS xml\n";
 		}
 
-		//logger.info(cypher);
+		logger.debug("getMusicXML:\n"+cypher);
 		
 		StatementResult rs = Neo4jConnector.executeQuery(cypher, dataSource);
 
@@ -186,7 +186,9 @@ public class FactoryNeo4j {
 						"          mediumCode: instrument.rdfs__label,\n" + 
 						"          mediumDescription: instrument.skos__prefLabel\n" + 
 						"         })}} AS performanceMediumList\n";
-		//logger.info(cypher);
+		
+		logger.debug("getPerformanceMedium:\n"+cypher);
+		
 		StatementResult rs = Neo4jConnector.executeQuery(cypher, ds);
 		
 		while ( rs.hasNext() )
@@ -205,7 +207,7 @@ public class FactoryNeo4j {
 				PerformanceMediumType type = new PerformanceMediumType();
 				type.setMediumTypeId(mediumList.get("mediumTypeId").toString().trim());
 				type.setMediumTypeDescription(mediumList.get("mediumTypeDescription").toString());
-								
+												
 				JSONArray mediumListJsonArray = (JSONArray) mediumList.get("instruments");
 				
 				for (int j = 0; j < mediumListJsonArray.size(); j++) {
@@ -215,7 +217,7 @@ public class FactoryNeo4j {
 					JSONObject mediumJsonObject = (JSONObject) mediumListJsonArray.get(j);
 					medium.setMediumDescription(mediumJsonObject.get("mediumDescription").toString().trim());
 					medium.setMediumCode(mediumJsonObject.get("mediumCode").toString().trim());
-														
+																	
 					type.getMediums().add(medium);					
 				
 				}
@@ -236,7 +238,7 @@ public class FactoryNeo4j {
 	
 		String cypher = "MATCH (score:mo__Score) RETURN COUNT(score) AS total";
 		
-		logger.debug("getScoresCount:" + cypher);	
+		logger.debug("getScoresCount:\n" + cypher);	
 		
 		StatementResult rs = Neo4jConnector.executeQuery(cypher, ds);
 		Record record = rs.next();
@@ -251,9 +253,10 @@ public class FactoryNeo4j {
 		ArrayList<Person> result = new ArrayList<Person>();
 		
 		String cypher = "\n\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-(scr:mo__Score)\n" + 
-						"RETURN DISTINCT creator.uri AS identifier, creator.foaf__name AS name, role.gndo__preferredNameForTheSubjectHeading AS role\n";
+						"RETURN DISTINCT creator.uri AS identifier, creator.foaf__name AS name, role.gndo__preferredNameForTheSubjectHeading AS role, COUNT(scr) AS total\n" + 
+						"ORDER BY total DESC\n";
 
-		logger.debug("getRoles:" + cypher);
+		logger.debug("getRoles:\n" + cypher);
 		
 		StatementResult rs = Neo4jConnector.executeQuery(cypher, ds);
 		
@@ -265,7 +268,7 @@ public class FactoryNeo4j {
 			person.setName(record.get("name").asString().trim());
 			person.setRole(record.get("role").asString().trim());
 			person.setUrl(record.get("identifier").asString().trim());
-			
+			person.setTotalScores(record.get("total").asInt());
 			result.add(person);
 		}
 		
@@ -280,7 +283,7 @@ public class FactoryNeo4j {
 		String cypher = "\n\nMATCH (scr:mo__Score)\n" + 
 					    "RETURN DISTINCT CASE WHEN scr.mso__asMusicXML IS NULL THEN FALSE ELSE TRUE END AS musicxml\n";
 
-		logger.debug("getFormats:" + cypher);
+		logger.debug("getFormats:\n" + cypher);
 
 		StatementResult rs = Neo4jConnector.executeQuery(cypher, ds);
 		Record record = rs.next();
@@ -318,6 +321,8 @@ public class FactoryNeo4j {
 		String cypher = "\n\nMATCH (mode)<-[:ton__mode]-(key:ton__Key)-[:ton__tonic]->(tonic)\n" + 
 					    "RETURN DISTINCT LOWER(SUBSTRING(tonic.uri,36)) AS tonic, LOWER(SUBSTRING(mode.uri,39)) AS mode\n";
 
+		logger.debug("getTonalities:\n" + cypher);
+		
 		StatementResult rs = Neo4jConnector.executeQuery(cypher, ds);
 		
 		while ( rs.hasNext() )
