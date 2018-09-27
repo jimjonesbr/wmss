@@ -100,18 +100,21 @@ public class ServiceMessagingHandler {
 					ds.put("tempoMarkings", null);
 					ds.put("formats", FactoryNeo4j.getFormats(SystemSettings.sourceList.get(i)));
 					ds.put("tonalities", FactoryNeo4j.getTonalities(SystemSettings.sourceList.get(i)));
-					ds.put("creationRange", null);
+					ds.put("creationRange", null);					
 					ds.put("persons", FactoryNeo4j.getRoles(SystemSettings.sourceList.get(i)));
 					
 				}
+				
 				
 				dsArray.add(ds);
 			}
 			
 		}
 
-
+		
 		serviceDescription.put("datasources", dsArray);
+		
+		
 
 		return gson.toJson(serviceDescription);
 
@@ -209,7 +212,7 @@ public class ServiceMessagingHandler {
 						repo.put("storage", SystemSettings.sourceList.get(i).getStorage());
 						repo.put("size", listScores.size());
 						repo.put("scores", listScores);
-
+										
 						repoArray.add(repo);
 
 					}

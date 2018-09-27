@@ -22,7 +22,8 @@ public class ServletWMSS extends HttpServlet
 	 */
 	private static final long serialVersionUID = 1L;
 	private static Logger logger = Logger.getLogger("ServletWMSS");
-
+	
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{    	
 		Enumeration<String> listParameters = request.getParameterNames();
