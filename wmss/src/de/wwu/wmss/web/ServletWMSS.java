@@ -147,8 +147,8 @@ public class ServletWMSS extends HttpServlet
 				
 				melody=request.getParameter(parameter).toLowerCase();
 				req.setRequest("melody");
-				req.setValue(request.getParameter(parameter).toLowerCase());
-
+				req.setValue(request.getParameter(parameter));
+				
 			} else if (parameter.toLowerCase().equals("identifier")) {
 				
 				identifier=request.getParameter(parameter).toLowerCase();
@@ -185,7 +185,25 @@ public class ServletWMSS extends HttpServlet
 				req.setRequest("ensemble");
 				req.setValue(request.getParameter(parameter).toLowerCase());
 				
-			} 
+			} else if (parameter.toLowerCase().equals("ignoreoctaves")) {
+				
+				ignoreChords=request.getParameter(parameter).toLowerCase();
+				req.setRequest("ignoreoctaves");
+				req.setValue(request.getParameter(parameter).toLowerCase());
+				
+			} else if (parameter.toLowerCase().equals("ignorepitch")) {
+				
+				ignoreChords=request.getParameter(parameter).toLowerCase();
+				req.setRequest("ignorepitch");
+				req.setValue(request.getParameter(parameter).toLowerCase());
+				
+			} else if (parameter.toLowerCase().equals("ignoreduration")) {
+				
+				ignoreChords=request.getParameter(parameter).toLowerCase();
+				req.setRequest("ignoreduration");
+				req.setValue(request.getParameter(parameter).toLowerCase());
+				
+			}
  
 
 			parametersList.add(req);
@@ -293,17 +311,12 @@ public class ServletWMSS extends HttpServlet
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0009", "Invalid data source '" + source + "'.","The provided data source cannot be found. Check the 'Service Description Report' for more information on the available data sources."));
 
+//		} else if (!melody.equals("") && !isMelodyRequestValid(melody)) {
 		} else if (!melody.equals("") && !isMelodyRequestValid(melody)) {
 			
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0012", "Invalid melody '" + melody +"'","The provided melody is not valid. For more information go to: https://github.com/jimjonesbr/wmss/blob/master/README.md#melody"));
-
-//		} else if (!collection.equals("") && !isCollectionValid(collection)) {					
-//			response.setContentType("text/javascript");
-//			response.setStatus(HttpServletResponse.SC_OK);
-//			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0013", "Invalid collection string '" + collection +"'","The provided collection string is not valid. Provided either a single numeric identifier '1' or multiple separated by comma '1,2,3'."));
-
 			
 		} else if (requestType.equals("checklog")) {
 			
@@ -358,6 +371,9 @@ public class ServletWMSS extends HttpServlet
 
 	private static boolean isMelodyRequestValid(String melody) {
 
+		//TODO: Implement validation for PEA strings
+		
+		/**
 		String[] melodyElements = melody.split(">");
 
 		boolean validNotes = false;
@@ -405,6 +421,9 @@ public class ServletWMSS extends HttpServlet
 		}
 
 		return result;
+		*/
+		
+		return true;
 
 	}
 	

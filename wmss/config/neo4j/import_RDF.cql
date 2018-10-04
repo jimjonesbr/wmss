@@ -1,5 +1,3 @@
-MATCH ()-[r]-() DELETE r;
-MATCH (n) DELETE n;
 
 CREATE INDEX ON :Resource(uri);
 CREATE INDEX ON :URI(uri);
@@ -23,33 +21,39 @@ CREATE (:NamespacePrefixDefinition {
   `http://purl.org/ontology/mo/mit#`: 'mit'
   });
 
+
 CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
 
 MATCH (note:chord__Note)-[:chord__natural]->(natural:chord__Natural) 
 OPTIONAL MATCH (note:chord__Note)-[:chord__modifier]->(modifier)
 WITH note, CASE SUBSTRING(modifier.uri,31) 
         WHEN 'flat' THEN 'b'
-            WHEN 'sharp' THEN 's'
+            WHEN 'sharp' THEN 'x'
             WHEN NULL THEN ''
            END AS modifier,
-       LOWER(SUBSTRING(natural.uri,36)) AS natural           
-SET note.note = natural + modifier
-return COUNT(note);
+       SUBSTRING(natural.uri,36) AS natural           
+SET note.note = natural, note.accidental = modifier
+RETURN COUNT(note);
+
+//Adds rests 
+MATCH (note:chord__Note)
+WHERE note.note IS NULL
+SET note.note = '-', note.accidental = ''
+RETURN COUNT(note);
+
 
 MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)
 WITH  noteset,CASE SUBSTRING(labels(duration)[1],5)
-                WHEN 'OctupleWhole' THEN 80
-                WHEN 'QuardupleWhole' THEN 40
-                WHEN 'DoubleWhole' THEN 20
-                WHEN 'Whole' THEN  0
+                WHEN 'QuardupleWhole' THEN 0
+                WHEN 'DoubleWhole' THEN 9
+                WHEN 'Whole' THEN  1
                 WHEN 'Half' THEN  2
                 WHEN 'Quarter' THEN  4
                 WHEN 'Eighth' THEN  8
-                WHEN '16th' THEN  16
-                WHEN '32nd' THEN  32
-                WHEN '64th' THEN  64
-                WHEN '128th' THEN  128
-                WHEN '256th' THEN  256
+                WHEN '16th' THEN  6
+                WHEN '32nd' THEN  3
+                WHEN '64th' THEN  5
+                WHEN '128th' THEN  7
               END AS duration_numeric
 SET noteset.duration = duration_numeric
 RETURN COUNT(noteset);
@@ -74,6 +78,7 @@ RETURN score.uri, docFormat;
 
 CREATE INDEX ON :chord__Note(mso__hasOctave);
 CREATE INDEX ON :chord__Note(note);
+CREATE INDEX ON :chord__Note(accidental);
 CREATE INDEX ON :mso__NoteSet(duration);
 CREATE INDEX ON :mso__NoteSet(size);
 CREATE INDEX ON :prov__Role(gndo__preferredNameForTheSubjectHeading);
@@ -87,14 +92,14 @@ SET instrument.typeUri = type.uri,
     instrument.typeLabel = type.skos__prefLabel
 RETURN COUNT(instrument);
 
-MATCH (noteset:mso__NoteSet)-[predicate:mso__hasDuration]->(duration:mso__Duration)
-DELETE predicate, duration
-RETURN COUNT(*);
+//MATCH (noteset:mso__NoteSet)-[predicate:mso__hasDuration]->(duration:mso__Duration)
+//DELETE predicate, duration
+//RETURN COUNT(*);
 
-MATCH (note:chord__Note)-[predicate:chord__natural]->(natural:chord__Natural)
-DETACH DELETE predicate, natural
-RETURN COUNT(*);
+//MATCH (note:chord__Note)-[predicate:chord__natural]->(natural:chord__Natural)
+//DETACH DELETE predicate, natural
+//RETURN COUNT(*);
 
-MATCH (note:chord__Note)-[predicate:chord__modifier]->(modifier)
-DETACH DELETE predicate, modifier
-RETURN COUNT(*);
+//MATCH (note:chord__Note)-[predicate:chord__modifier]->(modifier)
+//DETACH DELETE predicate, modifier
+//RETURN COUNT(*);

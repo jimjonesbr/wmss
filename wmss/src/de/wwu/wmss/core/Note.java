@@ -2,12 +2,11 @@ package de.wwu.wmss.core;
 
 public class Note {
 
-	String pitch;
-	String duration;
-	String octave;
-	String accidental;
-	
-	boolean chord;
+	private String pitch;
+	private String duration;
+	private String octave;
+	private String accidental;
+	private boolean isChord;
 	
 	public Note() {
 		super();
@@ -31,10 +30,10 @@ public class Note {
 		this.octave = octave;
 	}
 	public boolean isChord() {
-		return chord;
+		return isChord;
 	}
 	public void setChord(boolean chord) {
-		this.chord = chord;
+		this.isChord = chord;
 	}
 	public String getAccidental() {
 		return accidental;

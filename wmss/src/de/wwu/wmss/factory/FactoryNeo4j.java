@@ -1,5 +1,9 @@
 package de.wwu.wmss.factory;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -29,84 +33,200 @@ public class FactoryNeo4j {
 
 	private static Logger logger = Logger.getLogger("Neo4j-Factory");
 
-	private static ArrayList<Note> createNoteSequence(String melody){
-
-		String[] melodyRequest = melody.split(">");
-		ArrayList<Note> result = new ArrayList<>();
-
-		for (int i = 0; i < melodyRequest.length; i++) {
-
-			String[] melodyElement = melodyRequest[i].split("-");
-
-			Note note = new Note();
-
-			if(melodyElement[0]!="*") {
-				if(melodyElement[0].equals("r")) {
-					note.setPitch("Rest");
-				} else {
-					note.setPitch(melodyElement[0].toLowerCase());
-				}
-			} else {
-				note.setPitch(null);
-			}
-			
-			
-			if(melodyElement[0].length()>1) {
+	public static ArrayList<Note> createNoteSequence(String pea){
+		
+		Set<String> notes = new HashSet();
+		notes.add("C");notes.add("D");
+		notes.add("E");notes.add("F");
+		notes.add("G");notes.add("A");
+		notes.add("B");notes.add("-");
+		
+		Set<String> accidentals = new HashSet();
+		accidentals.add("x");accidentals.add("b");
+		accidentals.add("n");
+		
+		String duration = "";
+		String accidental = "";
+		String octave = "";
+		String lastDuration = "";
+		boolean chord = false;
+		
+		ArrayList<Note> sequence = new ArrayList<Note>();
 				
-				if(melodyElement[0].substring(1, 2).toLowerCase().equals("s")) {					
-					note.setAccidental("sharp");					
-				}
-				if(melodyElement[0].substring(1, 2).toLowerCase().equals("b")) {
-					note.setAccidental("flat");
-				}
-			} else {
-				note.setAccidental(null);
+		for (int i = 0; i < pea.length(); i++) {
+
+			String element = Character.toString(pea.charAt(i));
+			
+			if(element.equals(",")) {
+				octave = octave + element;
 			}
-
-			if(melodyElement[1]=="*") {
-				note.setDuration(null);
-			} else if (melodyElement[1].equals("ow")) {
-				note.setDuration("80");
-			} else if (melodyElement[1].equals("qw")) {
-				note.setDuration("40");
-			} else if (melodyElement[1].equals("dw")) {
-				note.setDuration("20");
-			} else if (melodyElement[1].equals("w")) {
-				note.setDuration("0");
-			} else if (melodyElement[1].equals("h")) {
-				note.setDuration("2");
-			} else if (melodyElement[1].equals("4")) {
-				note.setDuration("4");
-			} else if (melodyElement[1].equals("8")) {
-				note.setDuration("8");
-			} else if (melodyElement[1].equals("16")) {
-				note.setDuration("16");
-			} else if (melodyElement[1].equals("32")) {
-				note.setDuration("32");
-			} else if (melodyElement[1].equals("64")) {
-				note.setDuration("64");
-			} else if (melodyElement[1].equals("128")) {
-				note.setDuration("128");
-			} else if (melodyElement[1].equals("256")) {
-				note.setDuration("256");
-			} 
-
-			if(melodyElement[2]!="*") {
-				note.setOctave(melodyElement[2]);
-			} else {
-				note.setOctave(null);
+			
+			if(element.equals("'")) {
+				octave = octave + element;
 			}
+			
+			if(StringUtils.isNumeric(element)) {
+				duration = element;
+				lastDuration = element;
+			}
+		
+			if(accidentals.contains(element)) {
+				accidental = accidental + element;
+			}
+			
+			if(element.equals("^")) {
+				chord = true;
+			}
+			
+			if(notes.contains(element)) {
 
-			//TODO: parse chords
-			note.setChord(false);			
-			result.add(note);
+				if(octave.contains("'")) {					
+					octave = String.valueOf(octave.length()+3);
+				} else if(octave.contains(",")) {
+					octave = String.valueOf(4-octave.length());
+				} else if (octave.equals("")) {
+					octave = "4";
+				}
 
+				if(duration.equals("")) {
+					if(!lastDuration.equals("")) {
+						duration = lastDuration;	
+					} else {
+						duration = "4";
+					}					
+				}
+				
+				if(element.equals("-")) {
+					octave = "-";
+				}
+				
+//				if(accidental.equals("x")) {
+//					accidental = "s";
+//				}
+				
+				Note note = new Note();
+				note.setAccidental(accidental);
+				note.setDuration(duration);
+				note.setPitch(element);
+				note.setOctave(octave);
+				note.setChord(chord);
+				
 
+				
+				System.out.println("Duration: " + note.getDuration() + "\n" + "Octave: " + note.getOctave() + "\n" + "Note: " + note.getPitch() + "\n" +"Accidental: " + note.getAccidental() + "\n" +"Chord: " + note.isChord() + "\n");
+
+				sequence.add(note);
+				//note = null;
+				octave = "";
+				duration = "";
+				accidental = "";
+				
+				chord = false;
+			}
+			
 		}
-
-		return result;
-
+		
+		return sequence;
 	}
+	
+	
+//	private static ArrayList<Note> createNoteSequence2(String melody){
+//
+//		String[] melodyRequest = melody.split(">");
+//		
+//		
+//		ArrayList<Note> result = new ArrayList<>();
+//
+//		for (int i = 0; i < melodyRequest.length; i++) {
+//
+//			
+//			/**
+//			String[] chordElement = melodyRequest[i].split(":");			
+//			System.out.println(">>> size chord: "+chordElement.length);
+//			
+//			if(chordElement.length>1) {				
+//				for (int j = 0; j < chordElement.length; j++) {
+//					Note note = new Note();
+//					if(chordElement[j].contains("[")) {
+//						note.set
+//					}
+//				}				
+//			}			
+//			*/
+//			
+//			
+//			String[] melodyElement = melodyRequest[i].split("-");
+//
+//			Note note = new Note();
+//			
+//			if(melodyElement[0]!="*") {
+//				if(melodyElement[0].equals("r")) {
+//					note.setPitch("Rest");
+//				} else {
+//					note.setPitch(melodyElement[0].toLowerCase());
+//				}
+//			} else {
+//				note.setPitch(null);
+//			}
+//			
+//			
+//			if(melodyElement[0].length()>1) {
+//				
+//				if(melodyElement[0].substring(1, 2).toLowerCase().equals("s")) {					
+//					note.setAccidental("sharp");					
+//				}
+//				if(melodyElement[0].substring(1, 2).toLowerCase().equals("b")) {
+//					note.setAccidental("flat");
+//				}
+//			} else {
+//				note.setAccidental(null);
+//			}
+//
+//			if(melodyElement[1]=="*") {
+//				note.setDuration(null);
+//			} else if (melodyElement[1].equals("ow")) {
+//				note.setDuration("80");
+//			} else if (melodyElement[1].equals("qw")) {
+//				note.setDuration("40");
+//			} else if (melodyElement[1].equals("dw")) {
+//				note.setDuration("20");
+//			} else if (melodyElement[1].equals("w")) {
+//				note.setDuration("0");
+//			} else if (melodyElement[1].equals("h")) {
+//				note.setDuration("2");
+//			} else if (melodyElement[1].equals("4")) {
+//				note.setDuration("4");
+//			} else if (melodyElement[1].equals("8")) {
+//				note.setDuration("8");
+//			} else if (melodyElement[1].equals("16")) {
+//				note.setDuration("16");
+//			} else if (melodyElement[1].equals("32")) {
+//				note.setDuration("32");
+//			} else if (melodyElement[1].equals("64")) {
+//				note.setDuration("64");
+//			} else if (melodyElement[1].equals("128")) {
+//				note.setDuration("128");
+//			} else if (melodyElement[1].equals("256")) {
+//				note.setDuration("256");
+//			} 
+//
+//			if(melodyElement[2]!="*") {
+//				note.setOctave(melodyElement[2]);
+//			} else {
+//				note.setOctave(null);
+//			}
+//
+//			//TODO: parse chords
+//			note.setChord(false);			
+//			result.add(note);
+//
+//
+//		}
+//
+//		return result;
+//
+//	}
+
 		
 	public static String getMusicXML(ArrayList<RequestParameter> parameters){
 		
@@ -233,7 +353,6 @@ public class FactoryNeo4j {
 		return result;
 	}
 	
-	
 	public static int getScoresCount(DataSource ds) {
 	
 		String cypher = "MATCH (score:mo__Score) RETURN COUNT(score) AS total";
@@ -246,8 +365,7 @@ public class FactoryNeo4j {
 		return record.get("total").asInt();
 		
 	}
-	
-	
+		
 	public static ArrayList<Person> getRoles(DataSource ds){
 	
 		ArrayList<Person> result = new ArrayList<Person>();
@@ -312,8 +430,7 @@ public class FactoryNeo4j {
 
 		return result;
 	}
-	
-	
+		
 	public static ArrayList<Tonality> getTonalities(DataSource ds){
 		
 		ArrayList<Tonality> result = new ArrayList<Tonality>();
@@ -486,6 +603,9 @@ public class FactoryNeo4j {
 		String ensemble = "";
 		
 		boolean ignoreChords = true;
+		boolean ignoreOctaves = true;
+		boolean ignoreDuration = false;
+		boolean ignorePitch = false;
 		
 		for (int i = 0; i < parameters.size(); i++) {
 			if(parameters.get(i).getRequest().equals("melody")){
@@ -518,6 +638,17 @@ public class FactoryNeo4j {
 			if(parameters.get(i).getRequest().equals("ensemble")){
 				ensemble = parameters.get(i).getValue().toString();				
 			} 
+			if(parameters.get(i).getRequest().equals("ignoreoctaves")){
+				System.out.println(">>>"+Boolean.valueOf(parameters.get(i).getValue()));
+				ignoreOctaves = Boolean.valueOf(parameters.get(i).getValue());				
+			}
+			if(parameters.get(i).getRequest().equals("ignoreduration")){
+				ignoreDuration = Boolean.valueOf(parameters.get(i).getValue());				
+			} 
+			if(parameters.get(i).getRequest().equals("ignorepitch")){
+				ignorePitch = Boolean.valueOf(parameters.get(i).getValue());				
+			} 
+
 		}
 		
 		
@@ -563,49 +694,79 @@ public class FactoryNeo4j {
 		if(!melody.equals("")) {
 	
 			ArrayList<Note> noteSequence = createNoteSequence(melody);
+			
+			for (int j = 0; j < noteSequence.size(); j++) {
+				/**
+				 * Disables ignoreChord flag in case there are chords in the searched melody.
+				 */
+				if(noteSequence.get(j).isChord()) {
+					ignoreChords=false;
+				}
+			}
 
 			match = match + "MATCH "+scoreNode+"-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->"+instrumentNode+"-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(ns0:mso__NoteSet)\n" + 
 							"MATCH "+scoreNode+"-[:foaf__thumbnail]->(thumbnail) \n" +
 							"MATCH "+scoreNode+"-[:mo__movement]->(movements:mo__Movement) \n"+
 							"MATCH "+instrumentNode+"-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n"; 
 					
-			for (int i = 0; i < noteSequence.size(); i++) {
+			//for (int i = 0; i < noteSequence.size(); i++) {			
+			int i = 0;
+			int notesetCounter = 0;
+			
+			while(i<=noteSequence.size()-1) {
 
 				if(i==0) {
 					
-					if(!noteSequence.get(i).getPitch().equals("*")) {
-						match = match +	"MATCH (ns0:mso__NoteSet)-[:mso__hasNote]->(n0:chord__Note {note:'"+noteSequence.get(i).getPitch()+"'}) \n";
+					if(!ignorePitch) {
+						match = match +	"MATCH (ns0:mso__NoteSet)-[:mso__hasNote]->(n0:chord__Note {note:'"+noteSequence.get(i).getPitch()+"', accidental: '"+noteSequence.get(i).getAccidental()+"'}) \n";
 					}
-					if(!noteSequence.get(i).getDuration().equals("*")) {
+					
+					if(!ignoreDuration) {
 						where = where +	"AND ns0.duration = "+noteSequence.get(i).getDuration()+" \n";
 					}					
-					if(!noteSequence.get(i).getOctave().equals("*")) {
+					
+					System.out.println("ignoreOctaves> "+ignoreOctaves);
+					if(!ignoreOctaves) {	
 						match = match +	"MATCH (n0:chord__Note {mso__hasOctave:"+noteSequence.get(i).getOctave()+"}) \n";
 					}
 					
 				} else {
 					
-					if(!noteSequence.get(i).getPitch().equals("*")) {						
-						match = match + "MATCH (ns"+i+":mso__NoteSet)-[:mso__hasNote]->(n"+i+":chord__Note {note:'"+noteSequence.get(i).getPitch()+"'}) \n";
+					if(!noteSequence.get(i).isChord()) {
+						notesetCounter++;
+						if(notesetCounter>0) {
+						match = match + "MATCH (ns"+(notesetCounter-1)+":mso__NoteSet)-[:mso__nextNoteSet]->(ns"+notesetCounter+":mso__NoteSet) \n";
+						}
+						
 					}
 					
-					if(!noteSequence.get(i).getDuration().equals("*")) {				
-						where = where +	"AND ns"+i+".duration = "+noteSequence.get(i).getDuration()+" \n";
+					if(!ignorePitch) {						
+						match = match + "MATCH (ns"+notesetCounter+":mso__NoteSet)-[:mso__hasNote]->(n"+i+":chord__Note {note:'"+noteSequence.get(i).getPitch()+"', accidental: '"+noteSequence.get(i).getAccidental()+"'}) \n";											
 					}
-					if(!noteSequence.get(i).getOctave().equals("*")) {
+					
+					
+					if(!ignoreDuration) {
+						where = where +	"AND ns"+notesetCounter+".duration = "+noteSequence.get(i).getDuration()+" \n";
+					}
+					
+					if(!ignoreOctaves) {	
 						match = match +	"MATCH (n"+i+":chord__Note {mso__hasOctave:"+noteSequence.get(i).getOctave()+"}) \n";
 					}
+					
 					 
 				}
-								
+
+				/**
 				if(i <= noteSequence.size()-1 && i > 0) {
-					match = match + "MATCH (ns"+(i-1)+":mso__NoteSet)-[:mso__nextNoteSet]->(ns"+i+":mso__NoteSet) \n";
+					match = match + "MATCH (ns"+(notesetCounter-1)+":mso__NoteSet)-[:mso__nextNoteSet]->(ns"+notesetCounter+":mso__NoteSet) \n";
+				}
+				**/
+
+				if(ignoreChords) {
+					where = where  + "AND ns"+notesetCounter+".size = 1 \n";
 				}
 				
-				if(ignoreChords) {
-					where = where  + "AND ns"+i+".size = 1 \n";
-				}
-
+				i++;
 			}
 			
 
