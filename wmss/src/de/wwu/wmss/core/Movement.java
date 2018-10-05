@@ -8,12 +8,11 @@ public class Movement {
 	private String movementName;	
 	private String tempo;
 	private String scoreId;
-	//private ArrayList<PerformanceMedium> performanceMediumList;
+
 	private ArrayList<PerformanceMediumType> performanceMediumList;
 	
 	public Movement() {
 		super();
-		//this.performanceMediumList = new ArrayList<PerformanceMedium>();
 		this.performanceMediumList = new ArrayList<PerformanceMediumType>();
 	}
 	

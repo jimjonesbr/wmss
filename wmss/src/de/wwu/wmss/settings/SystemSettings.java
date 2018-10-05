@@ -23,6 +23,7 @@ public class SystemSettings {
 	private static String startup;
 	private static String serviceVersion;
 	private static int logPreview;
+	private static int pageSize;
 	private static Logger logger = Logger.getLogger("System Settings");
 	public static ArrayList<DataSource> sourceList = new ArrayList<DataSource>();
 	public static ArrayList<String> protocolVersions = new ArrayList<String>();
@@ -49,6 +50,7 @@ public class SystemSettings {
 			serviceVersion = "Dev-Unstable-0.0.1";
 
 			port = Integer.parseInt(jsonObject.get("port").toString());
+			pageSize = Integer.parseInt(jsonObject.get("pageSize").toString());
 			timeout = Integer.parseInt(jsonObject.get("timeout").toString());
 			service = jsonObject.get("service").toString();
 			contact = jsonObject.get("contact").toString();
@@ -68,6 +70,7 @@ public class SystemSettings {
 					"Application Startup: " + startup + "\n" +
 
 					"Time-out: " + timeout + "ms" + "\n" +
+					"Page Size: " + pageSize + " records " + "\n" +
 					"System Administrator: " + contact  + "\n");
 
 		} catch (Exception e) {
@@ -191,6 +194,11 @@ public class SystemSettings {
 	public static int getLogPreview() {
 		return logPreview;
 	}
+
+	public static int getPageSize() {
+		return pageSize;
+	}
+		
 	
 }
 

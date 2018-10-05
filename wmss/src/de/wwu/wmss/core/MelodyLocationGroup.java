@@ -13,35 +13,26 @@ public class MelodyLocationGroup {
 		super();
 		this.melodyLocation = new ArrayList<MelodyLocation>();
 	}
-
 	public String getMovementId() {
 		return movementId;
 	}
-
 	public void setMovementId(String movementId) {
 		this.movementId = movementId;
 	}
-
 	public String getMovementName() {
 		return movementName;
 	}
-
 	public void setMovementName(String movementName) {
 		this.movementName = movementName;
 	}
-
 	public ArrayList<MelodyLocation> getMelodyLocation() {
 		return melodyLocation;
 	}
-
 	public String getScoreId() {
 		return scoreId;
 	}
-
 	public void setScoreId(String scoreId) {
 		this.scoreId = scoreId;
 	}
-	
-	
 
 }

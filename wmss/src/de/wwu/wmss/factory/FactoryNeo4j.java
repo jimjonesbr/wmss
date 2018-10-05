@@ -24,6 +24,7 @@ import de.wwu.wmss.core.Note;
 import de.wwu.wmss.core.PerformanceMedium;
 import de.wwu.wmss.core.PerformanceMediumType;
 import de.wwu.wmss.core.Person;
+import de.wwu.wmss.core.PersonDescription;
 import de.wwu.wmss.core.Provenance;
 import de.wwu.wmss.core.RequestParameter;
 import de.wwu.wmss.core.Tonality;
@@ -366,9 +367,9 @@ public class FactoryNeo4j {
 		
 	}
 		
-	public static ArrayList<Person> getRoles(DataSource ds){
+	public static ArrayList<PersonDescription> getRoles(DataSource ds){
 	
-		ArrayList<Person> result = new ArrayList<Person>();
+		ArrayList<PersonDescription> result = new ArrayList<PersonDescription>();
 		
 		String cypher = "\n\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-(scr:mo__Score)\n" + 
 						"RETURN DISTINCT creator.uri AS identifier, creator.foaf__name AS name, role.gndo__preferredNameForTheSubjectHeading AS role, COUNT(scr) AS total\n" + 
@@ -381,7 +382,7 @@ public class FactoryNeo4j {
 		while ( rs.hasNext() )
 		{
 			Record record = rs.next();
-			Person person = new Person();
+			PersonDescription person = new PersonDescription();
 			
 			person.setName(record.get("name").asString().trim());
 			person.setRole(record.get("role").asString().trim());
@@ -639,7 +640,6 @@ public class FactoryNeo4j {
 				ensemble = parameters.get(i).getValue().toString();				
 			} 
 			if(parameters.get(i).getRequest().equals("ignoreoctaves")){
-				System.out.println(">>>"+Boolean.valueOf(parameters.get(i).getValue()));
 				ignoreOctaves = Boolean.valueOf(parameters.get(i).getValue());				
 			}
 			if(parameters.get(i).getRequest().equals("ignoreduration")){
@@ -648,7 +648,6 @@ public class FactoryNeo4j {
 			if(parameters.get(i).getRequest().equals("ignorepitch")){
 				ignorePitch = Boolean.valueOf(parameters.get(i).getValue());				
 			} 
-
 		}
 		
 		
@@ -742,18 +741,13 @@ public class FactoryNeo4j {
 					
 					if(!ignorePitch) {						
 						match = match + "MATCH (ns"+notesetCounter+":mso__NoteSet)-[:mso__hasNote]->(n"+i+":chord__Note {note:'"+noteSequence.get(i).getPitch()+"', accidental: '"+noteSequence.get(i).getAccidental()+"'}) \n";											
-					}
-					
-					
+					}										
 					if(!ignoreDuration) {
 						where = where +	"AND ns"+notesetCounter+".duration = "+noteSequence.get(i).getDuration()+" \n";
-					}
-					
+					}					
 					if(!ignoreOctaves) {	
 						match = match +	"MATCH (n"+i+":chord__Note {mso__hasOctave:"+noteSequence.get(i).getOctave()+"}) \n";
-					}
-					
-					 
+					}										 
 				}
 
 				/**
@@ -761,7 +755,6 @@ public class FactoryNeo4j {
 					match = match + "MATCH (ns"+(notesetCounter-1)+":mso__NoteSet)-[:mso__nextNoteSet]->(ns"+notesetCounter+":mso__NoteSet) \n";
 				}
 				**/
-
 				if(ignoreChords) {
 					where = where  + "AND ns"+notesetCounter+".size = 1 \n";
 				}

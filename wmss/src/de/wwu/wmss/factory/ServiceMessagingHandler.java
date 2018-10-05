@@ -181,9 +181,6 @@ public class ServiceMessagingHandler {
 
 					if(source.equals(SystemSettings.sourceList.get(i).getId()) || source.equals("")){
 						
-						//System.out.println("SystemSettings.sourceList.get(i).getId() >"+SystemSettings.sourceList.get(i).getType());
-						//if(SystemSettings.sourceList.get(i).getId().equals(anObject))
-						
 						if(SystemSettings.sourceList.get(i).getType().equals("database")) {
 							
 							if(SystemSettings.sourceList.get(i).getStorage().equals("postgresql")){

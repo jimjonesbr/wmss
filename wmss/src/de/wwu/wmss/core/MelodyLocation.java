@@ -1,13 +1,17 @@
 package de.wwu.wmss.core;
 
-public class MelodyLocation extends Movement {
+public class MelodyLocation {
 
 	private String startingMeasure;
 	private String voice;
 	private String staff;
 	private String instrumentName;
 	private String melody;
-
+	private String movementIdentifier;
+	private String movementName;	
+	private String movementId;
+	private String scoreId;
+	
 	public MelodyLocation() {
 		super();
 	}
@@ -51,6 +55,40 @@ public class MelodyLocation extends Movement {
 	public void setMelody(String query) {
 		this.melody = query;
 	}
+
+	public String getMovementIdentifier() {
+		return movementIdentifier;
+	}
+
+	public void setMovementIdentifier(String movementIdentifier) {
+		this.movementIdentifier = movementIdentifier;
+	}
+
+	public String getMovementName() {
+		return movementName;
+	}
+
+	public void setMovementName(String movementName) {
+		this.movementName = movementName;
+	}
+
+	public String getScoreId() {
+		return scoreId;
+	}
+
+	public void setScoreId(String scoreId) {
+		this.scoreId = scoreId;
+	}
+
+	public String getMovementId() {
+		return movementId;
+	}
+
+	public void setMovementId(String movementId) {
+		this.movementId = movementId;
+	}
+
+
 	
 	
 }
