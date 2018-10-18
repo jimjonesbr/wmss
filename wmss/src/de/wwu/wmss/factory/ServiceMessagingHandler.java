@@ -214,6 +214,66 @@ public class ServiceMessagingHandler {
 						if(!request.getMelody().equals("")) {
 							nextPage = nextPage + "&melody="+request.getMelody();
 						}						
+						if(!request.getFormat().equals("")) {
+							nextPage = nextPage + "&format="+request.getFormat();
+						}												
+						if(!request.getCollection().equals("")) {
+							nextPage = nextPage + "&collection="+request.getCollection();
+						}												
+						if(!request.getPerson().equals("")) {
+							nextPage = nextPage + "&person="+request.getPerson();
+						}												
+						if(!request.getPersonRole().equals("")) {
+							nextPage = nextPage + "&personRole="+request.getPersonRole();
+						}												
+						if(!request.getPerformanceMedium().equals("")) {
+							nextPage = nextPage + "&performanceMedium="+request.getPerformanceMedium();
+						}												
+						if(!request.getPerformanceMediumType().equals("")) {
+							nextPage = nextPage + "&performanceMediumType="+request.getPerformanceMediumType();
+						}												
+						if(request.isSolo()) {
+							nextPage = nextPage + "&solo="+request.isSolo();
+						}												
+						if(!request.getTonalityTonic().equals("")) {
+							nextPage = nextPage + "&tonalityTonic="+request.getTonalityTonic();
+						}
+						if(!request.getTonalityMode().equals("")) {
+							nextPage = nextPage + "&tonalityMode="+request.getTonalityMode();
+						}						
+						if(!request.getTempo().equals("")) {
+							nextPage = nextPage + "&tempo="+request.getTempo();
+						}						
+						if(!request.getCreationDate().equals("")) {
+							nextPage = nextPage + "&creationDate="+request.getCreationDate();
+						}						
+						if(!request.getCreationDateFrom().equals("")) {
+							nextPage = nextPage + "&creationDateFrom="+request.getCreationDateFrom();
+						}						
+						if(!request.getCreationDateTo().equals("")) {
+							nextPage = nextPage + "&creationDateTo="+request.getCreationDateTo();
+						}						
+						if(!request.getIdentifier().equals("")) {
+							nextPage = nextPage + "&identifier="+request.getIdentifier();
+						}						
+						if(!request.getVersion().equals("")) {
+							nextPage = nextPage + "&version="+request.getVersion();
+						}						
+						if(!request.isIgnoreChords()) {
+							nextPage = nextPage + "&ignoreChords="+request.isIgnoreChords();
+						}						
+						if(request.isEnsemble()) {
+							nextPage = nextPage + "&ensemble="+request.isEnsemble();
+						}			
+						if(request.isIgnoreOctaves()) {
+							nextPage = nextPage + "&ignoreOctaves="+request.isIgnoreOctaves();
+						}
+						if(request.isIgnorePitch()) {
+							nextPage = nextPage + "&ignorePitch="+request.isIgnorePitch();
+						}
+						if(request.isIgnoreDuration()) {
+							nextPage = nextPage + "&ignoreDuration="+request.isIgnoreDuration();
+						}
 						nextPage = nextPage + "&offset=" + (request.getOffset() + listScores.size());
 						nextPage = nextPage + "&pageSize=" + request.getPageSize();
 						nextPage = nextPage + "&totalSize=" + totalSize;

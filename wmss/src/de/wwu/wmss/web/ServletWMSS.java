@@ -30,6 +30,7 @@ public class ServletWMSS extends HttpServlet
 		WMSSRequest wmssRequest = new WMSSRequest(httpRequest);
 		
 		logger.info("Request String -> "+httpRequest.getQueryString());
+		logger.info("Memory Usage -> " + Runtime.getRuntime().freeMemory() / 1024/1024 +" MB");
 		
 //		String identifier = "";
 //		String version = "";

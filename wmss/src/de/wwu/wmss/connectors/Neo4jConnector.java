@@ -9,10 +9,19 @@ import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.StatementResult;
 
 public class Neo4jConnector {
-	private static Driver driver;
+	
 	//private static Logger logger = Logger.getLogger("Neo4j-Connector");
-
-	public static StatementResult executeQuery(String cypher, DataSource ds){
+	private static Driver driver;
+	private static Neo4jConnector instance;
+	
+	public static Neo4jConnector getInstance() {
+		if (instance == null) {
+			instance = new Neo4jConnector();
+		}
+		return instance;
+	}	
+	
+	public StatementResult executeQuery(String cypher, DataSource ds){
 
 		/**
 		 * Disables logging mechanism of neo4j
@@ -20,6 +29,7 @@ public class Neo4jConnector {
 		LogManager.getLogManager().reset();
 
 		//Date start = new Date();
+		
 		driver = GraphDatabase.driver(ds.getHost(),AuthTokens.basic(ds.getUser(),ds.getPassword()));
 
 		StatementResult result;
@@ -32,7 +42,7 @@ public class Neo4jConnector {
 		//logger.info("Cypher query time ["+ds.getHost()+"]: " + Util.timeElapsed(start, new Date()));
 
 		//driver.close();
-
+		
 		return result;
 	}
 

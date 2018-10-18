@@ -316,8 +316,6 @@ public class WMSSRequest {
 		return totalSize;
 	}
 
-
-
 	public int getOffset() {
 		return offset;
 	}
@@ -328,11 +326,9 @@ public class WMSSRequest {
 	}
 
 
+	public void setIgnoreChords(boolean ignoreChords) {
+		this.ignoreChords = ignoreChords;
+	}
 
-		
-	
-	
-	
-	
 	
 }

@@ -2,7 +2,6 @@ package de.wwu.wmss.factory;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -114,7 +113,7 @@ public class FactoryNeo4j {
 				
 
 				
-				System.out.println("Duration: " + note.getDuration() + "\n" + "Octave: " + note.getOctave() + "\n" + "Note: " + note.getPitch() + "\n" +"Accidental: " + note.getAccidental() + "\n" +"Chord: " + note.isChord() + "\n");
+				//System.out.println("Duration: " + note.getDuration() + "\n" + "Octave: " + note.getOctave() + "\n" + "Note: " + note.getPitch() + "\n" +"Accidental: " + note.getAccidental() + "\n" +"Chord: " + note.isChord() + "\n");
 
 				sequence.add(note);
 				//note = null;
@@ -190,7 +189,7 @@ public class FactoryNeo4j {
 
 		logger.debug("getMusicXML:\n"+cypher);
 		
-		StatementResult rs = Neo4jConnector.executeQuery(cypher, Util.getDataSource(request));
+		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, Util.getDataSource(request));
 
 		while ( rs.hasNext() ){
 			Record record = rs.next();
@@ -217,7 +216,7 @@ public class FactoryNeo4j {
 		
 		logger.debug("getPerformanceMedium:\n"+cypher);
 		
-		StatementResult rs = Neo4jConnector.executeQuery(cypher, ds);
+		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);
 		
 		while ( rs.hasNext() )
 		{
@@ -267,7 +266,7 @@ public class FactoryNeo4j {
 		
 		logger.debug("getScoresCount:\n" + cypher);	
 		
-		StatementResult rs = Neo4jConnector.executeQuery(cypher, ds);
+		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);
 		Record record = rs.next();
 				
 		return record.get("total").asInt();
@@ -284,7 +283,7 @@ public class FactoryNeo4j {
 
 		logger.debug("getRoles:\n" + cypher);
 		
-		StatementResult rs = Neo4jConnector.executeQuery(cypher, ds);
+		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);
 		
 		while ( rs.hasNext() )
 		{
@@ -311,7 +310,7 @@ public class FactoryNeo4j {
 
 		logger.debug("getFormats:\n" + cypher);
 
-		StatementResult rs = Neo4jConnector.executeQuery(cypher, ds);
+		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);
 		Record record = rs.next();
 
 		if(record.get("musicxml").asBoolean()) {
@@ -324,9 +323,7 @@ public class FactoryNeo4j {
 		cypher = "\n\nMATCH (scr:mo__Score)\n" + 
 				 "RETURN DISTINCT CASE WHEN scr.mso__asMEI IS NULL THEN FALSE ELSE TRUE END AS mei\n";
 
-		//logger.info(cypher);
-
-		rs = Neo4jConnector.executeQuery(cypher, ds);
+		rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);
 		record = rs.next();
 
 		if(record.get("mei").asBoolean()) {
@@ -348,7 +345,7 @@ public class FactoryNeo4j {
 
 		logger.debug("getTonalities:\n" + cypher);
 		
-		StatementResult rs = Neo4jConnector.executeQuery(cypher, ds);
+		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);
 		
 		while ( rs.hasNext() )
 		{
@@ -373,7 +370,7 @@ public class FactoryNeo4j {
 		String cypher = "\n\nMATCH (collection:prov__Collection)-[:prov__hadMember]->(scr:mo__Score)\n" + 
 					    "RETURN DISTINCT collection.uri AS identifier, collection.rdfs__label AS label \n";
 		
-		StatementResult rs = Neo4jConnector.executeQuery(cypher, ds);		
+		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);		
 		
 		while ( rs.hasNext() )
 		{
@@ -409,9 +406,7 @@ public class FactoryNeo4j {
 						"	   ensemble: instrument.mso__isEnsemble}\n" + 
 						"      )}} AS mediumsListResultset \n";
 
-		//logger.info("[getPerformanceMediums(String movementURI, DataSource dataSource)]: \n"+cypher);
-
-		StatementResult rs = Neo4jConnector.executeQuery(cypher, dataSource);
+		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, dataSource);
 
 		while ( rs.hasNext() )
 		{
@@ -499,54 +494,54 @@ public class FactoryNeo4j {
 		
 		String cypherQuery = createMelodyQuery(wmssRequest) + "\nRETURN COUNT(DISTINCT scr.uri) AS total";
 		
-		StatementResult rs = Neo4jConnector.executeQuery(cypherQuery, dataSource);
+		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypherQuery, dataSource);
 		Record record = rs.next();
 		
 		return record.get("total").asInt();
 		
 	}
 	
-	public static String createMelodyQuery(WMSSRequest request) {
+	public static String createMelodyQuery(WMSSRequest wmssRequest) {
 	
 		String match = "";
 		String where = "";
 				
-		boolean ignoreChords = true;
-		boolean ignoreOctaves = true;
-		boolean ignoreDuration = false;
-		boolean ignorePitch = false;
+//		boolean ignoreChords = true;
+//		boolean ignoreOctaves = true;
+//		boolean ignoreDuration = false;
+//		boolean ignorePitch = false;
 			
 		String personNode;
 		
-		if(!request.getPerson().equals("")) {
-			personNode = "(creator:foaf__Person {uri:\""+request.getPerson()+"\"})";
+		if(!wmssRequest.getPerson().equals("")) {
+			personNode = "(creator:foaf__Person {uri:\""+wmssRequest.getPerson()+"\"})";
 		} else {
 			personNode = "(creator:foaf__Person)";
 		}
 		
 		String personRoleNode;
 
-		if(!request.getPersonRole().equals("")) {
-			personRoleNode = "(role:prov__Role {gndo__preferredNameForTheSubjectHeading:\""+request.getPersonRole()+"\"})";
+		if(!wmssRequest.getPersonRole().equals("")) {
+			personRoleNode = "(role:prov__Role {gndo__preferredNameForTheSubjectHeading:\""+wmssRequest.getPersonRole()+"\"})";
 		} else {
 			personRoleNode = "(role:prov__Role)";
 		}
 		
 		String scoreNode = "";
 		
-		if(!request.getFormat().equals("")) {
-			scoreNode = "(scr:mo__Score {format:\""+request.getFormat()+"\"})";
+		if(!wmssRequest.getFormat().equals("")) {
+			scoreNode = "(scr:mo__Score {format:\""+wmssRequest.getFormat()+"\"})";
 		} else {
 			scoreNode = "(scr:mo__Score)";
 		}
 		
 		String instrumentNode = "";
 
-		if(!request.getPerformanceMedium().equals("")) {
-			instrumentNode = "(part:mso__ScorePart {rdfs__label:\""+request.getPerformanceMedium()+"\"})";
+		if(!wmssRequest.getPerformanceMedium().equals("")) {
+			instrumentNode = "(part:mso__ScorePart {rdfs__label:\""+wmssRequest.getPerformanceMedium()+"\"})";
 		} else {
-			if(!request.getPerformanceMediumType().equals("")) {
-				instrumentNode = "(part:mso__ScorePart {typeLabel:\""+request.getPerformanceMediumType()+"\"})";
+			if(!wmssRequest.getPerformanceMediumType().equals("")) {
+				instrumentNode = "(part:mso__ScorePart {typeLabel:\""+wmssRequest.getPerformanceMediumType()+"\"})";
 			} else {
 				instrumentNode = "(part:mso__ScorePart)";
 			}
@@ -554,16 +549,18 @@ public class FactoryNeo4j {
 		
 		match = "\nMATCH "+scoreNode+"-[:dc__creator]->"+personNode+"-[:gndo__professionOrOccupation]->"+personRoleNode+"\n";
 		 
-		if(!request.getMelody().equals("")) {
+		if(!wmssRequest.getMelody().equals("")) {
 	
-			ArrayList<Note> noteSequence = createNoteSequence(request.getMelody());
+			ArrayList<Note> noteSequence = createNoteSequence(wmssRequest.getMelody());
 			
 			for (int j = 0; j < noteSequence.size(); j++) {
 				/**
 				 * Disables ignoreChord flag in case there are chords in the searched melody.
 				 */
-				if(noteSequence.get(j).isChord()) {
-					ignoreChords=false;
+				if(noteSequence.get(j).isChord() && wmssRequest.isIgnoreChords()) {
+					//ignoreChords=false;
+					wmssRequest.setIgnoreChords(false);
+					logger.warn("Request Conflict: The searched melody contains chords but the parameter 'ignoreChords' ist set to 'true'. The 'ignoreChords' parameter will be ignored.");
 				}
 			}
 
@@ -579,15 +576,18 @@ public class FactoryNeo4j {
 
 				if(i==0) {
 					
-					if(!ignorePitch) {
+					//if(!ignorePitch) {
+					if(!wmssRequest.isIgnorePitch()) {
 						match = match +	"MATCH (ns0:mso__NoteSet)-[:mso__hasNote]->(n0:chord__Note {note:'"+noteSequence.get(i).getPitch()+"', accidental: '"+noteSequence.get(i).getAccidental()+"'}) \n";
 					}
 					
-					if(!ignoreDuration) {
+					//if(!ignoreDuration) {
+					if(!wmssRequest.isIgnoreDuration()) {
 						where = where +	"AND ns0.duration = "+noteSequence.get(i).getDuration()+" \n";
 					}					
 										
-					if(!ignoreOctaves) {	
+					//if(!ignoreOctaves) {
+					if(!wmssRequest.isIgnoreOctaves()) {
 						match = match +	"MATCH (n0:chord__Note {mso__hasOctave:"+noteSequence.get(i).getOctave()+"}) \n";
 					}
 					
@@ -601,18 +601,22 @@ public class FactoryNeo4j {
 						
 					}
 					
-					if(!ignorePitch) {						
+					//if(!ignorePitch) {						
+					if(!wmssRequest.isIgnorePitch()) {
 						match = match + "MATCH (ns"+notesetCounter+":mso__NoteSet)-[:mso__hasNote]->(n"+i+":chord__Note {note:'"+noteSequence.get(i).getPitch()+"', accidental: '"+noteSequence.get(i).getAccidental()+"'}) \n";											
 					}										
-					if(!ignoreDuration) {
+					//if(!ignoreDuration) {
+					if(!wmssRequest.isIgnoreDuration()) {
 						where = where +	"AND ns"+notesetCounter+".duration = "+noteSequence.get(i).getDuration()+" \n";
 					}					
-					if(!ignoreOctaves) {	
+					//if(!ignoreOctaves) {
+					if(!wmssRequest.isIgnoreOctaves()) {	
 						match = match +	"MATCH (n"+i+":chord__Note {mso__hasOctave:"+noteSequence.get(i).getOctave()+"}) \n";
 					}										 
 				}
 
-				if(ignoreChords) {
+				//if(ignoreChords) {
+				if(wmssRequest.isIgnoreChords()) {
 					where = where  + "AND ns"+notesetCounter+".size = 1 \n";
 				}
 				
@@ -627,18 +631,18 @@ public class FactoryNeo4j {
 							"MATCH "+scoreNode+"-[:mo__movement]->(movements:mo__Movement) \n";	
 		}
 		
-		if(request.isSolo()) {
-			match = match + "\nMATCH (part:mso__ScorePart {mso__isSolo:\""+request.isSolo()+"\"})";	
+		if(wmssRequest.isSolo()) {
+			match = match + "\nMATCH (part:mso__ScorePart {mso__isSolo:\""+wmssRequest.isSolo()+"\"})";	
 		}
 		
-		if(request.isEnsemble()) {
-			match = match + "\nMATCH (part:mso__ScorePart {mso__isEnsemble:\""+request.isEnsemble()+"\"})";	
+		if(wmssRequest.isEnsemble()) {
+			match = match + "\nMATCH (part:mso__ScorePart {mso__isEnsemble:\""+wmssRequest.isEnsemble()+"\"})";	
 		}
 		
-		if(request.getCollection().equals("")) {
+		if(wmssRequest.getCollection().equals("")) {
 			match = match + "MATCH (collection:prov__Collection)-[:prov__hadMember]->"+scoreNode+"\n";
 		} else {
-			match = match + "MATCH (collection:prov__Collection {uri:\""+request.getCollection()+"\"})-[:prov__hadMember]->"+scoreNode+"\n";
+			match = match + "MATCH (collection:prov__Collection {uri:\""+wmssRequest.getCollection()+"\"})-[:prov__hadMember]->"+scoreNode+"\n";
 		}
 		
 		String optionalMatch = "MATCH (scr:mo__Score)-[:prov__wasGeneratedBy]->(activity:prov__Activity)-[:prov__wasAssociatedWith]->(encoder:foaf__Person) \n";
@@ -788,9 +792,9 @@ public class FactoryNeo4j {
 		} else {
 			match = match + "MATCH (collection:prov__Collection {uri:\""+request.getCollection()+"\"})-[:prov__hadMember]->"+scoreNode+"\n";
 		}
-		
-		
 		**/
+		
+		
 		String matchClause = createMelodyQuery(request);
 		
 		returnClause =   "\nRETURN \n" + 				
@@ -833,9 +837,11 @@ public class FactoryNeo4j {
 				
 		String cypherQuery = matchClause + returnClause;
 
-		logger.info("\n[main]:\n"+cypherQuery+"\n");
+		logger.debug("\n[main]:\n"+cypherQuery+"\n");
 				
-		StatementResult rs = Neo4jConnector.executeQuery(cypherQuery, dataSource);
+		//StatementResult rs = Neo4jConnector.executeQuery(cypherQuery, dataSource);
+		
+		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypherQuery, dataSource);
 				
 		while ( rs.hasNext() )
 		{
