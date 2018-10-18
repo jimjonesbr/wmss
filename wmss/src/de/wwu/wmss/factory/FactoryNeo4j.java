@@ -26,9 +26,9 @@ import de.wwu.wmss.core.PerformanceMediumType;
 import de.wwu.wmss.core.Person;
 import de.wwu.wmss.core.PersonDescription;
 import de.wwu.wmss.core.Provenance;
-import de.wwu.wmss.core.RequestParameter;
+import de.wwu.wmss.core.WMSSRequest;
 import de.wwu.wmss.core.Tonality;
-import de.wwu.wmss.settings.SystemSettings;
+import de.wwu.wmss.settings.Util;
 
 public class FactoryNeo4j {
 
@@ -129,114 +129,18 @@ public class FactoryNeo4j {
 		
 		return sequence;
 	}
-	
-	
-//	private static ArrayList<Note> createNoteSequence2(String melody){
-//
-//		String[] melodyRequest = melody.split(">");
-//		
-//		
-//		ArrayList<Note> result = new ArrayList<>();
-//
-//		for (int i = 0; i < melodyRequest.length; i++) {
-//
-//			
-//			/**
-//			String[] chordElement = melodyRequest[i].split(":");			
-//			System.out.println(">>> size chord: "+chordElement.length);
-//			
-//			if(chordElement.length>1) {				
-//				for (int j = 0; j < chordElement.length; j++) {
-//					Note note = new Note();
-//					if(chordElement[j].contains("[")) {
-//						note.set
-//					}
-//				}				
-//			}			
-//			*/
-//			
-//			
-//			String[] melodyElement = melodyRequest[i].split("-");
-//
-//			Note note = new Note();
-//			
-//			if(melodyElement[0]!="*") {
-//				if(melodyElement[0].equals("r")) {
-//					note.setPitch("Rest");
-//				} else {
-//					note.setPitch(melodyElement[0].toLowerCase());
-//				}
-//			} else {
-//				note.setPitch(null);
-//			}
-//			
-//			
-//			if(melodyElement[0].length()>1) {
-//				
-//				if(melodyElement[0].substring(1, 2).toLowerCase().equals("s")) {					
-//					note.setAccidental("sharp");					
-//				}
-//				if(melodyElement[0].substring(1, 2).toLowerCase().equals("b")) {
-//					note.setAccidental("flat");
-//				}
-//			} else {
-//				note.setAccidental(null);
-//			}
-//
-//			if(melodyElement[1]=="*") {
-//				note.setDuration(null);
-//			} else if (melodyElement[1].equals("ow")) {
-//				note.setDuration("80");
-//			} else if (melodyElement[1].equals("qw")) {
-//				note.setDuration("40");
-//			} else if (melodyElement[1].equals("dw")) {
-//				note.setDuration("20");
-//			} else if (melodyElement[1].equals("w")) {
-//				note.setDuration("0");
-//			} else if (melodyElement[1].equals("h")) {
-//				note.setDuration("2");
-//			} else if (melodyElement[1].equals("4")) {
-//				note.setDuration("4");
-//			} else if (melodyElement[1].equals("8")) {
-//				note.setDuration("8");
-//			} else if (melodyElement[1].equals("16")) {
-//				note.setDuration("16");
-//			} else if (melodyElement[1].equals("32")) {
-//				note.setDuration("32");
-//			} else if (melodyElement[1].equals("64")) {
-//				note.setDuration("64");
-//			} else if (melodyElement[1].equals("128")) {
-//				note.setDuration("128");
-//			} else if (melodyElement[1].equals("256")) {
-//				note.setDuration("256");
-//			} 
-//
-//			if(melodyElement[2]!="*") {
-//				note.setOctave(melodyElement[2]);
-//			} else {
-//				note.setOctave(null);
-//			}
-//
-//			//TODO: parse chords
-//			note.setChord(false);			
-//			result.add(note);
-//
-//
-//		}
-//
-//		return result;
-//
-//	}
-
+				
+	public static String getMusicXML(WMSSRequest request){
 		
-	public static String getMusicXML(ArrayList<RequestParameter> parameters){
+		String result = "";
 		
-		String result = "";		
+		/**
 		String format = "";
 		String source = "";
 		String scoreIdentifier = "";
 		
 		DataSource dataSource = new DataSource();
+		dataSource = Util.getDataSource(request);
 
 		for (int i = 0; i < parameters.size(); i++) {
 
@@ -271,18 +175,22 @@ public class FactoryNeo4j {
 			}
 
 		}
+		
+		**/
+		
+		
 
-		String cypher = "\n\nMATCH (score:mo__Score {uri:\""+scoreIdentifier+"\"})\n";
+		String cypher = "\n\nMATCH (score:mo__Score {uri:\""+request.getIdentifier()+"\"})\n";
 
-		if(format.equals("musicxml")||format.equals("")) {
+		if(request.getFormat().equals("musicxml")||request.getFormat().equals("")) {
 			cypher = cypher +"RETURN score.mso__asMusicXML AS xml\n"; 
-		} else if (format.equals("mei")) {
+		} else if (request.getFormat().equals("mei")) {
 			cypher = cypher +"RETURN score.mso__asMEI AS xml\n";
 		}
 
 		logger.debug("getMusicXML:\n"+cypher);
 		
-		StatementResult rs = Neo4jConnector.executeQuery(cypher, dataSource);
+		StatementResult rs = Neo4jConnector.executeQuery(cypher, Util.getDataSource(request));
 
 		while ( rs.hasNext() ){
 			Record record = rs.next();
@@ -292,7 +200,6 @@ public class FactoryNeo4j {
 
 		return result;
 	}
-
 
 	public static ArrayList<PerformanceMediumType> getPerformanceMedium(DataSource ds){
 		
@@ -587,7 +494,398 @@ public class FactoryNeo4j {
 		return result;
 	}
 	
-	public static ArrayList<MusicScore> getScoreList(ArrayList<RequestParameter> parameters, DataSource dataSource){
+	
+	public static int getResultsetSize(WMSSRequest wmssRequest, DataSource dataSource) {
+		
+		String cypherQuery = createMelodyQuery(wmssRequest) + "\nRETURN COUNT(DISTINCT scr.uri) AS total";
+		
+		StatementResult rs = Neo4jConnector.executeQuery(cypherQuery, dataSource);
+		Record record = rs.next();
+		
+		return record.get("total").asInt();
+		
+	}
+	
+	public static String createMelodyQuery(WMSSRequest request) {
+	
+		String match = "";
+		String where = "";
+				
+		boolean ignoreChords = true;
+		boolean ignoreOctaves = true;
+		boolean ignoreDuration = false;
+		boolean ignorePitch = false;
+			
+		String personNode;
+		
+		if(!request.getPerson().equals("")) {
+			personNode = "(creator:foaf__Person {uri:\""+request.getPerson()+"\"})";
+		} else {
+			personNode = "(creator:foaf__Person)";
+		}
+		
+		String personRoleNode;
+
+		if(!request.getPersonRole().equals("")) {
+			personRoleNode = "(role:prov__Role {gndo__preferredNameForTheSubjectHeading:\""+request.getPersonRole()+"\"})";
+		} else {
+			personRoleNode = "(role:prov__Role)";
+		}
+		
+		String scoreNode = "";
+		
+		if(!request.getFormat().equals("")) {
+			scoreNode = "(scr:mo__Score {format:\""+request.getFormat()+"\"})";
+		} else {
+			scoreNode = "(scr:mo__Score)";
+		}
+		
+		String instrumentNode = "";
+
+		if(!request.getPerformanceMedium().equals("")) {
+			instrumentNode = "(part:mso__ScorePart {rdfs__label:\""+request.getPerformanceMedium()+"\"})";
+		} else {
+			if(!request.getPerformanceMediumType().equals("")) {
+				instrumentNode = "(part:mso__ScorePart {typeLabel:\""+request.getPerformanceMediumType()+"\"})";
+			} else {
+				instrumentNode = "(part:mso__ScorePart)";
+			}
+		}		
+		
+		match = "\nMATCH "+scoreNode+"-[:dc__creator]->"+personNode+"-[:gndo__professionOrOccupation]->"+personRoleNode+"\n";
+		 
+		if(!request.getMelody().equals("")) {
+	
+			ArrayList<Note> noteSequence = createNoteSequence(request.getMelody());
+			
+			for (int j = 0; j < noteSequence.size(); j++) {
+				/**
+				 * Disables ignoreChord flag in case there are chords in the searched melody.
+				 */
+				if(noteSequence.get(j).isChord()) {
+					ignoreChords=false;
+				}
+			}
+
+			match = match + "MATCH "+scoreNode+"-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->"+instrumentNode+"-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(ns0:mso__NoteSet)\n" + 
+							"MATCH "+scoreNode+"-[:foaf__thumbnail]->(thumbnail) \n" +
+							"MATCH "+scoreNode+"-[:mo__movement]->(movements:mo__Movement) \n"+
+							"MATCH "+instrumentNode+"-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n"; 
+					
+			int i = 0;
+			int notesetCounter = 0;
+			
+			while(i<=noteSequence.size()-1) {
+
+				if(i==0) {
+					
+					if(!ignorePitch) {
+						match = match +	"MATCH (ns0:mso__NoteSet)-[:mso__hasNote]->(n0:chord__Note {note:'"+noteSequence.get(i).getPitch()+"', accidental: '"+noteSequence.get(i).getAccidental()+"'}) \n";
+					}
+					
+					if(!ignoreDuration) {
+						where = where +	"AND ns0.duration = "+noteSequence.get(i).getDuration()+" \n";
+					}					
+										
+					if(!ignoreOctaves) {	
+						match = match +	"MATCH (n0:chord__Note {mso__hasOctave:"+noteSequence.get(i).getOctave()+"}) \n";
+					}
+					
+				} else {
+					
+					if(!noteSequence.get(i).isChord()) {
+						notesetCounter++;
+						if(notesetCounter>0) {
+						match = match + "MATCH (ns"+(notesetCounter-1)+":mso__NoteSet)-[:mso__nextNoteSet]->(ns"+notesetCounter+":mso__NoteSet) \n";
+						}
+						
+					}
+					
+					if(!ignorePitch) {						
+						match = match + "MATCH (ns"+notesetCounter+":mso__NoteSet)-[:mso__hasNote]->(n"+i+":chord__Note {note:'"+noteSequence.get(i).getPitch()+"', accidental: '"+noteSequence.get(i).getAccidental()+"'}) \n";											
+					}										
+					if(!ignoreDuration) {
+						where = where +	"AND ns"+notesetCounter+".duration = "+noteSequence.get(i).getDuration()+" \n";
+					}					
+					if(!ignoreOctaves) {	
+						match = match +	"MATCH (n"+i+":chord__Note {mso__hasOctave:"+noteSequence.get(i).getOctave()+"}) \n";
+					}										 
+				}
+
+				if(ignoreChords) {
+					where = where  + "AND ns"+notesetCounter+".size = 1 \n";
+				}
+				
+				i++;
+			}
+			
+
+		} else {
+			
+			match = match + "\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-"+scoreNode+"-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->"+instrumentNode+"\n" + 
+							"MATCH "+scoreNode+"-[:foaf__thumbnail]->(thumbnail) \n" +
+							"MATCH "+scoreNode+"-[:mo__movement]->(movements:mo__Movement) \n";	
+		}
+		
+		if(request.isSolo()) {
+			match = match + "\nMATCH (part:mso__ScorePart {mso__isSolo:\""+request.isSolo()+"\"})";	
+		}
+		
+		if(request.isEnsemble()) {
+			match = match + "\nMATCH (part:mso__ScorePart {mso__isEnsemble:\""+request.isEnsemble()+"\"})";	
+		}
+		
+		if(request.getCollection().equals("")) {
+			match = match + "MATCH (collection:prov__Collection)-[:prov__hadMember]->"+scoreNode+"\n";
+		} else {
+			match = match + "MATCH (collection:prov__Collection {uri:\""+request.getCollection()+"\"})-[:prov__hadMember]->"+scoreNode+"\n";
+		}
+		
+		String optionalMatch = "MATCH (scr:mo__Score)-[:prov__wasGeneratedBy]->(activity:prov__Activity)-[:prov__wasAssociatedWith]->(encoder:foaf__Person) \n";
+		
+		return match + optionalMatch + "WHERE TRUE\n" + where;
+		
+	}
+	
+	
+	public static ArrayList<MusicScore> getScoreList(WMSSRequest request, DataSource dataSource){
+
+		ArrayList<MusicScore> result = new ArrayList<MusicScore>();		
+		String returnClause = "";
+		
+		/**
+		String match = "";
+		String where = "";
+		
+		
+		boolean ignoreChords = true;
+		boolean ignoreOctaves = true;
+		boolean ignoreDuration = false;
+		boolean ignorePitch = false;
+			
+		String personNode;
+		
+		if(!request.getPerson().equals("")) {
+			personNode = "(creator:foaf__Person {uri:\""+request.getPerson()+"\"})";
+		} else {
+			personNode = "(creator:foaf__Person)";
+		}
+		
+		String personRoleNode;
+
+		if(!request.getPersonRole().equals("")) {
+			personRoleNode = "(role:prov__Role {gndo__preferredNameForTheSubjectHeading:\""+request.getPersonRole()+"\"})";
+		} else {
+			personRoleNode = "(role:prov__Role)";
+		}
+		
+		String scoreNode = "";
+		
+		if(!request.getFormat().equals("")) {
+			scoreNode = "(scr:mo__Score {format:\""+request.getFormat()+"\"})";
+		} else {
+			scoreNode = "(scr:mo__Score)";
+		}
+		
+		String instrumentNode = "";
+
+		if(!request.getPerformanceMedium().equals("")) {
+			instrumentNode = "(part:mso__ScorePart {rdfs__label:\""+request.getPerformanceMedium()+"\"})";
+		} else {
+			if(!request.getPerformanceMediumType().equals("")) {
+				instrumentNode = "(part:mso__ScorePart {typeLabel:\""+request.getPerformanceMediumType()+"\"})";
+			} else {
+				instrumentNode = "(part:mso__ScorePart)";
+			}
+		}		
+		
+		match = "\nMATCH "+scoreNode+"-[:dc__creator]->"+personNode+"-[:gndo__professionOrOccupation]->"+personRoleNode+"\n";
+		 
+		if(!request.getMelody().equals("")) {
+	
+			ArrayList<Note> noteSequence = createNoteSequence(request.getMelody());
+			
+			for (int j = 0; j < noteSequence.size(); j++) {
+				
+				 // Disables ignoreChord flag in case there are chords in the searched melody.
+				 
+				if(noteSequence.get(j).isChord()) {
+					ignoreChords=false;
+				}
+			}
+
+			match = match + "MATCH "+scoreNode+"-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->"+instrumentNode+"-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(ns0:mso__NoteSet)\n" + 
+							"MATCH "+scoreNode+"-[:foaf__thumbnail]->(thumbnail) \n" +
+							"MATCH "+scoreNode+"-[:mo__movement]->(movements:mo__Movement) \n"+
+							"MATCH "+instrumentNode+"-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n"; 
+					
+			//for (int i = 0; i < noteSequence.size(); i++) {			
+			int i = 0;
+			int notesetCounter = 0;
+			
+			while(i<=noteSequence.size()-1) {
+
+				if(i==0) {
+					
+					if(!ignorePitch) {
+						match = match +	"MATCH (ns0:mso__NoteSet)-[:mso__hasNote]->(n0:chord__Note {note:'"+noteSequence.get(i).getPitch()+"', accidental: '"+noteSequence.get(i).getAccidental()+"'}) \n";
+					}
+					
+					if(!ignoreDuration) {
+						where = where +	"AND ns0.duration = "+noteSequence.get(i).getDuration()+" \n";
+					}					
+										
+					if(!ignoreOctaves) {	
+						match = match +	"MATCH (n0:chord__Note {mso__hasOctave:"+noteSequence.get(i).getOctave()+"}) \n";
+					}
+					
+				} else {
+					
+					if(!noteSequence.get(i).isChord()) {
+						notesetCounter++;
+						if(notesetCounter>0) {
+						match = match + "MATCH (ns"+(notesetCounter-1)+":mso__NoteSet)-[:mso__nextNoteSet]->(ns"+notesetCounter+":mso__NoteSet) \n";
+						}
+						
+					}
+					
+					if(!ignorePitch) {						
+						match = match + "MATCH (ns"+notesetCounter+":mso__NoteSet)-[:mso__hasNote]->(n"+i+":chord__Note {note:'"+noteSequence.get(i).getPitch()+"', accidental: '"+noteSequence.get(i).getAccidental()+"'}) \n";											
+					}										
+					if(!ignoreDuration) {
+						where = where +	"AND ns"+notesetCounter+".duration = "+noteSequence.get(i).getDuration()+" \n";
+					}					
+					if(!ignoreOctaves) {	
+						match = match +	"MATCH (n"+i+":chord__Note {mso__hasOctave:"+noteSequence.get(i).getOctave()+"}) \n";
+					}										 
+				}
+
+				if(ignoreChords) {
+					where = where  + "AND ns"+notesetCounter+".size = 1 \n";
+				}
+				
+				i++;
+			}
+			
+
+		} else {
+			
+			match = match + "\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-"+scoreNode+"-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->"+instrumentNode+"\n" + 
+							"MATCH "+scoreNode+"-[:foaf__thumbnail]->(thumbnail) \n" +
+							"MATCH "+scoreNode+"-[:mo__movement]->(movements:mo__Movement) \n";	
+		}
+		
+		if(request.isSolo()) {
+			match = match + "\nMATCH (part:mso__ScorePart {mso__isSolo:\""+request.isSolo()+"\"})";	
+		}
+		
+		if(request.isEnsemble()) {
+			match = match + "\nMATCH (part:mso__ScorePart {mso__isEnsemble:\""+request.isEnsemble()+"\"})";	
+		}
+		
+		if(request.getCollection().equals("")) {
+			match = match + "MATCH (collection:prov__Collection)-[:prov__hadMember]->"+scoreNode+"\n";
+		} else {
+			match = match + "MATCH (collection:prov__Collection {uri:\""+request.getCollection()+"\"})-[:prov__hadMember]->"+scoreNode+"\n";
+		}
+		
+		
+		**/
+		String matchClause = createMelodyQuery(request);
+		
+		returnClause =   "\nRETURN \n" + 				
+				"    scr.dc__title AS title,\n" + 
+				"    scr.uri AS identifier,\n" +
+				"    activity,\n" + 
+				"    thumbnail.uri AS thumbnail,\n " +
+				"	 collection.uri AS collectionIdentifier, \n"+
+				"	 collection.rdfs__label AS collectionLabel, \n"+
+				"    {movements: COLLECT(DISTINCT \n" + 
+				"    	{movementIdentifier: movements.uri,\n" + 
+				"        movementName: movements.dc__title }\n" + 
+				"    )} AS movements,\n" + 
+				"    {persons: COLLECT(DISTINCT\n" + 
+				"       {name: creator.foaf__name, \n" + 
+				"     	 identifier: creator.uri, \n" +
+				"	     role: role.gndo__preferredNameForTheSubjectHeading} \n" + 
+				"    )} AS persons,\n" + 
+				"    {persons: \n" +
+				"		COLLECT(DISTINCT {name: encoder.foaf__name, identifier: encoder.uri, role: \"Encoder\"})} AS encoders, \n";
+		
+		if(!request.getMelody().equals("")) {
+			
+				returnClause = returnClause +"	 {locations: \n" +
+				"    COLLECT(DISTINCT{ \n" + 
+				"	   	  movementIdentifier: mov.uri,\n" + 
+				"		  movementName: mov.dc__title,\n" + 
+				"      startingMeasure: measure.rdfs__ID, \n" + 
+				"      staff: staff.rdfs__ID , \n" + 
+				"      voice: voice.rdfs__ID, \n" + 
+				"      instrumentName: part.dc__description \n" + 
+				"      })} AS locations, \n";				
+		}		
+				
+		returnClause = returnClause +	"   CASE WHEN scr.mso__asMusicXML IS NULL THEN FALSE ELSE TRUE END AS musicxml,\n" + 
+									    "   CASE WHEN scr.mso__asMEI IS NULL THEN FALSE ELSE TRUE END AS mei \n" + 
+									    "ORDER BY scr.dc__title \n" +
+									    "SKIP " + request.getOffset() + "\n" + 
+									    "LIMIT " + request.getPageSize();
+				
+		String cypherQuery = matchClause + returnClause;
+
+		logger.info("\n[main]:\n"+cypherQuery+"\n");
+				
+		StatementResult rs = Neo4jConnector.executeQuery(cypherQuery, dataSource);
+				
+		while ( rs.hasNext() )
+		{
+			Record record = rs.next();
+			MusicScore score = new MusicScore();
+			score.setTitle(record.get("title").asString());
+			score.setScoreId(record.get("identifier").asString());
+			score.setThumbnail(record.get("thumbnail").asString());					
+			score.getCollection().setId(record.get("collectionIdentifier").asString());
+			score.getCollection().setDescription(record.get("collectionLabel").asString());
+			score.setOnlineResource(record.get("identifier").asString());
+			
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			
+			if(!request.getMelody().equals("")) {
+				score.getMelodyLocation().addAll(getMelodyLocations(gson.toJson(record.get("locations").asMap()),request.getMelody()));
+			}
+			score.getPersons().addAll(getPersons(gson.toJson(record.get("persons").asMap())));
+			score.getPersons().addAll(getPersons(gson.toJson(record.get("encoders").asMap())));
+			score.getMovements().addAll(getMovements(gson.toJson(record.get("movements").asMap())));
+			score.setProvenance(getProvenance(gson.toJson(record.get("activity").asMap())));
+			
+			for (int i = 0; i < score.getMovements().size(); i++) {
+			
+				score.getMovements().get(i).getPerformanceMediumList().add(getPerformanceMediums(score.getScoreId(),score.getMovements().get(i).getMovementId(),dataSource));
+
+			}
+			
+			if(record.get("musicxml").asBoolean()) {
+				Format format = new Format();
+				format.setFormatId("musicxml");
+				format.setFormatDescription("MusicXML 3.0"); //TODO: create triples for describing MusicXML version
+				score.getFormats().add(format);	
+			} else if(record.get("mei").asBoolean()) {
+				Format format = new Format();
+				format.setFormatId("mei");
+				format.setFormatDescription("Music Encoding Initiative 3.0"); //TODO: create triples for describing MusicXML version
+				score.getFormats().add(format);	
+				
+			}
+			
+			result.add(score);
+		}
+
+		return result;
+		
+	}
+	
+	/**
+	public static ArrayList<MusicScore> OLDgetScoreList(ArrayList<RequestParameter> parameters, DataSource dataSource){
 
 		ArrayList<MusicScore> result = new ArrayList<MusicScore>();		
 		String melody = "";
@@ -602,6 +900,7 @@ public class FactoryNeo4j {
 		String instrumentType = "";
 		String solo = "";
 		String ensemble = "";
+		String pageSizeOverride = "";
 		
 		boolean ignoreChords = true;
 		boolean ignoreOctaves = true;
@@ -611,45 +910,34 @@ public class FactoryNeo4j {
 		for (int i = 0; i < parameters.size(); i++) {
 			if(parameters.get(i).getRequest().equals("melody")){
 				melody = parameters.get(i).getValue();
-			}
-			if(parameters.get(i).getRequest().equals("ignorechords")){
+			} else if(parameters.get(i).getRequest().equals("ignorechords")){
 				ignoreChords = Boolean.valueOf(parameters.get(i).getValue());
-			}
-			if(parameters.get(i).getRequest().equals("collection")){
+			} else if(parameters.get(i).getRequest().equals("collection")){
 				collection = parameters.get(i).getValue();
-			}
-			if(parameters.get(i).getRequest().equals("person")){
+			} else if(parameters.get(i).getRequest().equals("person")){
 				person = parameters.get(i).getValue().toString();
-			}
-			if(parameters.get(i).getRequest().equals("personRole")){
+			} else if(parameters.get(i).getRequest().equals("personRole")){
 				personRole = parameters.get(i).getValue().toString();
-			}
-			if(parameters.get(i).getRequest().equals("format")){
+			} else if(parameters.get(i).getRequest().equals("format")){
 				docFormat = parameters.get(i).getValue().toString();
-			}
-			if(parameters.get(i).getRequest().equals("performancemedium")){
+			} else if(parameters.get(i).getRequest().equals("performancemedium")){
 				instrument = parameters.get(i).getValue().toString();				
-			}
-			if(parameters.get(i).getRequest().equals("performancemediumtype")){
+			} else if(parameters.get(i).getRequest().equals("performancemediumtype")){
 				instrumentType = parameters.get(i).getValue().toString();				
-			} 
-			if(parameters.get(i).getRequest().equals("solo")){
+			} else if(parameters.get(i).getRequest().equals("solo")){
 				solo = parameters.get(i).getValue().toString();				
-			} 
-			if(parameters.get(i).getRequest().equals("ensemble")){
+			} else if(parameters.get(i).getRequest().equals("ensemble")){
 				ensemble = parameters.get(i).getValue().toString();				
-			} 
-			if(parameters.get(i).getRequest().equals("ignoreoctaves")){
+			} else if(parameters.get(i).getRequest().equals("ignoreoctaves")){
 				ignoreOctaves = Boolean.valueOf(parameters.get(i).getValue());				
-			}
-			if(parameters.get(i).getRequest().equals("ignoreduration")){
+			} else if(parameters.get(i).getRequest().equals("ignoreduration")){
 				ignoreDuration = Boolean.valueOf(parameters.get(i).getValue());				
-			} 
-			if(parameters.get(i).getRequest().equals("ignorepitch")){
+			} else if(parameters.get(i).getRequest().equals("ignorepitch")){
 				ignorePitch = Boolean.valueOf(parameters.get(i).getValue());				
+			} else if(parameters.get(i).getRequest().equals("pagesize")){
+				pageSizeOverride = parameters.get(i).getValue().toString();							
 			} 
 		}
-		
 		
 		String personNode;
 		
@@ -695,9 +983,9 @@ public class FactoryNeo4j {
 			ArrayList<Note> noteSequence = createNoteSequence(melody);
 			
 			for (int j = 0; j < noteSequence.size(); j++) {
-				/**
-				 * Disables ignoreChord flag in case there are chords in the searched melody.
-				 */
+				
+				//Disables ignoreChord flag in case there are chords in the searched melody.
+				 
 				if(noteSequence.get(j).isChord()) {
 					ignoreChords=false;
 				}
@@ -750,11 +1038,6 @@ public class FactoryNeo4j {
 					}										 
 				}
 
-				/**
-				if(i <= noteSequence.size()-1 && i > 0) {
-					match = match + "MATCH (ns"+(notesetCounter-1)+":mso__NoteSet)-[:mso__nextNoteSet]->(ns"+notesetCounter+":mso__NoteSet) \n";
-				}
-				**/
 				if(ignoreChords) {
 					where = where  + "AND ns"+notesetCounter+".size = 1 \n";
 				}
@@ -812,18 +1095,27 @@ public class FactoryNeo4j {
 				"      staff: staff.rdfs__ID , \n" + 
 				"      voice: voice.rdfs__ID, \n" + 
 				"      instrumentName: part.dc__description \n" + 
-				"      })} AS locations, \n";
-				
+				"      })} AS locations, \n";				
 		}		
 				
 		ret = ret +	"   CASE WHEN scr.mso__asMusicXML IS NULL THEN FALSE ELSE TRUE END AS musicxml,\n" + 
 					"   CASE WHEN scr.mso__asMEI IS NULL THEN FALSE ELSE TRUE END AS mei \n" + 
-					"ORDER BY scr.dc__title "; 
-
+					"ORDER BY scr.dc__title \n";
+		
+		if(pageSizeOverride.equals("")) {
+			ret = ret + "LIMIT " + SystemSettings.getPageSize();
+		} else {
+			ret = ret + "LIMIT " + pageSizeOverride;
+		}
+		
 		String optionalMatch = "MATCH (scr:mo__Score)-[:prov__wasGeneratedBy]->(activity:prov__Activity)-[:prov__wasAssociatedWith]->(encoder:foaf__Person) \n";
 		String cypher = match + optionalMatch + "WHERE TRUE\n" + where  + ret;
 
 		logger.info("\n[main]:\n"+cypher+"\n");
+		
+			
+		
+		
 
 		StatementResult rs = Neo4jConnector.executeQuery(cypher, dataSource);
 				
@@ -873,6 +1165,8 @@ public class FactoryNeo4j {
 		return result;
 		
 	}
+	
+	**/
 	
 	private static ArrayList<Movement> getMovements(String json){
 		

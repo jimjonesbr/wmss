@@ -59,7 +59,8 @@ public class FactoryTripleStore {
 		
 		String result = "";		
 		String format = "";
-		DataSource ds = Util.getDataSource(parameters);
+		//DataSource ds = Util.getDataSource(parameters);
+		DataSource ds = null;
 		String scoreId = Util.getScoreRequestData(parameters).getScoreId();
 				
 		try {

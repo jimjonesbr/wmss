@@ -2,14 +2,12 @@ package de.wwu.wmss.web;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Enumeration;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
-import de.wwu.wmss.core.RequestParameter;
+import de.wwu.wmss.core.WMSSRequest;
 import de.wwu.wmss.factory.ServiceMessagingHandler;
 import de.wwu.wmss.settings.SystemSettings;
 import de.wwu.wmss.settings.Util;
@@ -24,38 +22,42 @@ public class ServletWMSS extends HttpServlet
 	private static Logger logger = Logger.getLogger("ServletWMSS");
 	
 	
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	protected void doGet(HttpServletRequest httpRequest, HttpServletResponse response) throws ServletException, IOException
 	{    	
-		Enumeration<String> listParameters = request.getParameterNames();
-		ArrayList<RequestParameter> parametersList = new ArrayList<RequestParameter>(); 
+		/**Enumeration<String> listParameters = request.getParameterNames();
+		 ArrayList<RequestParameter> parametersList = new ArrayList<RequestParameter>();*/ 
+						
+		WMSSRequest wmssRequest = new WMSSRequest(httpRequest);
 		
-		logger.info("Request String -> "+request.getQueryString());
+		logger.info("Request String -> "+httpRequest.getQueryString());
 		
-		String identifier = "";
-		String version = "";
-		String format = "";
-		String requestType = "";
-		String collection = "";
-		String person = "";
-		String personRole = "";
-		String performanceMedium = "";
-		String performanceMediumType = "";
-		String solo = "";
-		String tonalityTonic = "";
-		String tonalityMode = "";
-		String tempo = "";
-		String creationDate = "";
-		String creationDateFrom = "";
-		String creationDateTo = "";
-		String melody = "";
-		String source = "";
-		String score = "";
-		String ignoreChords = "";
+//		String identifier = "";
+//		String version = "";
+//		String format = "";
+//		String requestType = "";
+//		String collection = "";
+//		String person = "";
+//		String personRole = "";
+//		String performanceMedium = "";
+//		String performanceMediumType = "";
+//		String solo = "";
+//		String tonalityTonic = "";
+//		String tonalityMode = "";
+//		String tempo = "";
+//		String creationDate = "";
+//		String creationDateFrom = "";
+//		String creationDateTo = "";
+//		String melody = "";
+//		String source = "";
+//		String score = "";
+//		String ignoreChords = "";
+//		String pageSize = "";
 
 		response.addHeader("Access-Control-Allow-Origin","*");
 		response.addHeader("Access-Control-Allow-Methods","GET,POST");
 		response.addHeader("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");
-
+		
+		/**
 		while(listParameters.hasMoreElements() ) {
 
 			String parameter = (String) listParameters.nextElement();
@@ -64,6 +66,7 @@ public class ServletWMSS extends HttpServlet
 			if (parameter.toLowerCase().equals("request")) {
 				requestType=request.getParameter(parameter).toLowerCase();
 				req.setRequest("requesttype");
+				
 				req.setValue(request.getParameter(parameter).toLowerCase());
 			} else if (parameter.toLowerCase().equals("format")) {
 				
@@ -203,21 +206,42 @@ public class ServletWMSS extends HttpServlet
 				req.setRequest("ignoreduration");
 				req.setValue(request.getParameter(parameter).toLowerCase());
 				
-			}
- 
+			} else if (parameter.toLowerCase().equals("pagesize")) {
+				
+				req.setRequest("pagesize");
+				req.setValue(request.getParameter(parameter));
+				
+			} else if (parameter.toLowerCase().equals("offset")) {
+				
+				req.setRequest("offset");
+				req.setValue(request.getParameter(parameter));
+				
+			} else if (parameter.toLowerCase().equals("totalsize")) {
+				
+				req.setRequest("totalsize");
+				req.setValue(request.getParameter(parameter));
+				
+			} else if (parameter.toLowerCase().equals("offset")) {
+				
+				req.setRequest("offset");
+				req.setValue(request.getParameter(parameter));				
+			} 
+			 
 
 			parametersList.add(req);
-		}
+		} **/
+		
+		
 
 		boolean validSource = false;
 
-		if (!source.equals("")){
+		if (!wmssRequest.getSource().equals("")){
 
 			for (int i = 0; i < SystemSettings.sourceList.size(); i++) {
 
 				if (validSource==false){
 
-					if (source.equals(SystemSettings.sourceList.get(i).getId().toString().toLowerCase())){
+					if (wmssRequest.getSource().equals(SystemSettings.sourceList.get(i).getId().toString().toLowerCase())){
 
 						validSource = true;						
 
@@ -236,111 +260,111 @@ public class ServletWMSS extends HttpServlet
 		
 		
 		
-		if(requestType.equals("")){
+		if(wmssRequest.getRequestType().equals("")){
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0001", "No request type provided","Provide one of the following request types: ListScores, GetScores, Checklog, DescribeService."));
 
-		} else if (!requestType.equals("listscores") 
-				&& !requestType.equals("getscore")
-				&& !requestType.equals("checklog")
-				&& !requestType.equals("describeservice")){
+		} else if (!wmssRequest.getRequestType().equals("listscores") 
+				&& !wmssRequest.getRequestType().equals("getscore")
+				&& !wmssRequest.getRequestType().equals("checklog")
+				&& !wmssRequest.getRequestType().equals("describeservice")){
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0002", "Invalid request parameter [" + requestType + "].","Provide one of the following request types: ListScores, GetScores, Checklog, DescribeService."));
+			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0002", "Invalid request parameter [" + wmssRequest.getRequestType() + "].","Provide one of the following request types: ListScores, GetScores, Checklog, DescribeService."));
 
-		} else if (!format.equals("mei") && !format.equals("musicxml") && !format.equals("") ){
-
-			response.setContentType("text/javascript");
-			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0003", "Invalid document format [" + format + "].",""));
-
-		} else if (!tonalityMode.equals("minor") && !tonalityMode.equals("major") && !tonalityMode.equals("") ){
+		} else if (!wmssRequest.getFormat().equals("mei") && !wmssRequest.getFormat().equals("musicxml") && !wmssRequest.getFormat().equals("") ){
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0004", "Invalid mode [" + tonalityMode + "].","Provide one of the tonality modes: 'minor' or 'major'"));
+			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0003", "Invalid document format [" + wmssRequest.getFormat() + "].",""));
 
-		} else if (!tonalityTonic.equals("a") && 
-					!tonalityTonic.equals("aflat") && 
-					!tonalityTonic.equals("asharp") && 
-					!tonalityTonic.equals("b") &&
-					!tonalityTonic.equals("bflat") &&
-					!tonalityTonic.equals("bsharp") &&
-					!tonalityTonic.equals("c") &&
-					!tonalityTonic.equals("cflat") &&
-					!tonalityTonic.equals("csharp") &&
-					!tonalityTonic.equals("d") &&
-					!tonalityTonic.equals("dflat") &&
-					!tonalityTonic.equals("dsharp") &&
-					!tonalityTonic.equals("e") &&
-					!tonalityTonic.equals("eflat") &&
-					!tonalityTonic.equals("esharp") &&
-					!tonalityTonic.equals("f") &&
-					!tonalityTonic.equals("fflat") &&
-					!tonalityTonic.equals("fsharp") &&
-					!tonalityTonic.equals("g") &&
-					!tonalityTonic.equals("gflat") &&
-					!tonalityTonic.equals("gsharp") &&
-					!tonalityTonic.equals("")){
+		} else if (!wmssRequest.getTonalityMode().equals("minor") && !wmssRequest.getTonalityMode().equals("major") && !wmssRequest.getTonalityMode().equals("") ){
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0005", "Invalid tonic '" + tonalityTonic + "'.","[TBW]"));
+			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0004", "Invalid mode [" + wmssRequest.getTonalityMode() + "].","Provide one of the tonality modes: 'minor' or 'major'"));
 
-		} else if (!solo.equals("true") &&
-				!solo.equals("false") &&
-				!solo.equals(""))	{
+		} else if (!wmssRequest.getTonalityTonic().equals("a") && 
+					!wmssRequest.getTonalityTonic().equals("aflat") && 
+					!wmssRequest.getTonalityTonic().equals("asharp") && 
+					!wmssRequest.getTonalityTonic().equals("b") &&
+					!wmssRequest.getTonalityTonic().equals("bflat") &&
+					!wmssRequest.getTonalityTonic().equals("bsharp") &&
+					!wmssRequest.getTonalityTonic().equals("c") &&
+					!wmssRequest.getTonalityTonic().equals("cflat") &&
+					!wmssRequest.getTonalityTonic().equals("csharp") &&
+					!wmssRequest.getTonalityTonic().equals("d") &&
+					!wmssRequest.getTonalityTonic().equals("dflat") &&
+					!wmssRequest.getTonalityTonic().equals("dsharp") &&
+					!wmssRequest.getTonalityTonic().equals("e") &&
+					!wmssRequest.getTonalityTonic().equals("eflat") &&
+					!wmssRequest.getTonalityTonic().equals("esharp") &&
+					!wmssRequest.getTonalityTonic().equals("f") &&
+					!wmssRequest.getTonalityTonic().equals("fflat") &&
+					!wmssRequest.getTonalityTonic().equals("fsharp") &&
+					!wmssRequest.getTonalityTonic().equals("g") &&
+					!wmssRequest.getTonalityTonic().equals("gflat") &&
+					!wmssRequest.getTonalityTonic().equals("gsharp") &&
+					!wmssRequest.getTonalityTonic().equals("")){
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0006", "Invalid boolean value for 'solo' parameter '" + solo + "'.","The 'solo' filter required a boolean value ('true' or 'false')."));
+			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0005", "Invalid tonic '" + wmssRequest.getTonalityTonic() + "'.","[TBW]"));
 
-		} else if (!version.equals("") &&
-				!SystemSettings.protocolVersions.contains(version.toString())){
+//		} else if (!wmssRequest.isSolo() &&
+//				!solo.equals("false") &&
+//				!solo.equals(""))	{
+//
+//			response.setContentType("text/javascript");
+//			response.setStatus(HttpServletResponse.SC_OK);
+//			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0006", "Invalid boolean value for 'solo' parameter '" + solo + "'.","The 'solo' filter required a boolean value ('true' or 'false')."));
+
+		} else if (!wmssRequest.getVersion().equals("") &&
+				!SystemSettings.protocolVersions.contains(wmssRequest.getVersion().toString())){
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0007", "Invalid protocol version '" + version+ "'.","Check the 'Service Description Report' for more information on the supported WMSS protocols."));
+			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0007", "Invalid protocol version '" + wmssRequest.getVersion() + "'.","Check the 'Service Description Report' for more information on the supported WMSS protocols."));
 
 		} else if (!validSource) {
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0009", "Invalid data source '" + source + "'.","The provided data source cannot be found. Check the 'Service Description Report' for more information on the available data sources."));
+			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0009", "Invalid data source '" + wmssRequest.getSource() + "'.","The provided data source cannot be found. Check the 'Service Description Report' for more information on the available data sources."));
 
 //		} else if (!melody.equals("") && !isMelodyRequestValid(melody)) {
-		} else if (!melody.equals("") && !isMelodyRequestValid(melody)) {
+		} else if (!wmssRequest.getMelody().equals("") && !isMelodyRequestValid(wmssRequest.getMelody())) {
 			
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0012", "Invalid melody '" + melody +"'","The provided melody is not valid. For more information go to: https://github.com/jimjonesbr/wmss/blob/master/README.md#melody"));
+			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0012", "Invalid melody '" + wmssRequest.getMelody() +"'","The provided melody is not valid. For more information go to: https://github.com/jimjonesbr/wmss/blob/master/README.md#melody"));
 			
-		} else if (requestType.equals("checklog")) {
+		} else if (wmssRequest.getRequestType().equals("checklog")) {
 			
 			response.setContentType("text/plain");
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.getWriter().println(Util.loadFileTail(new File("logs/system.log"), SystemSettings.getLogPreview()));
 			
 
-		} else if (requestType.equals("describeservice")) {
+		} else if (wmssRequest.getRequestType().equals("describeservice")) {
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.getWriter().println(ServiceMessagingHandler.getServiceDescription());
 
 
-		} else if (requestType.equals("getscore")) { 
+		} else if (wmssRequest.getRequestType().equals("getscore")) { 
 
-			if (identifier.equals("")){
+			if (wmssRequest.getIdentifier().equals("")){
 
 				response.setContentType("text/javascript");
 				response.setStatus(HttpServletResponse.SC_OK);
 				response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0008", "No identifier provided for GetScore request.","The GetScore request expects a valid score identifier."));
 
-			} else if (source.equals("")){
+			} else if (wmssRequest.getSource().equals("")){
 				
 				response.setContentType("text/javascript");
 				response.setStatus(HttpServletResponse.SC_OK);
@@ -350,16 +374,17 @@ public class ServletWMSS extends HttpServlet
 				
 				response.setContentType("text/xml");
 				response.setStatus(HttpServletResponse.SC_OK);
-				response.getWriter().println(ServiceMessagingHandler.getScore(parametersList));
+				response.getWriter().println(ServiceMessagingHandler.getScore(wmssRequest));
 				
 			}
 
 
-		} else if (requestType.equals("listscores")) {
+		} else if (wmssRequest.getRequestType().equals("listscores")) {
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getScoreList(parametersList));
+			//response.getWriter().println(ServiceMessagingHandler.OLDgetScoreList(parametersList));
+			response.getWriter().println(ServiceMessagingHandler.getScoreList(wmssRequest));
 
 			//TODO create an error message for invalid parameters. Currently they are being only ignored.
 			//TODO create validation of filter capabilities based on the sources.json document
@@ -427,37 +452,36 @@ public class ServletWMSS extends HttpServlet
 
 	}
 	
-	private static boolean isCollectionValid(String collectionString) {
-
-		//TODO: Listar todos as colecoes em cada datasource e criar um
-		boolean result = true;
-
-		result = collectionString.matches("^[0-9,]+$");
-
-		int comma = 0;
-		int digits = 0;
-
-		if (result) {
-			
-			for( int i=0; i<collectionString.length(); i++ ) {
-				
-				if( collectionString.charAt(i) == ',' ) {
-					comma++;
-				} 
-
-				if (Character.isDigit(collectionString.charAt(i))) {
-					digits++;
-				}
-
-			}
-
-			if(comma >= digits) result = false;
-			
-		}
-
-
-		return result;
-	}
+//	private static boolean isCollectionValid(String collectionString) {
+//
+//		//TODO: Listar todos as colecoes em cada datasource e criar um
+//		boolean result = true;
+//
+//		result = collectionString.matches("^[0-9,]+$");
+//
+//		int comma = 0;
+//		int digits = 0;
+//
+//		if (result) {
+//			
+//			for( int i=0; i<collectionString.length(); i++ ) {
+//				
+//				if( collectionString.charAt(i) == ',' ) {
+//					comma++;
+//				} 
+//
+//				if (Character.isDigit(collectionString.charAt(i))) {
+//					digits++;
+//				}
+//
+//			}
+//
+//			if(comma >= digits) result = false;
+//			
+//		}
+//
+//		return result;
+//	}
 
 }
 

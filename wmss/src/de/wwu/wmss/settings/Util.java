@@ -7,6 +7,7 @@ import java.util.Date;
 import de.wwu.wmss.core.DataSource;
 import de.wwu.wmss.core.MusicScore;
 import de.wwu.wmss.core.RequestParameter;
+import de.wwu.wmss.core.WMSSRequest;
 
 public class Util {
 	
@@ -86,7 +87,7 @@ public class Util {
 
 	}
 
-	public static DataSource getDataSource(ArrayList<RequestParameter> parameters) {
+	public static DataSource OLDgetDataSource(ArrayList<RequestParameter> parameters) {
 		
 		String dataSourceId = "";
 		DataSource dataSource = new DataSource();
@@ -109,6 +110,20 @@ public class Util {
 		
 		return dataSource;
 	}
+	
+	public static DataSource getDataSource(WMSSRequest request) {
+		
+		DataSource dataSource = new DataSource();
+
+		for (int i = 0; i < SystemSettings.sourceList.size(); i++) {
+			if(SystemSettings.sourceList.get(i).getId().equals(request.getSource())){			
+				dataSource = SystemSettings.sourceList.get(i); 
+			}
+		}
+		
+		return dataSource;
+	}
+	
 	
 	public static MusicScore getScoreRequestData(ArrayList<RequestParameter> parameters) {
 		

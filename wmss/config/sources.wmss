@@ -14,7 +14,7 @@
       "filterCapabilities": 
             {
               "melody": true,
-              "group": true,
+              "collection": true,
               "person": true,
               "personRole": true,
               "performanceMedium": true,
@@ -47,7 +47,7 @@
       "filterCapabilities": 
             {
               "melody": true,
-              "group": true,
+              "collection": true,
               "person": true,
               "personRole": true,
               "performanceMedium": true,
@@ -81,7 +81,7 @@
             "filterCapabilities": 
             {
               "melody": true,
-              "group": true,
+              "collection": true,
               "person": true,
               "personRole": true,
               "performanceMedium": true,
@@ -115,7 +115,41 @@
             "filterCapabilities": 
             {
               "melody": true,
-              "group": true,
+              "collection": true,
+              "person": true,
+              "personRole": true,
+              "performanceMedium": true,
+              "performanceMediumType": true,
+              "solo": true,
+              "tonalityTonic": true,
+              "tonalityMode": true,
+              "tempo": true,
+              "creationDate": true,
+              "creationDateFrom": true,
+              "creationDateTo": true,
+              "source": true,
+              "identifier": true,
+              "format": true              
+            }
+          
+      
+    },
+        {
+      "id": "neo4j_wmss",
+      "info": "Universität Münster (ERCIS) - Neo4j repository.",
+      "active": false,
+      "type": "lpg",
+      "storage": "neo4j",
+      "port": "7687",
+      "host": "bolt://wmss.uni-muenster.de",
+      "repository": "",
+      "version": "3.4.0",
+      "user": "neo4j",
+      "password": "123456",
+            "filterCapabilities": 
+            {
+              "melody": true,
+              "collection": true,
               "person": true,
               "personRole": true,
               "performanceMedium": true,

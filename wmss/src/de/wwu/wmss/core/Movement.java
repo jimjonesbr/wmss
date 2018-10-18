@@ -39,15 +39,7 @@ public class Movement {
 	public void setTempo(String tempo) {
 		this.tempo = tempo;
 	}
-
-//	public ArrayList<PerformanceMedium> getPerformanceMediumList() {
-//		return performanceMediumList;
-//	}
-
-//	public void setPerformanceMediumList(ArrayList<PerformanceMedium> performanceMediumList) {
-//		this.performanceMediumList = performanceMediumList;
-//	}
-
+	
 	public String getScoreId() {
 		return scoreId;
 	}
