@@ -36,7 +36,15 @@ public class WMSSRequest {
 	private int offset = 0;
 	private String hostname = "";
 		
-	public WMSSRequest(HttpServletRequest request) {
+	
+	public boolean isValid() {
+	
+		return true;
+		
+	}
+	
+	
+	public WMSSRequest(HttpServletRequest request)  throws InvalidWMSSRequestException {
 		
 		Enumeration<String> listParameters = request.getParameterNames();
 		
@@ -161,6 +169,13 @@ public class WMSSRequest {
 		}
 		
 		this.hostname = request.getServerName();
+		
+		
+		if(this.requestType.equals("")||this.requestType==null) {
+			
+			throw new InvalidWMSSRequestException("No request type provided. Provide one of the following request types: ListScores, GetScores, Checklog, DescribeService.");
+			
+		}
 	}
 
 
