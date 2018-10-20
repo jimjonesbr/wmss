@@ -2,7 +2,6 @@ package de.wwu.wmss.core;
 
 import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
-
 import de.wwu.wmss.settings.SystemSettings;
 
 public class WMSSRequest {
@@ -22,6 +21,7 @@ public class WMSSRequest {
 	private String creationDateFrom = "";
 	private String creationDateTo = "";
 	private String melody = "";
+	private String melodyEncoding = "";
 	private String identifier = "";
 	private String version = "";
 	private String source = "";
@@ -36,17 +36,9 @@ public class WMSSRequest {
 	private int offset = 0;
 	private String hostname = "";
 		
-	
-	public boolean isValid() {
-	
-		return true;
+	public WMSSRequest(HttpServletRequest httpRequest)  throws InvalidWMSSRequestException {
 		
-	}
-	
-	
-	public WMSSRequest(HttpServletRequest request)  throws InvalidWMSSRequestException {
-		
-		Enumeration<String> listParameters = request.getParameterNames();
+		Enumeration<String> listParameters = httpRequest.getParameterNames();
 		
 		while(listParameters.hasMoreElements() ) {
 
@@ -54,113 +46,116 @@ public class WMSSRequest {
 
 			if (parameter.toLowerCase().equals("request")) {
 								
-				this.requestType = request.getParameter(parameter).toLowerCase();
+				this.requestType = httpRequest.getParameter(parameter).toLowerCase();
 				
 			} else if (parameter.toLowerCase().equals("format")) {
 				
-				this.format = request.getParameter(parameter).toLowerCase();
+				this.format = httpRequest.getParameter(parameter).toLowerCase();
 				
 			} else if (parameter.toLowerCase().equals("collection")) {
 				
-				this.collection = request.getParameter(parameter).toLowerCase();
+				this.collection = httpRequest.getParameter(parameter).toLowerCase();
 				
 			} else if (parameter.toLowerCase().equals("person")) {
 				
-				this.person = request.getParameter(parameter).toLowerCase();
+				this.person = httpRequest.getParameter(parameter).toLowerCase();
 				
 			} else if (parameter.toLowerCase().equals("personrole")) {
 				
-				this.personRole = request.getParameter(parameter).toLowerCase();
+				this.personRole = httpRequest.getParameter(parameter).toLowerCase();
 
 			} else if (parameter.toLowerCase().equals("performancemedium")) {
 				
-				this.performanceMedium = request.getParameter(parameter).toLowerCase();
+				this.performanceMedium = httpRequest.getParameter(parameter).toLowerCase();
 
 			} else if (parameter.toLowerCase().equals("performancemediumtype")) {
 				
-				this.performanceMediumType = request.getParameter(parameter).toLowerCase();
+				this.performanceMediumType = httpRequest.getParameter(parameter).toLowerCase();
 
 			} else if (parameter.toLowerCase().equals("solo")) {
 				
-				this.solo = Boolean.parseBoolean(request.getParameter(parameter));
+				this.solo = Boolean.parseBoolean(httpRequest.getParameter(parameter));
 
 			} else if (parameter.toLowerCase().equals("tonalitytonic")) {
 				
-				this.tonalityTonic = request.getParameter(parameter).toLowerCase();
+				this.tonalityTonic = httpRequest.getParameter(parameter).toLowerCase();
 
 			} else if (parameter.toLowerCase().equals("tonalitymode")) {
 				
-				this.tonalityMode = request.getParameter(parameter).toLowerCase();
+				this.tonalityMode = httpRequest.getParameter(parameter).toLowerCase();
 
 			} else if (parameter.toLowerCase().equals("tempo")) {
 				
-				this.tempo = request.getParameter(parameter).toLowerCase();
+				this.tempo = httpRequest.getParameter(parameter).toLowerCase();
 
 			} else if (parameter.toLowerCase().equals("creationdate")) {
 				
-				this.creationDate = request.getParameter(parameter).toLowerCase();
+				this.creationDate = httpRequest.getParameter(parameter).toLowerCase();
 
 			} else if (parameter.toLowerCase().equals("creationdatefrom")) {
 				
-				this.creationDateFrom = request.getParameter(parameter);
+				this.creationDateFrom = httpRequest.getParameter(parameter);
 				
 			} else if (parameter.toLowerCase().equals("creationdateto")) {
 				
-				this.creationDateTo = request.getParameter(parameter).toLowerCase();
+				this.creationDateTo = httpRequest.getParameter(parameter).toLowerCase();
 				
 			} else if (parameter.toLowerCase().equals("melody")) {
 				
-				this.melody = request.getParameter(parameter);
+				this.melody = httpRequest.getParameter(parameter);
 				
 			} else if (parameter.toLowerCase().equals("identifier")) {
 				
-				this.identifier = request.getParameter(parameter);
+				this.identifier = httpRequest.getParameter(parameter);
 				
 			} else if (parameter.toLowerCase().equals("version")) {
 				
-				this.version = request.getParameter(parameter);
+				this.version = httpRequest.getParameter(parameter);
 				
 			} else if (parameter.toLowerCase().equals("source")) {
 				
-				this.source = request.getParameter(parameter);
+				this.source = httpRequest.getParameter(parameter);
 				
 			} else if (parameter.toLowerCase().equals("score")) {
 				
-				this.score = request.getParameter(parameter);
+				this.score = httpRequest.getParameter(parameter);
 				
 			} else if (parameter.toLowerCase().equals("ignorechords")) {
 				
-				this.ignoreChords = Boolean.parseBoolean(request.getParameter(parameter));
+				this.ignoreChords = Boolean.parseBoolean(httpRequest.getParameter(parameter));
 				
 			} else if (parameter.toLowerCase().equals("ensemble")) {
 				
-				this.ensemble = Boolean.parseBoolean(request.getParameter(parameter));
+				this.ensemble = Boolean.parseBoolean(httpRequest.getParameter(parameter));
 				
 			} else if (parameter.toLowerCase().equals("ignoreoctaves")) {
 				
-				this.ignoreOctaves = Boolean.parseBoolean(request.getParameter(parameter));
+				this.ignoreOctaves = Boolean.parseBoolean(httpRequest.getParameter(parameter));
 				
 			} else if (parameter.toLowerCase().equals("ignorepitch")) {
 				
-				this.ignorePitch = Boolean.parseBoolean(request.getParameter(parameter));
+				this.ignorePitch = Boolean.parseBoolean(httpRequest.getParameter(parameter));
 				
 			} else if (parameter.toLowerCase().equals("ignoreduration")) {
 				
-				this.ignoreDuration = Boolean.parseBoolean(request.getParameter(parameter));
+				this.ignoreDuration = Boolean.parseBoolean(httpRequest.getParameter(parameter));
 				
 			} else if (parameter.toLowerCase().equals("pagesize")) {
 				
-				this.pageSize = Integer.parseInt(request.getParameter(parameter));
+				this.pageSize = Integer.parseInt(httpRequest.getParameter(parameter));
 				
 			} else if (parameter.toLowerCase().equals("offset")) {
 				
-				this.offset = Integer.parseInt(request.getParameter(parameter));
+				this.offset = Integer.parseInt(httpRequest.getParameter(parameter));
 				
 			} else if (parameter.toLowerCase().equals("totalsize")) {
 				
-				this.totalSize = Integer.parseInt(request.getParameter(parameter));
+				this.totalSize = Integer.parseInt(httpRequest.getParameter(parameter));
 				
-			} 			
+			} else if (parameter.toLowerCase().equals("melodyencoding")) {
+				
+				this.melodyEncoding =httpRequest.getParameter(parameter);
+			}
 
 		}
 		
@@ -168,40 +163,117 @@ public class WMSSRequest {
 			this.pageSize = SystemSettings.getPageSize();
 		}
 		
-		this.hostname = request.getServerName();
-		
-		
-		if(this.requestType.equals("")||this.requestType==null) {
-			
-			throw new InvalidWMSSRequestException("No request type provided. Provide one of the following request types: ListScores, GetScores, Checklog, DescribeService.");
-			
+		if(this.melodyEncoding.equals("") || this.melodyEncoding==null) {
+			this.melodyEncoding = "pea"; //TODO create 'default melody format' at the settings file.
 		}
+		
+		this.hostname = httpRequest.getServerName();
+		
+		
+		
+		/**
+		 * Request validation
+		 */
+		
+		if(this.requestType.equals("") || this.requestType==null) {			
+			throw new InvalidWMSSRequestException(ErrorCodes.MISSING_REQUEST_DESCRIPTION,ErrorCodes.MISSING_REQUEST_CODE, ErrorCodes.INVALID_REQUEST_HINT);			
+		} 
+		if(!this.requestType.equals("listscores") && !this.requestType.equals("getscore") && !this.requestType.equals("checklog")
+				&& !this.requestType.equals("describeservice")) {			
+			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_REQUEST_DESCRIPTION+" ["+this.requestType+"]",ErrorCodes.INVALID_REQUEST_CODE,ErrorCodes.INVALID_REQUEST_HINT);			
+		} 
+		if (!this.format.equals("mei") && !this.format.equals("musicxml") && !this.format.equals("") ){
+			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_DOCUMENT_FORMAT_DESCRIPTION+" ["+this.format+"]",ErrorCodes.INVALID_DOCUMENT_FORMAT_CODE,ErrorCodes.INVALID_DOCUMENT_FORMAT_HINT);
+		}
+		if (!this.tonalityMode.equals("minor") && !this.tonalityMode.equals("major") && !this.tonalityMode.equals("") ){
+			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_TONALITY_MODE_DESCRIPTION+" ["+this.tonalityMode+"]",ErrorCodes.INVALID_TONALITY_MODE_DESCRIPTION,ErrorCodes.INVALID_TONALITY_MODE_HINT);
+		}
+		if (!this.tonalityTonic.equals("a") && 
+				!this.tonalityTonic.equals("aflat") && 
+				!this.tonalityTonic.equals("asharp") && 
+				!this.tonalityTonic.equals("b") &&
+				!this.tonalityTonic.equals("bflat") &&
+				!this.tonalityTonic.equals("bsharp") &&
+				!this.tonalityTonic.equals("c") &&
+				!this.tonalityTonic.equals("cflat") &&
+				!this.tonalityTonic.equals("csharp") &&
+				!this.tonalityTonic.equals("d") &&
+				!this.tonalityTonic.equals("dflat") &&
+				!this.tonalityTonic.equals("dsharp") &&
+				!this.tonalityTonic.equals("e") &&
+				!this.tonalityTonic.equals("eflat") &&
+				!this.tonalityTonic.equals("esharp") &&
+				!this.tonalityTonic.equals("f") &&
+				!this.tonalityTonic.equals("fflat") &&
+				!this.tonalityTonic.equals("fsharp") &&
+				!this.tonalityTonic.equals("g") &&
+				!this.tonalityTonic.equals("gflat") &&
+				!this.tonalityTonic.equals("gsharp") &&
+				!this.tonalityTonic.equals("")){
+			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_TONALITY_TONIC_DESCRIPTION+" ["+this.tonalityTonic+"]",ErrorCodes.INVALID_TONALITY_TONIC_CODE,ErrorCodes.INVALID_TONALITY_TONIC_HINT);
+		}
+		if(!this.melodyEncoding.equals("pea")) {
+			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_MELODY_ENCODING_DESCRIPTION+" ["+this.melodyEncoding+"]",ErrorCodes.INVALID_MELODY_ENCODING_CODE,ErrorCodes.INVALID_MELODY_ENCODING_HINT);
+		}
+		if(!isMelodyValid(this)) {
+			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_MELODY_DESCRIPTION+" ["+ this.melodyEncoding + " : " +this.melody+"]",ErrorCodes.INVALID_MELODY_CODE,ErrorCodes.INVALID_MELODY_HINT);
+		}
+		if(!isDatasourceValid(this)) {
+			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_DATASOURCE_DESCRIPTION+" ["+ this.source + "]",ErrorCodes.INVALID_DATASOURCE_CODE,ErrorCodes.INVALID_DATASOURCE_HINT);
+		}
+		if(this.requestType.equals("getscore") && this.identifier.equals("")) {
+			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_IDENTIFIER_DESCRIPTION,ErrorCodes.INVALID_IDENTIFIER_CODE,ErrorCodes.INVALID_IDENTIFIER_HINT);
+		}
+		
+	}
+	
+	private boolean isMelodyValid(WMSSRequest wmssRequest) {
+		//TODO create a pea,mei and musicxml melody validator.
+		return true;
 	}
 
+	private boolean isDatasourceValid(WMSSRequest wmssRequest) {
+		
+		boolean result = false;
+
+		if (!wmssRequest.getSource().equals("")){
+
+			for (int i = 0; i < SystemSettings.sourceList.size(); i++) {
+
+				if (result==false){
+
+					if (wmssRequest.getSource().equals(SystemSettings.sourceList.get(i).getId().toString().toLowerCase())){
+
+						result = true;						
+
+					} 
+
+				}
+			}
+		} else {
+			
+			result = true;
+		}
+		
+		return result;
+	}
 
 	public String getRequestType() {
 		return requestType;
 	}
 
 
-
 	public String getFormat() {
 		return format;
 	}
-
-
 
 	public String getCollection() {
 		return collection;
 	}
 
-
-
 	public String getPerson() {
 		return person;
 	}
-
-
 
 	public String getPersonRole() {
 		return personRole;
@@ -211,121 +283,81 @@ public class WMSSRequest {
 		return performanceMedium;
 	}
 
-
-
 	public String getPerformanceMediumType() {
 		return performanceMediumType;
 	}
-
-
 
 	public boolean isSolo() {
 		return solo;
 	}
 
-
-
 	public String getTonalityTonic() {
 		return tonalityTonic;
 	}
-
-
 
 	public String getTonalityMode() {
 		return tonalityMode;
 	}
 
-
-
 	public String getTempo() {
 		return tempo;
 	}
-
-
 
 	public String getCreationDate() {
 		return creationDate;
 	}
 
-
-
 	public String getCreationDateFrom() {
 		return creationDateFrom;
 	}
-
-
 
 	public String getCreationDateTo() {
 		return creationDateTo;
 	}
 
-
-
 	public String getMelody() {
 		return melody;
 	}
-
-
 
 	public String getIdentifier() {
 		return identifier;
 	}
 
-
-
 	public String getVersion() {
 		return version;
 	}
-
-
 
 	public String getSource() {
 		return source;
 	}
 
-
-
 	public String getScore() {
 		return score;
 	}
-
-
 
 	public boolean isIgnoreChords() {
 		return ignoreChords;
 	}
 
-
-
 	public boolean isEnsemble() {
 		return ensemble;
 	}
-
-
 
 	public boolean isIgnoreOctaves() {
 		return ignoreOctaves;
 	}
 
-
-
 	public boolean isIgnorePitch() {
 		return ignorePitch;
 	}
-
-
 
 	public boolean isIgnoreDuration() {
 		return ignoreDuration;
 	}
 
-
-
 	public int getPageSize() {
 		return pageSize;
 	}
-
-
 
 	public int getTotalSize() {
 		return totalSize;
@@ -335,15 +367,16 @@ public class WMSSRequest {
 		return offset;
 	}
 
-
 	public String getHostname() {
 		return hostname;
 	}
-
 
 	public void setIgnoreChords(boolean ignoreChords) {
 		this.ignoreChords = ignoreChords;
 	}
 
+	public String getMelodyFormat() {
+		return melodyEncoding;
+	}
 	
 }

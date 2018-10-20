@@ -99,24 +99,16 @@ public class FactoryNeo4j {
 				if(element.equals("-")) {
 					octave = "-";
 				}
-				
-//				if(accidental.equals("x")) {
-//					accidental = "s";
-//				}
-				
+								
 				Note note = new Note();
 				note.setAccidental(accidental);
 				note.setDuration(duration);
 				note.setPitch(element);
 				note.setOctave(octave);
 				note.setChord(chord);
-				
-
-				
-				//System.out.println("Duration: " + note.getDuration() + "\n" + "Octave: " + note.getOctave() + "\n" + "Note: " + note.getPitch() + "\n" +"Accidental: " + note.getAccidental() + "\n" +"Chord: " + note.isChord() + "\n");
 
 				sequence.add(note);
-				//note = null;
+
 				octave = "";
 				duration = "";
 				accidental = "";

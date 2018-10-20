@@ -26,14 +26,10 @@ public class ServletWMSS extends HttpServlet
 	
 	protected void doGet(HttpServletRequest httpRequest, HttpServletResponse response) throws ServletException, IOException
 	{    	
-		/**
-		 Enumeration<String> listParameters = request.getParameterNames();
-		 ArrayList<RequestParameter> parametersList = new ArrayList<RequestParameter>();
-		 */ 
-						
-		WMSSRequest wmssRequest = null;
+		
 		try {
-			wmssRequest = new WMSSRequest(httpRequest);
+			
+			WMSSRequest wmssRequest = new WMSSRequest(httpRequest);
 			logger.info("Request String -> " + httpRequest.getQueryString());
 			logger.info("Memory Usage -> " + Runtime.getRuntime().freeMemory()/1024/1024 +" MB");
 		
@@ -42,475 +38,42 @@ public class ServletWMSS extends HttpServlet
 			response.addHeader("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");
 
 			
-			
-			
-			
-			
-			boolean validSource = false;
-
-			if (!wmssRequest.getSource().equals("")){
-
-				for (int i = 0; i < SystemSettings.sourceList.size(); i++) {
-
-					if (validSource==false){
-
-						if (wmssRequest.getSource().equals(SystemSettings.sourceList.get(i).getId().toString().toLowerCase())){
-
-							validSource = true;						
-
-						} 
-
-					}
-				}
-			} else {
+			if (wmssRequest.getRequestType().equals("checklog")) {
 				
-				validSource = true;
+				response.setContentType("text/plain");
+				response.setStatus(HttpServletResponse.SC_OK);
+				response.getWriter().println(Util.loadFileTail(new File("logs/system.log"), SystemSettings.getLogPreview()));
+				
+
+			} else if (wmssRequest.getRequestType().equals("describeservice")) {
+
+				response.setContentType("text/javascript");
+				response.setStatus(HttpServletResponse.SC_OK);
+				response.getWriter().println(ServiceMessagingHandler.getServiceDescription());
+
+
+			} else if (wmssRequest.getRequestType().equals("getscore")) { 
+				
+				response.setContentType("text/xml");
+				response.setStatus(HttpServletResponse.SC_OK);
+				response.getWriter().println(ServiceMessagingHandler.getScore(wmssRequest));
+	
+			} else if (wmssRequest.getRequestType().equals("listscores")) {
+
+				response.setContentType("text/javascript");
+				response.setStatus(HttpServletResponse.SC_OK);
+				response.getWriter().println(ServiceMessagingHandler.getScoreList(wmssRequest));
+
 			}
-			
-			
-			
-			
-			
-//			if(wmssRequest.getRequestType().equals("")){
-			//
-//						response.setContentType("text/javascript");
-//						response.setStatus(HttpServletResponse.SC_OK);
-//						response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0001", "No request type provided","Provide one of the following request types: ListScores, GetScores, Checklog, DescribeService."));
-			//
-//					} else 
-						
-						if (!wmssRequest.getRequestType().equals("listscores") 
-							&& !wmssRequest.getRequestType().equals("getscore")
-							&& !wmssRequest.getRequestType().equals("checklog")
-							&& !wmssRequest.getRequestType().equals("describeservice")){
-
-						response.setContentType("text/javascript");
-						response.setStatus(HttpServletResponse.SC_OK);
-						response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0002", "Invalid request parameter [" + wmssRequest.getRequestType() + "].","Provide one of the following request types: ListScores, GetScores, Checklog, DescribeService."));
-
-					} else if (!wmssRequest.getFormat().equals("mei") && !wmssRequest.getFormat().equals("musicxml") && !wmssRequest.getFormat().equals("") ){
-
-						response.setContentType("text/javascript");
-						response.setStatus(HttpServletResponse.SC_OK);
-						response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0003", "Invalid document format [" + wmssRequest.getFormat() + "].",""));
-
-					} else if (!wmssRequest.getTonalityMode().equals("minor") && !wmssRequest.getTonalityMode().equals("major") && !wmssRequest.getTonalityMode().equals("") ){
-
-						response.setContentType("text/javascript");
-						response.setStatus(HttpServletResponse.SC_OK);
-						response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0004", "Invalid mode [" + wmssRequest.getTonalityMode() + "].","Provide one of the tonality modes: 'minor' or 'major'"));
-
-					} else if (!wmssRequest.getTonalityTonic().equals("a") && 
-								!wmssRequest.getTonalityTonic().equals("aflat") && 
-								!wmssRequest.getTonalityTonic().equals("asharp") && 
-								!wmssRequest.getTonalityTonic().equals("b") &&
-								!wmssRequest.getTonalityTonic().equals("bflat") &&
-								!wmssRequest.getTonalityTonic().equals("bsharp") &&
-								!wmssRequest.getTonalityTonic().equals("c") &&
-								!wmssRequest.getTonalityTonic().equals("cflat") &&
-								!wmssRequest.getTonalityTonic().equals("csharp") &&
-								!wmssRequest.getTonalityTonic().equals("d") &&
-								!wmssRequest.getTonalityTonic().equals("dflat") &&
-								!wmssRequest.getTonalityTonic().equals("dsharp") &&
-								!wmssRequest.getTonalityTonic().equals("e") &&
-								!wmssRequest.getTonalityTonic().equals("eflat") &&
-								!wmssRequest.getTonalityTonic().equals("esharp") &&
-								!wmssRequest.getTonalityTonic().equals("f") &&
-								!wmssRequest.getTonalityTonic().equals("fflat") &&
-								!wmssRequest.getTonalityTonic().equals("fsharp") &&
-								!wmssRequest.getTonalityTonic().equals("g") &&
-								!wmssRequest.getTonalityTonic().equals("gflat") &&
-								!wmssRequest.getTonalityTonic().equals("gsharp") &&
-								!wmssRequest.getTonalityTonic().equals("")){
-
-						response.setContentType("text/javascript");
-						response.setStatus(HttpServletResponse.SC_OK);
-						response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0005", "Invalid tonic '" + wmssRequest.getTonalityTonic() + "'.","[TBW]"));
-
-//					} else if (!wmssRequest.isSolo() &&
-//							!solo.equals("false") &&
-//							!solo.equals(""))	{
-			//
-//						response.setContentType("text/javascript");
-//						response.setStatus(HttpServletResponse.SC_OK);
-//						response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0006", "Invalid boolean value for 'solo' parameter '" + solo + "'.","The 'solo' filter required a boolean value ('true' or 'false')."));
-
-					} else if (!wmssRequest.getVersion().equals("") &&
-							!SystemSettings.protocolVersions.contains(wmssRequest.getVersion().toString())){
-
-						response.setContentType("text/javascript");
-						response.setStatus(HttpServletResponse.SC_OK);
-						response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0007", "Invalid protocol version '" + wmssRequest.getVersion() + "'.","Check the 'Service Description Report' for more information on the supported WMSS protocols."));
-
-					} else if (!validSource) {
-
-						response.setContentType("text/javascript");
-						response.setStatus(HttpServletResponse.SC_OK);
-						response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0009", "Invalid data source '" + wmssRequest.getSource() + "'.","The provided data source cannot be found. Check the 'Service Description Report' for more information on the available data sources."));
-
-//					} else if (!melody.equals("") && !isMelodyRequestValid(melody)) {
-					} else if (!wmssRequest.getMelody().equals("") && !isMelodyRequestValid(wmssRequest.getMelody())) {
-						
-						response.setContentType("text/javascript");
-						response.setStatus(HttpServletResponse.SC_OK);
-						response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0012", "Invalid melody '" + wmssRequest.getMelody() +"'","The provided melody is not valid. For more information go to: https://github.com/jimjonesbr/wmss/blob/master/README.md#melody"));
-						
-					} else if (wmssRequest.getRequestType().equals("checklog")) {
-						
-						response.setContentType("text/plain");
-						response.setStatus(HttpServletResponse.SC_OK);
-						response.getWriter().println(Util.loadFileTail(new File("logs/system.log"), SystemSettings.getLogPreview()));
-						
-
-					} else if (wmssRequest.getRequestType().equals("describeservice")) {
-
-						response.setContentType("text/javascript");
-						response.setStatus(HttpServletResponse.SC_OK);
-						response.getWriter().println(ServiceMessagingHandler.getServiceDescription());
-
-
-					} else if (wmssRequest.getRequestType().equals("getscore")) { 
-
-						if (wmssRequest.getIdentifier().equals("")){
-
-							response.setContentType("text/javascript");
-							response.setStatus(HttpServletResponse.SC_OK);
-							response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0008", "No identifier provided for GetScore request.","The GetScore request expects a valid score identifier."));
-
-						} else if (wmssRequest.getSource().equals("")){
-							
-							response.setContentType("text/javascript");
-							response.setStatus(HttpServletResponse.SC_OK);
-							response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("E0009", "Invalid data source.","Data source either invalid or not provided."));				
-							
-						} else {
-							
-							response.setContentType("text/xml");
-							response.setStatus(HttpServletResponse.SC_OK);
-							response.getWriter().println(ServiceMessagingHandler.getScore(wmssRequest));
-							
-						}
-
-					} else if (wmssRequest.getRequestType().equals("listscores")) {
-
-						response.setContentType("text/javascript");
-						response.setStatus(HttpServletResponse.SC_OK);
-						response.getWriter().println(ServiceMessagingHandler.getScoreList(wmssRequest));
-
-						//TODO create an error message for invalid parameters. Currently they are being only ignored.
-						//TODO create validation of filter capabilities based on the sources.json document
-
-					}
 			
 		} catch (InvalidWMSSRequestException e) {
-			//e.printStackTrace();
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport("", e.getMessage(), ""));
-
-		}
-		
-
-		
-//		String identifier = "";
-//		String version = "";
-//		String format = "";
-//		String requestType = "";
-//		String collection = "";
-//		String person = "";
-//		String personRole = "";
-//		String performanceMedium = "";
-//		String performanceMediumType = "";
-//		String solo = "";
-//		String tonalityTonic = "";
-//		String tonalityMode = "";
-//		String tempo = "";
-//		String creationDate = "";
-//		String creationDateFrom = "";
-//		String creationDateTo = "";
-//		String melody = "";
-//		String source = "";
-//		String score = "";
-//		String ignoreChords = "";
-//		String pageSize = "";
-
-		
-		/**
-		while(listParameters.hasMoreElements() ) {
-
-			String parameter = (String) listParameters.nextElement();
-			RequestParameter req = new RequestParameter();
-		
-			if (parameter.toLowerCase().equals("request")) {
-				requestType=request.getParameter(parameter).toLowerCase();
-				req.setRequest("requesttype");
-				
-				req.setValue(request.getParameter(parameter).toLowerCase());
-			} else if (parameter.toLowerCase().equals("format")) {
-				
-				format=request.getParameter(parameter).toLowerCase();
-				req.setRequest("format");
-				req.setValue(request.getParameter(parameter).toLowerCase());
-				
-			} else if (parameter.toLowerCase().equals("collection")) {
-				
-				collection=request.getParameter(parameter).toLowerCase();
-				req.setRequest("collection");
-				req.setValue(request.getParameter(parameter).toLowerCase());
-
-			} else if (parameter.toLowerCase().equals("person")) {
-				
-				person=request.getParameter(parameter).toLowerCase();
-				req.setRequest("person");
-				req.setValue(request.getParameter(parameter).toLowerCase());
-
-			} else if (parameter.toLowerCase().equals("personrole")) {
-				
-				personRole=request.getParameter(parameter).toLowerCase();
-				req.setRequest("personrole");
-				req.setValue(request.getParameter(parameter).toLowerCase());
-
-			} else if (parameter.toLowerCase().equals("performancemedium")) {
-				
-				performanceMedium=request.getParameter(parameter).toLowerCase();
-				req.setRequest("performancemedium");
-				req.setValue(request.getParameter(parameter).toLowerCase());
-
-			} else if (parameter.toLowerCase().equals("performancemediumtype")) {
-				
-				performanceMediumType=request.getParameter(parameter).toLowerCase();
-				req.setRequest("performancemediumtype");
-				req.setValue(request.getParameter(parameter).toLowerCase());
-
-			} else if (parameter.toLowerCase().equals("solo")) {
-				
-				solo=request.getParameter(parameter).toLowerCase();
-				req.setRequest("solo");
-				req.setValue(request.getParameter(parameter).toLowerCase());
-
-			} else if (parameter.toLowerCase().equals("tonalitytonic")) {
-				
-				tonalityTonic=request.getParameter(parameter).toLowerCase();
-				req.setRequest("tonalitytonic");
-				req.setValue(request.getParameter(parameter).toLowerCase());
-
-			} else if (parameter.toLowerCase().equals("tonalitymode")) {
-				
-				tonalityMode=request.getParameter(parameter).toLowerCase();
-				req.setRequest("tonalitymode");
-				req.setValue(request.getParameter(parameter).toLowerCase());
-
-			} else if (parameter.toLowerCase().equals("tempo")) {
-				
-				tempo=request.getParameter(parameter).toLowerCase();
-				req.setRequest("tempo");
-				req.setValue(request.getParameter(parameter).toLowerCase());
-
-			} else if (parameter.toLowerCase().equals("creationdate")) {
-				
-				creationDate=request.getParameter(parameter).toLowerCase();
-				req.setRequest("creationdate");
-				req.setValue(request.getParameter(parameter).toLowerCase());
-
-			} else if (parameter.toLowerCase().equals("creationdatefrom")) {
-				
-				creationDateFrom=request.getParameter(parameter).toLowerCase();
-				req.setRequest("creationdatefrom");
-				req.setValue(request.getParameter(parameter).toLowerCase());
-
-			} else if (parameter.toLowerCase().equals("creationdateto")) {
-				
-				creationDateTo=request.getParameter(parameter).toLowerCase();
-				req.setRequest("creationdateto");
-				req.setValue(request.getParameter(parameter).toLowerCase());
-
-			} else if (parameter.toLowerCase().equals("melody")) {
-				
-				melody=request.getParameter(parameter).toLowerCase();
-				req.setRequest("melody");
-				req.setValue(request.getParameter(parameter));
-				
-			} else if (parameter.toLowerCase().equals("identifier")) {
-				
-				identifier=request.getParameter(parameter).toLowerCase();
-				req.setRequest("identifier");
-				req.setValue(request.getParameter(parameter));
-
-			} else if (parameter.toLowerCase().equals("version")) {
-				
-				version=request.getParameter(parameter).toLowerCase();
-				req.setRequest("vesion");
-				req.setValue(request.getParameter(parameter).toLowerCase());
-
-			} else if (parameter.toLowerCase().equals("source")) {
-				
-				source=request.getParameter(parameter).toLowerCase();
-				req.setRequest("source");
-				req.setValue(request.getParameter(parameter).toLowerCase());
-
-			} else if (parameter.toLowerCase().equals("score")) {
-				
-				score=request.getParameter(parameter).toLowerCase();
-				req.setRequest("score");
-				req.setValue(request.getParameter(parameter).toLowerCase());
-
-			} else if (parameter.toLowerCase().equals("ignorechords")) {
-				
-				ignoreChords=request.getParameter(parameter).toLowerCase();
-				req.setRequest("ignorechords");
-				req.setValue(request.getParameter(parameter).toLowerCase());
-				
-			} else if (parameter.toLowerCase().equals("ensemble")) {
-				
-				//ignoreChords=request.getParameter(parameter).toLowerCase();
-				req.setRequest("ensemble");
-				req.setValue(request.getParameter(parameter).toLowerCase());
-				
-			} else if (parameter.toLowerCase().equals("ignoreoctaves")) {
-				
-				ignoreChords=request.getParameter(parameter).toLowerCase();
-				req.setRequest("ignoreoctaves");
-				req.setValue(request.getParameter(parameter).toLowerCase());
-				
-			} else if (parameter.toLowerCase().equals("ignorepitch")) {
-				
-				ignoreChords=request.getParameter(parameter).toLowerCase();
-				req.setRequest("ignorepitch");
-				req.setValue(request.getParameter(parameter).toLowerCase());
-				
-			} else if (parameter.toLowerCase().equals("ignoreduration")) {
-				
-				ignoreChords=request.getParameter(parameter).toLowerCase();
-				req.setRequest("ignoreduration");
-				req.setValue(request.getParameter(parameter).toLowerCase());
-				
-			} else if (parameter.toLowerCase().equals("pagesize")) {
-				
-				req.setRequest("pagesize");
-				req.setValue(request.getParameter(parameter));
-				
-			} else if (parameter.toLowerCase().equals("offset")) {
-				
-				req.setRequest("offset");
-				req.setValue(request.getParameter(parameter));
-				
-			} else if (parameter.toLowerCase().equals("totalsize")) {
-				
-				req.setRequest("totalsize");
-				req.setValue(request.getParameter(parameter));
-				
-			} else if (parameter.toLowerCase().equals("offset")) {
-				
-				req.setRequest("offset");
-				req.setValue(request.getParameter(parameter));				
-			} 
-			 
-
-			parametersList.add(req);
-		} **/
-		
-		
-
-
-
-		
-		
-		
-		
-		
-		
-
-
-	}
-
-	private static boolean isMelodyRequestValid(String melody) {
-
-		//TODO: Implement validation for PEA strings
-		
-		/**
-		String[] melodyElements = melody.split(">");
-
-		boolean validNotes = false;
-		boolean validDurations = false;
-		boolean validOctaves = false;
-		boolean result = true;
-
-		for (int i = 0; i < melodyElements.length; i++) {
-
-			String[] element = melodyElements[i].split("-");
-
-			if(element.length < 3) {
-
-				result = false;
-				
-			} else {
-				
-				validNotes = element[0].matches("/|.*|a|b|c|d|e|f|g|" 					// natural
-											  + "ahb|bhb|chb|dhb|ehb|fhb|ghb|"			// half flat
-											  + "ab|bb|cb|db|eb|fb|gb|"					// flat
-											  + "abh|bbh|cbh|dbh|ebh|fbh|gbh|"			// flat and a half										  
-											  + "abb|bbb|cbb|dbb|ebb|fbb|gbb|"			// double flat
-											  + "ahs|bhs|chs|dhs|ehs|fhs|ghs|"			// half sharp
-											  + "as|bs|cs|ds|es|fs|gs|"					// sharp					  
-											  + "ash|bsh|csh|dsh|esh|fsh|gsh|"			// sharp and a half							  
-											  + "ass|bss|css|dss|ess|fss|gss|rest");	// double sharp
-				
-				validDurations = element[1].matches("/|.*|ow|qw|dw|w|h|4|8|16|32|64|128|256");	
-				validOctaves = element[2].matches("/|.*|1|2|3|4|5|6|7|8|9");
-				
-			}
-			
-			if(validNotes && validDurations && validOctaves) {
-
-				if(element[0].equals("0") && element[1].equals("0")) {
-
-					result = false;
-				}
-
-			} else {
-
-				result = false;
-			}
-
+			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport(e.getCode(), e.getMessage(), e.getHint()));
+			e.printStackTrace();
 		}
 
-		return result;
-		*/
-		
-		return true;
-
 	}
-	
-//	private static boolean isCollectionValid(String collectionString) {
-//
-//		//TODO: Listar todos as colecoes em cada datasource e criar um
-//		boolean result = true;
-//
-//		result = collectionString.matches("^[0-9,]+$");
-//
-//		int comma = 0;
-//		int digits = 0;
-//
-//		if (result) {
-//			
-//			for( int i=0; i<collectionString.length(); i++ ) {
-//				
-//				if( collectionString.charAt(i) == ',' ) {
-//					comma++;
-//				} 
-//
-//				if (Character.isDigit(collectionString.charAt(i))) {
-//					digits++;
-//				}
-//
-//			}
-//
-//			if(comma >= digits) result = false;
-//			
-//		}
-//
-//		return result;
-//	}
 
 }
 

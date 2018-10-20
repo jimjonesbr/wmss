@@ -1,8 +1,6 @@
 package de.wwu.wmss.factory;
 
-import java.net.InetAddress;
 import java.util.ArrayList;
-
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -35,7 +33,7 @@ public class ServiceMessagingHandler {
 
 		logger.error(errorCode + ": " + errorMessage);
 
-		return gson.toJson(exceptionReport);
+		return StringEscapeUtils.unescapeJson(gson.toJson(exceptionReport));
 
 	}
 
@@ -117,7 +115,7 @@ public class ServiceMessagingHandler {
 		
 		serviceDescription.put("datasources", dsArray);
 
-		return gson.toJson(serviceDescription);
+		return StringEscapeUtils.unescapeJson(gson.toJson(serviceDescription));
 
 	}
 
