@@ -4,8 +4,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+
 import de.wwu.wmss.core.DataSource;
+import de.wwu.wmss.core.ErrorCodes;
+import de.wwu.wmss.core.InvalidMelodyException;
+import de.wwu.wmss.core.InvalidWMSSRequestException;
 import de.wwu.wmss.core.MusicScore;
+import de.wwu.wmss.core.Note;
 import de.wwu.wmss.core.RequestParameter;
 import de.wwu.wmss.core.WMSSRequest;
 
@@ -86,30 +95,6 @@ public class Util {
 		return result; 
 
 	}
-
-	public static DataSource OLDgetDataSource(ArrayList<RequestParameter> parameters) {
-		
-		String dataSourceId = "";
-		DataSource dataSource = new DataSource();
-		
-		for (int i = 0; i < parameters.size(); i++) {
-//			if(parameters.get(i).getRequest().equals("identifier")){			
-//				dataSourceId = parameters.get(i).getValue().split(":")[0];				
-//			}
-			if(parameters.get(i).getRequest().equals("source")){			
-				dataSourceId = parameters.get(i).getValue();				
-			}
-			
-		}
-
-		for (int i = 0; i < SystemSettings.sourceList.size(); i++) {
-			if(SystemSettings.sourceList.get(i).getId().equals(dataSourceId)){			
-				dataSource = SystemSettings.sourceList.get(i); 
-			}
-		}
-		
-		return dataSource;
-	}
 	
 	public static DataSource getDataSource(WMSSRequest request) {
 		
@@ -123,7 +108,6 @@ public class Util {
 		
 		return dataSource;
 	}
-	
 	
 	public static MusicScore getScoreRequestData(ArrayList<RequestParameter> parameters) {
 		
@@ -148,25 +132,104 @@ public class Util {
 		return result;
 	}
 	
-    private static final char[] hexChar = {
-            '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
-        };
-    
-    public static String unicodeEscape(String s) {
-	StringBuilder sb = new StringBuilder();
-	for (int i = 0; i < s.length(); i++) {
-	    char c = s.charAt(i);
-	    if ((c >> 7) > 0) {
-		sb.append("\\u");
-		sb.append(hexChar[(c >> 12) & 0xF]); 
-		sb.append(hexChar[(c >> 8) & 0xF]);  
-		sb.append(hexChar[(c >> 4) & 0xF]);  
-		sb.append(hexChar[c & 0xF]); 
-	    }
-	    else {
-		sb.append(c);
-	    }
+	public static ArrayList<Note> createNoteSequence(String pea) throws InvalidWMSSRequestException{
+		
+		Set<String> notes = new HashSet();
+		notes.add("C");notes.add("D");
+		notes.add("E");notes.add("F");
+		notes.add("G");notes.add("A");
+		notes.add("B");notes.add("-");
+		
+		Set<String> accidentals = new HashSet();
+		accidentals.add("x");accidentals.add("b");
+		accidentals.add("n");
+		
+		String duration = "";
+		String accidental = "";
+		String octave = "";
+		String lastDuration = "";
+		boolean chord = false;
+		
+		ArrayList<Note> sequence = new ArrayList<Note>();
+				
+		for (int i = 0; i < pea.length(); i++) {
+
+			String element = Character.toString(pea.charAt(i));
+			
+			if(element.equals(",")) {
+				octave = octave + element;
+			}
+			
+			if(element.equals("'")) {
+				octave = octave + element;
+			}
+			
+			if(StringUtils.isNumeric(element)) {
+				duration = element;
+				lastDuration = element;
+			}
+		
+			if(accidentals.contains(element)) {
+				accidental = accidental + element;
+			}
+			
+			if(element.equals("^")) {
+				chord = true;
+			}
+			
+			if(notes.contains(element)) {
+
+				if(octave.contains("'")) {					
+					octave = String.valueOf(octave.length()+3);
+				} else if(octave.contains(",")) {
+					octave = String.valueOf(4-octave.length());
+				} else if (octave.equals("")) {
+					octave = "4";
+				}
+
+				if(duration.equals("")) {
+					if(!lastDuration.equals("")) {
+						duration = lastDuration;	
+					} else {
+						duration = "4";
+					}					
+				}
+				
+				if(element.equals("-")) {
+					octave = "-";
+				}
+								
+				Note note = new Note();
+				note.setAccidental(accidental);
+				note.setDuration(duration);
+				note.setPitch(element);
+				note.setOctave(octave);
+				note.setChord(chord);
+				
+				//System.out.println("Pitch: " + note.getPitch() + "\n" + "Duration: " + note.getDuration() +"\n" + "Octave: " + note.getOctave() +"\n" + "Accidental: " + note.getAccidental() +"\n" + "Chord: " + note.isChord() + "\n");
+				
+				if(!note.getAccidental().equals("x")&&!note.getAccidental().equals("xx")&&
+				   !note.getAccidental().equals("b")&&!note.getAccidental().equals("bb")&&
+				   !note.getAccidental().equals("")) {
+					throw new InvalidMelodyException("[PEA] Invalid accidental: " + note.getAccidental());
+				}
+				
+				sequence.add(note);
+
+				octave = "";
+				duration = "";
+				accidental = "";
+				
+				chord = false;
+			}
+			
+		}
+				
+		if(sequence.size()<3) {
+			throw new InvalidMelodyException(ErrorCodes.INVALID_MELODY_LENGTH_DESCRIPTION +" ["+pea+"]",ErrorCodes.INVALID_MELODY_LENGTH_CODE,ErrorCodes.INVALID_MELODY_LENGTH_HINT);
+		}
+		
+		return sequence;
 	}
-	return sb.toString();
-    }
+
 }

@@ -24,9 +24,12 @@ public class SystemSettings {
 	private static String serviceVersion;
 	private static int logPreview;
 	private static int pageSize;
+	private static String defaultRequestMode;
 	private static Logger logger = Logger.getLogger("System Settings");
 	public static ArrayList<DataSource> sourceList = new ArrayList<DataSource>();
 	public static ArrayList<String> protocolVersions = new ArrayList<String>();
+	public static String REQUEST_MODE_FULL = "full";
+	public static String REQUEST_MODE_SIMPLIFIED = "simplified";
 	
 	public static void main(String[] args) {
 
@@ -55,6 +58,7 @@ public class SystemSettings {
 			service = jsonObject.get("service").toString();
 			contact = jsonObject.get("contact").toString();
 			title = jsonObject.get("title").toString();
+			defaultRequestMode = jsonObject.get("defaultRequestMode").toString();
 			defaultProtocol= jsonObject.get("defaultProtocol").toString();
 			logPreview = Integer.parseInt(jsonObject.get("logpreview").toString());
 
@@ -198,7 +202,12 @@ public class SystemSettings {
 	public static int getPageSize() {
 		return pageSize;
 	}
+
+	public static String getDefaultRequestMode() {
+		return defaultRequestMode;
+	}
 		
+	
 	
 }
 

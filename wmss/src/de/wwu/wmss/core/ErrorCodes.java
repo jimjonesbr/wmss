@@ -1,5 +1,7 @@
 package de.wwu.wmss.core;
 
+import de.wwu.wmss.settings.SystemSettings;
+
 public class ErrorCodes {
 
 	public static String MISSING_REQUEST_CODE = "E0001";
@@ -30,12 +32,16 @@ public class ErrorCodes {
 	public static String INVALID_MELODY_ENCODING_DESCRIPTION  = "Invalid melody encoding";
 	public static String INVALID_MELODY_ENCODING_HINT = "The following melody encodings are currently supported: pea (Plaine & Easie)"; //TODO create supported melody encodings at the settings file 
 
-	public static String INVALID_MELODY_CODE = "E0008";
-	public static String INVALID_MELODY_DESCRIPTION  = "Invalid melody";
-	public static String INVALID_MELODY_HINT = "The system was unable to parse the given melody. Check the melody encoding and try again."; //TODO create supported melody encodings at the settings file 
-
-	public static String INVALID_IDENTIFIER_CODE = "E0009";
+	public static String INVALID_IDENTIFIER_CODE = "E0008";
 	public static String INVALID_IDENTIFIER_DESCRIPTION  = "Invalid score identifier";
 	public static String INVALID_IDENTIFIER_HINT = "No identifier provided for 'GetScore' request.";
+
+	public static String INVALID_REQUEST_MODE_CODE = "E0009";
+	public static String INVALID_REQUEST_MODE_DESCRIPTION  = "Invalid request mode";
+	public static String INVALID_REQUEST_MODE_HINT = "Please provide one of the following values: '"+SystemSettings.REQUEST_MODE_FULL+"', '"+SystemSettings.REQUEST_MODE_SIMPLIFIED+"'.";
+
+	public static String INVALID_MELODY_LENGTH_CODE = "E0010";
+	public static String INVALID_MELODY_LENGTH_DESCRIPTION  = "Invalid melody length";
+	public static String INVALID_MELODY_LENGTH_HINT = "A melody must contain at least three valid elements."; //TODO create supported melody encodings at the settings file 
 
 }

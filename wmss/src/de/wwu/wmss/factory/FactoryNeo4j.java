@@ -33,93 +33,93 @@ public class FactoryNeo4j {
 
 	private static Logger logger = Logger.getLogger("Neo4j-Factory");
 
-	public static ArrayList<Note> createNoteSequence(String pea){
-		
-		Set<String> notes = new HashSet();
-		notes.add("C");notes.add("D");
-		notes.add("E");notes.add("F");
-		notes.add("G");notes.add("A");
-		notes.add("B");notes.add("-");
-		
-		Set<String> accidentals = new HashSet();
-		accidentals.add("x");accidentals.add("b");
-		accidentals.add("n");
-		
-		String duration = "";
-		String accidental = "";
-		String octave = "";
-		String lastDuration = "";
-		boolean chord = false;
-		
-		ArrayList<Note> sequence = new ArrayList<Note>();
-				
-		for (int i = 0; i < pea.length(); i++) {
-
-			String element = Character.toString(pea.charAt(i));
-			
-			if(element.equals(",")) {
-				octave = octave + element;
-			}
-			
-			if(element.equals("'")) {
-				octave = octave + element;
-			}
-			
-			if(StringUtils.isNumeric(element)) {
-				duration = element;
-				lastDuration = element;
-			}
-		
-			if(accidentals.contains(element)) {
-				accidental = accidental + element;
-			}
-			
-			if(element.equals("^")) {
-				chord = true;
-			}
-			
-			if(notes.contains(element)) {
-
-				if(octave.contains("'")) {					
-					octave = String.valueOf(octave.length()+3);
-				} else if(octave.contains(",")) {
-					octave = String.valueOf(4-octave.length());
-				} else if (octave.equals("")) {
-					octave = "4";
-				}
-
-				if(duration.equals("")) {
-					if(!lastDuration.equals("")) {
-						duration = lastDuration;	
-					} else {
-						duration = "4";
-					}					
-				}
-				
-				if(element.equals("-")) {
-					octave = "-";
-				}
-								
-				Note note = new Note();
-				note.setAccidental(accidental);
-				note.setDuration(duration);
-				note.setPitch(element);
-				note.setOctave(octave);
-				note.setChord(chord);
-
-				sequence.add(note);
-
-				octave = "";
-				duration = "";
-				accidental = "";
-				
-				chord = false;
-			}
-			
-		}
-		
-		return sequence;
-	}
+//	public static ArrayList<Note> createNoteSequence(String pea){
+//		
+//		Set<String> notes = new HashSet();
+//		notes.add("C");notes.add("D");
+//		notes.add("E");notes.add("F");
+//		notes.add("G");notes.add("A");
+//		notes.add("B");notes.add("-");
+//		
+//		Set<String> accidentals = new HashSet();
+//		accidentals.add("x");accidentals.add("b");
+//		accidentals.add("n");
+//		
+//		String duration = "";
+//		String accidental = "";
+//		String octave = "";
+//		String lastDuration = "";
+//		boolean chord = false;
+//		
+//		ArrayList<Note> sequence = new ArrayList<Note>();
+//				
+//		for (int i = 0; i < pea.length(); i++) {
+//
+//			String element = Character.toString(pea.charAt(i));
+//			
+//			if(element.equals(",")) {
+//				octave = octave + element;
+//			}
+//			
+//			if(element.equals("'")) {
+//				octave = octave + element;
+//			}
+//			
+//			if(StringUtils.isNumeric(element)) {
+//				duration = element;
+//				lastDuration = element;
+//			}
+//		
+//			if(accidentals.contains(element)) {
+//				accidental = accidental + element;
+//			}
+//			
+//			if(element.equals("^")) {
+//				chord = true;
+//			}
+//			
+//			if(notes.contains(element)) {
+//
+//				if(octave.contains("'")) {					
+//					octave = String.valueOf(octave.length()+3);
+//				} else if(octave.contains(",")) {
+//					octave = String.valueOf(4-octave.length());
+//				} else if (octave.equals("")) {
+//					octave = "4";
+//				}
+//
+//				if(duration.equals("")) {
+//					if(!lastDuration.equals("")) {
+//						duration = lastDuration;	
+//					} else {
+//						duration = "4";
+//					}					
+//				}
+//				
+//				if(element.equals("-")) {
+//					octave = "-";
+//				}
+//								
+//				Note note = new Note();
+//				note.setAccidental(accidental);
+//				note.setDuration(duration);
+//				note.setPitch(element);
+//				note.setOctave(octave);
+//				note.setChord(chord);
+//
+//				sequence.add(note);
+//
+//				octave = "";
+//				duration = "";
+//				accidental = "";
+//				
+//				chord = false;
+//			}
+//			
+//		}
+//		
+//		return sequence;
+//	}
 				
 	public static String getMusicXML(WMSSRequest request){
 		
@@ -543,7 +543,8 @@ public class FactoryNeo4j {
 		 
 		if(!wmssRequest.getMelody().equals("")) {
 	
-			ArrayList<Note> noteSequence = createNoteSequence(wmssRequest.getMelody());
+			//ArrayList<Note> noteSequence = Util.createNoteSequence(wmssRequest.getMelody());
+			ArrayList<Note> noteSequence = wmssRequest.getNoteSequence();
 			
 			for (int j = 0; j < noteSequence.size(); j++) {
 				/**
@@ -559,7 +560,7 @@ public class FactoryNeo4j {
 			match = match + "MATCH "+scoreNode+"-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->"+instrumentNode+"-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(ns0:mso__NoteSet)\n" + 
 							"MATCH "+scoreNode+"-[:foaf__thumbnail]->(thumbnail) \n" +
 							"MATCH "+scoreNode+"-[:mo__movement]->(movements:mo__Movement) \n"+
-							"MATCH "+instrumentNode+"-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n"; 
+							"MATCH "+instrumentNode+"-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n";
 					
 			int i = 0;
 			int notesetCounter = 0;
@@ -852,15 +853,15 @@ public class FactoryNeo4j {
 				score.getMelodyLocation().addAll(getMelodyLocations(gson.toJson(record.get("locations").asMap()),request.getMelody()));
 			}
 			score.getPersons().addAll(getPersons(gson.toJson(record.get("persons").asMap())));
-			score.getPersons().addAll(getPersons(gson.toJson(record.get("encoders").asMap())));
-			score.getMovements().addAll(getMovements(gson.toJson(record.get("movements").asMap())));
+			score.getPersons().addAll(getPersons(gson.toJson(record.get("encoders").asMap())));			
 			score.setProvenance(getProvenance(gson.toJson(record.get("activity").asMap())));
-			
-			for (int i = 0; i < score.getMovements().size(); i++) {
-			
-				score.getMovements().get(i).getPerformanceMediumList().add(getPerformanceMediums(score.getScoreId(),score.getMovements().get(i).getMovementId(),dataSource));
-
-			}
+						
+			if(!request.getRequestMode().equals("simplified")) {
+				score.getMovements().addAll(getMovements(gson.toJson(record.get("movements").asMap())));
+				for (int i = 0; i < score.getMovements().size(); i++) {			
+					score.getMovements().get(i).getPerformanceMediumList().add(getPerformanceMediums(score.getScoreId(),score.getMovements().get(i).getMovementId(),dataSource));
+				}
+			}	
 			
 			if(record.get("musicxml").asBoolean()) {
 				Format format = new Format();

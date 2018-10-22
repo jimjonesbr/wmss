@@ -1,12 +1,15 @@
 package de.wwu.wmss.core;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
 import de.wwu.wmss.settings.SystemSettings;
+import de.wwu.wmss.settings.Util;
 
 public class WMSSRequest {
 		
 	private String requestType = "";
+	private String requestMode = SystemSettings.getDefaultRequestMode();
 	private String format = "";
 	private String collection = "";
 	private String person = "";
@@ -35,6 +38,7 @@ public class WMSSRequest {
 	private int totalSize = 0;
 	private int offset = 0;
 	private String hostname = "";
+	private ArrayList<Note> noteSequence;
 		
 	public WMSSRequest(HttpServletRequest httpRequest)  throws InvalidWMSSRequestException {
 		
@@ -47,6 +51,10 @@ public class WMSSRequest {
 			if (parameter.toLowerCase().equals("request")) {
 								
 				this.requestType = httpRequest.getParameter(parameter).toLowerCase();
+				
+			} else if (parameter.toLowerCase().equals("requestmode")) {
+				
+				this.requestMode = httpRequest.getParameter(parameter).toLowerCase();
 				
 			} else if (parameter.toLowerCase().equals("format")) {
 				
@@ -103,6 +111,12 @@ public class WMSSRequest {
 			} else if (parameter.toLowerCase().equals("melody")) {
 				
 				this.melody = httpRequest.getParameter(parameter);
+				try {
+					this.noteSequence = Util.createNoteSequence(this.melody);
+				} catch (InvalidMelodyException e) {
+					throw new InvalidWMSSRequestException(e.getMessage(),e.getCode(), e.getHint());
+				}
+				
 				
 			} else if (parameter.toLowerCase().equals("identifier")) {
 				
@@ -215,16 +229,18 @@ public class WMSSRequest {
 		if(!this.melodyEncoding.equals("pea")) {
 			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_MELODY_ENCODING_DESCRIPTION+" ["+this.melodyEncoding+"]",ErrorCodes.INVALID_MELODY_ENCODING_CODE,ErrorCodes.INVALID_MELODY_ENCODING_HINT);
 		}
-		if(!isMelodyValid(this)) {
-			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_MELODY_DESCRIPTION+" ["+ this.melodyEncoding + " : " +this.melody+"]",ErrorCodes.INVALID_MELODY_CODE,ErrorCodes.INVALID_MELODY_HINT);
-		}
+//		if(!isMelodyValid(this)) {
+//			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_MELODY_DESCRIPTION+" ["+ this.melodyEncoding + " : " +this.melody+"]",ErrorCodes.INVALID_MELODY_CODE,ErrorCodes.INVALID_MELODY_HINT);
+//		}
 		if(!isDatasourceValid(this)) {
 			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_DATASOURCE_DESCRIPTION+" ["+ this.source + "]",ErrorCodes.INVALID_DATASOURCE_CODE,ErrorCodes.INVALID_DATASOURCE_HINT);
 		}
 		if(this.requestType.equals("getscore") && this.identifier.equals("")) {
 			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_IDENTIFIER_DESCRIPTION,ErrorCodes.INVALID_IDENTIFIER_CODE,ErrorCodes.INVALID_IDENTIFIER_HINT);
 		}
-		
+		if(!this.requestMode.equals(SystemSettings.REQUEST_MODE_FULL)&&!this.requestMode.equals(SystemSettings.REQUEST_MODE_SIMPLIFIED)) {
+			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_REQUEST_MODE_DESCRIPTION+" [" + this.requestMode + "]",ErrorCodes.INVALID_REQUEST_MODE_CODE,ErrorCodes.INVALID_REQUEST_MODE_HINT);
+		}
 	}
 	
 	private boolean isMelodyValid(WMSSRequest wmssRequest) {
@@ -378,5 +394,14 @@ public class WMSSRequest {
 	public String getMelodyFormat() {
 		return melodyEncoding;
 	}
+
+	public String getRequestMode() {
+		return requestMode;
+	}
+
+	public ArrayList<Note> getNoteSequence() {
+		return noteSequence;
+	}
+	
 	
 }
