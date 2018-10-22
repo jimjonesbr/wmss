@@ -28,8 +28,10 @@ MATCH (note:chord__Note)-[:chord__natural]->(natural:chord__Natural)
 OPTIONAL MATCH (note:chord__Note)-[:chord__modifier]->(modifier)
 WITH note, CASE SUBSTRING(modifier.uri,31) 
         WHEN 'flat' THEN 'b'
-            WHEN 'sharp' THEN 'x'
-            WHEN NULL THEN ''
+        WHEN 'doubleflat' THEN 'bb'
+        WHEN 'sharp' THEN 'x'
+        WHEN 'doublesharp' THEN 'xx'
+        WHEN NULL THEN ''
            END AS modifier,
        SUBSTRING(natural.uri,36) AS natural           
 SET note.note = natural, note.accidental = modifier
