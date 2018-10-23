@@ -42,6 +42,13 @@ public class ErrorCodes {
 
 	public static String INVALID_MELODY_LENGTH_CODE = "E0010";
 	public static String INVALID_MELODY_LENGTH_DESCRIPTION  = "Invalid melody length";
-	public static String INVALID_MELODY_LENGTH_HINT = "A melody must contain at least three valid elements."; //TODO create supported melody encodings at the settings file 
+	public static String INVALID_MELODY_LENGTH_HINT = "A melody must contain at least three valid elements."; 
 
+	public static String INVALID_TEMPO_BPM_CODE = "E0011";
+	public static String INVALID_TEMPO_BPM_DESCRIPTION  = "Invalid tempo beats per minute";
+	public static String INVALID_TEMPO_BPM_HINT = "Provide either a positive integer or an interval thereof, e.g. 148, 98-104."; 
+
+	public static String INVALID_TEMPO_BEAT_UNIT_CODE = "E0012";
+	public static String INVALID_TEMPO_BEAT_UNIT_DESCRIPTION  = "Invalid tempo beat unit";
+	public static String INVALID_TEMPO_BEAT_UNIT_HINT = "Provide one of the following beat units: maxima, longa, breve, whole, half, quarter, eighth, 16th, 32nd, 64th, 128th, 256th, 512th, 1024th.";
 }

@@ -19,7 +19,8 @@ public class WMSSRequest {
 	private boolean solo = false;
 	private String tonalityTonic = "";
 	private String tonalityMode = "";
-	private String tempo = "";
+	private String tempoBeatUnit = "";
+	private String tempoBeatsPerMinute = "";
 	private String creationDate = "";
 	private String creationDateFrom = "";
 	private String creationDateTo = "";
@@ -92,10 +93,14 @@ public class WMSSRequest {
 				
 				this.tonalityMode = httpRequest.getParameter(parameter).toLowerCase();
 
-			} else if (parameter.toLowerCase().equals("tempo")) {
+			} else if (parameter.toLowerCase().equals("tempobeatunit")) {
 				
-				this.tempo = httpRequest.getParameter(parameter).toLowerCase();
-
+				this.tempoBeatUnit = httpRequest.getParameter(parameter).toLowerCase();
+			
+			} else if (parameter.toLowerCase().equals("tempobeatsperminute")) {	
+			
+				this.tempoBeatsPerMinute = httpRequest.getParameter(parameter).toLowerCase();
+				
 			} else if (parameter.toLowerCase().equals("creationdate")) {
 				
 				this.creationDate = httpRequest.getParameter(parameter).toLowerCase();
@@ -111,13 +116,14 @@ public class WMSSRequest {
 			} else if (parameter.toLowerCase().equals("melody")) {
 				
 				this.melody = httpRequest.getParameter(parameter);
+				
 				try {
 					this.noteSequence = Util.createNoteSequence(this.melody);
 				} catch (InvalidMelodyException e) {
+					e.printStackTrace();
 					throw new InvalidWMSSRequestException(e.getMessage(),e.getCode(), e.getHint());
 				}
-				
-				
+								
 			} else if (parameter.toLowerCase().equals("identifier")) {
 				
 				this.identifier = httpRequest.getParameter(parameter);
@@ -229,9 +235,6 @@ public class WMSSRequest {
 		if(!this.melodyEncoding.equals("pea")) {
 			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_MELODY_ENCODING_DESCRIPTION+" ["+this.melodyEncoding+"]",ErrorCodes.INVALID_MELODY_ENCODING_CODE,ErrorCodes.INVALID_MELODY_ENCODING_HINT);
 		}
-//		if(!isMelodyValid(this)) {
-//			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_MELODY_DESCRIPTION+" ["+ this.melodyEncoding + " : " +this.melody+"]",ErrorCodes.INVALID_MELODY_CODE,ErrorCodes.INVALID_MELODY_HINT);
-//		}
 		if(!isDatasourceValid(this)) {
 			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_DATASOURCE_DESCRIPTION+" ["+ this.source + "]",ErrorCodes.INVALID_DATASOURCE_CODE,ErrorCodes.INVALID_DATASOURCE_HINT);
 		}
@@ -241,13 +244,27 @@ public class WMSSRequest {
 		if(!this.requestMode.equals(SystemSettings.REQUEST_MODE_FULL)&&!this.requestMode.equals(SystemSettings.REQUEST_MODE_SIMPLIFIED)) {
 			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_REQUEST_MODE_DESCRIPTION+" [" + this.requestMode + "]",ErrorCodes.INVALID_REQUEST_MODE_CODE,ErrorCodes.INVALID_REQUEST_MODE_HINT);
 		}
+		if(!this.tempoBeatUnit.equals("maxima") && !this.tempoBeatUnit.equals("longa") &&
+		   !this.tempoBeatUnit.equals("breve") && !this.tempoBeatUnit.equals("whole") &&
+		   !this.tempoBeatUnit.equals("half") && !this.tempoBeatUnit.equals("quarter") &&
+		   !this.tempoBeatUnit.equals("eigth") && !this.tempoBeatUnit.equals("16th") &&
+		   !this.tempoBeatUnit.equals("32nd") && !this.tempoBeatUnit.equals("64th") &&
+		   !this.tempoBeatUnit.equals("128th") && !this.tempoBeatUnit.equals("256th") &&
+		   !this.tempoBeatUnit.equals("512th") && !this.tempoBeatUnit.equals("1024th") &&
+		   !this.tempoBeatUnit.equals("")) {
+			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_TEMPO_BEAT_UNIT_DESCRIPTION+" [" + this.tempoBeatUnit + "]",ErrorCodes.INVALID_TEMPO_BEAT_UNIT_DESCRIPTION,ErrorCodes.INVALID_TEMPO_BEAT_UNIT_HINT);			
+		}
+
+		if(!this.tempoBeatsPerMinute.equals("")) {
+			String[] beats = this.tempoBeatsPerMinute.replaceAll("[^\\d-]", "").split("-");
+			if(beats.length>2) {
+				throw new InvalidWMSSRequestException(ErrorCodes.INVALID_TEMPO_BPM_DESCRIPTION+" [" + this.tempoBeatsPerMinute + "]",ErrorCodes.INVALID_TEMPO_BPM_CODE,ErrorCodes.INVALID_TEMPO_BPM_HINT);
+			}
+		}
+		
+		
 	}
 	
-	private boolean isMelodyValid(WMSSRequest wmssRequest) {
-		//TODO create a pea,mei and musicxml melody validator.
-		return true;
-	}
-
 	private boolean isDatasourceValid(WMSSRequest wmssRequest) {
 		
 		boolean result = false;
@@ -315,8 +332,12 @@ public class WMSSRequest {
 		return tonalityMode;
 	}
 
-	public String getTempo() {
-		return tempo;
+	public String getTempoBeatUnit() {
+		return tempoBeatUnit;
+	}
+	
+	public String getTempoBeatsPerMinute() {
+		return tempoBeatsPerMinute;
 	}
 
 	public String getCreationDate() {

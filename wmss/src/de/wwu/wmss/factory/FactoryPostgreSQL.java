@@ -658,7 +658,7 @@ public class FactoryPostgreSQL {
 					Movement mov = new Movement();					
 					mov.setMovementIdentifier(rs.getString("movement_id"));
 					mov.setMovementName(rs.getString("score_movement_description"));
-					mov.setTempo(rs.getString("movement_tempo"));
+					mov.setBeatUnit(rs.getString("movement_tempo"));
 					mov.setScoreId(rs.getString("score_id"));
 
 					movementList.add(mov);

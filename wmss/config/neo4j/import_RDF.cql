@@ -22,7 +22,8 @@ CREATE (:NamespacePrefixDefinition {
   });
 
 
-CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
+//CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
+CALL semantics.importRDF("file:///home/jones/git/musicowl/musicowl/ntriples/elgar_cello_concerto_op.85.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
 
 MATCH (note:chord__Note)-[:chord__natural]->(natural:chord__Natural) 
 OPTIONAL MATCH (note:chord__Note)-[:chord__modifier]->(modifier)
@@ -36,6 +37,23 @@ WITH note, CASE SUBSTRING(modifier.uri,31)
        SUBSTRING(natural.uri,36) AS natural           
 SET note.note = natural, note.accidental = modifier
 RETURN COUNT(note);
+
+MATCH (mov:mo__Movement)
+OPTIONAL MATCH (mov:mo__Movement)-[:mso__hasBeatUnit]-(unit)
+WITH mov,CASE unit 
+           WHEN NULL THEN "unknown"
+           ELSE LOWER(SUBSTRING(unit.uri,54)) 
+        END AS b
+SET mov.beatUnit = b
+RETURN COUNT(mov);
+
+MATCH (mov:mo__Movement)
+WITH mov, CASE mov.mso__hasBeatsPerMinute 
+            WHEN NULL THEN 0
+            ELSE toInt(mov.mso__hasBeatsPerMinute) 
+          END AS bpm
+SET mov.mso__hasBeatsPerMinute = bpm
+RETURN COUNT(mov);
 
 //Adds rests 
 MATCH (note:chord__Note)
@@ -68,7 +86,6 @@ WITH noteset,COUNT(r) AS size,
 SET noteset.size = size
 RETURN COUNT(noteset);
 
-
 MATCH (score:mo__Score)
 WITH  score, 
   CASE 
@@ -78,6 +95,8 @@ WITH  score,
 SET score.format = docFormat
 RETURN score.uri, docFormat;
 
+CREATE INDEX ON :mo__Movement(mso__hasBeatsPerMinute);
+CREATE INDEX ON :mo__Movement(beatUnit);
 CREATE INDEX ON :chord__Note(mso__hasOctave);
 CREATE INDEX ON :chord__Note(note);
 CREATE INDEX ON :chord__Note(accidental);

@@ -239,8 +239,8 @@ public class ServiceMessagingHandler {
 						if(!request.getTonalityMode().equals("")) {
 							nextPage = nextPage + "&tonalityMode="+request.getTonalityMode();
 						}						
-						if(!request.getTempo().equals("")) {
-							nextPage = nextPage + "&tempo="+request.getTempo();
+						if(!request.getTempoBeatUnit().equals("")) {
+							nextPage = nextPage + "&tempo="+request.getTempoBeatUnit();
 						}						
 						if(!request.getCreationDate().equals("")) {
 							nextPage = nextPage + "&creationDate="+request.getCreationDate();

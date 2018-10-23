@@ -6,7 +6,8 @@ public class Movement {
 
 	private String movementIdentifier;
 	private String movementName;	
-	private String tempo;
+	private String beatUnit;
+	private int beatsPerMinute;
 	private String scoreId;
 
 	private ArrayList<PerformanceMediumType> performanceMediumList;
@@ -32,14 +33,22 @@ public class Movement {
 		this.movementName = movementName;
 	}
 
-	public String getTempo() {
-		return tempo;
+	public String getBeatUnit() {
+		return beatUnit;
 	}
 
-	public void setTempo(String tempo) {
-		this.tempo = tempo;
+	public void setBeatUnit(String beatunit) {
+		this.beatUnit = beatunit;
 	}
 	
+	public int getBeatsPerMinute() {
+		return beatsPerMinute;
+	}
+
+	public void setBeatsPerMinute(int beatsPerMinute) {
+		this.beatsPerMinute = beatsPerMinute;
+	}
+
 	public String getScoreId() {
 		return scoreId;
 	}
