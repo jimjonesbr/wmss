@@ -33,53 +33,6 @@ public class FactoryNeo4j {
 	public static String getMusicXML(WMSSRequest request){
 		
 		String result = "";
-		
-		/**
-		String format = "";
-		String source = "";
-		String scoreIdentifier = "";
-		
-		DataSource dataSource = new DataSource();
-		dataSource = Util.getDataSource(request);
-
-		for (int i = 0; i < parameters.size(); i++) {
-
-
-			if(parameters.get(i).getRequest().equals("identifier")){
-
-				scoreIdentifier = parameters.get(i).getValue();
-
-			}
-			
-			if(parameters.get(i).getRequest().equals("source")){
-
-				source = parameters.get(i).getValue();
-
-			}
-			
-			if(parameters.get(i).getRequest().equals("format")){
-				
-				format = parameters.get(i).getValue();
-
-			}
-
-		}
-
-
-		for (int i = 0; i < SystemSettings.sourceList.size(); i++) {
-
-			if(SystemSettings.sourceList.get(i).getId().equals(source)){
-
-				dataSource = SystemSettings.sourceList.get(i); 
-
-			}
-
-		}
-		
-		**/
-		
-		
-
 		String cypher = "\n\nMATCH (score:mo__Score {uri:\""+request.getIdentifier()+"\"})\n";
 
 		if(request.getFormat().equals("musicxml")||request.getFormat().equals("")) {
@@ -341,7 +294,6 @@ public class FactoryNeo4j {
 					PerformanceMedium medium = new PerformanceMedium();	
 
 					JSONObject mediumJsonObject = (JSONObject) mediumListJsonArray.get(j);
-					//medium.setMediumScoreDescription(mediumJsonObject.get("dc__description").toString());
 					medium.setMediumDescription(mediumJsonObject.get("mediumName").toString().trim());
 					medium.setMediumId(mediumJsonObject.get("mediumIdentifier").toString().trim());
 					medium.setMediumScoreDescription(mediumJsonObject.get("mediumLabel").toString().trim());
@@ -569,149 +521,12 @@ public class FactoryNeo4j {
 		
 	}
 		
+	
 	public static ArrayList<MusicScore> getScoreList(WMSSRequest request, DataSource dataSource){
 
 		ArrayList<MusicScore> result = new ArrayList<MusicScore>();		
 		String returnClause = "";
-		
-		/**
-		String match = "";
-		String where = "";
-		
-		
-		boolean ignoreChords = true;
-		boolean ignoreOctaves = true;
-		boolean ignoreDuration = false;
-		boolean ignorePitch = false;
-			
-		String personNode;
-		
-		if(!request.getPerson().equals("")) {
-			personNode = "(creator:foaf__Person {uri:\""+request.getPerson()+"\"})";
-		} else {
-			personNode = "(creator:foaf__Person)";
-		}
-		
-		String personRoleNode;
-
-		if(!request.getPersonRole().equals("")) {
-			personRoleNode = "(role:prov__Role {gndo__preferredNameForTheSubjectHeading:\""+request.getPersonRole()+"\"})";
-		} else {
-			personRoleNode = "(role:prov__Role)";
-		}
-		
-		String scoreNode = "";
-		
-		if(!request.getFormat().equals("")) {
-			scoreNode = "(scr:mo__Score {format:\""+request.getFormat()+"\"})";
-		} else {
-			scoreNode = "(scr:mo__Score)";
-		}
-		
-		String instrumentNode = "";
-
-		if(!request.getPerformanceMedium().equals("")) {
-			instrumentNode = "(part:mso__ScorePart {rdfs__label:\""+request.getPerformanceMedium()+"\"})";
-		} else {
-			if(!request.getPerformanceMediumType().equals("")) {
-				instrumentNode = "(part:mso__ScorePart {typeLabel:\""+request.getPerformanceMediumType()+"\"})";
-			} else {
-				instrumentNode = "(part:mso__ScorePart)";
-			}
-		}		
-		
-		match = "\nMATCH "+scoreNode+"-[:dc__creator]->"+personNode+"-[:gndo__professionOrOccupation]->"+personRoleNode+"\n";
-		 
-		if(!request.getMelody().equals("")) {
-	
-			ArrayList<Note> noteSequence = createNoteSequence(request.getMelody());
-			
-			for (int j = 0; j < noteSequence.size(); j++) {
 				
-				 // Disables ignoreChord flag in case there are chords in the searched melody.
-				 
-				if(noteSequence.get(j).isChord()) {
-					ignoreChords=false;
-				}
-			}
-
-			match = match + "MATCH "+scoreNode+"-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->"+instrumentNode+"-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(ns0:mso__NoteSet)\n" + 
-							"MATCH "+scoreNode+"-[:foaf__thumbnail]->(thumbnail) \n" +
-							"MATCH "+scoreNode+"-[:mo__movement]->(movements:mo__Movement) \n"+
-							"MATCH "+instrumentNode+"-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n"; 
-					
-			//for (int i = 0; i < noteSequence.size(); i++) {			
-			int i = 0;
-			int notesetCounter = 0;
-			
-			while(i<=noteSequence.size()-1) {
-
-				if(i==0) {
-					
-					if(!ignorePitch) {
-						match = match +	"MATCH (ns0:mso__NoteSet)-[:mso__hasNote]->(n0:chord__Note {note:'"+noteSequence.get(i).getPitch()+"', accidental: '"+noteSequence.get(i).getAccidental()+"'}) \n";
-					}
-					
-					if(!ignoreDuration) {
-						where = where +	"AND ns0.duration = "+noteSequence.get(i).getDuration()+" \n";
-					}					
-										
-					if(!ignoreOctaves) {	
-						match = match +	"MATCH (n0:chord__Note {mso__hasOctave:"+noteSequence.get(i).getOctave()+"}) \n";
-					}
-					
-				} else {
-					
-					if(!noteSequence.get(i).isChord()) {
-						notesetCounter++;
-						if(notesetCounter>0) {
-						match = match + "MATCH (ns"+(notesetCounter-1)+":mso__NoteSet)-[:mso__nextNoteSet]->(ns"+notesetCounter+":mso__NoteSet) \n";
-						}
-						
-					}
-					
-					if(!ignorePitch) {						
-						match = match + "MATCH (ns"+notesetCounter+":mso__NoteSet)-[:mso__hasNote]->(n"+i+":chord__Note {note:'"+noteSequence.get(i).getPitch()+"', accidental: '"+noteSequence.get(i).getAccidental()+"'}) \n";											
-					}										
-					if(!ignoreDuration) {
-						where = where +	"AND ns"+notesetCounter+".duration = "+noteSequence.get(i).getDuration()+" \n";
-					}					
-					if(!ignoreOctaves) {	
-						match = match +	"MATCH (n"+i+":chord__Note {mso__hasOctave:"+noteSequence.get(i).getOctave()+"}) \n";
-					}										 
-				}
-
-				if(ignoreChords) {
-					where = where  + "AND ns"+notesetCounter+".size = 1 \n";
-				}
-				
-				i++;
-			}
-			
-
-		} else {
-			
-			match = match + "\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-"+scoreNode+"-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->"+instrumentNode+"\n" + 
-							"MATCH "+scoreNode+"-[:foaf__thumbnail]->(thumbnail) \n" +
-							"MATCH "+scoreNode+"-[:mo__movement]->(movements:mo__Movement) \n";	
-		}
-		
-		if(request.isSolo()) {
-			match = match + "\nMATCH (part:mso__ScorePart {mso__isSolo:\""+request.isSolo()+"\"})";	
-		}
-		
-		if(request.isEnsemble()) {
-			match = match + "\nMATCH (part:mso__ScorePart {mso__isEnsemble:\""+request.isEnsemble()+"\"})";	
-		}
-		
-		if(request.getCollection().equals("")) {
-			match = match + "MATCH (collection:prov__Collection)-[:prov__hadMember]->"+scoreNode+"\n";
-		} else {
-			match = match + "MATCH (collection:prov__Collection {uri:\""+request.getCollection()+"\"})-[:prov__hadMember]->"+scoreNode+"\n";
-		}
-		**/
-		
-		
 		String matchClause = createMelodyQuery(request);
 		
 		returnClause =   "\nRETURN \n" + 				
@@ -756,7 +571,7 @@ public class FactoryNeo4j {
 				
 		String cypherQuery = matchClause + returnClause;
 
-		logger.debug("\n[main]:\n"+cypherQuery+"\n");
+		logger.info("\n[main]:\n"+cypherQuery+"\n");
 				
 		//StatementResult rs = Neo4jConnector.executeQuery(cypherQuery, dataSource);
 		
@@ -809,289 +624,7 @@ public class FactoryNeo4j {
 		
 	}
 	
-	/**
-	public static ArrayList<MusicScore> OLDgetScoreList(ArrayList<RequestParameter> parameters, DataSource dataSource){
-
-		ArrayList<MusicScore> result = new ArrayList<MusicScore>();		
-		String melody = "";
-		String match = "";
-		String where = "";
-		String ret = "";
-		String collection = "";
-		String person = "";
-		String personRole = "";
-		String docFormat = "";
-		String instrument = "";
-		String instrumentType = "";
-		String solo = "";
-		String ensemble = "";
-		String pageSizeOverride = "";
-		
-		boolean ignoreChords = true;
-		boolean ignoreOctaves = true;
-		boolean ignoreDuration = false;
-		boolean ignorePitch = false;
-		
-		for (int i = 0; i < parameters.size(); i++) {
-			if(parameters.get(i).getRequest().equals("melody")){
-				melody = parameters.get(i).getValue();
-			} else if(parameters.get(i).getRequest().equals("ignorechords")){
-				ignoreChords = Boolean.valueOf(parameters.get(i).getValue());
-			} else if(parameters.get(i).getRequest().equals("collection")){
-				collection = parameters.get(i).getValue();
-			} else if(parameters.get(i).getRequest().equals("person")){
-				person = parameters.get(i).getValue().toString();
-			} else if(parameters.get(i).getRequest().equals("personRole")){
-				personRole = parameters.get(i).getValue().toString();
-			} else if(parameters.get(i).getRequest().equals("format")){
-				docFormat = parameters.get(i).getValue().toString();
-			} else if(parameters.get(i).getRequest().equals("performancemedium")){
-				instrument = parameters.get(i).getValue().toString();				
-			} else if(parameters.get(i).getRequest().equals("performancemediumtype")){
-				instrumentType = parameters.get(i).getValue().toString();				
-			} else if(parameters.get(i).getRequest().equals("solo")){
-				solo = parameters.get(i).getValue().toString();				
-			} else if(parameters.get(i).getRequest().equals("ensemble")){
-				ensemble = parameters.get(i).getValue().toString();				
-			} else if(parameters.get(i).getRequest().equals("ignoreoctaves")){
-				ignoreOctaves = Boolean.valueOf(parameters.get(i).getValue());				
-			} else if(parameters.get(i).getRequest().equals("ignoreduration")){
-				ignoreDuration = Boolean.valueOf(parameters.get(i).getValue());				
-			} else if(parameters.get(i).getRequest().equals("ignorepitch")){
-				ignorePitch = Boolean.valueOf(parameters.get(i).getValue());				
-			} else if(parameters.get(i).getRequest().equals("pagesize")){
-				pageSizeOverride = parameters.get(i).getValue().toString();							
-			} 
-		}
-		
-		String personNode;
-		
-		if(!person.equals("")) {
-			personNode = "(creator:foaf__Person {uri:\""+person+"\"})";
-		} else {
-			personNode = "(creator:foaf__Person)";
-		}
-		
-		String personRoleNode;
-
-		if(!personRole.equals("")) {
-			personRoleNode = "(role:prov__Role {gndo__preferredNameForTheSubjectHeading:\""+personRole+"\"})";
-		} else {
-			personRoleNode = "(role:prov__Role)";
-		}
-		
-		String scoreNode = "";
-		
-		if(!docFormat.equals("")) {
-			scoreNode = "(scr:mo__Score {format:\""+docFormat+"\"})";
-		} else {
-			scoreNode = "(scr:mo__Score)";
-		}
-		
-		String instrumentNode = "";
-
-		if(!instrument.equals("")) {
-			instrumentNode = "(part:mso__ScorePart {rdfs__label:\""+instrument+"\"})";
-		} else {
-			if(!instrumentType.equals("")) {
-				instrumentNode = "(part:mso__ScorePart {typeLabel:\""+instrumentType+"\"})";
-			} else {
-				instrumentNode = "(part:mso__ScorePart)";
-			}
-		}
-		
-		
-		match = "\nMATCH "+scoreNode+"-[:dc__creator]->"+personNode+"-[:gndo__professionOrOccupation]->"+personRoleNode+"\n";
-		 
-		if(!melody.equals("")) {
 	
-			ArrayList<Note> noteSequence = createNoteSequence(melody);
-			
-			for (int j = 0; j < noteSequence.size(); j++) {
-				
-				//Disables ignoreChord flag in case there are chords in the searched melody.
-				 
-				if(noteSequence.get(j).isChord()) {
-					ignoreChords=false;
-				}
-			}
-
-			match = match + "MATCH "+scoreNode+"-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->"+instrumentNode+"-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(ns0:mso__NoteSet)\n" + 
-							"MATCH "+scoreNode+"-[:foaf__thumbnail]->(thumbnail) \n" +
-							"MATCH "+scoreNode+"-[:mo__movement]->(movements:mo__Movement) \n"+
-							"MATCH "+instrumentNode+"-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n"; 
-					
-			//for (int i = 0; i < noteSequence.size(); i++) {			
-			int i = 0;
-			int notesetCounter = 0;
-			
-			while(i<=noteSequence.size()-1) {
-
-				if(i==0) {
-					
-					if(!ignorePitch) {
-						match = match +	"MATCH (ns0:mso__NoteSet)-[:mso__hasNote]->(n0:chord__Note {note:'"+noteSequence.get(i).getPitch()+"', accidental: '"+noteSequence.get(i).getAccidental()+"'}) \n";
-					}
-					
-					if(!ignoreDuration) {
-						where = where +	"AND ns0.duration = "+noteSequence.get(i).getDuration()+" \n";
-					}					
-					
-					System.out.println("ignoreOctaves> "+ignoreOctaves);
-					if(!ignoreOctaves) {	
-						match = match +	"MATCH (n0:chord__Note {mso__hasOctave:"+noteSequence.get(i).getOctave()+"}) \n";
-					}
-					
-				} else {
-					
-					if(!noteSequence.get(i).isChord()) {
-						notesetCounter++;
-						if(notesetCounter>0) {
-						match = match + "MATCH (ns"+(notesetCounter-1)+":mso__NoteSet)-[:mso__nextNoteSet]->(ns"+notesetCounter+":mso__NoteSet) \n";
-						}
-						
-					}
-					
-					if(!ignorePitch) {						
-						match = match + "MATCH (ns"+notesetCounter+":mso__NoteSet)-[:mso__hasNote]->(n"+i+":chord__Note {note:'"+noteSequence.get(i).getPitch()+"', accidental: '"+noteSequence.get(i).getAccidental()+"'}) \n";											
-					}										
-					if(!ignoreDuration) {
-						where = where +	"AND ns"+notesetCounter+".duration = "+noteSequence.get(i).getDuration()+" \n";
-					}					
-					if(!ignoreOctaves) {	
-						match = match +	"MATCH (n"+i+":chord__Note {mso__hasOctave:"+noteSequence.get(i).getOctave()+"}) \n";
-					}										 
-				}
-
-				if(ignoreChords) {
-					where = where  + "AND ns"+notesetCounter+".size = 1 \n";
-				}
-				
-				i++;
-			}
-			
-
-		} else {
-			
-			match = match + "\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-"+scoreNode+"-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->"+instrumentNode+"\n" + 
-							"MATCH "+scoreNode+"-[:foaf__thumbnail]->(thumbnail) \n" +
-							"MATCH "+scoreNode+"-[:mo__movement]->(movements:mo__Movement) \n";	
-		}
-		
-		if(!solo.equals("")) {
-			match = match + "\nMATCH (part:mso__ScorePart {mso__isSolo:\""+solo+"\"})";	
-		}
-		
-		if(!ensemble.equals("")) {
-			match = match + "\nMATCH (part:mso__ScorePart {mso__isEnsemble:\""+ensemble+"\"})";	
-		}
-		
-		if(collection.equals("")) {
-			match = match + "MATCH (collection:prov__Collection)-[:prov__hadMember]->"+scoreNode+"\n";
-		} else {
-			match = match + "MATCH (collection:prov__Collection {uri:\""+collection+"\"})-[:prov__hadMember]->"+scoreNode+"\n";
-		}
-		ret =   "\nRETURN \n" + 				
-				"    scr.dc__title AS title,\n" + 
-				"    scr.uri AS identifier,\n" +
-				"    activity,\n" + 
-				"    thumbnail.uri AS thumbnail,\n " +
-				"	 collection.uri AS collectionIdentifier, \n"+
-				"	 collection.rdfs__label AS collectionLabel, \n"+
-				"    {movements: COLLECT(DISTINCT \n" + 
-				"    	{movementIdentifier: movements.uri,\n" + 
-				"        movementName: movements.dc__title }\n" + 
-				"    )} AS movements,\n" + 
-				"    {persons: COLLECT(DISTINCT\n" + 
-				"       {name: creator.foaf__name, \n" + 
-				"     	 identifier: creator.uri, \n" +
-				"	     role: role.gndo__preferredNameForTheSubjectHeading} \n" + 
-				"    )} AS persons,\n" + 
-				"    {persons: \n" +
-				"		COLLECT(DISTINCT {name: encoder.foaf__name, identifier: encoder.uri, role: \"Encoder\"})} AS encoders, \n";
-		
-		if(!melody.equals("")) {
-			
-				ret = ret +"	 {locations: \n" +
-				"    COLLECT(DISTINCT{ \n" + 
-				"	   	  movementIdentifier: mov.uri,\n" + 
-				"		  movementName: mov.dc__title,\n" + 
-				"      startingMeasure: measure.rdfs__ID, \n" + 
-				"      staff: staff.rdfs__ID , \n" + 
-				"      voice: voice.rdfs__ID, \n" + 
-				"      instrumentName: part.dc__description \n" + 
-				"      })} AS locations, \n";				
-		}		
-				
-		ret = ret +	"   CASE WHEN scr.mso__asMusicXML IS NULL THEN FALSE ELSE TRUE END AS musicxml,\n" + 
-					"   CASE WHEN scr.mso__asMEI IS NULL THEN FALSE ELSE TRUE END AS mei \n" + 
-					"ORDER BY scr.dc__title \n";
-		
-		if(pageSizeOverride.equals("")) {
-			ret = ret + "LIMIT " + SystemSettings.getPageSize();
-		} else {
-			ret = ret + "LIMIT " + pageSizeOverride;
-		}
-		
-		String optionalMatch = "MATCH (scr:mo__Score)-[:prov__wasGeneratedBy]->(activity:prov__Activity)-[:prov__wasAssociatedWith]->(encoder:foaf__Person) \n";
-		String cypher = match + optionalMatch + "WHERE TRUE\n" + where  + ret;
-
-		logger.info("\n[main]:\n"+cypher+"\n");
-		
-			
-		
-		
-
-		StatementResult rs = Neo4jConnector.executeQuery(cypher, dataSource);
-				
-		while ( rs.hasNext() )
-		{
-			Record record = rs.next();
-			MusicScore score = new MusicScore();
-			score.setTitle(record.get("title").asString());
-			score.setScoreId(record.get("identifier").asString());
-			score.setThumbnail(record.get("thumbnail").asString());					
-			score.getCollection().setId(record.get("collectionIdentifier").asString());
-			score.getCollection().setDescription(record.get("collectionLabel").asString());
-			score.setOnlineResource(record.get("identifier").asString());
-			
-			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			
-			if(!melody.equals("")) {
-				score.getMelodyLocation().addAll(getMelodyLocations(gson.toJson(record.get("locations").asMap()),melody));
-			}
-			score.getPersons().addAll(getPersons(gson.toJson(record.get("persons").asMap())));
-			score.getPersons().addAll(getPersons(gson.toJson(record.get("encoders").asMap())));
-			score.getMovements().addAll(getMovements(gson.toJson(record.get("movements").asMap())));
-			score.setProvenance(getProvenance(gson.toJson(record.get("activity").asMap())));
-			
-			for (int i = 0; i < score.getMovements().size(); i++) {
-			
-				score.getMovements().get(i).getPerformanceMediumList().add(getPerformanceMediums(score.getScoreId(),score.getMovements().get(i).getMovementId(),dataSource));
-
-			}
-			
-			if(record.get("musicxml").asBoolean()) {
-				Format format = new Format();
-				format.setFormatId("musicxml");
-				format.setFormatDescription("MusicXML 3.0"); //TODO: create triples for describing MusicXML version
-				score.getFormats().add(format);	
-			} else if(record.get("mei").asBoolean()) {
-				Format format = new Format();
-				format.setFormatId("mei");
-				format.setFormatDescription("Music Encoding Initiative 3.0"); //TODO: create triples for describing MusicXML version
-				score.getFormats().add(format);	
-				
-			}
-			
-			result.add(score);
-		}
-
-		return result;
-		
-	}
-	
-	**/
 	
 	private static ArrayList<Movement> getMovements(String json){
 		
@@ -1123,6 +656,7 @@ public class FactoryNeo4j {
 
 	}
 	
+	
 	private static ArrayList<Person> getPersons(String json){
 		
 		JSONParser parser = new JSONParser();
@@ -1148,6 +682,7 @@ public class FactoryNeo4j {
 		}
 		return result;
 	}
+	
 	
 	private static ArrayList<MelodyLocationGroup> getMelodyLocations (String json, String melodyQuery){
 

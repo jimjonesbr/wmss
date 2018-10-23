@@ -118,8 +118,8 @@ public class ServiceMessagingHandler {
 		return StringEscapeUtils.unescapeJson(gson.toJson(serviceDescription));
 
 	}
-
 	
+	@SuppressWarnings("unchecked")
 	public static String getScoreList(WMSSRequest request){
 
 		ArrayList<MusicScore> listScores = new ArrayList<MusicScore>();
@@ -134,28 +134,7 @@ public class ServiceMessagingHandler {
 
 			result = getServiceExceptionReport("E0009", "Invalid data source (empty)","Either provide a valid data source or remove the 'source' parameter to list scores from all active data sources.");
 
-		} 
-		
-		/**
-		 * REWRITE WITH Request CLASS! 		 
-		if(!request.getSource().equals("")){
-
-			for (int j = 0; j < SystemSettings.sourceList.size(); j++) {
-
-				if(source.equals(SystemSettings.sourceList.get(j).getId())){
-
-					fil = OLDfiltersSupported(SystemSettings.sourceList.get(j), parameterList);
-
-				}
-
-
-			}
-
-		}		
-		
-		if(fil.isEnabled() || isGlobalRequest){
-		 */
-		
+		} 	
 		
 		try {
 
@@ -295,173 +274,9 @@ public class ServiceMessagingHandler {
 			logger.error(e.getMessage());
 		}
 
-		/**} else {
-
-			result = getServiceExceptionReport("E0011", "Unsupported filter [" + fil.getFilter() + "]","Check the 'Service Description Report' for more information on which filters are enabled for the data source '"+source+"'.");
-		}*/
-
 		return result;
-
 	}
-	
-/**	
-	@SuppressWarnings("unchecked")
-	public static String OLDgetScoreList(ArrayList<RequestParameter> parameterList){
-
-		ArrayList<MusicScore> listScores = new ArrayList<MusicScore>();
-		JSONObject listScoresJSON = new JSONObject();
-		String result = "";
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		String source = "";
-		Filter fil = new Filter();
-		boolean isGlobalRequest = true;
-
-		for (int k = 0; k < parameterList.size(); k++) {
-
-			if(parameterList.get(k).getRequest().equals("source")){
-
-				isGlobalRequest = false;
-				
-				if(parameterList.get(k).getValue().equals("")){
-
-					result = getServiceExceptionReport("E0009", "Invalid data source (empty)","Either provide a valid data source or remove the 'source' parameter to list scores from all active data sources.");
-
-				} else {
-
-					source = parameterList.get(k).getValue();
-
-				}
-
-			}
-
-		}
-
-		
-
-		if(!source.equals("")){
-
-			for (int j = 0; j < SystemSettings.sourceList.size(); j++) {
-
-				if(source.equals(SystemSettings.sourceList.get(j).getId())){
-
-					fil = OLDfiltersSupported(SystemSettings.sourceList.get(j), parameterList);
-
-				}
-
-
-			}
-
-		} 
-		
-
-		if(fil.isEnabled() || isGlobalRequest){
-
-			try {
-
-				JSONArray repoArray = new JSONArray();
-
-
-				for (int i = 0; i < SystemSettings.sourceList.size(); i++) {
-
-
-					if(source.equals(SystemSettings.sourceList.get(i).getId()) || source.equals("")){
-						
-						if(SystemSettings.sourceList.get(i).getType().equals("database")) {
-							
-							if(SystemSettings.sourceList.get(i).getStorage().equals("postgresql")){
-								
-								listScores = FactoryPostgreSQL.getScoreList(parameterList, SystemSettings.sourceList.get(i));
-							}
-							
-						}
-						
-						if(SystemSettings.sourceList.get(i).getType().equals("lpg")) {
-
-							if(SystemSettings.sourceList.get(i).getStorage().equals("neo4j")){
-								
-								listScores = FactoryNeo4j.OLDgetScoreList(parameterList, SystemSettings.sourceList.get(i));
-								
-							}
-
-						}
-						
-						JSONObject repo = new JSONObject();
-						repo.put("identifier", SystemSettings.sourceList.get(i).getId());
-						repo.put("host", SystemSettings.sourceList.get(i).getHost());
-						repo.put("version", SystemSettings.sourceList.get(i).getVersion());
-						repo.put("type", SystemSettings.sourceList.get(i).getType());
-						repo.put("storage", SystemSettings.sourceList.get(i).getStorage());
-						repo.put("size", listScores.size());
-												
-						repo.put("nextPage", "XX");
-						repo.put("scores", listScores);
-										
-						repoArray.add(repo);
-
-					}
-				}
-
-
-				listScoresJSON.put("datasources", repoArray);
-				listScoresJSON.put("type", "ScoreListReport");
-				listScoresJSON.put("protocolVersion", "1.0");
-				listScoresJSON.put("size", repoArray.size());
-
-								
-				result = gson.toJson(listScoresJSON);
-
-			} catch (Exception e) {
-				e.printStackTrace();
-				logger.error("Unexpected error at the ListScores request.");
-				logger.error(e.getMessage());
-			}
 			
-		} else {
-			
-			result = getServiceExceptionReport("E0011", "Unsupported filter [" + fil.getFilter() + "]","Check the 'Service Description Report' for more information on which filters are enabled for the data source '"+source+"'.");
-		}
-
-		return result;
-
-	}
-**/	
-	
-	
-/**
-	public static String OLDgetScore(ArrayList<RequestParameter> parameters){
-
-		String result = "";
-		DataSource ds = Util.getDataSource(parameters);
-
-		if(ds.getType().equals("triplestore")) {
-
-			result = FactoryTripleStore.getScore(parameters);
-
-		} else
-
-			if(ds.getType().equals("postgresql")) {
-
-				result = FactoryPostgreSQL.getScore(parameters);
-
-			} else 
-
-				if(ds.getType().equals("lpg")) {
-
-					if(ds.getStorage().equals("neo4j")) {
-						
-						result = FactoryNeo4j.getMusicXML(parameters);
-						
-					}
-
-				}
-
-
-
-		return result;
-
-	}
-	*/
-
 	public static String getScore(WMSSRequest request){
 
 		String result = "";
@@ -494,9 +309,6 @@ public class ServiceMessagingHandler {
 		return result;
 
 	}
-	
-	
-	
 	
 	private static Filter OLDfiltersSupported(DataSource ds, ArrayList<RequestParameter> prm){
 
