@@ -244,18 +244,12 @@ public class ServiceMessagingHandler {
 						}						
 						if(!request.getCreationDate().equals("")) {
 							nextPage = nextPage + "&creationDate="+request.getCreationDate();
-						}						
-						if(!request.getCreationDateFrom().equals("")) {
-							nextPage = nextPage + "&creationDateFrom="+request.getCreationDateFrom();
-						}						
-						if(!request.getCreationDateTo().equals("")) {
-							nextPage = nextPage + "&creationDateTo="+request.getCreationDateTo();
-						}						
+						}					
 						if(!request.getIdentifier().equals("")) {
 							nextPage = nextPage + "&identifier="+request.getIdentifier();
 						}						
-						if(!request.getVersion().equals("")) {
-							nextPage = nextPage + "&version="+request.getVersion();
+						if(!request.getProtocolVersion().equals("")) {
+							nextPage = nextPage + "&version="+request.getProtocolVersion();
 						}						
 						if(!request.isIgnoreChords()) {
 							nextPage = nextPage + "&ignoreChords="+request.isIgnoreChords();

@@ -51,4 +51,9 @@ public class ErrorCodes {
 	public static String INVALID_TEMPO_BEAT_UNIT_CODE = "E0012";
 	public static String INVALID_TEMPO_BEAT_UNIT_DESCRIPTION  = "Invalid tempo beat unit";
 	public static String INVALID_TEMPO_BEAT_UNIT_HINT = "Provide one of the following beat units: maxima, longa, breve, whole, half, quarter, eighth, 16th, 32nd, 64th, 128th, 256th, 512th, 1024th.";
+	
+	public static String INVALID_DATE_CODE = "E0013";
+	public static String INVALID_DATE_DESCRIPTION  = "Invalid date or interval";
+	public static String INVALID_DATE_HINT = "Provide a date or an inverval thereof in the following formats: 'yyyy', 'yyyymm', 'yyyymmdd'. For example: 1898, 189805, 19890501, 19890501-19900215, 1989-1990";
+
 }

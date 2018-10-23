@@ -1,6 +1,10 @@
 package de.wwu.wmss.core;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
 import de.wwu.wmss.settings.SystemSettings;
@@ -22,12 +26,10 @@ public class WMSSRequest {
 	private String tempoBeatUnit = "";
 	private String tempoBeatsPerMinute = "";
 	private String creationDate = "";
-	private String creationDateFrom = "";
-	private String creationDateTo = "";
 	private String melody = "";
 	private String melodyEncoding = "";
 	private String identifier = "";
-	private String version = "";
+	private String protocolVersion = "";
 	private String source = "";
 	private String score = "";
 	private boolean ignoreChords = true;
@@ -40,6 +42,7 @@ public class WMSSRequest {
 	private int offset = 0;
 	private String hostname = "";
 	private ArrayList<Note> noteSequence;
+	private ArrayList<Date> creationDateArray = new ArrayList<Date>();
 		
 	public WMSSRequest(HttpServletRequest httpRequest)  throws InvalidWMSSRequestException {
 		
@@ -105,14 +108,6 @@ public class WMSSRequest {
 				
 				this.creationDate = httpRequest.getParameter(parameter).toLowerCase();
 
-			} else if (parameter.toLowerCase().equals("creationdatefrom")) {
-				
-				this.creationDateFrom = httpRequest.getParameter(parameter);
-				
-			} else if (parameter.toLowerCase().equals("creationdateto")) {
-				
-				this.creationDateTo = httpRequest.getParameter(parameter).toLowerCase();
-				
 			} else if (parameter.toLowerCase().equals("melody")) {
 				
 				this.melody = httpRequest.getParameter(parameter);
@@ -130,7 +125,7 @@ public class WMSSRequest {
 				
 			} else if (parameter.toLowerCase().equals("version")) {
 				
-				this.version = httpRequest.getParameter(parameter);
+				this.protocolVersion = httpRequest.getParameter(parameter);
 				
 			} else if (parameter.toLowerCase().equals("source")) {
 				
@@ -262,8 +257,86 @@ public class WMSSRequest {
 			}
 		}
 		
+		if(!this.creationDate.equals("")) {
+			
+			try {
+				
+				this.creationDateArray = this.parseDate(creationDate);
+				
+			} catch (InvalidWMSSRequestException e) {
+				throw new InvalidWMSSRequestException(e.getMessage(),e.getCode(), e.getHint());
+			}
+			 
+		}
 		
 	}
+	
+	
+	private ArrayList<Date> parseDate(String date) throws InvalidWMSSRequestException {
+		
+		ArrayList<Date> result = new ArrayList<Date>();
+		SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
+		sdfYear.setLenient(false);
+		SimpleDateFormat sdfYearMonth = new SimpleDateFormat("yyyyMM");
+		sdfYearMonth.setLenient(false);
+		SimpleDateFormat sdfYearMonthDay = new SimpleDateFormat("yyyyMMdd");
+		sdfYearMonthDay.setLenient(false);
+		try {
+					
+			String[] p = date.split("-");
+			String p1 = p[0];
+			String p2 = "";		
+			
+			if(p.length==2){p2 = p[1];}
+									
+			Date dateFrom = new Date();
+			
+			if(p1.length()==4) {
+				dateFrom = sdfYear.parse(p1);
+			} else if(p1.length()==6) {
+				dateFrom = sdfYearMonth.parse(p1);
+			} else if(p1.length()==8) {
+				dateFrom = sdfYearMonthDay.parse(p1);
+			} else if (p1.length()>8 || p1.length()<4) {			
+				throw new InvalidWMSSRequestException(ErrorCodes.INVALID_DATE_DESCRIPTION+" [" + p1 + "]",ErrorCodes.INVALID_DATE_CODE,ErrorCodes.INVALID_DATE_HINT);
+			}
+			
+			result.add(dateFrom);
+			
+			if(p.length>1) {
+				
+				Date dateTo = new Date();
+
+				if(p2.length()==4) {
+					dateTo = sdfYearMonthDay.parse(p2+"1231");
+				} else if(p2.length()==6) {
+
+					dateFrom = sdfYearMonth.parse(p2);
+
+					Calendar c = Calendar.getInstance();
+					c.setTime(dateFrom);
+					c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+					dateTo = sdfYearMonthDay.parse(p2+c.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+				} else if(p2.length()==8) {
+					dateTo = sdfYearMonthDay.parse(p2);
+				} else if (p2.length()>8 || p2.length()<4) {			
+					throw new InvalidWMSSRequestException(ErrorCodes.INVALID_DATE_DESCRIPTION+" [" + p1 + "]",ErrorCodes.INVALID_DATE_CODE,ErrorCodes.INVALID_DATE_HINT);
+				}
+
+				result.add(dateTo);
+
+			}
+		
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} 
+		
+		System.out.println(result.size());
+		return result;
+		
+	}
+	
 	
 	private boolean isDatasourceValid(WMSSRequest wmssRequest) {
 		
@@ -344,14 +417,6 @@ public class WMSSRequest {
 		return creationDate;
 	}
 
-	public String getCreationDateFrom() {
-		return creationDateFrom;
-	}
-
-	public String getCreationDateTo() {
-		return creationDateTo;
-	}
-
 	public String getMelody() {
 		return melody;
 	}
@@ -360,8 +425,8 @@ public class WMSSRequest {
 		return identifier;
 	}
 
-	public String getVersion() {
-		return version;
+	public String getProtocolVersion() {
+		return protocolVersion;
 	}
 
 	public String getSource() {
@@ -423,6 +488,11 @@ public class WMSSRequest {
 	public ArrayList<Note> getNoteSequence() {
 		return noteSequence;
 	}
+
+	public ArrayList<Date> getCreationDateArray() {
+		return creationDateArray;
+	}
+	
 	
 	
 }
