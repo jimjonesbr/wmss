@@ -16,8 +16,9 @@ public class MusicScore {
 	private String thumbnail;
 	private String printResource;
 	private String onlineResource;
-	private Date creationDateFrom;
-	private Date creationDateTo;
+	//private Date creationDateFrom;
+	//private Date creationDateTo;
+	private String dateIssued;
 	private String documentCreationDate;
 	private ArrayList<Movement> movements;
 	private ArrayList<Format> formats;
@@ -95,26 +96,6 @@ public class MusicScore {
 
 	public void setTonalityMode(String tonalityMode) {
 		this.tonalityMode = tonalityMode;
-	}
-
-
-	public Date getCreationDateFrom() {
-		return creationDateFrom;
-	}
-
-
-	public void setCreationDateFrom(Date creationDateFrom) {
-		this.creationDateFrom = creationDateFrom;
-	}
-
-
-	public Date getCreationDateTo() {
-		return creationDateTo;
-	}
-
-
-	public void setCreationDateTo(Date creationDateTo) {
-		this.creationDateTo = creationDateTo;
 	}
 
 
@@ -210,6 +191,17 @@ public class MusicScore {
 	public Collection getCollection() {
 		return collection;
 	}
+
+
+	public String getDateIssued() {
+		return dateIssued;
+	}
+
+
+	public void setDateIssued(String dateIssued) {
+		this.dateIssued = dateIssued;
+	}
+
 	
 	
 }

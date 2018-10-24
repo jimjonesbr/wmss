@@ -130,11 +130,11 @@ public class ServiceMessagingHandler {
 		Filter fil = new Filter();
 		boolean isGlobalRequest = true;
 
-		if(request.getSource().equals("")){
-
-			result = getServiceExceptionReport("E0009", "Invalid data source (empty)","Either provide a valid data source or remove the 'source' parameter to list scores from all active data sources.");
-
-		} 	
+//		if(request.getSource().equals("")){
+//
+//			result = getServiceExceptionReport("E0009", "Invalid data source (empty)","Either provide a valid data source or remove the 'source' parameter to list scores from all active data sources.");
+//
+//		} 	
 		
 		try {
 
@@ -221,8 +221,8 @@ public class ServiceMessagingHandler {
 						if(!request.getTempoBeatUnit().equals("")) {
 							nextPage = nextPage + "&tempo="+request.getTempoBeatUnit();
 						}						
-						if(!request.getCreationDate().equals("")) {
-							nextPage = nextPage + "&creationDate="+request.getCreationDate();
+						if(!request.getDateIssued().equals("")) {
+							nextPage = nextPage + "&creationDate="+request.getDateIssued();
 						}					
 						if(!request.getIdentifier().equals("")) {
 							nextPage = nextPage + "&identifier="+request.getIdentifier();

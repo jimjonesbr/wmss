@@ -399,6 +399,34 @@ public class FactoryNeo4j {
 			}
 		}		
 		
+		
+		if(!wmssRequest.getTempoBeatUnit().equals("")) {
+			where = "AND mov.beatUnit='"+wmssRequest.getTempoBeatUnit()+"' \n"; 
+		}
+		
+		if(!wmssRequest.getTempoBeatsPerMinute().equals("")) {
+			String[] bpm = wmssRequest.getTempoBeatsPerMinute().split("-");
+			
+			if(bpm.length==1) {
+				where = where + "AND mov.mso__hasBeatsPerMinute = " + bpm[0] +"\n";
+			}
+			
+			if(bpm.length==2) {
+				where = where + "AND mov.mso__hasBeatsPerMinute >= " + bpm[0] +"\n";
+				where = where + "AND mov.mso__hasBeatsPerMinute <= " + bpm[1] +"\n";
+			}
+		}
+		
+		if(wmssRequest.getDateIssuedArray().size()!=0) {
+			if(wmssRequest.getDateIssuedArray().size()==1) {
+				where = where + "AND scr.dcterms__issued >= datetime('"+wmssRequest.getDateIssuedArray().get(0)+"') \n";
+			}
+			if(wmssRequest.getDateIssuedArray().size()==2) {
+				where = where + "AND scr.dcterms__issued >= datetime('"+wmssRequest.getDateIssuedArray().get(0)+"') \n";
+				where = where + "AND scr.dcterms__issued <= datetime('"+wmssRequest.getDateIssuedArray().get(1)+"') \n";
+			}
+		}
+		
 		match = "\nMATCH "+scoreNode+"-[:dc__creator]->"+personNode+"-[:gndo__professionOrOccupation]->"+personRoleNode+"\n";
 		 
 		if(!wmssRequest.getMelody().equals("")) {
@@ -422,21 +450,7 @@ public class FactoryNeo4j {
 							"MATCH "+scoreNode+"-[:mo__movement]->(movements:mo__Movement) \n"+
 							"MATCH "+instrumentNode+"-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n";
 						
-			if(!wmssRequest.getTempoBeatUnit().equals("")) {
-				where = "AND mov.beatUnit='"+wmssRequest.getTempoBeatUnit()+"' \n"; 
-			}
-			if(!wmssRequest.getTempoBeatsPerMinute().equals("")) {
-				String[] bpm = wmssRequest.getTempoBeatsPerMinute().split("-");
-				
-				if(bpm.length==1) {
-					where = where + "AND mov.mso__hasBeatsPerMinute = " + bpm[0] +"\n";
-				}
-				
-				if(bpm.length==2) {
-					where = where + "AND mov.mso__hasBeatsPerMinute >= " + bpm[0] +"\n";
-					where = where + "AND mov.mso__hasBeatsPerMinute <= " + bpm[1] +"\n";
-				}
-			}
+
 			
 			
 			int i = 0;
@@ -532,6 +546,7 @@ public class FactoryNeo4j {
 		returnClause =   "\nRETURN \n" + 				
 				"    scr.dc__title AS title,\n" + 
 				"    scr.uri AS identifier,\n" +
+				"    toString(scr.dcterms__issued) AS issued,\n" +
 				"    activity,\n" + 
 				"    thumbnail.uri AS thumbnail,\n " +
 				"	 collection.uri AS collectionIdentifier, \n"+
@@ -582,6 +597,7 @@ public class FactoryNeo4j {
 			Record record = rs.next();
 			MusicScore score = new MusicScore();
 			score.setTitle(record.get("title").asString());
+			score.setDateIssued(record.get("issued").asString());
 			score.setScoreId(record.get("identifier").asString());
 			score.setThumbnail(record.get("thumbnail").asString());					
 			score.getCollection().setId(record.get("collectionIdentifier").asString());

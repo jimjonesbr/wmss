@@ -8,6 +8,7 @@ CREATE (:NamespacePrefixDefinition {
   `http://linkeddata.uni-muenster.de/ontology/musicscore#`: 'mso',
   `http://purl.org/ontology/chord/`: 'chord',
   `http://purl.org/dc/elements/1.1/`: 'dc',
+  `http://purl.org/dc/terms/`: 'dcterms',
   `http://www.w3.org/1999/02/22-rdf-syntax-ns#`: 'rdfs',
   `http://purl.org/ontology/chord/note/`: 'note',
   `http://purl.org/ontology/tonality/`: 'ton',
@@ -55,6 +56,10 @@ WITH mov, CASE mov.mso__hasBeatsPerMinute
 SET mov.mso__hasBeatsPerMinute = bpm
 RETURN COUNT(mov);
 
+MATCH (scr:mo__Score)
+SET scr.dcterms__issued = datetime(scr.dcterms__issued)
+RETURN COUNT(scr.dcterms__issued);
+
 //Adds rests 
 MATCH (note:chord__Note)
 WHERE note.note IS NULL
@@ -97,6 +102,7 @@ RETURN score.uri, docFormat;
 
 CREATE INDEX ON :mo__Movement(mso__hasBeatsPerMinute);
 CREATE INDEX ON :mo__Movement(beatUnit);
+CREATE INDEX ON :mo__Score(dcterms_issued);
 CREATE INDEX ON :chord__Note(mso__hasOctave);
 CREATE INDEX ON :chord__Note(note);
 CREATE INDEX ON :chord__Note(accidental);

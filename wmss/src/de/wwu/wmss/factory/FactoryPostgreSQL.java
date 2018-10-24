@@ -644,8 +644,8 @@ public class FactoryPostgreSQL {
 					MusicScore rec = new MusicScore();
 					
 					rec.setScoreId(rs.getString("score_id"));
-					rec.setCreationDateFrom(rs.getDate("score_creation_date_min"));
-					rec.setCreationDateTo(rs.getDate("score_creation_date_max"));
+					//rec.setCreationDateFrom(rs.getDate("score_creation_date_min"));
+					//rec.setCreationDateTo(rs.getDate("score_creation_date_max"));
 					rec.setTitle(rs.getString("score_name"));;
 					rec.setTonalityMode(rs.getString("score_tonality_mode"));;
 					rec.setTonalityTonic(rs.getString("score_tonality_note"));;
