@@ -57,7 +57,7 @@ SET mov.mso__hasBeatsPerMinute = bpm
 RETURN COUNT(mov);
 
 MATCH (scr:mo__Score)
-SET scr.dcterms__issued = datetime(scr.dcterms__issued)
+SET scr.issued = datetime(scr.dcterms__issued)
 RETURN COUNT(scr.dcterms__issued);
 
 //Adds rests 

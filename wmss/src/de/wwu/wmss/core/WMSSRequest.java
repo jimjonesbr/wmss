@@ -257,14 +257,17 @@ public class WMSSRequest {
 			
 			String[] dates = this.dateIssued.replaceAll("[^\\d-]", "").split("-");
 			
+			if(dates.length==2&& (Integer.parseInt(dates[0])>Integer.parseInt(dates[1]))) {
+				throw new InvalidWMSSRequestException(ErrorCodes.INVALID_DATE_DESCRIPTION+" [" + this.dateIssued + "]",ErrorCodes.INVALID_DATE_CODE,ErrorCodes.INVALID_DATE_HINT);
+			}
+			
 			for (int i = 0; i < dates.length; i++) {
 				if(dates[i].length()!=4&&
 				   dates[i].length()!=6&&
 				   dates[i].length()!=8) {
 					throw new InvalidWMSSRequestException(ErrorCodes.INVALID_DATE_DESCRIPTION+" [" + dates[i] + "]",ErrorCodes.INVALID_DATE_CODE,ErrorCodes.INVALID_DATE_HINT);
-				}
-				this.dateIssuedArray.add(dates[i]);
-				System.out.println("> " + dates[i] );
+				}			
+				this.dateIssuedArray.add(dates[i]);				
 			}
 			
 		}
