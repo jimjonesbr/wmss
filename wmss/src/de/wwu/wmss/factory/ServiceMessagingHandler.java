@@ -245,6 +245,9 @@ public class ServiceMessagingHandler {
 						if(request.isIgnoreDuration()) {
 							nextPage = nextPage + "&ignoreDuration="+request.isIgnoreDuration();
 						}
+						if(!request.getRequestMode().equals("")) {
+							nextPage = nextPage + "&requestMode="+request.getRequestMode();
+						}
 						nextPage = nextPage + "&offset=" + (request.getOffset() + listScores.size());
 						nextPage = nextPage + "&pageSize=" + request.getPageSize();
 						nextPage = nextPage + "&totalSize=" + totalSize;

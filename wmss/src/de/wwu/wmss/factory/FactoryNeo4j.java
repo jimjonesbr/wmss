@@ -346,7 +346,7 @@ public class FactoryNeo4j {
 		
 		String cypherQuery = createMelodyQuery(wmssRequest) + "\nRETURN COUNT(DISTINCT scr.uri) AS total";
 		
-		logger.info("[count]:\n\n"+cypherQuery);
+		logger.debug("\n[count]:\n"+cypherQuery);
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypherQuery, dataSource);
 		Record record = rs.next();
 		
@@ -587,7 +587,7 @@ public class FactoryNeo4j {
 				
 		String cypherQuery = matchClause + returnClause;
 
-		logger.info("\n[main]:\n"+cypherQuery+"\n");
+		logger.debug("\n[main]:\n"+cypherQuery+"\n");
 				
 		//StatementResult rs = Neo4jConnector.executeQuery(cypherQuery, dataSource);
 		
