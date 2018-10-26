@@ -2,7 +2,7 @@
   "port": "8295",
   "service": "wmss",
   "timeout": "5000",
-  "pageSize": "50",
+  "pageSize": "10",
   "defaultRequestMode": "full",
   "contact": "jim.jones@math.uni-muenster.de",
   "title": "Web Music Score Service - University of Münster",

@@ -346,6 +346,7 @@ public class FactoryNeo4j {
 		
 		String cypherQuery = createMelodyQuery(wmssRequest) + "\nRETURN COUNT(DISTINCT scr.uri) AS total";
 		
+		logger.info("[count]:\n\n"+cypherQuery);
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypherQuery, dataSource);
 		Record record = rs.next();
 		
@@ -419,7 +420,7 @@ public class FactoryNeo4j {
 		
 		if(wmssRequest.getDateIssuedArray().size()!=0) {
 			if(wmssRequest.getDateIssuedArray().size()==1) {
-				where = where + "AND scr.issued >= datetime('"+wmssRequest.getDateIssuedArray().get(0)+"') \n";
+				where = where + "AND scr.issued = datetime('"+wmssRequest.getDateIssuedArray().get(0)+"') \n";
 			}
 			if(wmssRequest.getDateIssuedArray().size()==2) {
 				where = where + "AND scr.issued >= datetime('"+wmssRequest.getDateIssuedArray().get(0)+"') \n";
