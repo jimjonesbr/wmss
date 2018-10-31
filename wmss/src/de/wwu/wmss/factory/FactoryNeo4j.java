@@ -147,7 +147,7 @@ public class FactoryNeo4j {
 			person.setName(record.get("name").asString().trim());
 			person.setRole(record.get("role").asString().trim());
 			person.setUrl(record.get("identifier").asString().trim());
-			person.setTotalScores(record.get("total").asInt());
+			person.setTotalRelatedScores(record.get("total").asInt());
 			result.add(person);
 		}
 		
@@ -570,7 +570,7 @@ public class FactoryNeo4j {
 				
 		String cypherQuery = matchClause + returnClause;
 
-		logger.debug("\n[main]:\n"+cypherQuery+"\n");
+		logger.info("\n[main]:\n"+cypherQuery+"\n");
 		
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypherQuery, dataSource);
 				

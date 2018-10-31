@@ -126,15 +126,6 @@ public class ServiceMessagingHandler {
 		JSONObject listScoresJSON = new JSONObject();
 		String result = "";
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		//String source = "";
-		Filter fil = new Filter();
-		boolean isGlobalRequest = true;
-
-//		if(request.getSource().equals("")){
-//
-//			result = getServiceExceptionReport("E0009", "Invalid data source (empty)","Either provide a valid data source or remove the 'source' parameter to list scores from all active data sources.");
-//
-//		} 	
 		
 		try {
 
@@ -142,7 +133,6 @@ public class ServiceMessagingHandler {
 
 
 			for (int i = 0; i < SystemSettings.sourceList.size(); i++) {
-
 
 				if(request.getSource().equals(SystemSettings.sourceList.get(i).getId()) || request.getSource().equals("")){
 
@@ -160,7 +150,6 @@ public class ServiceMessagingHandler {
 
 						if(SystemSettings.sourceList.get(i).getStorage().equals("neo4j")){
 
-							//listScores = FactoryNeo4j.OLDgetScoreList(parameterList, SystemSettings.sourceList.get(i));
 							listScores = FactoryNeo4j.getScoreList(request, SystemSettings.sourceList.get(i));
 
 						}
@@ -312,115 +301,5 @@ public class ServiceMessagingHandler {
 		return result;
 
 	}
-	
-	private static Filter OLDfiltersSupported(DataSource ds, ArrayList<RequestParameter> prm){
-
-		Filter result = new Filter();
-		result.setValue(true);
-
-		for (int i = 0; i < prm.size(); i++) {
-
-			if(prm.get(i).getRequest().equals("melody") && !ds.getFilters().isMelodyEnabled()) {
-				
-				result.setFilter("melody");
-				result.setValue(false);
-				
-			}
-			
-			if(prm.get(i).getRequest().equals("collection") && !ds.getFilters().isCollectionEnabled() )	{
-			
-				result.setFilter("collection");
-				result.setValue(false);
-				
-			}
-			
-			if(prm.get(i).getRequest().equals("personrole") && !ds.getFilters().isPersonRoleEnabled() )	{
-				
-				result.setFilter("personRole");
-				result.setValue(false);
-				
-			}
-			
-			if(prm.get(i).getRequest().equals("performancemedium") && !ds.getFilters().isPerformanceMediumEnabled() )	{
-				
-				result.setFilter("performanceMedium");
-				result.setValue(false);
-				
-			}
-			
-			if(prm.get(i).getRequest().equals("performancemediumtype") && !ds.getFilters().isPerformanceMediumTypeEnabled() )	{
-			
-				result.setFilter("performanceMediumType");
-				result.setValue(false);
-				
-			}
-			
-			if(prm.get(i).getRequest().equals("solo") && !ds.getFilters().isSoloEnabled())	{
-				
-				result.setFilter("solo");
-				result.setValue(false);
-				
-			}
-			
-			if(prm.get(i).getRequest().equals("tonalitytonic") && !ds.getFilters().isTonalityTonicEnabled() )	{
-				
-				result.setFilter("tonalityTonic");
-				result.setValue(false);
-				
-			}
-			
-			if(prm.get(i).getRequest().equals("tonalitymode") && !ds.getFilters().isTonalityModeEnabled() )	{
-			
-				result.setFilter("tonalityMode");
-				result.setValue(false);
-				
-			}
-			
-			if(prm.get(i).getRequest().equals("tempo") && !ds.getFilters().isTempoEnabled() )	{
-				
-				result.setFilter("tempo");
-				result.setValue(false);
-				
-			}
-						
-			if(prm.get(i).getRequest().equals("creationdatefrom") && !ds.getFilters().isCreationDateFromEnabled() )	{
-			
-				result.setFilter("creationDateFrom");
-				result.setValue(false);
-			}
-			
-			if(prm.get(i).getRequest().equals("creationdateto") && !ds.getFilters().isCreationDateToEnabled() )	{
-				
-				result.setFilter("creationDateTo");
-				result.setValue(false);
-				
-			}
-			
-			if(prm.get(i).getRequest().equals("source") && !ds.getFilters().isSourceEnabled() )	{
-				
-				result.setFilter("source");
-				result.setValue(false);
-				
-			}
-			
-			if(prm.get(i).getRequest().equals("identifier") && !ds.getFilters().isIdentifierEnabled() )	{
-				
-				result.setFilter("identifier");
-				result.setValue(false);
-				
-			}
-			
-			if(prm.get(i).getRequest().equals("format") && !ds.getFilters().isFormatEnabled() )	{
-				
-				result.setFilter("format");
-				result.setValue(false);
-				
-			}
-			
-		}
-
-		return result;
-
-	}
-	
+		
 }

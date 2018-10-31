@@ -2,17 +2,17 @@ package de.wwu.wmss.core;
 
 public class PersonDescription extends Person {
 
-	private int totalScores;
+	private int totalRelatedScores;
 	
 	public PersonDescription() {
 		super();
 	}
 
-	public int getTotalScores() {
-		return totalScores;
+	public int getTotalRelatedScores() {
+		return totalRelatedScores;
 	}
-	public void setTotalScores(int totalScores) {
-		this.totalScores = totalScores;
+	public void setTotalRelatedScores(int totalRelatedScores) {
+		this.totalRelatedScores = totalRelatedScores;
 	}
 	
 }
