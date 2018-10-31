@@ -190,7 +190,7 @@ public class WMSSRequest {
 			throw new InvalidWMSSRequestException(ErrorCodes.MISSING_REQUEST_DESCRIPTION,ErrorCodes.MISSING_REQUEST_CODE, ErrorCodes.INVALID_REQUEST_HINT);			
 		} 
 		if(!this.requestType.equals("listscores") && !this.requestType.equals("getscore") && !this.requestType.equals("checklog")
-				&& !this.requestType.equals("describeservice")) {			
+				&& !this.requestType.equals("describeservice")&& !this.requestType.equals("deletescore")&& !this.requestType.equals("insertscore")) {			
 			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_REQUEST_DESCRIPTION+" ["+this.requestType+"]",ErrorCodes.INVALID_REQUEST_CODE,ErrorCodes.INVALID_REQUEST_HINT);			
 		} 
 		if (!this.format.equals("mei") && !this.format.equals("musicxml") && !this.format.equals("") ){

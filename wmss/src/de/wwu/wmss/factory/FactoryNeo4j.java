@@ -330,10 +330,11 @@ public class FactoryNeo4j {
 
 		try {
 
-			Object obj = parser.parse(json);						
+			Object obj = parser.parse(json);
+			System.out.println(">>>> "+json);
 			JSONObject provenanceJsonObject = (JSONObject) obj;
-			result.setGeneratedAtTime(provenanceJsonObject.get("prov__startedAtTime").toString().trim());
-			result.setComments(provenanceJsonObject.get("rdfs__comment").toString().trim());			
+			result.setGeneratedAtTime(provenanceJsonObject.get("generatedAtTime").toString().trim());
+			result.setComments(provenanceJsonObject.get("comments").toString().trim());			
 
 		} catch (org.json.simple.parser.ParseException e) {
 			e.printStackTrace();
@@ -358,12 +359,7 @@ public class FactoryNeo4j {
 	
 		String match = "";
 		String where = "";
-				
-//		boolean ignoreChords = true;
-//		boolean ignoreOctaves = true;
-//		boolean ignoreDuration = false;
-//		boolean ignorePitch = false;
-			
+						
 		String personNode;
 		
 		if(!wmssRequest.getPerson().equals("")) {
@@ -432,7 +428,6 @@ public class FactoryNeo4j {
 		 
 		if(!wmssRequest.getMelody().equals("")) {
 	
-			//ArrayList<Note> noteSequence = Util.createNoteSequence(wmssRequest.getMelody());
 			ArrayList<Note> noteSequence = wmssRequest.getNoteSequence();
 			
 			for (int j = 0; j < noteSequence.size(); j++) {
@@ -440,18 +435,16 @@ public class FactoryNeo4j {
 				 * Disables ignoreChord flag in case there are chords in the searched melody.
 				 */
 				if(noteSequence.get(j).isChord() && wmssRequest.isIgnoreChords()) {
-					//ignoreChords=false;
 					wmssRequest.setIgnoreChords(false);
 					logger.warn("Request Conflict: The searched melody contains chords but the parameter 'ignoreChords' ist set to 'true'. The 'ignoreChords' parameter will be ignored.");
 				}
 			}
 
 			match = match + "MATCH "+scoreNode+"-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->"+instrumentNode+"-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(ns0:mso__NoteSet)\n" + 
-							"MATCH "+scoreNode+"-[:foaf__thumbnail]->(thumbnail) \n" +
 							"MATCH "+scoreNode+"-[:mo__movement]->(movements:mo__Movement) \n"+
-							"MATCH "+instrumentNode+"-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n";
+							"MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n";
 						
-
+			
 			
 			
 			int i = 0;
@@ -461,17 +454,14 @@ public class FactoryNeo4j {
 
 				if(i==0) {
 					
-					//if(!ignorePitch) {
 					if(!wmssRequest.isIgnorePitch()) {
 						match = match +	"MATCH (ns0:mso__NoteSet)-[:mso__hasNote]->(n0:chord__Note {note:'"+noteSequence.get(i).getPitch()+"', accidental: '"+noteSequence.get(i).getAccidental()+"'}) \n";
 					}
 					
-					//if(!ignoreDuration) {
 					if(!wmssRequest.isIgnoreDuration()) {
 						where = where +	"AND ns0.duration = "+noteSequence.get(i).getDuration()+" \n";
 					}					
 										
-					//if(!ignoreOctaves) {
 					if(!wmssRequest.isIgnoreOctaves()) {
 						match = match +	"MATCH (n0:chord__Note {mso__hasOctave:"+noteSequence.get(i).getOctave()+"}) \n";
 					}
@@ -485,22 +475,20 @@ public class FactoryNeo4j {
 						}
 						
 					}
-					
-					//if(!ignorePitch) {						
+											
 					if(!wmssRequest.isIgnorePitch()) {
 						match = match + "MATCH (ns"+notesetCounter+":mso__NoteSet)-[:mso__hasNote]->(n"+i+":chord__Note {note:'"+noteSequence.get(i).getPitch()+"', accidental: '"+noteSequence.get(i).getAccidental()+"'}) \n";											
 					}										
-					//if(!ignoreDuration) {
+					
 					if(!wmssRequest.isIgnoreDuration()) {
 						where = where +	"AND ns"+notesetCounter+".duration = "+noteSequence.get(i).getDuration()+" \n";
 					}					
-					//if(!ignoreOctaves) {
+
 					if(!wmssRequest.isIgnoreOctaves()) {	
 						match = match +	"MATCH (n"+i+":chord__Note {mso__hasOctave:"+noteSequence.get(i).getOctave()+"}) \n";
 					}										 
 				}
 
-				//if(ignoreChords) {
 				if(wmssRequest.isIgnoreChords()) {
 					where = where  + "AND ns"+notesetCounter+".size = 1 \n";
 				}
@@ -523,17 +511,12 @@ public class FactoryNeo4j {
 		if(wmssRequest.isEnsemble()) {
 			match = match + "\nMATCH (part:mso__ScorePart {mso__isEnsemble:\""+wmssRequest.isEnsemble()+"\"})";	
 		}
-		
-		if(wmssRequest.getCollection().equals("")) {
-			match = match + "MATCH (collection:prov__Collection)-[:prov__hadMember]->"+scoreNode+"\n";
-		} else {
-			match = match + "MATCH (collection:prov__Collection {uri:\""+wmssRequest.getCollection()+"\"})-[:prov__hadMember]->"+scoreNode+"\n";
+
+		if(!wmssRequest.getCollection().equals("")) {
+			where = where  + "AND scr.collectionUri = '"+wmssRequest.getCollection()+"' \n";
 		}
-		
-		String optionalMatch = "MATCH (scr:mo__Score)-[:prov__wasGeneratedBy]->(activity:prov__Activity)-[:prov__wasAssociatedWith]->(encoder:foaf__Person) \n";
-		
-		return match + optionalMatch + "WHERE TRUE\n" + where;
-		
+
+		return match + "WHERE TRUE\n" + where;		
 	}
 		
 	
@@ -548,10 +531,11 @@ public class FactoryNeo4j {
 				"    scr.dc__title AS title,\n" + 
 				"    scr.uri AS identifier,\n" +
 				"    toString(scr.dcterms__issued) AS issued,\n" +
-				"    activity,\n" + 
-				"    thumbnail.uri AS thumbnail,\n " +
-				"	 collection.uri AS collectionIdentifier, \n"+
-				"	 collection.rdfs__label AS collectionLabel, \n"+
+				"    scr.provGeneratedAtTime AS provGeneratedAtTime,\n " +
+				"    scr.provComments AS provComments,\n " +
+				"    scr.thumbnail AS thumbnail,\n " +
+			    "	 scr.collectionUri AS collectionIdentifier, \n"+
+			    "	 scr.collectionLabel AS collectionLabel, \n"+
 				"    {movements: COLLECT(DISTINCT \n" + 
 				"    	{movementIdentifier: movements.uri,\n" + 
 				"        movementName: movements.dc__title ,\n" + 
@@ -563,8 +547,7 @@ public class FactoryNeo4j {
 				"     	 identifier: creator.uri, \n" +
 				"	     role: role.gndo__preferredNameForTheSubjectHeading} \n" + 
 				"    )} AS persons,\n" + 
-				"    {persons: \n" +
-				"		COLLECT(DISTINCT {name: encoder.foaf__name, identifier: encoder.uri, role: \"Encoder\"})} AS encoders, \n";
+				"    {persons: COLLECT(DISTINCT{name: scr.encoderName, identifier: scr.encoderUri, role: \"Encoder\"})} AS encoders, \n";
 		
 		if(!request.getMelody().equals("")) {
 			
@@ -588,8 +571,6 @@ public class FactoryNeo4j {
 		String cypherQuery = matchClause + returnClause;
 
 		logger.debug("\n[main]:\n"+cypherQuery+"\n");
-				
-		//StatementResult rs = Neo4jConnector.executeQuery(cypherQuery, dataSource);
 		
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypherQuery, dataSource);
 				
@@ -612,7 +593,12 @@ public class FactoryNeo4j {
 			}
 			score.getPersons().addAll(getPersons(gson.toJson(record.get("persons").asMap())));
 			score.getPersons().addAll(getPersons(gson.toJson(record.get("encoders").asMap())));			
-			score.setProvenance(getProvenance(gson.toJson(record.get("activity").asMap())));
+			//score.setProvenance(getProvenance(gson.toJson(record.get("activity").asMap())));
+			Provenance prov = new Provenance();
+			prov.setGeneratedAtTime(record.get("provGeneratedAtTime").asString());
+			prov.setComments(record.get("provComments").asString());
+			
+			score.setProvenance(prov);
 						
 			if(!request.getRequestMode().equals("simplified")) {
 				score.getMovements().addAll(getMovements(gson.toJson(record.get("movements").asMap())));

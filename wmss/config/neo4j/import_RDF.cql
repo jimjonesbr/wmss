@@ -62,12 +62,27 @@ MATCH (scr:mo__Score)
 SET scr.issued = datetime(scr.dcterms__issued)
 RETURN COUNT(scr.dcterms__issued);
 
+MATCH (scr:mo__Score)-[:prov__wasGeneratedBy]->(activity:prov__Activity)-[:prov__wasAssociatedWith]->(encoder:foaf__Person) 
+SET scr.encoderUri = encoder.uri,
+    scr.encoderName = encoder.foaf__name,
+    scr.provGeneratedAtTime = activity.prov__startedAtTime,
+    scr.provComments = activity.rdfs__comment
+RETURN 'Encoding: '+COUNT(scr);
+
 //Adds rests 
 MATCH (note:chord__Note)
 WHERE note.note IS NULL
 SET note.note = '-', note.accidental = ''
 RETURN COUNT(note);
 
+MATCH (scr:mo__Score)-[:foaf__thumbnail]->(thumbnail) 
+SET scr.thumbnail = thumbnail.uri
+RETURN COUNT(scr);
+
+MATCH (collection:prov__Collection)-[:prov__hadMember]->(scr:mo__Score)
+SET scr.collectionUri = collection.uri,
+    scr.collectionLabel = collection.rdfs__label
+RETURN COUNT(scr.uri);
 
 MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)
 WITH  noteset,CASE SUBSTRING(labels(duration)[1],5)
@@ -114,6 +129,9 @@ CREATE INDEX ON :prov__Role(gndo__preferredNameForTheSubjectHeading);
 CREATE INDEX ON :mo__Score(format);
 CREATE INDEX ON :mso__ScorePart(rdfs__label);
 CREATE INDEX ON :mso__ScorePart(typeLabel);
+
+CREATE INDEX ON :mso__NoteSet(duration,size);
+CREATE INDEX ON :chord__Note(note,accidental);
 
 MATCH (:mo__Score)-[:mo__movement]->(movement:mo__Movement)-[:mso__hasScorePart]->(instrument:mo__Instrument) 
 OPTIONAL MATCH (instrument:mo__Instrument)-[:skos__broader]->(type) 

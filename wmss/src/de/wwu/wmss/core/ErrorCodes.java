@@ -56,4 +56,8 @@ public class ErrorCodes {
 	public static String INVALID_DATE_DESCRIPTION  = "Invalid date or interval";
 	public static String INVALID_DATE_HINT = "Provide a date or an inverval thereof in the following formats: 'yyyy', 'yyyymm', 'yyyymmdd'. For example: 1898, 189805, 19890501, 19890501-19900215, 1989-1990";
 
+	public static String NONSUPPORTED_REQUEST_CODE = "E0014";
+	public static String NONSUPPORTED_REQUEST_DESCRIPTION  = "Request type not supported";
+	public static String NONSUPPORTED_REQUEST_DATE_HINT = "Check the request section at the settings file";
+
 }

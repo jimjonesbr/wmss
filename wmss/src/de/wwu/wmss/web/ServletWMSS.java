@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
+import de.wwu.wmss.core.ErrorCodes;
 import de.wwu.wmss.core.InvalidWMSSRequestException;
 import de.wwu.wmss.core.WMSSRequest;
 import de.wwu.wmss.factory.ServiceMessagingHandler;
@@ -63,6 +64,17 @@ public class ServletWMSS extends HttpServlet
 				response.setStatus(HttpServletResponse.SC_OK);
 				response.getWriter().println(ServiceMessagingHandler.getScoreList(wmssRequest));
 
+			} else if (wmssRequest.getRequestType().equals("deletescore")) {
+
+				response.setContentType("text/javascript");
+				response.setStatus(HttpServletResponse.SC_OK);
+				response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport(ErrorCodes.NONSUPPORTED_REQUEST_DESCRIPTION +" ["+wmssRequest.getRequestType()+"]", ErrorCodes.NONSUPPORTED_REQUEST_CODE, ErrorCodes.NONSUPPORTED_REQUEST_DATE_HINT));
+			
+			} else if (wmssRequest.getRequestType().equals("insertscore")) {
+
+				response.setContentType("text/javascript");
+				response.setStatus(HttpServletResponse.SC_OK);
+				response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport(ErrorCodes.NONSUPPORTED_REQUEST_DESCRIPTION +" ["+wmssRequest.getRequestType()+"]", ErrorCodes.NONSUPPORTED_REQUEST_CODE, ErrorCodes.NONSUPPORTED_REQUEST_DATE_HINT));
 			}
 			
 		} catch (InvalidWMSSRequestException e) {
