@@ -22,8 +22,8 @@ CREATE (:NamespacePrefixDefinition {
 });
 
 
-//CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements_musescore.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
-CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
+CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements_musescore.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
+//CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
 //CALL semantics.importRDF("file:///home/jones/git/musicowl/musicowl/ntriples/elgar_cello_concerto_op.85.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
 //CALL semantics.importRDF("file:///home/jones/Downloads/statements.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
 
@@ -38,7 +38,7 @@ WITH note, CASE SUBSTRING(modifier.uri,31)
            END AS modifier,
        SUBSTRING(natural.uri,36) AS natural           
 SET note.note = natural, note.accidental = modifier
-RETURN 'Notes: '+COUNT(note);
+RETURN COUNT(note) AS Note_Accidentals;
 
 MATCH (mov:mo__Movement)
 OPTIONAL MATCH (mov:mo__Movement)-[:mso__hasBeatUnit]-(unit)
@@ -47,7 +47,7 @@ WITH mov,CASE unit
            ELSE LOWER(SUBSTRING(unit.uri,54)) 
         END AS b
 SET mov.beatUnit = b
-RETURN 'Movements: '+COUNT(mov);
+RETURN COUNT(mov) AS Movements;
 
 MATCH (mov:mo__Movement)
 WITH mov, CASE mov.mso__hasBeatsPerMinute 
@@ -55,33 +55,33 @@ WITH mov, CASE mov.mso__hasBeatsPerMinute
             ELSE toInt(mov.mso__hasBeatsPerMinute) 
           END AS bpm
 SET mov.mso__hasBeatsPerMinute = bpm
-RETURN 'Beats per minute: '+COUNT(mov);
+RETURN COUNT(mov) AS BPM;
 
 MATCH (scr:mo__Score)
 SET scr.issued = datetime(scr.dcterms__issued)
-RETURN 'Issued: '+COUNT(scr.dcterms__issued);
+RETURN COUNT(scr.dcterms__issued) AS IssuedDates;
 
 MATCH (scr:mo__Score)-[:prov__wasGeneratedBy]->(activity:prov__Activity)-[:prov__wasAssociatedWith]->(encoder:foaf__Person) 
 SET scr.encoderUri = encoder.uri,
     scr.encoderName = encoder.foaf__name,
     scr.provGeneratedAtTime = activity.prov__startedAtTime,
     scr.provComments = activity.rdfs__comment
-RETURN 'Encoding: '+COUNT(scr);
+RETURN COUNT(scr) AS Encoder;
 
 //Adds rests 
 MATCH (note:chord__Note)
 WHERE note.note IS NULL
 SET note.note = '-', note.accidental = ''
-RETURN 'Rests: '+COUNT(note);
+RETURN COUNT(note) AS Rests;
 
 MATCH (scr:mo__Score)-[:foaf__thumbnail]->(thumbnail) 
 SET scr.thumbnail = thumbnail.uri
-RETURN 'Thumbnails: '+COUNT(scr);
+RETURN COUNT(scr) AS Thumbnails;
 
 MATCH (collection:prov__Collection)-[:prov__hadMember]->(scr:mo__Score)
 SET scr.collectionUri = collection.uri,
     scr.collectionLabel = collection.rdfs__label
-RETURN 'Collections: '+COUNT(scr.uri);
+RETURN COUNT(scr.uri) AS Collections;
 
 MATCH (noteset:mso__NoteSet)-[r:mso__hasNote]-()
 WITH noteset,COUNT(r) AS size,
@@ -89,7 +89,7 @@ WITH noteset,COUNT(r) AS size,
   WHEN COUNT(r)>1 THEN TRUE 
   WHEN COUNT(r)=1 THEN FALSE END AS chord
 SET noteset.size = size
-RETURN 'Notesets: '+COUNT(noteset);
+RETURN COUNT(noteset) AS NoteSets;
 
 MATCH (score:mo__Score)
 WITH  score, 
@@ -98,7 +98,7 @@ WITH  score,
     WHEN NOT score.mso__asMEI = '' THEN 'mei'
   END AS docFormat
 SET score.format = docFormat
-RETURN score.uri, docFormat;
+RETURN COUNT(docFormat) AS Format;
 
 CREATE INDEX ON :mo__Movement(mso__hasBeatsPerMinute);
 CREATE INDEX ON :mo__Movement(beatUnit);
@@ -130,7 +130,7 @@ MATCH (:mo__Score)-[:mo__movement]->(movement:mo__Movement)-[:mso__hasScorePart]
 OPTIONAL MATCH (instrument:mo__Instrument)-[:skos__broader]->(type) 
 SET instrument.typeUri = type.uri,
     instrument.typeLabel = type.skos__prefLabel
-RETURN COUNT(instrument);
+RETURN COUNT(instrument) AS Instruments;
 
 
 MATCH (note:chord__Note {note:'A', accidental: ''}) SET note :A RETURN COUNT(note) AS A;
@@ -139,41 +139,41 @@ MATCH (note:chord__Note {note:'A', accidental: 'xx'}) SET note :Axx RETURN COUNT
 MATCH (note:chord__Note {note:'A', accidental: 'b'}) SET note :Ab RETURN COUNT(note) AS Ab;
 MATCH (note:chord__Note {note:'A', accidental: 'bb'}) SET note :Abb RETURN COUNT(note) AS Abb;
 
-MATCH (note:chord__Note {note:'B', accidental: ''}) SET note :B RETURN 'Note B: '+COUNT(note);
-MATCH (note:chord__Note {note:'B', accidental: 'x'}) SET note :Bx RETURN 'Note Bx: '+COUNT(note);
-MATCH (note:chord__Note {note:'B', accidental: 'xx'}) SET note :Bxx RETURN 'Note Bxx: '+COUNT(note);
-MATCH (note:chord__Note {note:'B', accidental: 'b'}) SET note :Bb RETURN 'Note Bb: '+COUNT(note);
-MATCH (note:chord__Note {note:'B', accidental: 'bb'}) SET note :Bbb RETURN 'Note Bbb: '+COUNT(note);
+MATCH (note:chord__Note {note:'B', accidental: ''}) SET note :B RETURN COUNT(note) AS B;
+MATCH (note:chord__Note {note:'B', accidental: 'x'}) SET note :Bx RETURN COUNT(note) AS Bx;
+MATCH (note:chord__Note {note:'B', accidental: 'xx'}) SET note :Bxx RETURN COUNT(note) AS Bxx;
+MATCH (note:chord__Note {note:'B', accidental: 'b'}) SET note :Bb RETURN COUNT(note) AS Bb;
+MATCH (note:chord__Note {note:'B', accidental: 'bb'}) SET note :Bbb RETURN COUNT(note) AS Bbb;
 
-MATCH (note:chord__Note {note:'C', accidental: ''}) SET note :C RETURN 'Note C: '+COUNT(note);
-MATCH (note:chord__Note {note:'C', accidental: 'x'}) SET note :Cx RETURN 'Note Cx: '+COUNT(note);
-MATCH (note:chord__Note {note:'C', accidental: 'xx'}) SET note :Cxx RETURN 'Note Cxx: '+COUNT(note);
-MATCH (note:chord__Note {note:'C', accidental: 'b'}) SET note :Cb RETURN 'Note Cb: '+COUNT(note);
-MATCH (note:chord__Note {note:'C', accidental: 'bb'}) SET note :Cbb RETURN 'Note Cbb: '+COUNT(note);
+MATCH (note:chord__Note {note:'C', accidental: ''}) SET note :C RETURN COUNT(note) AS C;
+MATCH (note:chord__Note {note:'C', accidental: 'x'}) SET note :Cx RETURN COUNT(note) AS Cx;
+MATCH (note:chord__Note {note:'C', accidental: 'xx'}) SET note :Cxx RETURN COUNT(note) AS Cxx;
+MATCH (note:chord__Note {note:'C', accidental: 'b'}) SET note :Cb RETURN COUNT(note) AS Cb;
+MATCH (note:chord__Note {note:'C', accidental: 'bb'}) SET note :Cbb RETURN COUNT(note) AS Cbb;
 
-MATCH (note:chord__Note {note:'D', accidental: ''}) SET note :D RETURN 'Note D: '+COUNT(note);
-MATCH (note:chord__Note {note:'D', accidental: 'x'}) SET note :Dx RETURN 'Note Dx: '+COUNT(note);
-MATCH (note:chord__Note {note:'D', accidental: 'xx'}) SET note :Dxx RETURN 'Note Dxx: '+COUNT(note);
-MATCH (note:chord__Note {note:'D', accidental: 'b'}) SET note :Db RETURN 'Note Db: '+COUNT(note);
-MATCH (note:chord__Note {note:'D', accidental: 'bb'}) SET note :Dbb RETURN 'Note Dbb: '+COUNT(note);
+MATCH (note:chord__Note {note:'D', accidental: ''}) SET note :D RETURN COUNT(note) AS D;
+MATCH (note:chord__Note {note:'D', accidental: 'x'}) SET note :Dx RETURN COUNT(note) AS Dx;
+MATCH (note:chord__Note {note:'D', accidental: 'xx'}) SET note :Dxx RETURN COUNT(note) AS dxx;
+MATCH (note:chord__Note {note:'D', accidental: 'b'}) SET note :Db RETURN COUNT(note) AS Db;
+MATCH (note:chord__Note {note:'D', accidental: 'bb'}) SET note :Dbb RETURN COUNT(note) AS Dbb;
 
-MATCH (note:chord__Note {note:'E', accidental: ''}) SET note :E RETURN 'Note E: '+COUNT(note);
-MATCH (note:chord__Note {note:'E', accidental: 'x'}) SET note :Ex RETURN 'Note Ex: '+COUNT(note);
-MATCH (note:chord__Note {note:'E', accidental: 'xx'}) SET note :Exx RETURN 'Note Exx: '+COUNT(note);
-MATCH (note:chord__Note {note:'E', accidental: 'b'}) SET note :Eb RETURN 'Note Eb: '+COUNT(note);
-MATCH (note:chord__Note {note:'E', accidental: 'bb'}) SET note :Ebb RETURN 'Note Ebb: '+COUNT(note);
+MATCH (note:chord__Note {note:'E', accidental: ''}) SET note :E RETURN COUNT(note) AS E;
+MATCH (note:chord__Note {note:'E', accidental: 'x'}) SET note :Ex RETURN COUNT(note) AS Ex;
+MATCH (note:chord__Note {note:'E', accidental: 'xx'}) SET note :Exx RETURN COUNT(note) AS Exx;
+MATCH (note:chord__Note {note:'E', accidental: 'b'}) SET note :Eb RETURN COUNT(note) AS Eb;
+MATCH (note:chord__Note {note:'E', accidental: 'bb'}) SET note :Ebb RETURN COUNT(note) AS Ebb;
 
-MATCH (note:chord__Note {note:'F', accidental: ''}) SET note :F RETURN 'Note F: '+COUNT(note);
-MATCH (note:chord__Note {note:'F', accidental: 'x'}) SET note :Fx RETURN 'Note Fx: '+COUNT(note);
-MATCH (note:chord__Note {note:'F', accidental: 'xx'}) SET note :Fxx RETURN 'Note Fxx: '+COUNT(note);
-MATCH (note:chord__Note {note:'F', accidental: 'b'}) SET note :Fb RETURN 'Note Fb: '+COUNT(note);
-MATCH (note:chord__Note {note:'F', accidental: 'bb'}) SET note :Fbb RETURN 'Note Fbb: '+COUNT(note);
+MATCH (note:chord__Note {note:'F', accidental: ''}) SET note :F RETURN COUNT(note) AS F;
+MATCH (note:chord__Note {note:'F', accidental: 'x'}) SET note :Fx RETURN COUNT(note) AS Fx;
+MATCH (note:chord__Note {note:'F', accidental: 'xx'}) SET note :Fxx RETURN COUNT(note) AS Fxx;
+MATCH (note:chord__Note {note:'F', accidental: 'b'}) SET note :Fb RETURN COUNT(note) AS Fb;
+MATCH (note:chord__Note {note:'F', accidental: 'bb'}) SET note :Fbb RETURN COUNT(note) AS Fbb;
 
-MATCH (note:chord__Note {note:'G', accidental: ''}) SET note :G RETURN 'Note G: '+COUNT(note);
-MATCH (note:chord__Note {note:'G', accidental: 'x'}) SET note :Gx RETURN 'Note Gx: '+COUNT(note);
-MATCH (note:chord__Note {note:'G', accidental: 'xx'}) SET note :Gxx RETURN 'Note Gxx: '+COUNT(note);
-MATCH (note:chord__Note {note:'G', accidental: 'b'}) SET note :Gb RETURN 'Note Gb: '+COUNT(note);
-MATCH (note:chord__Note {note:'G', accidental: 'bb'}) SET note :Gbb RETURN 'Note Gbb: '+COUNT(note);
+MATCH (note:chord__Note {note:'G', accidental: ''}) SET note :G RETURN COUNT(note) AS G;
+MATCH (note:chord__Note {note:'G', accidental: 'x'}) SET note :Gx RETURN COUNT(note) AS Gx;
+MATCH (note:chord__Note {note:'G', accidental: 'xx'}) SET note :Gxx RETURN COUNT(note) AS Gxx;
+MATCH (note:chord__Note {note:'G', accidental: 'b'}) SET note :Gb RETURN COUNT(note) AS Gb;
+MATCH (note:chord__Note {note:'G', accidental: 'bb'}) SET note :Gbb RETURN COUNT(note) AS Gbb;
 
 MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)
 WHERE SUBSTRING(labels(duration)[1],5) = 'Longa' SET noteset :d0 RETURN 'Longa: '+COUNT(duration) AS result;
