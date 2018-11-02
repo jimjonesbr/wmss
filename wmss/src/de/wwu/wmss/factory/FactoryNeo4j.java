@@ -454,8 +454,9 @@ public class FactoryNeo4j {
 
 				if(i==0) {
 					
-					if(!wmssRequest.isIgnorePitch()) {
-						match = match +	"MATCH (ns0:mso__NoteSet)-[:mso__hasNote]->(n0:chord__Note {note:'"+noteSequence.get(i).getPitch()+"', accidental: '"+noteSequence.get(i).getAccidental()+"'}) \n";
+					if(!wmssRequest.isIgnorePitch()) {						
+						match = match +	"MATCH (ns0:mso__NoteSet)-[:mso__hasNote]->(n0:"+noteSequence.get(i).getPitch()+noteSequence.get(i).getAccidental()+") \n";
+						//match = match +	"MATCH (ns0:d"+noteSequence.get(i).getDuration()+")-[:mso__hasNote]->(n0:"+noteSequence.get(i).getPitch()+noteSequence.get(i).getAccidental()+") \n";
 					}
 					
 					if(!wmssRequest.isIgnoreDuration()) {
@@ -477,7 +478,8 @@ public class FactoryNeo4j {
 					}
 											
 					if(!wmssRequest.isIgnorePitch()) {
-						match = match + "MATCH (ns"+notesetCounter+":mso__NoteSet)-[:mso__hasNote]->(n"+i+":chord__Note {note:'"+noteSequence.get(i).getPitch()+"', accidental: '"+noteSequence.get(i).getAccidental()+"'}) \n";											
+						//match = match + "MATCH (ns"+notesetCounter+":mso__NoteSet)-[:mso__hasNote]->(n"+i+":chord__Note {note:'"+noteSequence.get(i).getPitch()+"', accidental: '"+noteSequence.get(i).getAccidental()+"'}) \n";											
+						match = match + "MATCH (ns"+notesetCounter+":mso__NoteSet)-[:mso__hasNote]->(n"+i+":"+noteSequence.get(i).getPitch()+noteSequence.get(i).getAccidental()+") \n";
 					}										
 					
 					if(!wmssRequest.isIgnoreDuration()) {

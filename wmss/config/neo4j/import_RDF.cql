@@ -22,8 +22,8 @@ CREATE (:NamespacePrefixDefinition {
 });
 
 
-CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements_musescore.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
-//CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
+//CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements_musescore.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
+CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
 //CALL semantics.importRDF("file:///home/jones/git/musicowl/musicowl/ntriples/elgar_cello_concerto_op.85.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
 //CALL semantics.importRDF("file:///home/jones/Downloads/statements.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
 
@@ -83,22 +83,6 @@ SET scr.collectionUri = collection.uri,
     scr.collectionLabel = collection.rdfs__label
 RETURN 'Collections: '+COUNT(scr.uri);
 
-MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)
-WITH  noteset,CASE SUBSTRING(labels(duration)[1],5)
-                WHEN 'QuardupleWhole' THEN 0
-                WHEN 'DoubleWhole' THEN 9
-                WHEN 'Whole' THEN  1
-                WHEN 'Half' THEN  2
-                WHEN 'Quarter' THEN  4
-                WHEN 'Eighth' THEN  8
-                WHEN '16th' THEN  6
-                WHEN '32nd' THEN  3
-                WHEN '64th' THEN  5
-                WHEN '128th' THEN  7
-              END AS duration_numeric
-SET noteset.duration = duration_numeric
-RETURN 'Durations: '+COUNT(noteset);
-
 MATCH (noteset:mso__NoteSet)-[r:mso__hasNote]-()
 WITH noteset,COUNT(r) AS size,
   CASE 
@@ -118,26 +102,134 @@ RETURN score.uri, docFormat;
 
 CREATE INDEX ON :mo__Movement(mso__hasBeatsPerMinute);
 CREATE INDEX ON :mo__Movement(beatUnit);
+CREATE INDEX ON :mo__Movement(beatUnit,mso__hasBeatsPerMinute);
+
 CREATE INDEX ON :mo__Score(issued);
 CREATE INDEX ON :mo__Score(encoderUri);
 CREATE INDEX ON :mo__Score(collectionUri);
-CREATE INDEX ON :chord__Note(mso__hasOctave);
+
 CREATE INDEX ON :chord__Note(note);
 CREATE INDEX ON :chord__Note(accidental);
+CREATE INDEX ON :chord__Note(mso__hasOctave);
+CREATE INDEX ON :chord__Note(note,accidental);
+CREATE INDEX ON :chord__Note(note,mso__hasOctave);
+CREATE INDEX ON :chord__Note(note,accidental,mso__hasOctave);
+
 CREATE INDEX ON :mso__NoteSet(duration);
 CREATE INDEX ON :mso__NoteSet(size);
+CREATE INDEX ON :mso__NoteSet(duration,size);
+
 CREATE INDEX ON :prov__Role(gndo__preferredNameForTheSubjectHeading);
 CREATE INDEX ON :mo__Score(format);
 CREATE INDEX ON :mso__ScorePart(rdfs__label);
 CREATE INDEX ON :mso__ScorePart(typeLabel);
-CREATE INDEX ON :mso__NoteSet(duration,size);
-CREATE INDEX ON :chord__Note(note,accidental);
+
+
 
 MATCH (:mo__Score)-[:mo__movement]->(movement:mo__Movement)-[:mso__hasScorePart]->(instrument:mo__Instrument) 
 OPTIONAL MATCH (instrument:mo__Instrument)-[:skos__broader]->(type) 
 SET instrument.typeUri = type.uri,
     instrument.typeLabel = type.skos__prefLabel
 RETURN COUNT(instrument);
+
+
+MATCH (note:chord__Note {note:'A', accidental: ''}) SET note :A RETURN COUNT(note) AS A;
+MATCH (note:chord__Note {note:'A', accidental: 'x'}) SET note :Ax RETURN COUNT(note) AS Ax;
+MATCH (note:chord__Note {note:'A', accidental: 'xx'}) SET note :Axx RETURN COUNT(note) AS Axx;
+MATCH (note:chord__Note {note:'A', accidental: 'b'}) SET note :Ab RETURN COUNT(note) AS Ab;
+MATCH (note:chord__Note {note:'A', accidental: 'bb'}) SET note :Abb RETURN COUNT(note) AS Abb;
+
+MATCH (note:chord__Note {note:'B', accidental: ''}) SET note :B RETURN 'Note B: '+COUNT(note);
+MATCH (note:chord__Note {note:'B', accidental: 'x'}) SET note :Bx RETURN 'Note Bx: '+COUNT(note);
+MATCH (note:chord__Note {note:'B', accidental: 'xx'}) SET note :Bxx RETURN 'Note Bxx: '+COUNT(note);
+MATCH (note:chord__Note {note:'B', accidental: 'b'}) SET note :Bb RETURN 'Note Bb: '+COUNT(note);
+MATCH (note:chord__Note {note:'B', accidental: 'bb'}) SET note :Bbb RETURN 'Note Bbb: '+COUNT(note);
+
+MATCH (note:chord__Note {note:'C', accidental: ''}) SET note :C RETURN 'Note C: '+COUNT(note);
+MATCH (note:chord__Note {note:'C', accidental: 'x'}) SET note :Cx RETURN 'Note Cx: '+COUNT(note);
+MATCH (note:chord__Note {note:'C', accidental: 'xx'}) SET note :Cxx RETURN 'Note Cxx: '+COUNT(note);
+MATCH (note:chord__Note {note:'C', accidental: 'b'}) SET note :Cb RETURN 'Note Cb: '+COUNT(note);
+MATCH (note:chord__Note {note:'C', accidental: 'bb'}) SET note :Cbb RETURN 'Note Cbb: '+COUNT(note);
+
+MATCH (note:chord__Note {note:'D', accidental: ''}) SET note :D RETURN 'Note D: '+COUNT(note);
+MATCH (note:chord__Note {note:'D', accidental: 'x'}) SET note :Dx RETURN 'Note Dx: '+COUNT(note);
+MATCH (note:chord__Note {note:'D', accidental: 'xx'}) SET note :Dxx RETURN 'Note Dxx: '+COUNT(note);
+MATCH (note:chord__Note {note:'D', accidental: 'b'}) SET note :Db RETURN 'Note Db: '+COUNT(note);
+MATCH (note:chord__Note {note:'D', accidental: 'bb'}) SET note :Dbb RETURN 'Note Dbb: '+COUNT(note);
+
+MATCH (note:chord__Note {note:'E', accidental: ''}) SET note :E RETURN 'Note E: '+COUNT(note);
+MATCH (note:chord__Note {note:'E', accidental: 'x'}) SET note :Ex RETURN 'Note Ex: '+COUNT(note);
+MATCH (note:chord__Note {note:'E', accidental: 'xx'}) SET note :Exx RETURN 'Note Exx: '+COUNT(note);
+MATCH (note:chord__Note {note:'E', accidental: 'b'}) SET note :Eb RETURN 'Note Eb: '+COUNT(note);
+MATCH (note:chord__Note {note:'E', accidental: 'bb'}) SET note :Ebb RETURN 'Note Ebb: '+COUNT(note);
+
+MATCH (note:chord__Note {note:'F', accidental: ''}) SET note :F RETURN 'Note F: '+COUNT(note);
+MATCH (note:chord__Note {note:'F', accidental: 'x'}) SET note :Fx RETURN 'Note Fx: '+COUNT(note);
+MATCH (note:chord__Note {note:'F', accidental: 'xx'}) SET note :Fxx RETURN 'Note Fxx: '+COUNT(note);
+MATCH (note:chord__Note {note:'F', accidental: 'b'}) SET note :Fb RETURN 'Note Fb: '+COUNT(note);
+MATCH (note:chord__Note {note:'F', accidental: 'bb'}) SET note :Fbb RETURN 'Note Fbb: '+COUNT(note);
+
+MATCH (note:chord__Note {note:'G', accidental: ''}) SET note :G RETURN 'Note G: '+COUNT(note);
+MATCH (note:chord__Note {note:'G', accidental: 'x'}) SET note :Gx RETURN 'Note Gx: '+COUNT(note);
+MATCH (note:chord__Note {note:'G', accidental: 'xx'}) SET note :Gxx RETURN 'Note Gxx: '+COUNT(note);
+MATCH (note:chord__Note {note:'G', accidental: 'b'}) SET note :Gb RETURN 'Note Gb: '+COUNT(note);
+MATCH (note:chord__Note {note:'G', accidental: 'bb'}) SET note :Gbb RETURN 'Note Gbb: '+COUNT(note);
+
+MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)
+WHERE SUBSTRING(labels(duration)[1],5) = 'Longa' SET noteset :d0 RETURN 'Longa: '+COUNT(duration) AS result;
+
+MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)
+WHERE SUBSTRING(labels(duration)[1],5) = 'Breve' SET noteset :d9 RETURN 'Breve: '+COUNT(duration) AS result;
+
+MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)
+WHERE SUBSTRING(labels(duration)[1],5) = 'Whole' SET noteset :d1 RETURN 'Whole: '+COUNT(duration) AS result;
+
+MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)
+WHERE SUBSTRING(labels(duration)[1],5) = 'Half' SET noteset :d2 RETURN 'Half: '+COUNT(duration) AS result;
+
+MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)
+WHERE SUBSTRING(labels(duration)[1],5) = 'Quarter' SET noteset :d4 RETURN 'Quarter: '+COUNT(duration) AS result;
+
+MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)
+WHERE SUBSTRING(labels(duration)[1],5) = 'Eighth' SET noteset :d8 RETURN 'Eighth: '+COUNT(duration) AS result;
+
+MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)
+WHERE SUBSTRING(labels(duration)[1],5) = '16th' SET noteset :d6 RETURN '16th: '+COUNT(duration) AS result;
+
+MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)
+WHERE SUBSTRING(labels(duration)[1],5) = '32nd' SET noteset :d3 RETURN '32nd: '+COUNT(duration) AS result;
+
+MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)
+WHERE SUBSTRING(labels(duration)[1],5) = '64th' SET noteset :d5 RETURN '64th: '+COUNT(duration) AS result;
+
+MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)
+WHERE SUBSTRING(labels(duration)[1],5) = '128th' SET noteset :d7 RETURN '128th: '+COUNT(duration) AS result;
+
+MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)
+WHERE SUBSTRING(labels(duration)[1],5) = '256th' SET noteset :da RETURN '256th: '+COUNT(duration) AS result;
+
+
+
+
+
+MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)
+WITH  noteset,CASE SUBSTRING(labels(duration)[1],5)
+                WHEN 'Longa' THEN 0
+                WHEN 'Breve' THEN 9
+                WHEN 'Whole' THEN  1
+                WHEN 'Half' THEN  2
+                WHEN 'Quarter' THEN  4
+                WHEN 'Eighth' THEN  8
+                WHEN '16th' THEN  6
+                WHEN '32nd' THEN  3
+                WHEN '64th' THEN  5
+                WHEN '128th' THEN  7
+              END AS duration_numeric
+SET noteset.duration = duration_numeric
+RETURN COUNT(noteset) AS Duration;
+
+
+
 
 //MATCH (noteset:mso__NoteSet)-[predicate:mso__hasDuration]->(duration:mso__Duration)
 //DELETE predicate, duration
