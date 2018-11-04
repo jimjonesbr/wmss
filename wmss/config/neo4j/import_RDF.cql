@@ -22,9 +22,9 @@ CREATE (:NamespacePrefixDefinition {
 });
 
 
-CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements_musescore.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
+//CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements_musescore.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
 //CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
-//CALL semantics.importRDF("file:///home/jones/git/musicowl/musicowl/ntriples/elgar_cello_concerto_op.85.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
+CALL semantics.importRDF("file:///home/jones/git/musicowl/musicowl/ntriples/elgar_cello_concerto_op.85.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
 //CALL semantics.importRDF("file:///home/jones/Downloads/statements.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
 
 MATCH (note:chord__Note)-[:chord__natural]->(natural:chord__Natural) 

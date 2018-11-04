@@ -271,94 +271,9 @@ public class WMSSRequest {
 			}
 			
 		}
-/**
-			try {				
-				this.dateIssuedArray = this.parseDate(dateIssued);	
-				
-				for (int i = 0; i < dateIssuedArray.size(); i++) {
-					
-					System.out.println("dateIssuedArray > " + dateIssuedArray.get(i));
-					
-				}
-				
-			} catch (InvalidWMSSRequestException e) {
-				throw new InvalidWMSSRequestException(e.getMessage(),e.getCode(), e.getHint());
-			} 
-	
-*/
+
 	}
-	
-	
-//	private ArrayList<String> parseDate(String date) throws InvalidWMSSRequestException {
-//		
-//		ArrayList<String> result = new ArrayList<String>();
-//		SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
-//		sdfYear.setLenient(false);
-//		SimpleDateFormat sdfYearMonth = new SimpleDateFormat("yyyyMM");
-//		sdfYearMonth.setLenient(false);
-//		SimpleDateFormat sdfYearMonthDay = new SimpleDateFormat("yyyyMMdd");
-//		sdfYearMonthDay.setLenient(false);
-//		try {
-//					
-//			String[] p = date.split("-");
-//			String p1 = p[0];
-//			String p2 = "";		
-//			
-//			if(p.length==2){p2 = p[1];}
-//									
-//			String dateFrom = "";
-//			
-//			if(p1.length()==4) {
-//				dateFrom = sdfYear.parse(p1).toString();
-//				//DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
-//
-//		
-//				
-//				
-//			} else if(p1.length()==6) {
-//				dateFrom = sdfYearMonth.parse(p1).toString();
-//			} else if(p1.length()==8) {
-//				dateFrom = sdfYearMonthDay.parse(p1).toString();
-//			} else if (p1.length()>8 || p1.length()<4) {			
-//				throw new InvalidWMSSRequestException(ErrorCodes.INVALID_DATE_DESCRIPTION+" [" + p1 + "]",ErrorCodes.INVALID_DATE_CODE,ErrorCodes.INVALID_DATE_HINT);
-//			}
-//			
-//			result.add(dateFrom);
-//			
-//			if(p.length>1) {
-//				
-//				String dateTo = "";
-//
-//				if(p2.length()==4) {
-//					dateTo = sdfYearMonthDay.parse(p2+"1231").toString();
-//				} else if(p2.length()==6) {
-//
-//					dateTo = sdfYearMonth.parse(p2).toString();
-//
-//					Calendar c = Calendar.getInstance();
-//					c.setTime(new Date(dateTo));
-//					c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
-//					dateTo = sdfYearMonthDay.parse(p2+c.getActualMaximum(Calendar.DAY_OF_MONTH)).toString();
-//
-//				} else if(p2.length()==8) {
-//					dateTo = sdfYearMonthDay.parse(p2).toString();
-//				} else if (p2.length()>8 || p2.length()<4) {			
-//					throw new InvalidWMSSRequestException(ErrorCodes.INVALID_DATE_DESCRIPTION+" [" + p1 + "]",ErrorCodes.INVALID_DATE_CODE,ErrorCodes.INVALID_DATE_HINT);
-//				}
-//
-//				result.add(dateTo);
-//
-//			}
-//		
-//		} catch (ParseException e) {
-//			e.printStackTrace();
-//		} 
-//
-//		return result;
-//		
-//	}
-//	
-	
+		
 	private boolean isDatasourceValid(WMSSRequest wmssRequest) {
 		
 		boolean result = false;

@@ -60,4 +60,11 @@ public class ErrorCodes {
 	public static String NONSUPPORTED_REQUEST_DESCRIPTION  = "Request type not supported";
 	public static String NONSUPPORTED_REQUEST_DATE_HINT = "Check the request section at the settings file";
 
+	//"Request Conflict: The searched melody contains chords but the parameter 'ignoreChords' ist set to 'true'. The 'ignoreChords' parameter will be ignored."
+	
+	
+	public static String WARNING_CONFLICTING_CHORDS_PARAMETER_CODE = "W0001";
+	public static String WARNING_CONFLICTING_CHORDS_PARAMETER_DESCRIPTION  = "Conflicting parameter 'ignoreChords'.";
+	public static String WARNING_CONFLICTING_CHORDS_PARAMETER_HINT = "The searched melody contains chords but the parameter 'ignoreChords' ist set to 'true'. The 'ignoreChords' parameter will be ignored.";
+
 }

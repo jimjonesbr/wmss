@@ -11,6 +11,7 @@ import com.google.gson.GsonBuilder;
 import de.wwu.wmss.connectors.Neo4jConnector;
 import de.wwu.wmss.core.Collection;
 import de.wwu.wmss.core.DataSource;
+import de.wwu.wmss.core.ErrorCodes;
 import de.wwu.wmss.core.Format;
 import de.wwu.wmss.core.MelodyLocation;
 import de.wwu.wmss.core.MelodyLocationGroup;
@@ -331,7 +332,6 @@ public class FactoryNeo4j {
 		try {
 
 			Object obj = parser.parse(json);
-			System.out.println(">>>> "+json);
 			JSONObject provenanceJsonObject = (JSONObject) obj;
 			result.setGeneratedAtTime(provenanceJsonObject.get("generatedAtTime").toString().trim());
 			result.setComments(provenanceJsonObject.get("comments").toString().trim());			
@@ -436,33 +436,33 @@ public class FactoryNeo4j {
 				 */
 				if(noteSequence.get(j).isChord() && wmssRequest.isIgnoreChords()) {
 					wmssRequest.setIgnoreChords(false);
-					logger.warn("Request Conflict: The searched melody contains chords but the parameter 'ignoreChords' ist set to 'true'. The 'ignoreChords' parameter will be ignored.");
+					logger.warn("["+ErrorCodes.WARNING_CONFLICTING_CHORDS_PARAMETER_CODE + "] " + ErrorCodes.WARNING_CONFLICTING_CHORDS_PARAMETER_DESCRIPTION + " - " + ErrorCodes.WARNING_CONFLICTING_CHORDS_PARAMETER_HINT);
 				}
 			}
-
-			match = match + "MATCH "+scoreNode+"-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->"+instrumentNode+"-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(ns0:mso__NoteSet)\n" + 
-							"MATCH "+scoreNode+"-[:mo__movement]->(movements:mo__Movement) \n"+
-							"MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:mso__NoteSet) \n";
-						
-			
-			
 			
 			int i = 0;
 			int notesetCounter = 0;
 			
 			while(i<=noteSequence.size()-1) {
 
+				
+				String durationType = "mso__NoteSet";
+				
+				if(!wmssRequest.isIgnoreDuration()) {
+					durationType = "d"+ noteSequence.get(i).getDuration();
+				}	
+				
+				
 				if(i==0) {
-					
+
+					match = match + "MATCH "+scoreNode+"-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->"+instrumentNode+"-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(ns0:"+durationType+")\n" + 
+									"MATCH "+scoreNode+"-[:mo__movement]->(movements:mo__Movement) \n" + 
+									"MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0:"+durationType+") \n";
+							
 					if(!wmssRequest.isIgnorePitch()) {						
-						match = match +	"MATCH (ns0:mso__NoteSet)-[:mso__hasNote]->(n0:"+noteSequence.get(i).getPitch()+noteSequence.get(i).getAccidental()+") \n";
-						//match = match +	"MATCH (ns0:d"+noteSequence.get(i).getDuration()+")-[:mso__hasNote]->(n0:"+noteSequence.get(i).getPitch()+noteSequence.get(i).getAccidental()+") \n";
+						match = match +	"MATCH (ns0:"+durationType+")-[:mso__hasNote]->(n0:"+noteSequence.get(i).getPitch()+noteSequence.get(i).getAccidental()+") \n";
 					}
-					
-					if(!wmssRequest.isIgnoreDuration()) {
-						where = where +	"AND ns0.duration = "+noteSequence.get(i).getDuration()+" \n";
-					}					
-										
+															
 					if(!wmssRequest.isIgnoreOctaves()) {
 						match = match +	"MATCH (n0:chord__Note {mso__hasOctave:"+noteSequence.get(i).getOctave()+"}) \n";
 					}
@@ -472,20 +472,15 @@ public class FactoryNeo4j {
 					if(!noteSequence.get(i).isChord()) {
 						notesetCounter++;
 						if(notesetCounter>0) {
-						match = match + "MATCH (ns"+(notesetCounter-1)+":mso__NoteSet)-[:mso__nextNoteSet]->(ns"+notesetCounter+":mso__NoteSet) \n";
+							match = match + "MATCH (ns"+(notesetCounter-1)+":"+durationType+")-[:mso__nextNoteSet]->(ns"+notesetCounter+":"+durationType+") \n";
 						}
 						
 					}
 											
-					if(!wmssRequest.isIgnorePitch()) {
-						//match = match + "MATCH (ns"+notesetCounter+":mso__NoteSet)-[:mso__hasNote]->(n"+i+":chord__Note {note:'"+noteSequence.get(i).getPitch()+"', accidental: '"+noteSequence.get(i).getAccidental()+"'}) \n";											
-						match = match + "MATCH (ns"+notesetCounter+":mso__NoteSet)-[:mso__hasNote]->(n"+i+":"+noteSequence.get(i).getPitch()+noteSequence.get(i).getAccidental()+") \n";
+					if(!wmssRequest.isIgnorePitch()) {											
+						match = match + "MATCH (ns"+notesetCounter+":"+durationType+")-[:mso__hasNote]->(n"+i+":"+noteSequence.get(i).getPitch()+noteSequence.get(i).getAccidental()+") \n";
 					}										
 					
-					if(!wmssRequest.isIgnoreDuration()) {
-						where = where +	"AND ns"+notesetCounter+".duration = "+noteSequence.get(i).getDuration()+" \n";
-					}					
-
 					if(!wmssRequest.isIgnoreOctaves()) {	
 						match = match +	"MATCH (n"+i+":chord__Note {mso__hasOctave:"+noteSequence.get(i).getOctave()+"}) \n";
 					}										 
@@ -518,7 +513,7 @@ public class FactoryNeo4j {
 			where = where  + "AND scr.collectionUri = '"+wmssRequest.getCollection()+"' \n";
 		}
 
-		return match + "WHERE TRUE\n" + where;		
+		return match + "\nWHERE TRUE\n" + where;		
 	}
 		
 	
@@ -555,13 +550,13 @@ public class FactoryNeo4j {
 			
 				returnClause = returnClause +"	 {locations: \n" +
 				"    COLLECT(DISTINCT{ \n" + 
-				"	   	  movementIdentifier: mov.uri,\n" + 
-				"		  movementName: mov.dc__title,\n" + 
+				"      movementIdentifier: mov.uri,\n" + 
+				"      movementName: mov.dc__title,\n" + 
 				"      startingMeasure: measure.rdfs__ID, \n" + 
 				"      staff: staff.rdfs__ID , \n" + 
 				"      voice: voice.rdfs__ID, \n" + 
 				"      instrumentName: part.dc__description \n" + 
-				"      })} AS locations, \n";				
+				"    })} AS locations, \n";				
 		}		
 				
 		returnClause = returnClause +	"   CASE WHEN scr.mso__asMusicXML IS NULL THEN FALSE ELSE TRUE END AS musicxml,\n" + 
