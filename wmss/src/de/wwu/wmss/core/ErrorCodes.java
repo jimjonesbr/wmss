@@ -34,7 +34,7 @@ public class ErrorCodes {
 
 	public static String INVALID_IDENTIFIER_CODE = "E0008";
 	public static String INVALID_IDENTIFIER_DESCRIPTION  = "Invalid score identifier";
-	public static String INVALID_IDENTIFIER_HINT = "No identifier provided for 'GetScore' request.";
+	public static String INVALID_IDENTIFIER_HINT = "Make sure you're providing a valid score identifier at the parapeter 'identifier'.";
 
 	public static String INVALID_REQUEST_MODE_CODE = "E0009";
 	public static String INVALID_REQUEST_MODE_DESCRIPTION  = "Invalid request mode";
