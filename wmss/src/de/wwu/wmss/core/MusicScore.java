@@ -1,7 +1,6 @@
 package de.wwu.wmss.core;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class MusicScore {
 
@@ -16,8 +15,6 @@ public class MusicScore {
 	private String thumbnail;
 	private String printResource;
 	private String onlineResource;
-	//private Date creationDateFrom;
-	//private Date creationDateTo;
 	private String dateIssued;
 	private String documentCreationDate;
 	private ArrayList<Movement> movements;

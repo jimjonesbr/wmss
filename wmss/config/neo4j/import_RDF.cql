@@ -1,3 +1,6 @@
+MATCH (n) DETACH DELETE n RETURN COUNT(n);
+
+
 CREATE INDEX ON :Resource(uri);
 CREATE INDEX ON :URI(uri);
 CREATE INDEX ON :BNode(uri);
@@ -22,23 +25,11 @@ CREATE (:NamespacePrefixDefinition {
 });
 
 
-//CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements_musescore.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
 //CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
-CALL semantics.importRDF("file:///home/jones/git/musicowl/musicowl/ntriples/elgar_cello_concerto_op.85.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
-//CALL semantics.importRDF("file:///home/jones/Downloads/statements.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
+CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements_musescore.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
+//CALL semantics.importRDF("file:///home/jones/git/musicowl-repository/musicowl/ntriples/elgar_cello_concerto_op.85.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
 
-MATCH (note:chord__Note)-[:chord__natural]->(natural:chord__Natural) 
-OPTIONAL MATCH (note:chord__Note)-[:chord__modifier]->(modifier)
-WITH note, CASE SUBSTRING(modifier.uri,31) 
-        WHEN 'flat' THEN 'b'
-        WHEN 'doubleflat' THEN 'bb'
-        WHEN 'sharp' THEN 'x'
-        WHEN 'doublesharp' THEN 'xx'
-        WHEN NULL THEN ''
-           END AS modifier,
-       SUBSTRING(natural.uri,36) AS natural           
-SET note.note = natural, note.accidental = modifier
-RETURN COUNT(note) AS Note_Accidentals;
+
 
 MATCH (mov:mo__Movement)
 OPTIONAL MATCH (mov:mo__Movement)-[:mso__hasBeatUnit]-(unit)
@@ -100,30 +91,6 @@ WITH  score,
 SET score.format = docFormat
 RETURN COUNT(docFormat) AS Format;
 
-CREATE INDEX ON :mo__Movement(mso__hasBeatsPerMinute);
-CREATE INDEX ON :mo__Movement(beatUnit);
-CREATE INDEX ON :mo__Movement(beatUnit,mso__hasBeatsPerMinute);
-
-CREATE INDEX ON :mo__Score(issued);
-CREATE INDEX ON :mo__Score(encoderUri);
-CREATE INDEX ON :mo__Score(collectionUri);
-
-CREATE INDEX ON :chord__Note(note);
-CREATE INDEX ON :chord__Note(accidental);
-CREATE INDEX ON :chord__Note(mso__hasOctave);
-CREATE INDEX ON :chord__Note(note,accidental);
-CREATE INDEX ON :chord__Note(note,mso__hasOctave);
-CREATE INDEX ON :chord__Note(note,accidental,mso__hasOctave);
-
-CREATE INDEX ON :mso__NoteSet(duration);
-CREATE INDEX ON :mso__NoteSet(size);
-CREATE INDEX ON :mso__NoteSet(duration,size);
-
-CREATE INDEX ON :prov__Role(gndo__preferredNameForTheSubjectHeading);
-CREATE INDEX ON :mo__Score(format);
-CREATE INDEX ON :mso__ScorePart(rdfs__label);
-CREATE INDEX ON :mso__ScorePart(typeLabel);
-
 
 
 MATCH (:mo__Score)-[:mo__movement]->(movement:mo__Movement)-[:mso__hasScorePart]->(instrument:mo__Instrument) 
@@ -132,6 +99,24 @@ SET instrument.typeUri = type.uri,
     instrument.typeLabel = type.skos__prefLabel
 RETURN COUNT(instrument) AS Instruments;
 
+
+
+
+
+
+
+MATCH (note:chord__Note)-[:chord__natural]->(natural:chord__Natural) 
+OPTIONAL MATCH (note:chord__Note)-[:chord__modifier]->(modifier)
+WITH note, CASE SUBSTRING(modifier.uri,31) 
+        	WHEN 'flat' THEN 'b'
+        	WHEN 'doubleflat' THEN 'bb'
+        	WHEN 'sharp' THEN 'x'
+        	WHEN 'doublesharp' THEN 'xx'
+        	WHEN NULL THEN ''
+           END AS modifier,
+       SUBSTRING(natural.uri,36) AS natural           
+SET note.note = natural, note.accidental = modifier
+RETURN COUNT(note) AS Note_Accidentals;
 
 MATCH (note:chord__Note {note:'A', accidental: ''}) SET note :A RETURN COUNT(note) AS A;
 MATCH (note:chord__Note {note:'A', accidental: 'x'}) SET note :Ax RETURN COUNT(note) AS Ax;
@@ -209,9 +194,6 @@ MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)
 WHERE SUBSTRING(labels(duration)[1],5) = '256th' SET noteset :da RETURN '256th: '+COUNT(duration) AS result;
 
 
-
-
-
 MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)
 WITH  noteset,CASE SUBSTRING(labels(duration)[1],5)
                 WHEN 'Longa' THEN 0
@@ -230,15 +212,67 @@ RETURN COUNT(noteset) AS Duration;
 
 
 
+MATCH (noteset:mso__NoteSet)-[predicate:mso__hasDuration]->(duration)
+OPTIONAL MATCH (duration)-[:mso__hasDurationAttribute]->(attribute)
+//REMOVE noteset.uri 
+DETACH DELETE predicate, duration, attribute
+RETURN COUNT(duration) AS DeletedDurations;
 
-//MATCH (noteset:mso__NoteSet)-[predicate:mso__hasDuration]->(duration:mso__Duration)
-//DELETE predicate, duration
-//RETURN COUNT(*);
+MATCH (note:chord__Note)-[predicate:chord__natural]->(natural:chord__Natural)
+//REMOVE note.uri
+DETACH DELETE predicate, natural
+RETURN COUNT(natural) AS DeletedNotes;
 
-//MATCH (note:chord__Note)-[predicate:chord__natural]->(natural:chord__Natural)
-//DETACH DELETE predicate, natural
-//RETURN COUNT(*);
+MATCH (note:chord__Note)-[predicate:chord__modifier]->(modifier) 
+DETACH DELETE predicate, modifier 
+RETURN COUNT(modifier) AS DeletedModifiers;
 
-//MATCH (note:chord__Note)-[predicate:chord__modifier]->(modifier)
-//DETACH DELETE predicate, modifier
-//RETURN COUNT(*);
+MATCH (noteset:mso__NoteSet) 
+//REMOVE noteset.uri 
+RETURN COUNT(noteset) AS DeletedNotesetURI;
+
+MATCH (note:chord__Note) 
+//REMOVE note.uri 
+RETURN COUNT(note) AS DeletedNoteURI;
+
+MATCH (instant:mso__Instant)
+DETACH DELETE instant
+RETURN COUNT(instant) AS DeletedInstants;
+
+MATCH (ns:mso__NoteSet)-[:mso__hasDynamic]-(dynamic) 
+DETACH DELETE dynamic
+RETURN COUNT(dynamic) AS DeletedDynamics;
+
+MATCH (score:mo__Score)
+WHERE score.active IS NULL
+SET score.active = TRUE
+RETURN COUNT (score);
+
+
+
+//Indexes
+
+CREATE INDEX ON :mo__Movement(mso__hasBeatsPerMinute);
+CREATE INDEX ON :mo__Movement(beatUnit);
+CREATE INDEX ON :mo__Movement(beatUnit,mso__hasBeatsPerMinute);
+
+CREATE INDEX ON :mo__Score(active);
+CREATE INDEX ON :mo__Score(issued);
+CREATE INDEX ON :mo__Score(encoderUri);
+CREATE INDEX ON :mo__Score(collectionUri);
+CREATE INDEX ON :mso__NoteSet(size);
+CREATE INDEX ON :chord__Note(mso__hasOctave);
+CREATE INDEX ON :prov__Role(gndo__preferredNameForTheSubjectHeading);
+CREATE INDEX ON :mo__Score(format);
+CREATE INDEX ON :mso__ScorePart(rdfs__label);
+CREATE INDEX ON :mso__ScorePart(typeLabel);
+
+//CREATE INDEX ON :chord__Note(note,accidental);
+//CREATE INDEX ON :chord__Note(note,mso__hasOctave);
+//CREATE INDEX ON :chord__Note(note,accidental,mso__hasOctave);
+//CREATE INDEX ON :chord__Note(note);
+//CREATE INDEX ON :chord__Note(accidental);
+//CREATE INDEX ON :mso__NoteSet(duration);
+//CREATE INDEX ON :mso__NoteSet(duration,size);
+
+

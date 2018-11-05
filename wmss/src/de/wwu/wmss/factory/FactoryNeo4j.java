@@ -17,6 +17,7 @@ import de.wwu.wmss.core.MelodyLocation;
 import de.wwu.wmss.core.MelodyLocationGroup;
 import de.wwu.wmss.core.Movement;
 import de.wwu.wmss.core.MusicScore;
+import de.wwu.wmss.core.DeletedRecord;
 import de.wwu.wmss.core.Note;
 import de.wwu.wmss.core.PerformanceMedium;
 import de.wwu.wmss.core.PerformanceMediumType;
@@ -513,9 +514,33 @@ public class FactoryNeo4j {
 			where = where  + "AND scr.collectionUri = '"+wmssRequest.getCollection()+"' \n";
 		}
 
-		return match + "\nWHERE TRUE\n" + where;		
+		return match + "\nWHERE scr.active = TRUE \n" + where;		
 	}
 		
+	
+	public static ArrayList<DeletedRecord> deleteScore(WMSSRequest request, DataSource dataSource) {
+
+		ArrayList<DeletedRecord> result = new ArrayList<DeletedRecord>();
+
+		String cypherQuery = "MATCH (score:mo__Score {uri:'"+request.getIdentifier()+"'})\n" + 
+				"SET score.active = FALSE RETURN score.dc__title AS title, score.uri AS identifier, score.collectionUri AS collection;";
+		
+		logger.info("[deleteScore]:\n\n"+cypherQuery+"\n");
+		
+		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypherQuery, dataSource);
+
+		while ( rs.hasNext() ) {
+			Record record = rs.next();
+			DeletedRecord score = new DeletedRecord();
+			score.setTitle(record.get("title").asString());
+			score.setScoreIdentifier(record.get("identifier").asString());
+			score.setCollection(record.get("collection").asString());
+			result.add(score);
+		}
+
+		return result;
+		
+	}
 	
 	public static ArrayList<MusicScore> getScoreList(WMSSRequest request, DataSource dataSource){
 

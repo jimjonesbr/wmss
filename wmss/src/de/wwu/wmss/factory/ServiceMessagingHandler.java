@@ -8,10 +8,8 @@ import org.json.simple.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.wwu.wmss.core.DataSource;
-import de.wwu.wmss.core.Filter;
 import de.wwu.wmss.core.MusicScore;
 import de.wwu.wmss.core.WMSSRequest;
-import de.wwu.wmss.core.RequestParameter;
 import de.wwu.wmss.settings.SystemSettings;
 import de.wwu.wmss.settings.Util;
 
@@ -21,7 +19,6 @@ public class ServiceMessagingHandler {
 
 	@SuppressWarnings("unchecked")
 	public static String getServiceExceptionReport(String errorCode, String errorMessage, String hint){
-
 
 		JSONObject exceptionReport = new JSONObject();
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -36,7 +33,37 @@ public class ServiceMessagingHandler {
 		return StringEscapeUtils.unescapeJson(gson.toJson(exceptionReport));
 
 	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public static String deleteScore(WMSSRequest request) {
+		
+		JSONObject deletedScore = new JSONObject();
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		
+		DataSource ds = loadDataSource(request);
+		
+		deletedScore.put("type", "DeleteScoresReport");
+		deletedScore.put("score", FactoryNeo4j.deleteScore(request, ds));
 
+		return StringEscapeUtils.unescapeJson(gson.toJson(deletedScore));
+	
+	}
+
+	
+	private static DataSource loadDataSource(WMSSRequest request) {
+	
+		DataSource result = new DataSource();
+		
+		for (int i = 0; i < SystemSettings.sourceList.size(); i++) {
+			if(request.getSource().equals(SystemSettings.sourceList.get(i).getId())) {
+				result = SystemSettings.sourceList.get(i);
+			}
+		}
+				
+		return result;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static String getServiceDescription(){
 
@@ -276,13 +303,13 @@ public class ServiceMessagingHandler {
 
 		if(ds.getType().equals("triplestore")) {
 
-			//result = FactoryTripleStore.getScore(request);
+			//TODO tbw
 
 		} else
 
 			if(ds.getType().equals("postgresql")) {
 
-				//result = FactoryPostgreSQL.getScore(request);
+				//TODO tbw
 
 			} else 
 

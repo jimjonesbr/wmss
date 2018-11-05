@@ -68,7 +68,7 @@ public class ServletWMSS extends HttpServlet
 
 				response.setContentType("text/javascript");
 				response.setStatus(HttpServletResponse.SC_OK);
-				response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport(ErrorCodes.NONSUPPORTED_REQUEST_DESCRIPTION +" ["+wmssRequest.getRequestType()+"]", ErrorCodes.NONSUPPORTED_REQUEST_CODE, ErrorCodes.NONSUPPORTED_REQUEST_DATE_HINT));
+				response.getWriter().println(ServiceMessagingHandler.deleteScore(wmssRequest));
 			
 			} else if (wmssRequest.getRequestType().equals("insertscore")) {
 

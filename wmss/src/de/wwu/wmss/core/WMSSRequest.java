@@ -277,7 +277,8 @@ public class WMSSRequest {
 	private boolean isDatasourceValid(WMSSRequest wmssRequest) {
 		
 		boolean result = false;
-
+		
+		
 		if (!wmssRequest.getSource().equals("")){
 
 			for (int i = 0; i < SystemSettings.sourceList.size(); i++) {
@@ -292,10 +293,7 @@ public class WMSSRequest {
 
 				}
 			}
-		} else {
-			
-			result = true;
-		}
+		} 
 		
 		return result;
 	}
