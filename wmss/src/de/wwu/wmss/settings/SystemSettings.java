@@ -16,6 +16,7 @@ public class SystemSettings {
 
 	private static int port;
 	private static String service;
+	private static String defaultMelodyEncoding;
 	private static String title;
 	private static int timeout;
 	private static String contact;
@@ -57,6 +58,7 @@ public class SystemSettings {
 			timeout = Integer.parseInt(jsonObject.get("timeout").toString());
 			service = jsonObject.get("service").toString();
 			contact = jsonObject.get("contact").toString();
+			defaultMelodyEncoding = jsonObject.get("defaultMelodyEncoding").toString();
 			title = jsonObject.get("title").toString();
 			defaultRequestMode = jsonObject.get("defaultRequestMode").toString();
 			defaultProtocol= jsonObject.get("defaultProtocol").toString();
@@ -72,6 +74,7 @@ public class SystemSettings {
 					"WMSS Version: " + serviceVersion + "\n" +
 					"Port: " + port + "\n" +
 					"Application Startup: " + startup + "\n" +
+					"Default Melody Encoding: " + defaultMelodyEncoding + "\n" +
 
 					"Time-out: " + timeout + "ms" + "\n" +
 					"Page Size: " + pageSize + " records " + "\n" +
@@ -205,6 +208,10 @@ public class SystemSettings {
 
 	public static String getDefaultRequestMode() {
 		return defaultRequestMode;
+	}
+
+	public static String getDefaultMelodyEncoding() {
+		return defaultMelodyEncoding;
 	}
 		
 	

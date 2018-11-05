@@ -7,5 +7,6 @@
   "contact": "jim.jones@math.uni-muenster.de",
   "title": "Web Music Score Service - University of Münster",
   "defaultProtocol": "1.0",
-  "logpreview": "2500"
+  "logpreview": "2500",
+  "defaultMelodyEncoding": "pea"
 }

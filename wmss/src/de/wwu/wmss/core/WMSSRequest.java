@@ -175,12 +175,10 @@ public class WMSSRequest {
 		}
 		
 		if(this.melodyEncoding.equals("") || this.melodyEncoding==null) {
-			this.melodyEncoding = "pea"; //TODO create 'default melody format' at the settings file.
+			this.melodyEncoding = SystemSettings.getDefaultMelodyEncoding(); //TODO create 'default melody format' at the settings file.
 		}
 		
 		this.hostname = httpRequest.getServerName();
-		
-		
 		
 		/**
 		 * Request validation
@@ -226,7 +224,7 @@ public class WMSSRequest {
 		if(!this.melodyEncoding.equals("pea")) {
 			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_MELODY_ENCODING_DESCRIPTION+" ["+this.melodyEncoding+"]",ErrorCodes.INVALID_MELODY_ENCODING_CODE,ErrorCodes.INVALID_MELODY_ENCODING_HINT);
 		}
-		if(!isDatasourceValid(this)) {
+		if(!isDatasourceValid(this) && !this.requestType.equals("describeservice")) {
 			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_DATASOURCE_DESCRIPTION+" ["+ this.source + "]",ErrorCodes.INVALID_DATASOURCE_CODE,ErrorCodes.INVALID_DATASOURCE_HINT);
 		}
 		if((this.requestType.equals("getscore") || this.requestType.equals("deletescore") ) && this.identifier.equals("")) {
