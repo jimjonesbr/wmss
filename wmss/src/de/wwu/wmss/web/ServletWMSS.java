@@ -2,12 +2,16 @@ package de.wwu.wmss.web;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.log4j.Logger;
-
 import de.wwu.wmss.core.ErrorCodes;
 import de.wwu.wmss.core.InvalidWMSSRequestException;
 import de.wwu.wmss.core.WMSSRequest;
@@ -23,27 +27,27 @@ public class ServletWMSS extends HttpServlet
 	 */
 	private static final long serialVersionUID = 1L;
 	private static Logger logger = Logger.getLogger("ServletWMSS");
-		
+
 	protected void doGet(HttpServletRequest httpRequest, HttpServletResponse response) throws ServletException, IOException
 	{    	
-		
+
 		try {
-			
+
 			WMSSRequest wmssRequest = new WMSSRequest(httpRequest);
+
 			logger.info("Request String -> " + httpRequest.getQueryString());
-			//logger.info("Memory Usage -> " + Runtime.getRuntime().freeMemory()/1024/1024 +" MB");
-		
+
 			response.addHeader("Access-Control-Allow-Origin","*");
 			response.addHeader("Access-Control-Allow-Methods","GET,POST");
 			response.addHeader("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");
 
-			
+
 			if (wmssRequest.getRequestType().equals("checklog")) {
-				
+
 				response.setContentType("text/plain");
 				response.setStatus(HttpServletResponse.SC_OK);
 				response.getWriter().println(Util.loadFileTail(new File("logs/system.log"), SystemSettings.getLogPreview()));
-				
+
 
 			} else if (wmssRequest.getRequestType().equals("describeservice")) {
 
@@ -53,11 +57,11 @@ public class ServletWMSS extends HttpServlet
 
 
 			} else if (wmssRequest.getRequestType().equals("getscore")) { 
-				
+
 				response.setContentType("text/xml");
 				response.setStatus(HttpServletResponse.SC_OK);
 				response.getWriter().println(ServiceMessagingHandler.getScore(wmssRequest));
-	
+
 			} else if (wmssRequest.getRequestType().equals("listscores")) {
 
 				response.setContentType("text/javascript");
@@ -69,20 +73,59 @@ public class ServletWMSS extends HttpServlet
 				response.setContentType("text/javascript");
 				response.setStatus(HttpServletResponse.SC_OK);
 				response.getWriter().println(ServiceMessagingHandler.deleteScore(wmssRequest));
-			
+
 			} else if (wmssRequest.getRequestType().equals("insertscore")) {
 
 				response.setContentType("text/javascript");
 				response.setStatus(HttpServletResponse.SC_OK);
 				response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport(ErrorCodes.NONSUPPORTED_REQUEST_DESCRIPTION +" ["+wmssRequest.getRequestType()+"]", ErrorCodes.NONSUPPORTED_REQUEST_CODE, ErrorCodes.NONSUPPORTED_REQUEST_DATE_HINT));
 			}
-			
+
 		} catch (InvalidWMSSRequestException e) {
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport(e.getCode(), e.getMessage(), e.getHint()));
 			e.printStackTrace();
 		}
+
+	}
+
+
+	protected void doPost(HttpServletRequest httpRequest, HttpServletResponse response) throws ServletException, IOException{
+
+		ServletFileUpload sf = new ServletFileUpload(new DiskFileItemFactory());
+
+
+		try {
+
+			WMSSRequest wmssRequest = new WMSSRequest(httpRequest);
+
+			logger.info("Request String -> " + httpRequest.getQueryString());
+
+			response.addHeader("Access-Control-Allow-Origin","*");
+			response.addHeader("Access-Control-Allow-Methods","GET,POST");
+			response.addHeader("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");
+			
+			if (wmssRequest.getRequestType().equals("insertscore")) {
+								
+				response.setContentType("text/javascript");
+				response.setStatus(HttpServletResponse.SC_OK);
+				response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport(ErrorCodes.NONSUPPORTED_REQUEST_DESCRIPTION +" ["+wmssRequest.getRequestType()+"]", ErrorCodes.NONSUPPORTED_REQUEST_CODE, ErrorCodes.NONSUPPORTED_REQUEST_DATE_HINT));
+			}
+
+			List<FileItem> multifiles = sf.parseRequest(httpRequest);
+
+			for(FileItem item : multifiles) {
+				item.write(new File("upload/"+item.getName()));
+				logger.info("File Uploaded: " + item.getName() + " ["+item.getSize()/1024+"k]");
+			}
+
+
+		} catch (FileUploadException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
 
 	}
 

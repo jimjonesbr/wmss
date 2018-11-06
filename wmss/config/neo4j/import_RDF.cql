@@ -24,9 +24,9 @@ CREATE (:NamespacePrefixDefinition {
   `http://purl.org/ontology/mo/mit#`: 'mit'
 });
 
-//CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
+CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
 CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements_musescore.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
-CALL semantics.importRDF("file:///home/jones/git/musicowl-repository/musicowl/ntriples/elgar_cello_concerto_op.85.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
+//CALL semantics.importRDF("file:///home/jones/git/musicowl-repository/musicowl/ntriples/elgar_cello_concerto_op.85.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
 
 MATCH (mov:mo__Movement)
 OPTIONAL MATCH (mov:mo__Movement)-[:mso__hasBeatUnit]-(unit)
@@ -217,10 +217,14 @@ DELETE r,time
 RETURN COUNT(measure) AS MeasureTimeSignature;
 
 
-MATCH (noteset:mso__NoteSet)-[:mso__hasClef]-(clef)
+// Clefs //
+
+MATCH (noteset:mso__NoteSet)-[:mso__hasClef]->(clef)
 SET noteset.clef = REPLACE(LOWER(labels(clef)[1]),'mso__','')
-DETACH DELETE clef
 RETURN COUNT(clef) AS NotesetClef;
+MATCH (noteset:mso__NoteSet)-[:mso__hasClef]->(clef)
+DETACH DELETE clef 
+RETURN COUNT(noteset) AS DeletedClef;
 
 
 MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonic)

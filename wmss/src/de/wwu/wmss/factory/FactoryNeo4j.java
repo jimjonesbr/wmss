@@ -196,10 +196,8 @@ public class FactoryNeo4j {
 	public static ArrayList<Tonality> getTonalities(DataSource ds){
 		
 		ArrayList<Tonality> result = new ArrayList<Tonality>();
+		String cypher = "MATCH (measure:mso__Measure) RETURN DISTINCT measure.tonic AS tonic, measure.mode AS mode";
 		
-		String cypher = "\n\nMATCH (mode)<-[:ton__mode]-(key:ton__Key)-[:ton__tonic]->(tonic)\n" + 
-					    "RETURN DISTINCT LOWER(SUBSTRING(tonic.uri,36)) AS tonic, LOWER(SUBSTRING(mode.uri,39)) AS mode\n";
-
 		logger.debug("getTonalities:\n" + cypher);
 		
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);
@@ -522,10 +520,6 @@ public class FactoryNeo4j {
 	public static ArrayList<DeletedRecord> deleteScore(WMSSRequest request, DataSource dataSource) {
 
 		ArrayList<DeletedRecord> result = new ArrayList<DeletedRecord>();
-
-//		cypherQuery = "MATCH (score:mo__Score {uri:'"+request.getIdentifier()+"'})\n" + 
-//				"SET score.active = FALSE RETURN score.dc__title AS title, score.uri AS identifier, score.collectionUri AS collection;";
-
 		String cypherQuery = "MATCH (score:mo__Score)-[:mo__movement]->(movement)-[:mso__hasScorePart]->(part)-[:mso__hasStaff]->(staff)-[:mso__hasVoice]->(voice)-[:mso__hasNoteSet]->(noteset)-[:mso__hasNote]->(note)\n" + 
 				"MATCH (score:mo__Score)-[:mo__movement]->(movement)-[:mso__hasScorePart]->(part)-[:mso__hasMeasure]->(measure)\n" + 
 				"WHERE score.uri = '"+request.getIdentifier()+"'\n" + 
@@ -623,7 +617,6 @@ public class FactoryNeo4j {
 			}
 			score.getPersons().addAll(getPersons(gson.toJson(record.get("persons").asMap())));
 			score.getPersons().addAll(getPersons(gson.toJson(record.get("encoders").asMap())));			
-			//score.setProvenance(getProvenance(gson.toJson(record.get("activity").asMap())));
 			Provenance prov = new Provenance();
 			prov.setGeneratedAtTime(record.get("provGeneratedAtTime").asString());
 			prov.setComments(record.get("provComments").asString());
