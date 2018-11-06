@@ -1,4 +1,5 @@
 package de.wwu.wmss.factory;
+
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -522,8 +523,15 @@ public class FactoryNeo4j {
 
 		ArrayList<DeletedRecord> result = new ArrayList<DeletedRecord>();
 
-		String cypherQuery = "MATCH (score:mo__Score {uri:'"+request.getIdentifier()+"'})\n" + 
-				"SET score.active = FALSE RETURN score.dc__title AS title, score.uri AS identifier, score.collectionUri AS collection;";
+//		cypherQuery = "MATCH (score:mo__Score {uri:'"+request.getIdentifier()+"'})\n" + 
+//				"SET score.active = FALSE RETURN score.dc__title AS title, score.uri AS identifier, score.collectionUri AS collection;";
+
+		String cypherQuery = "MATCH (score:mo__Score)-[:mo__movement]->(movement)-[:mso__hasScorePart]->(part)-[:mso__hasStaff]->(staff)-[:mso__hasVoice]->(voice)-[:mso__hasNoteSet]->(noteset)-[:mso__hasNote]->(note)\n" + 
+				"MATCH (score:mo__Score)-[:mo__movement]->(movement)-[:mso__hasScorePart]->(part)-[:mso__hasMeasure]->(measure)\n" + 
+				"WHERE score.uri = '"+request.getIdentifier()+"'\n" + 
+				"WITH note,noteset,voice,staff,measure,part,movement,score,score.dc__title AS title, score.uri AS identifier, score.collectionUri AS collection\n" + 
+				"DETACH DELETE note,noteset,voice,staff,measure,part,movement,score\n" + 
+				"RETURN DISTINCT title,identifier,collection";
 		
 		logger.info("[deleteScore]:\n\n"+cypherQuery+"\n");
 		

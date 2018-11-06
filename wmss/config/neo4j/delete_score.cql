@@ -11,3 +11,11 @@ OPTIONAL MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasTime]-(time)
 
 WHERE score.uri = 'http://dbpedia.org/resource/Cello_Concerto_(Elgar)'
 DETACH DELETE score, creator, role, movement, part, staff, voice, measure, note, noteset, key, clef, time, tonic, mode, thumbnail, activity
+
+
+/////////////////////
+
+MATCH (score:mo__Score)-[:mo__movement]->(movement)-[:mso__hasScorePart]->(part)-[:mso__hasStaff]->(staff)-[:mso__hasVoice]->(voice)-[:mso__hasNoteSet]->(noteset)-[:mso__hasNote]->(note)
+MATCH (score:mo__Score)-[:mo__movement]->(movement)-[:mso__hasScorePart]->(part)-[:mso__hasMeasure]->(measure)
+WHERE score.uri = 'http://dbpedia.org/resource/Cello_Concerto_(Elgar)'
+DETACH DELETE note,noteset,voice,staff,measure,part,movement,score

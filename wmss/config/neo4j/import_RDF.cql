@@ -24,12 +24,9 @@ CREATE (:NamespacePrefixDefinition {
   `http://purl.org/ontology/mo/mit#`: 'mit'
 });
 
-
 //CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
 CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements_musescore.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
-//CALL semantics.importRDF("file:///home/jones/git/musicowl-repository/musicowl/ntriples/elgar_cello_concerto_op.85.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
-
-
+CALL semantics.importRDF("file:///home/jones/git/musicowl-repository/musicowl/ntriples/elgar_cello_concerto_op.85.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
 
 MATCH (mov:mo__Movement)
 OPTIONAL MATCH (mov:mo__Movement)-[:mso__hasBeatUnit]-(unit)
@@ -65,10 +62,15 @@ WHERE note.note IS NULL
 SET note.note = '-', note.accidental = ''
 RETURN COUNT(note) AS Rests;
 
+// Thumbnails
 MATCH (scr:mo__Score)-[:foaf__thumbnail]->(thumbnail) 
 SET scr.thumbnail = thumbnail.uri
 RETURN COUNT(scr) AS Thumbnails;
+MATCH (scr:mo__Score)-[:foaf__thumbnail]->(thumbnail) 
+DETACH DELETE thumbnail
+RETURN COUNT(thumbnail) AS DeletedThumbnails;
 
+// Collections
 MATCH (collection:prov__Collection)-[:prov__hadMember]->(scr:mo__Score)
 SET scr.collectionUri = collection.uri,
     scr.collectionLabel = collection.rdfs__label
@@ -193,7 +195,6 @@ WHERE SUBSTRING(labels(duration)[1],5) = '128th' SET noteset :d7 RETURN '128th: 
 MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)
 WHERE SUBSTRING(labels(duration)[1],5) = '256th' SET noteset :da RETURN '256th: '+COUNT(duration) AS result;
 
-
 MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)
 WITH  noteset,CASE SUBSTRING(labels(duration)[1],5)
                 WHEN 'Longa' THEN 0
@@ -210,30 +211,43 @@ WITH  noteset,CASE SUBSTRING(labels(duration)[1],5)
 SET noteset.duration = duration_numeric
 RETURN COUNT(noteset) AS Duration;
 
+MATCH (measure)-[r:mso__hasTime]->(time)
+SET measure.beats = time.mso__hasBeats, measure.beatType = time.mso__hasBeatType
+DELETE r,time
+RETURN COUNT(measure) AS MeasureTimeSignature;
+
+
+MATCH (noteset:mso__NoteSet)-[:mso__hasClef]-(clef)
+SET noteset.clef = REPLACE(LOWER(labels(clef)[1]),'mso__','')
+DETACH DELETE clef
+RETURN COUNT(clef) AS NotesetClef;
+
+
+MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonic)
+MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__mode]->(mode)
+WITH measure,SUBSTRING(tonic.uri,36) AS tonic, SUBSTRING(mode.uri,39) AS mode
+SET measure.tonic = tonic, measure.mode = mode
+RETURN COUNT(measure) AS MeasureKey;
+
+MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+DETACH DELETE key,tonicNode,modeNode
+RETURN COUNT(key) AS DeletedKeys;
+
 
 
 MATCH (noteset:mso__NoteSet)-[predicate:mso__hasDuration]->(duration)
 OPTIONAL MATCH (duration)-[:mso__hasDurationAttribute]->(attribute)
-//REMOVE noteset.uri 
 DETACH DELETE predicate, duration, attribute
 RETURN COUNT(duration) AS DeletedDurations;
 
 MATCH (note:chord__Note)-[predicate:chord__natural]->(natural:chord__Natural)
-//REMOVE note.uri
 DETACH DELETE predicate, natural
 RETURN COUNT(natural) AS DeletedNotes;
 
 MATCH (note:chord__Note)-[predicate:chord__modifier]->(modifier) 
 DETACH DELETE predicate, modifier 
 RETURN COUNT(modifier) AS DeletedModifiers;
-
-MATCH (noteset:mso__NoteSet) 
-//REMOVE noteset.uri 
-RETURN COUNT(noteset) AS DeletedNotesetURI;
-
-MATCH (note:chord__Note) 
-//REMOVE note.uri 
-RETURN COUNT(note) AS DeletedNoteURI;
 
 MATCH (instant:mso__Instant)
 DETACH DELETE instant
@@ -242,6 +256,11 @@ RETURN COUNT(instant) AS DeletedInstants;
 MATCH (ns:mso__NoteSet)-[:mso__hasDynamic]-(dynamic) 
 DETACH DELETE dynamic
 RETURN COUNT(dynamic) AS DeletedDynamics;
+
+MATCH (activity)-[:prov__generated]->(score)
+DETACH DELETE activity
+RETURN COUNT(activity) AS DeletedActivity;
+
 
 MATCH (score:mo__Score)
 WHERE score.active IS NULL
@@ -256,6 +275,7 @@ CREATE INDEX ON :mo__Movement(mso__hasBeatsPerMinute);
 CREATE INDEX ON :mo__Movement(beatUnit);
 CREATE INDEX ON :mo__Movement(beatUnit,mso__hasBeatsPerMinute);
 
+CREATE INDEX ON :mo__Measure(tonic,mode);
 CREATE INDEX ON :mo__Score(active);
 CREATE INDEX ON :mo__Score(issued);
 CREATE INDEX ON :mo__Score(encoderUri);
