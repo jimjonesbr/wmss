@@ -60,6 +60,14 @@ public class ErrorCodes {
 	public static String NONSUPPORTED_REQUEST_DESCRIPTION  = "Request type not supported";
 	public static String NONSUPPORTED_REQUEST_DATE_HINT = "Check the request section at the settings file";
 
+	public static String INVALID_RDFFILE_CODE = "E0015";
+	public static String INVALID_RDFFILE_DESCRIPTION  = "Invalid RDF file";
+	public static String INVALID_RDFFILE_HINT = "Make sure that the imported file is properly encoded in one of the following formats: JSON-LD, Turtle, RDF/XML and N-Triples";
+
+	public static String INVALID_RDFFORMAT_CODE = "E0016";
+	public static String INVALID_RDFFORMAT_DESCRIPTION  = "Invalid RDF format";
+	public static String INVALID_RDFFORMAT_HINT = "Please provide one for the following formats in the 'format' parameter: JSON-LD, Turtle, RDF/XML and N-Triples";
+
 	//"Request Conflict: The searched melody contains chords but the parameter 'ignoreChords' ist set to 'true'. The 'ignoreChords' parameter will be ignored."
 	
 	

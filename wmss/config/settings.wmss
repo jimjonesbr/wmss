@@ -8,5 +8,7 @@
   "title": "Web Music Score Service - University of Münster",
   "defaultProtocol": "1.0",
   "logpreview": "2500",
-  "defaultMelodyEncoding": "pea"
+  "defaultMelodyEncoding": "pea",
+  "maxFileSize": "2000"
+  
 }

@@ -33,6 +33,13 @@ public class FactoryNeo4j {
 
 	private static Logger logger = Logger.getLogger("Neo4j-Factory");
 			
+	
+	public static void insertScore(String file, String format) {
+	
+		
+	}
+	
+	
 	public static String getMusicXML(WMSSRequest request){
 		
 		String result = "";

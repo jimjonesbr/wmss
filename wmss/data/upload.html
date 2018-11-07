@@ -1,8 +1,10 @@
 <html>
 <body>
-	<h2>File Upload</h2>
-	<form action="http://localhost:8295/wmss?source=neo4j_local&request=insertscore" method="post" enctype="multipart/form-data">
+	<h2>WMSS File Upload</h2>
+	<form action="http://localhost:8295/wmss/import?format=n-triplesX" method="post" enctype="multipart/form-data">
 		<input type="file" name="file" multiple/>
+		<input type="hidden" id="source" value="neo4j_local"/>
+		<input type="hidden" id="request" value="insertscore"/>
 		<input type="submit">
 	</form>
 </body>	

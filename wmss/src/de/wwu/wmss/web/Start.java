@@ -21,7 +21,8 @@ public class Start {
 		server.setHandler(context);
 
 		context.addServlet(new ServletHolder(new ServletWMSS()),"/*");
-
+		context.addServlet(new ServletHolder(new ServletImport()),"/import");
+		
 		server.start();
 		server.join();
 
