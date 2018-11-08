@@ -1,6 +1,7 @@
 package de.wwu.wmss.factory;
 
 import java.util.ArrayList;
+import java.util.Date;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -9,6 +10,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.wwu.wmss.core.DataSource;
 import de.wwu.wmss.core.MusicScore;
+import de.wwu.wmss.core.WMSSImportRecord;
+import de.wwu.wmss.core.WMSSImportRequest;
 import de.wwu.wmss.core.WMSSRequest;
 import de.wwu.wmss.settings.SystemSettings;
 import de.wwu.wmss.settings.Util;
@@ -34,6 +37,19 @@ public class ServiceMessagingHandler {
 
 	}
 	
+	@SuppressWarnings("unchecked")
+	public static String getImportReport(ArrayList<WMSSImportRecord> fileList, WMSSImportRequest importRequest){
+
+		JSONObject importReport = new JSONObject();
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+		importReport.put("type", "ImportReport");
+		importReport.put("timeElapsed", Util.timeElapsed(importRequest.getStartDate(), new Date()));		
+		importReport.put("files", fileList);
+
+		return StringEscapeUtils.unescapeJson(gson.toJson(importReport));
+
+	}
 	
 	@SuppressWarnings("unchecked")
 	public static String deleteScore(WMSSRequest request) {
@@ -299,7 +315,7 @@ public class ServiceMessagingHandler {
 	public static String getScore(WMSSRequest request){
 
 		String result = "";
-		DataSource ds = Util.getDataSource(request);
+		DataSource ds = Util.getDataSource(request.getSource());
 
 		if(ds.getType().equals("triplestore")) {
 
@@ -322,8 +338,6 @@ public class ServiceMessagingHandler {
 					}
 
 				}
-
-
 
 		return result;
 

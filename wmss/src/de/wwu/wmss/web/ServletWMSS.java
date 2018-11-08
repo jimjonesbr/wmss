@@ -81,7 +81,6 @@ public class ServletWMSS extends HttpServlet
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport(e.getCode(), e.getMessage(), e.getHint()));
 			e.printStackTrace();
-			
 		}
 
 	}

@@ -3,7 +3,7 @@ package de.wwu.wmss.web;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.Date;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -17,10 +17,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.log4j.Logger;
-
 import de.wwu.wmss.core.ErrorCodes;
 import de.wwu.wmss.core.InvalidWMSSRequestException;
+import de.wwu.wmss.core.WMSSImportRecord;
 import de.wwu.wmss.core.WMSSImportRequest;
+import de.wwu.wmss.factory.FactoryNeo4j;
 import de.wwu.wmss.factory.ServiceMessagingHandler;
 
 public class ServletImport extends HttpServlet {
@@ -45,25 +46,36 @@ public class ServletImport extends HttpServlet {
 			response.addHeader("Access-Control-Allow-Methods","GET,POST");
 			response.addHeader("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");
 			
-			List<FileItem> multifiles = sf.parseRequest(httpRequest);
+			List<FileItem> multifiles = sf.parseRequest(httpRequest);			
+			ArrayList<WMSSImportRecord> fileList = new ArrayList<WMSSImportRecord>();
+					
 			
 			for(FileItem item : multifiles) {
 				
-				item.write(new File("upload/"+item.getName()));	
-				logger.info("Checking file integrity ["+item.getName()+"] ...");
+				File file = new File("upload/"+item.getName());
+				
+				item.write(file);	
+				logger.debug("Checking file integrity of "+item.getName()+" [" + FileUtils.byteCountToDisplaySize(item.getSize())  + "] ...");
 				
 				if(checkFile("upload/"+item.getName())) {
-					
-					logger.info("File Uploaded: " + item.getName() + " ["+FileUtils.byteCountToDisplaySize(item.getSize())+"]");
+					WMSSImportRecord record = new WMSSImportRecord();
+					record.setFile(file.getName());
+					record.setSize(FileUtils.byteCountToDisplaySize(item.getSize()));
+					record.setRecords(FactoryNeo4j.insertScore(file, importRequest));
+					fileList.add(record);
 				
 				} else {
 					
 					response.setContentType("text/javascript");
 					response.setStatus(HttpServletResponse.SC_OK);
 					response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport(ErrorCodes.INVALID_RDFFILE_CODE, ErrorCodes.INVALID_RDFFILE_DESCRIPTION +" ["+item.getName()+"]", ErrorCodes.INVALID_RDFFILE_HINT));
-
 				}
 			}
+			
+			response.setContentType("text/javascript");
+			response.setStatus(HttpServletResponse.SC_OK);
+			response.getWriter().println(ServiceMessagingHandler.getImportReport(fileList, importRequest));
+			
 
 
 		} catch (InvalidWMSSRequestException e) {

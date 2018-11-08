@@ -26,6 +26,8 @@ public class SystemSettings {
 	private static int logPreview;
 	private static int pageSize;
 	private static String defaultRequestMode;
+	private static String defaultCommitSize;
+	private static String defaultRDFFormat;
 	private static Logger logger = Logger.getLogger("System Settings");
 	public static ArrayList<DataSource> sourceList = new ArrayList<DataSource>();
 	public static ArrayList<String> protocolVersions = new ArrayList<String>();
@@ -62,6 +64,8 @@ public class SystemSettings {
 			title = jsonObject.get("title").toString();
 			defaultRequestMode = jsonObject.get("defaultRequestMode").toString();
 			defaultProtocol= jsonObject.get("defaultProtocol").toString();
+			defaultRDFFormat= jsonObject.get("defaultRDFFormat").toString();
+			defaultCommitSize= jsonObject.get("defaultCommitSize").toString();
 			logPreview = Integer.parseInt(jsonObject.get("logpreview").toString());
 
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -121,6 +125,7 @@ public class SystemSettings {
 				ds.setUser(record.get("user").toString());
 				ds.setPassword(record.get("password").toString());
 
+				
 				JSONObject filters = (JSONObject) record.get("filterCapabilities");
 				
 				ds.getFilters().setMelody((boolean)filters.get("melody"));
@@ -213,7 +218,16 @@ public class SystemSettings {
 	public static String getDefaultMelodyEncoding() {
 		return defaultMelodyEncoding;
 	}
-		
+
+	public static String getDefaultCommitSize() {
+		return defaultCommitSize;
+	}
+
+	public static String getDefaultRDFFormat() {
+		return defaultRDFFormat;
+	}
+	
+	
 	
 	
 }

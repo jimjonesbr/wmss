@@ -49,21 +49,17 @@ MATCH (scr:mo__Score)
 SET scr.issued = datetime(scr.dcterms__issued)
 RETURN COUNT(scr.dcterms__issued) AS IssuedDates;
 
-MATCH (scr:mo__Score)-[:prov__wasGeneratedBy]->(activity:prov__Activity)-[:prov__wasAssociatedWith]->(encoder:foaf__Person) 
+MATCH (scr:mo__Score)-[:prov__wasGeneratedBy]->(activity:prov__Activity)-[:prov__wasAssociatedWith]->(encoder:foaf__Person)
+WHERE scr.encoderUri IS NULL 
 SET scr.encoderUri = encoder.uri,
     scr.encoderName = encoder.foaf__name,
     scr.provGeneratedAtTime = activity.prov__startedAtTime,
     scr.provComments = activity.rdfs__comment
 RETURN COUNT(scr) AS Encoder;
 
-//Adds rests 
-MATCH (note:chord__Note)
-WHERE note.note IS NULL
-SET note.note = '-', note.accidental = ''
-RETURN COUNT(note) AS Rests;
-
 // Thumbnails
 MATCH (scr:mo__Score)-[:foaf__thumbnail]->(thumbnail) 
+WHERE scr.thumbnail IS NULL
 SET scr.thumbnail = thumbnail.uri
 RETURN COUNT(scr) AS Thumbnails;
 MATCH (scr:mo__Score)-[:foaf__thumbnail]->(thumbnail) 
@@ -81,6 +77,7 @@ WITH noteset,COUNT(r) AS size,
   CASE 
   WHEN COUNT(r)>1 THEN TRUE 
   WHEN COUNT(r)=1 THEN FALSE END AS chord
+WHERE noteset.size IS NULL  
 SET noteset.size = size
 RETURN COUNT(noteset) AS NoteSets;
 
@@ -90,6 +87,7 @@ WITH  score,
     WHEN NOT score.mso__asMusicXML = '' THEN 'musicxml'
     WHEN NOT score.mso__asMEI = '' THEN 'mei'
   END AS docFormat
+WHERE score.format IS NULL  
 SET score.format = docFormat
 RETURN COUNT(docFormat) AS Format;
 
@@ -97,6 +95,7 @@ RETURN COUNT(docFormat) AS Format;
 
 MATCH (:mo__Score)-[:mo__movement]->(movement:mo__Movement)-[:mso__hasScorePart]->(instrument:mo__Instrument) 
 OPTIONAL MATCH (instrument:mo__Instrument)-[:skos__broader]->(type) 
+WHERE instrument.typeUri IS NULL
 SET instrument.typeUri = type.uri,
     instrument.typeLabel = type.skos__prefLabel
 RETURN COUNT(instrument) AS Instruments;
@@ -119,6 +118,16 @@ WITH note, CASE SUBSTRING(modifier.uri,31)
        SUBSTRING(natural.uri,36) AS natural           
 SET note.note = natural, note.accidental = modifier
 RETURN COUNT(note) AS Note_Accidentals;
+
+
+//Adds rests 
+MATCH (note:chord__Note)
+WHERE note.note IS NULL
+SET note.note = '-', note.accidental = ''
+RETURN COUNT(note) AS Rests;
+
+
+
 
 MATCH (note:chord__Note {note:'A', accidental: ''}) SET note :A RETURN COUNT(note) AS A;
 MATCH (note:chord__Note {note:'A', accidental: 'x'}) SET note :Ax RETURN COUNT(note) AS Ax;
@@ -222,10 +231,10 @@ RETURN COUNT(measure) AS MeasureTimeSignature;
 MATCH (noteset:mso__NoteSet)-[:mso__hasClef]->(clef)
 SET noteset.clef = REPLACE(LOWER(labels(clef)[1]),'mso__','')
 RETURN COUNT(clef) AS NotesetClef;
+
 MATCH (noteset:mso__NoteSet)-[:mso__hasClef]->(clef)
 DETACH DELETE clef 
 RETURN COUNT(noteset) AS DeletedClef;
-
 
 MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonic)
 MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__mode]->(mode)
@@ -237,8 +246,6 @@ MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(
 MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
 DETACH DELETE key,tonicNode,modeNode
 RETURN COUNT(key) AS DeletedKeys;
-
-
 
 MATCH (noteset:mso__NoteSet)-[predicate:mso__hasDuration]->(duration)
 OPTIONAL MATCH (duration)-[:mso__hasDurationAttribute]->(attribute)
@@ -265,22 +272,15 @@ MATCH (activity)-[:prov__generated]->(score)
 DETACH DELETE activity
 RETURN COUNT(activity) AS DeletedActivity;
 
-
-MATCH (score:mo__Score)
-WHERE score.active IS NULL
-SET score.active = TRUE
-RETURN COUNT (score);
-
-
+//MATCH (score:mo__Score) WHERE score.active IS NULL SET score.active = TRUE RETURN COUNT (score);
 
 //Indexes
 
 CREATE INDEX ON :mo__Movement(mso__hasBeatsPerMinute);
 CREATE INDEX ON :mo__Movement(beatUnit);
 CREATE INDEX ON :mo__Movement(beatUnit,mso__hasBeatsPerMinute);
-
 CREATE INDEX ON :mo__Measure(tonic,mode);
-CREATE INDEX ON :mo__Score(active);
+//CREATE INDEX ON :mo__Score(active);
 CREATE INDEX ON :mo__Score(issued);
 CREATE INDEX ON :mo__Score(encoderUri);
 CREATE INDEX ON :mo__Score(collectionUri);

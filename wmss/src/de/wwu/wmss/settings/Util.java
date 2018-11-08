@@ -96,12 +96,13 @@ public class Util {
 
 	}
 	
-	public static DataSource getDataSource(WMSSRequest request) {
+	
+	public static DataSource getDataSource(String request) {
 		
 		DataSource dataSource = new DataSource();
 
 		for (int i = 0; i < SystemSettings.sourceList.size(); i++) {
-			if(SystemSettings.sourceList.get(i).getId().equals(request.getSource())){			
+			if(SystemSettings.sourceList.get(i).getId().equals(request)){			
 				dataSource = SystemSettings.sourceList.get(i); 
 			}
 		}

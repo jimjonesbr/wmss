@@ -9,6 +9,8 @@
   "defaultProtocol": "1.0",
   "logpreview": "2500",
   "defaultMelodyEncoding": "pea",
-  "maxFileSize": "2000"
+  "maxFileSize": "2000",
+  "defaultRDFFormat": "N-Triples",
+  "defaultCommitSize": "10000"
   
 }
