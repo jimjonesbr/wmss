@@ -1,6 +1,5 @@
 MATCH (n) DETACH DELETE n RETURN COUNT(n);
 
-
 CREATE INDEX ON :Resource(uri);
 CREATE INDEX ON :URI(uri);
 CREATE INDEX ON :BNode(uri);

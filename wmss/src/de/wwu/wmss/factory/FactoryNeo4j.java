@@ -39,6 +39,13 @@ public class FactoryNeo4j {
 	private static Logger logger = Logger.getLogger("Neo4j-Factory");
 			
 	
+	public static void formatGraph(WMSSImportRequest importRequest) {
+		
+		
+		
+		
+	}
+	
 	public static int insertScore(File file, WMSSImportRequest importRequest) {
 					
 		int result = 0;

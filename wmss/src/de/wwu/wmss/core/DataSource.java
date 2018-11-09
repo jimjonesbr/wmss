@@ -1,6 +1,6 @@
 package de.wwu.wmss.core;
 
-import java.util.ArrayList;
+import org.neo4j.driver.v1.Driver;
 
 public class DataSource {
 
@@ -15,16 +15,14 @@ public class DataSource {
 	private String user;
 	private String password;
 	private String info;
+	private Driver neo4jConnectionDriver;
 	private FilterCapability filters;
-	private ArrayList<Collection> collections;
-	private ArrayList<PerformanceMediumType> performanceMediums;
 	
 	public DataSource() {
 
 		super();
+		this.neo4jConnectionDriver = null;
 		this.filters = new FilterCapability();
-		this.collections = new ArrayList<Collection>();
-		this.performanceMediums = new ArrayList<PerformanceMediumType>();
 		
 	}
 	
@@ -101,13 +99,15 @@ public class DataSource {
 		this.info = info;
 	}
 
-	public ArrayList<Collection> getCollections() {
-		return collections;
+	public Driver getNeo4jConnectionDriver() {
+		return neo4jConnectionDriver;
 	}
 
-	public ArrayList<PerformanceMediumType> getPerformanceMediumList() {
-		return performanceMediums;
+	public void setNeo4jConnectionDriver(Driver connectionDriver) {
+		this.neo4jConnectionDriver = connectionDriver;
 	}
+
+
 
 
 	

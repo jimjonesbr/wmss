@@ -44,6 +44,7 @@ public class ServiceMessagingHandler {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
 		importReport.put("type", "ImportReport");
+		importReport.put("size", fileList.size());
 		importReport.put("timeElapsed", Util.timeElapsed(importRequest.getStartDate(), new Date()));		
 		importReport.put("files", fileList);
 

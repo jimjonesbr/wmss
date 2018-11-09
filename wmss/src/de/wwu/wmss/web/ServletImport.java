@@ -48,7 +48,6 @@ public class ServletImport extends HttpServlet {
 			
 			List<FileItem> multifiles = sf.parseRequest(httpRequest);			
 			ArrayList<WMSSImportRecord> fileList = new ArrayList<WMSSImportRecord>();
-					
 			
 			for(FileItem item : multifiles) {
 				
@@ -75,8 +74,6 @@ public class ServletImport extends HttpServlet {
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.getWriter().println(ServiceMessagingHandler.getImportReport(fileList, importRequest));
-			
-
 
 		} catch (InvalidWMSSRequestException e) {
 			
@@ -99,8 +96,10 @@ public class ServletImport extends HttpServlet {
 
 		try {
 			
+			
 			Model model = ModelFactory.createDefaultModel() ;
 			model.read(filePath) ;		
+			model.close();
 			
 		} catch (Exception e) {
 			//e.printStackTrace();
