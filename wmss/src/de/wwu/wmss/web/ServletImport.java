@@ -71,6 +71,8 @@ public class ServletImport extends HttpServlet {
 				}
 			}
 			
+			FactoryNeo4j.formatGraph(importRequest);
+			
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.getWriter().println(ServiceMessagingHandler.getImportReport(fileList, importRequest));
