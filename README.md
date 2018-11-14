@@ -1,8 +1,6 @@
-# Web Music Score Service (currently under development)
+# Web Music Score Service 
 
-The Web Music Score Service (WMSS) provides an interface allowing requests for music scores on the web using platform-independent clients, working on top of relational databases and triple stores. It serves as an intermediate layer between data sets and application clients, providing standard access to MEI and MusicXML files. 
-
-![GitHub Logo](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/wmss.png)
+The Web Music Score Service (WMSS) provides an interface allowing requests for music scores on the web using platform-independent clients. It serves as an intermediate layer between data sets and application clients, providing standard access to MEI and MusicXML files. 
 
 ## Index
 
@@ -22,14 +20,7 @@ The Web Music Score Service (WMSS) provides an interface allowing requests for m
   
 ## [WMSS Data Model](https://github.com/jimjonesbr/wmss/blob/master/README.md#wmss-data-model)
 
-The WMSS generic data model is currently supported in relational databases and triple stores, and is designed as follows.
 
-### [Relational Databases](https://github.com/jimjonesbr/wmss/blob/master/README.md#relational-databases)
-
-<img src="https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/erm.svg" width="850"></img>
-
-### [RDF Model](https://github.com/jimjonesbr/wmss/blob/master/README.md#rdf-model)
-tbw.
 ## [Configuring WMSS](https://github.com/jimjonesbr/wmss/blob/master/README.md#configuring-wmss)
 
 tbw.
@@ -51,21 +42,25 @@ Lists all service related information as well as all repositories available:
 The Service Description Report collects all available properties and filter possibilities from each available data source, giving the client all possible filters for each filter option, such as tonalities, tempo markings or instruments.
 
 #### [Service Description Report](https://github.com/jimjonesbr/wmss/blob/master/README.md#service-description-report) 
-The Service Description Document is provided as JSON and is structured as follows:
+The [Service Description Document](https://github.com/jimjonesbr/wmss/blob/master/wmss/data/system/reports/DescribeService.json) is provided as JSON and is structured as follows:
  
 `appVersion`&nbsp;   WMSS version.
 
-`service`&nbsp;   Service name.
-
 `type`&nbsp;   `ServiceDescriptionReport` (Standard value for Service Description Report)
-
-`startup`&nbsp;   Service startup time.
-
-`contact`&nbsp;   Administrator e-mail address.
 
 `title`&nbsp;   Service title of description.
 
-`supportedProtocols`&nbsp;   Protocols supported by the service.
+`contact`&nbsp;   Administrator e-mail address.
+
+`service`&nbsp;   Service name.
+
+`port`&nbsp;   Listening port for the service.
+
+`timeout`&nbsp;   Time-out for server internal requests.
+
+`pageSize`&nbsp;   Default page size for ListScores request.
+
+`startup`&nbsp;   Service startup time.
 
 `environment`&nbsp;  Environment settings.
 
@@ -73,13 +68,17 @@ The Service Description Document is provided as JSON and is structured as follow
 
 &nbsp;&nbsp;&nbsp;&nbsp;`os`&nbsp;  Operating system description.
 
+`supportedProtocols`&nbsp;   Protocols supported by the service.
+
 `datasources`&nbsp;  Data sources available in the system.
 
 &nbsp;&nbsp;&nbsp;&nbsp;`id`&nbsp;  Data source identifier.
 
 &nbsp;&nbsp;&nbsp;&nbsp;`host`&nbsp;  Data source hosting server.
 
-&nbsp;&nbsp;&nbsp;&nbsp;`enabled`&nbsp;  Boolean value to enable or disable access to a data source.
+&nbsp;&nbsp;&nbsp;&nbsp;`port`&nbsp;  Listening port for the data storage.
+
+&nbsp;&nbsp;&nbsp;&nbsp;`active`&nbsp;  Boolean value to enable or disable access to a data source.
 
 &nbsp;&nbsp;&nbsp;&nbsp;`type`&nbsp;  Data source type. Currently supported values are `database` and `triplestore`.
 
@@ -87,9 +86,13 @@ The Service Description Document is provided as JSON and is structured as follow
 
 &nbsp;&nbsp;&nbsp;&nbsp;`repository`&nbsp;  Specific repository of a data storage, e.g database for RDMS or a repository/named graph for triple stores.
 
+&nbsp;&nbsp;&nbsp;&nbsp;`version`&nbsp;  Version for the data storage.
+
 &nbsp;&nbsp;&nbsp;&nbsp;`user`&nbsp;  Username used for accessing the data source.
 
 &nbsp;&nbsp;&nbsp;&nbsp;`info`&nbsp;  Data source description.
+
+&nbsp;&nbsp;&nbsp;&nbsp;`totalScores`&nbsp;  Number of available music scores for the data storage.
 
 &nbsp;&nbsp;&nbsp;&nbsp;`formats`&nbsp;  Formats available in a data source, e.g. MusicXML, MEI.
 
@@ -127,15 +130,15 @@ An example of a Service Description Report can be found [here](https://github.co
  Constraints the __Score List Document__ to a specific data source:
  
   ```http
- http://localhost:8295/wmss?request=ListScores&source=postgres_wwu
+ http://localhost:8295/wmss?request=ListScores&source=neo4j_local
  ```
 
  #### Collections
 
-To facilitate the management of large repositories, WMSS offers the possibility to add music scores to specific collections, e.g. "ULB Histotic Collection", "Baroque Works", etc. The collection id, required for this parameter, is delivered together with the music score in the Score List Report and in the Service Description Report.
+To facilitate the management of large repositories, WMSS offers the possibility to add music scores to specific collections. The collection uri, required for this parameter, is delivered together with the music score in the Score List and Service Description Reports.
 
  ```http
- http://localhost:8295/wmss?request=ListScores&source=postgres_wwu&collection=1
+ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&collection=https://url.collection.de
 ```
 
 #### Persons
@@ -143,7 +146,7 @@ To facilitate the management of large repositories, WMSS offers the possibility 
 Selects all music scores containing specific persons and optionally with their respective roles. For instance, a request to list all scores from the person "Elgar" as a "Composer" is enconded like this:
 
 ```http
- http://localhost:8295/wmss?request=ListScores&person=Elgar&personRole=Composer
+ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&person=http://dbpedia.org/resource/Edward_Elgar&personRole=composer
 ```
 
 The __personRole__ parameter may contain the following values:
@@ -161,35 +164,16 @@ The __personRole__ parameter may contain the following values:
 
 #### Performance Medium (Instrument)
 
-Selects all music scores containing specific performance mediums. The performance mediums are structured following the principle adopted by [MusicXML 3.0 Standard Sounds](http://www.musicxml.com/for-developers/standard-sounds/). For instance, requesting a list of all scores containing cello voices can be enconded like this:
+Selects all music scores containing specific performance mediums. The performance mediums are structure follows the principles adopted by [MusicXML 3.0 Standard Sounds](https://github.com/w3c/musicxml/blob/v3.1/schema/sounds.xml). For instance, requesting a list of all scores containing cello voices can be enconded like this:
 
  ```http
- http://localhost:8295/wmss?request=ListScores&performanceMedium=strings.cello
+ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&performanceMedium=strings.cello
 ```
 
 To constraint the search for the given performance medium to only solo mediums, use the *solo* parameter: 
 
  ```http
- http://localhost:8295/wmss?request=ListScores&performanceMedium=strings.cello&solo=true
-```
-
-This approach allows searching for groups and subgroups of performance mediums. For istance, all brass instruments:
-
-
- ```http
- http://localhost:8295/wmss?request=ListScores&performanceMedium=brass
-```
-
-All trumpets:
-
- ```http
- http://localhost:8295/wmss?request=ListScores&performanceMedium=brass.trumpet
-```
-
-Only baroque trumpets:
-
- ```http
- http://localhost:8295/wmss?request=ListScores&performanceMedium=brass.trumpet.baroque
+ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&performanceMedium=strings.cello&solo=true
 ```
 
 A complete list of performance mediums containing approx. 900 items can be found [here](https://github.com/jimjonesbr/wmss/tree/master/wmss/data/system/mediums.csv).
@@ -202,7 +186,7 @@ It is also possible to select music scores based on performance medium types, e.
  http://localhost:8295/wmss?request=ListScores&performanceMediumType=strings
 ```
 
-The performanceMediumType parameter expects the following codes:
+The performanceMediumType paramater is also based on the [MusicXML 3.0 Standard Sounds](https://github.com/w3c/musicxml/blob/v3.1/schema/sounds.xml) and the following codes:
 
 | code|medium type| code|medium type|
 |:-:|:-:|:-:|:-:|
@@ -214,29 +198,23 @@ The performanceMediumType parameter expects the following codes:
 |`wind`|Wind|`wood`|wood|
 
 
-#### Tonalities
-
-Selects records containing a specific tonality. For instance, a request to retrieve all records written in "E Major" is encoded as follows:
-
- ```http
-http://localhost:8295/wmss?request=ListScores&tonalityTonic=e&tonalityMode=major
-```
-
 #### Tempo
 
-Selects records containing movements played in a specific tempo, e.g. *adagio*, *largo*, *andante* etc.
+Selects records containing movements played in a specific tempo, e.g. *adagio*, *largo*, *andante*, etc. Tempo markings may vary depending on the country of orign and century of composition, therefore tempo searches are encoded in two abstract parameters, namely `tempoBeatsPerMinute` and `tempoBeatUnit`. Beat units indicates the graphical note type to use in a metronome mark, which follows the principles adpoted by the [MusicXML Beat-Unit Element](https://usermanuals.musicxml.com/MusicXML/Content/EL-MusicXML-beat-unit.htm). The beats per unit parameter can be provided as a single integer value or an interval thereof. For instance, a *quarter* beat unit with an interval of 100-125 beats per minute, can be encoded as follows:
 
  ```http
-http://localhost:8295/wmss?request=ListScores&tempo=adagio
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&tempoBeatUnit=quarter&tempoBeatsPerMinute=100-125
 ```
  
-#### Creation Date
+#### Date Issued
 
-Selects records composed at a given time interval, e.g. 1700 - 1750:
+Selects records composed at a given date or time interval, e.g. 1910-1920:
 
  ```http
-http://localhost:8295/wmss?request=ListScores&creationDateFrom=1700&creationDateTo=1750
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&dateIssued=1910-1920
 ```
+
+Dates and intervals must be encoded as `yyyyMMdd`, `yyyyMM` or `yyyy`.
 
 
 #### Format
@@ -247,128 +225,76 @@ Selects records available in a specific format. The supported formats are:
   * `musicxml` (MusicXML files)
   
  ```http
-http://localhost:8295/wmss?request=ListScores&format=mei
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&format=musicxml
 ```
 
 #### Melody
 
-Selects records containing a specific melody (a sequence of notes or phrases). Each element of the melody has to be enconded in the following pattern: 
+Selects records containing a specific melody (a sequence of notes or phrases) encoded using the [Plaine & Easie musical notation](https://www.iaml.info/plaine-easie-code#toc-4) (PEA). For instance, the value `8ABCDxDE`, which corresponds to the note sequence ...
+
+![melody_sample](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/melody_sample.jpg)
+
+Notes: `A`, `B`, `C`, `D`, `D#` and `E` 
+
+Duration:  `Eighth` 
+
+... can be searched as follows:
 
 ```
-note-duration-octave(attributes)
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=8ABCDxDE
 ```
 
-##### Notes (mandatory)
+To search for melodies encoded in specific octaves, set the parameter `ignoreOctaves` to `false` (set to `true` by default). The following fairly complex example deals with a melody with 36 notes in containing durations and octaves:
 
-Notes can be encoded using one of the following codes:
+![elgar_theme](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/elgar_theme.jpg)
 
-|Note   | Code ||Note | Code | |Note | Code | |Note | Code | |Note | Code | |Note | Code | |Note | Code | 
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:
-| C __♮__  | `c`  || D __♮__  | `d`  || E __♮__  | `e`  || F __♮__  | `f` || G __♮__  | `g`  || A __♮__  | `a`  || B __♮__  | `b`  |
-| C ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | `chs`  || D ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | `dhs`  || E ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | `ehs`  || F ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | `fhs`  || G ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | `ghs`  || A ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  |`ahs`  || B ![hs](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arabic_music_notation_half_sharp.svg/6px-Arabic_music_notation_half_sharp.svg.png)  | `bhs`  |
-| C __#__  | `cs`  || D __#__  | `ds`  || E __#__  | `es`  || F __#__  | `fs`  || G __#__  | `gs`  || A __#__  | `as`  || B __#__  | `bs`  |
-| C ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | `csh`  || D ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | `dsh`  || E ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | `esh`  || F ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | `fsh`  || G ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | `gsh`  || A ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | `ash`  || B ![sh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Llpd%2B1%C2%BD.svg/8px-Llpd%2B1%C2%BD.svg.png)  | `bsh`  |
-| C ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | `css` || D ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | `dss` || E ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | `ess` || F ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | `fss` || G ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | `gss` || A ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | `ass` || B ![x](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/DoubleSharp.svg/7px-DoubleSharp.svg.png)  | `bss` |
-| C ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | `chb` || D ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | `dhb` || E ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | `ehb` || F ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | `fhb` || G ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | `ghb` || A ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  | `ahb` || B ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Arabic_music_notation_half_flat.svg/6px-Arabic_music_notation_half_flat.svg.png)  |`bhb` |  
-| C __♭__  | `cb`  || D __♭__  | `db`  || E __♭__  | `eb`  || F __♭__  | `fb`  || G __♭__  | `gb`  || A __♭__  | `ab`  || B __♭__  | `bb`  |
-| C ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | `cbh`  || D ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | `dbh`  || E ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | `dbh`  || F ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | `fbh ` || G ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | `gbh`  || A ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  | `abh`  || B ![hb](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Three_quarter_flat.svg/10px-Three_quarter_flat.svg.png)  |` bbh`  |
-| C __𝄫__  | `cbb`  || D __𝄫__  | `dbb`  || E __𝄫__  | `ebb`  || F __𝄫__  | `fbb`  || G __𝄫__  | `gbb`  || A __𝄫__  | `abb`  || B __𝄫__  | `bbb`  |
-
-For unknown notes use `*`.
-
-##### Duration (mandatory)
-
-Durations can be encoded using one of the following codes:
-
-|Duration name (US)   |Duration name (UK) | Code  | Notation  |
-|:-:|:-:|:-:|:-:|
-| octuple whole note | large | `ow`  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Music-octwholenote.svg/100px-Music-octwholenote.svg.png" width="75">
-| quadruple whole note| longa | `qw`  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Music-quadwholenote.svg/100px-Music-quadwholenote.svg.png" width="75">
-| double whole note| breve | `dw`  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Music-alt-doublewholenote.svg/100px-Music-alt-doublewholenote.svg.png" width="75">
-| whole note| semibreve | `w`  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Music-wholenote.svg/100px-Music-wholenote.svg.png" width="75">
-| half note|  minim | `h`  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Music-halfnote.svg/100px-Music-halfnote.svg.png" width="75">
-| quarter| crotchet | `4`  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Music-quarternote.svg/100px-Music-quarternote.svg.png" width="75">
-| eighth| quaver | `8`  | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Music-eighthnote.svg/100px-Music-eighthnote.svg.png" width="75">
-| sixteenth| semiquaver | `16`  |<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Music-eighthnote.svg/100px-Music-eighthnote.svg.png" width="75">
-| thirty-second| demisemiquaver	| `32`  |<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Music-thirtysecondnote.svg/100px-Music-thirtysecondnote.svg.png" width="75">
-| sixty-fourth| hemidemisemiquaver  | `64`  |<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Sixtyfourth-note.svg/100px-Sixtyfourth-note.svg.png" width="75">
-| hundred twenty-eighth| semihemidemisemiquaver | `128`  |<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Music-hundredtwentyeighthnote.svg/100px-Music-hundredtwentyeighthnote.svg.png" width="75">
-| two hundred fifty-sixth note| demisemihemidemisemiquaver | `256`  |<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Semigarrapatea.svg/100px-Semigarrapatea.svg.png" width="75">
-
-For unknown note durations use `*`.
-##### Octave (mandatory)
-
-Octaves consist of numeric values from `0` to `9`. For unknown octaves use `*`.
-
-A sequence of notes or notesets is encoded with the connector `>`, as in the following example:
-
-
-##### Attribute (Optional) 
-
-Attributes correspond to dynamics and articulations attached to a note or noteset (Click [here](https://github.com/jimjonesbr/wmss/tree/master/wmss/data/system/attributes.csv) for a complete list of attributes)*.
-
-\* The basic dynamics scale normally goes from `pppppp` (*pianissississississimo*) to `ffff` (*fortissississimo*), but some composers go beyond this range, such as Ligeti's Études No. 9, where he uses `pppppppp` (8x `p`) and `ffffffff` (8x `f`). Therefore, just increase the loudness or quietness by adding as much `p` or `f` as needed in your query.
-
-##### Noteset
-
-Notesets enable searches for multiple notes played simultaneously, e.g. triads or tetrads. This group of notes can be encoded by means of placing the notes between squared brackets `[]` and using the note set separator `+`. 
-
-For instance, the noteset __A eighth, B eighth and G eighth__ can be encoded as follows:
-
-`[a-8-*+b-8-*+g-8-*]`
-
-##### Melody Request Operators 
-
-Notes or notesets can be encoded using one of the following operators:
-
-|Operator |Name   | Description | 
-|:-:|:-:|:-:|
-|`>`|Sequence | Connect notes or notesets sequences in a melody expression
-|`\|`|Request concatenator |Concatenates multiple melody requests. Result set contains records that fulfil at least one of the given melody expressions.
-|`/`|Melody concatenator |Concatenates multiple melody expressions in a single request. Result set contains records that fulfil all given expressions.
-|`+`|Noteset aggregator | Aggregates multiple notes to form a noteset (to be implemented).
-
-
-
-
-##### Examples
-
-1. __Note sequence__. *E♭ whole note, 3rd octave* followed by *E, whole note, 3rd octave*:
-
-```
-http://localhost:8295/wmss?request=ListScores&melody=eb-w-3>e-w-3
-```
-2. __Note sequence with unknown octaves__. *E♭ whole note, unknown octave* followed by *E, whole note, unknown octave*:
-
-```
-http://localhost:8295/wmss?request=ListScores&melody=eb-w-*>e-w-*
-```
-3. __Note sequence with unknown octaves and durations__. *E♭ unknown duration, unknown octave* followed by *E, unknown duration, unknown octave*:
-
-```
-http://localhost:8295/wmss?request=ListScores&melody=eb-*-*>e-*-*
-```
-4. __Noteset with unknown octave__. Noteset of *E♭ whole note, unknown octave* and *E, whole note, unknown octave*:
-
-```
-http://localhost:8295/wmss?request=ListScores&melody=[eb-w-*+e-w-*]
+```http
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody='4xF8G4xF8A4B8A4G8E4D8E4C,8B4A8B4A'8C4D8C,4B8G4xF8G4E8D4xC8D4xC8E4xF8E4D,,8B4xA8B4G8xF2B&ignoreOctaves=false
 ```
 
-5. __Noteset sequence with unknown octaves__. A sequence of two notesets, each one as *E♭ whole note, unknown octave* and *E, whole note, unknown octave*:
+##### Searching specific key signatures
 
+Keys signatures are to be encoded according to the [PEA key signature notation](https://www.iaml.info/plaine-easie-code#toc-2). Accidentals are preceded by the character `$`; if there are no accidentals the `$` is omitted. The symbol `x` indicates sharpened keys, `b` flattened keys; the symbol is followed by the capital letters indicating the altered notes.
+
+Sharpened keys have to be encoded in the following order: `F♯ C♯ G♯ D♯ A♯ E♯ B♯`
+
+||Major key   | Minor Key  | PEA key 
+|:-:|:-:|:-:|:-:
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/C-major_a-minor.svg/220px-C-major_a-minor.svg.png" width="80">|C major|A minor|`$`
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/G-major_e-minor.svg/220px-G-major_e-minor.svg.png" width="80">|G major|E minor|`$xF`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/D-major_h-minor.svg/220px-D-major_h-minor.svg.png" width="80">|D major|B minor|`$xFC`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/A-major_f-sharp-minor.svg/220px-A-major_f-sharp-minor.svg.png" width="80">|A major|F♯ minor|`$xFCG`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/E-major_c-sharp-minor.svg/220px-E-major_c-sharp-minor.svg.png" width="80">|E major|C♯ minor|`$xFCGD`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/B-major_g-sharp-minor.svg/220px-B-major_g-sharp-minor.svg.png" width="80">|B major|G♯ minor|`$xFCGDA`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/F-sharp-major_d-sharp-minor.svg/220px-F-sharp-major_d-sharp-minor.svg.png" width="80">|F♯ major|D♯ minor|`$xFCGDAE`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/C-sharp-major_a-sharp-minor.svg/220px-C-sharp-major_a-sharp-minor.svg.png" width="80">|C♯ major|A♯ minor|`$xFCGDAEB`|
+
+Flattened keys have to be encoded in the following order: `B♭ E♭ A♭ D♭ G♭ C♭ F♭`
+
+||Major key   | Minor Key  | PEA key 
+|:-:|:-:|:-:|:-:
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/C-major_a-minor.svg/220px-C-major_a-minor.svg.png" width="80">|C major|A minor|`$`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/F-major_d-minor.svg/220px-F-major_d-minor.svg.png" width="80">|F major|D minor|`$bB`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/B-flat-major_g-minor.svg/220px-B-flat-major_g-minor.svg.png" width="80">|B♭ major|G minor|`$bBE`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/E-flat-major_c-minor.svg/220px-E-flat-major_c-minor.svg.png" width="80">|E♭ major|C minor|`$bBEA`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/A-flat-major_f-minor.svg/100px-A-flat-major_f-minor.svg.png" width="80">|A♭ major|F minor|`$bBEAD`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/D-flat-major_b-flat-minor.svg/100px-D-flat-major_b-flat-minor.svg.png" width="80">|D♭ major|B♭ minor|`$bBEADG`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/G-flat-major_e-flat-minor.svg/100px-G-flat-major_e-flat-minor.svg.png" width="80">|G♭ major|E♭ minor|`$bBEADGC`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/C-flat-major_a-flat-minor.svg/100px-C-flat-major_a-flat-minor.svg.png" width="80">|C♭ major|A♭ minor|`$bBEADGCF`|
+
+Equivalents: *UNIMARC field 036 $n — MARC21 field 789 $f — MAB field 681 $k (RISM field 826 — first part)*
+
+To search for melodies encoded with an specific key signature, place the key before the melody (preceded by space). For instance, searching the previously mentioned melody with the signature G Major / E minor can be done as follows:
+
+```http
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=$xF 8ABCDxDE
 ```
-http://localhost:8295/wmss?request=ListScores&melody=[eb-w-*+e-w-*]>[eb-w-*+e-w-*]
+
+Alternatively, key signatures alone can be searched using the parameter `key`. The following request seraches for all music scores containing measures written in `C♯ minor`:
+
+```http
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&key=$xFCGDA
 ```
-6. __Multiple melody requests__. *E♭ whole note, 3rd octave* followed by *E, whole note, 3rd octave* __or__ *E♭ quarter note, 3rd octave* followed by *F quarter note, 3rd octave*:
-
-`http://localhost:8295/wmss/?request=ListScores&melody=eb-w-3>e-w-3|eb-4-3>f-4-3`
-
-7. __Melody request with multiple conditions__. *E♭ whole note, 3rd octave* followed by *E, whole note, 3rd octave* __and__ *E♭ quarter note, 3rd octave* followed by *F quarter note, 3rd octave*:
-
-`http://localhost:8295/wmss/?request=ListScores&melody=eb-w-3>e-w-3/eb-4-3>f-4-3`
-
-
-
 #### [Score List Report](https://github.com/jimjonesbr/wmss/blob/master/README.md#score-list-report)
 The Score List Document is provided as JSON and is structured as follows:
 
@@ -380,12 +306,12 @@ An example of a Score List Report can be found [here](https://github.com/jimjone
 Retrieves a specific record based on its identifier:
 
   ```http
-  http://localhost:8295/wmss/?request=getscore&identifier=postgres_wwu:1
+  http://localhost:8295/wmss/?request=GetScore&source=neo4j_local&identifier=http://dbpedia.org/resource/Cello_Concerto_(Elgar)
   ```
- The output format can be selected using the parameter __format__:
+ The output format can be selected using the parameter `format`:
 
   ```http
-  http://localhost:8295/wmss/?request=getscore&identifier=postgres_wwu:1&format=mei
+  http://localhost:8295/wmss/?request=GetScore&source=neo4j_local&identifier=http://dbpedia.org/resource/Cello_Concerto_(Elgar)&format=musicxml
   ```
 
   * mei (Music Encoding Initiative files)
@@ -393,18 +319,23 @@ Retrieves a specific record based on its identifier:
 
 
   ### [Logging](https://github.com/jimjonesbr/wmss/blob/master/README.md#logging)
-  tbw.
+  
+  Displays the WMSS log file. The parameter `logPreview` limits the amount of lines displayed. If omitted, the default value in the settings file is assumed. The the last 1000 lines from the log file can be requested as follows:
+
+```http
+http://localhost:8295/wmss/?request=Checklog&logPreview=1000
+```
   
   
 ### [Exceptions](https://github.com/jimjonesbr/wmss/blob/master/README.md#exceptions)
   
-|Code   | Message  | Cause |
+|Code   | Message  | Hint |
 |:-:|:-:|:-:|
-|E0001|No request type provided| |
-|E0002|Invalid request parameter| |
-|E0003|Invalid document format| |
-|E0004|Invalid mode| |
-|E0005|Invalid tonic| |
+|E0001|No request type provided| The request type has to provided in the parameter `request`, containing one of the following request types: `ListScores`, `GetScores`, `DescribeService`, `Checklog`. |
+|E0002|Invalid request parameter| Provide one of the following request types: `ListScores`, `GetScores`, `DescribeService`, `Checklog`. |
+|E0003|Invalid document format| Provide one of the following XML formats: `musicxml`, `mei` |
+|E0004|Invalid mode| The parameter `tonalityMode` accepts only the values `major` and `minor`|
+|E0005|Invalid tonic|  |
 |E0006|Invalid boolean value for 'solo' parameter| |
 |E0007|Invalid protocol version| |
 |E0008|No identifier provided for GetScore request| |
@@ -426,4 +357,3 @@ The Service Exception Report is provided as JSON and is structured as follows:
   "hint": "The provided data source cannot be found. Check the 'Service Description Report' for more information on the available data sources."  
 }
 ```
-
