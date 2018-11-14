@@ -11,7 +11,6 @@ import de.wwu.wmss.core.ErrorCodes;
 import de.wwu.wmss.core.InvalidWMSSRequestException;
 import de.wwu.wmss.core.WMSSRequest;
 import de.wwu.wmss.factory.ServiceMessagingHandler;
-import de.wwu.wmss.settings.SystemSettings;
 import de.wwu.wmss.settings.Util;
 
 public class ServletWMSS extends HttpServlet
@@ -35,20 +34,17 @@ public class ServletWMSS extends HttpServlet
 			response.addHeader("Access-Control-Allow-Methods","GET,POST");
 			response.addHeader("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");
 
-
 			if (wmssRequest.getRequestType().equals("checklog")) {
 
 				response.setContentType("text/plain");
 				response.setStatus(HttpServletResponse.SC_OK);
-				response.getWriter().println(Util.loadFileTail(new File("logs/system.log"), SystemSettings.getLogPreview()));
-
+				response.getWriter().println(Util.loadFileTail(new File("logs/system.log"), wmssRequest.getLogPreview()));
 
 			} else if (wmssRequest.getRequestType().equals("describeservice")) {
 
 				response.setContentType("text/javascript");
 				response.setStatus(HttpServletResponse.SC_OK);
 				response.getWriter().println(ServiceMessagingHandler.getServiceDescription());
-
 
 			} else if (wmssRequest.getRequestType().equals("getscore")) { 
 

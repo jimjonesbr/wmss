@@ -28,6 +28,7 @@ public class WMSSRequest {
 	private String protocolVersion = "";
 	private String source = "";
 	private String score = "";
+	private String key = "";
 	private boolean ignoreChords = true;
 	private boolean ensemble = false;
 	private boolean ignoreOctaves = true;
@@ -36,9 +37,10 @@ public class WMSSRequest {
 	private int pageSize = 0;
 	private int totalSize = 0;
 	private int offset = 0;
+	private int logPreview = SystemSettings.getLogPreview();
 	private String hostname = "";
 	private ArrayList<Note> noteSequence;
-	private ArrayList<String> dateIssuedArray = new ArrayList<String>();
+	private ArrayList<String> dateIssuedArray = new ArrayList<String>(); 
 		
 	public WMSSRequest(HttpServletRequest httpRequest)  throws InvalidWMSSRequestException {
 		
@@ -66,11 +68,11 @@ public class WMSSRequest {
 				
 			} else if (parameter.toLowerCase().equals("person")) {
 				
-				this.person = httpRequest.getParameter(parameter).toLowerCase();
+				this.person = httpRequest.getParameter(parameter);
 				
 			} else if (parameter.toLowerCase().equals("personrole")) {
 				
-				this.personRole = httpRequest.getParameter(parameter).toLowerCase();
+				this.personRole = Util.capitalizeFirstLetter(httpRequest.getParameter(parameter));
 
 			} else if (parameter.toLowerCase().equals("performancemedium")) {
 				
@@ -86,7 +88,7 @@ public class WMSSRequest {
 
 			} else if (parameter.toLowerCase().equals("tonalitytonic")) {
 				
-				this.tonalityTonic = httpRequest.getParameter(parameter).toLowerCase();
+				this.tonalityTonic = httpRequest.getParameter(parameter);
 
 			} else if (parameter.toLowerCase().equals("tonalitymode")) {
 				
@@ -111,6 +113,9 @@ public class WMSSRequest {
 				try {
 					this.noteSequence = Util.createNoteSequence(this.melody);
 				} catch (InvalidMelodyException e) {
+					e.printStackTrace();
+					throw new InvalidWMSSRequestException(e.getMessage(),e.getCode(), e.getHint());
+				} catch (InvalidKeyException e) {
 					e.printStackTrace();
 					throw new InvalidWMSSRequestException(e.getMessage(),e.getCode(), e.getHint());
 				}
@@ -166,8 +171,24 @@ public class WMSSRequest {
 			} else if (parameter.toLowerCase().equals("melodyencoding")) {
 				
 				this.melodyEncoding =httpRequest.getParameter(parameter);
+				
+			} else if (parameter.toLowerCase().equals("logpreview")) {
+				
+				this.logPreview = Integer.parseInt(httpRequest.getParameter(parameter));
+				
+			} else if (parameter.toLowerCase().equals("key")) {
+				
+				this.key = httpRequest.getParameter(parameter);
+				
+				try {
+					this.key = Util.formatPEAkey(this.key);
+				} catch (InvalidKeyException e) {
+					e.printStackTrace();
+					throw new InvalidWMSSRequestException(e.getMessage(),e.getCode(), e.getHint());
+				}
+				
 			}
-
+ 
 		}
 		
 		if(pageSize==0) {
@@ -175,7 +196,7 @@ public class WMSSRequest {
 		}
 		
 		if(this.melodyEncoding.equals("") || this.melodyEncoding==null) {
-			this.melodyEncoding = SystemSettings.getDefaultMelodyEncoding(); //TODO create 'default melody format' at the settings file.
+			this.melodyEncoding = SystemSettings.getDefaultMelodyEncoding(); 
 		}
 		
 		this.hostname = httpRequest.getServerName();
@@ -197,34 +218,34 @@ public class WMSSRequest {
 		if (!this.tonalityMode.equals("minor") && !this.tonalityMode.equals("major") && !this.tonalityMode.equals("") ){
 			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_TONALITY_MODE_DESCRIPTION+" ["+this.tonalityMode+"]",ErrorCodes.INVALID_TONALITY_MODE_DESCRIPTION,ErrorCodes.INVALID_TONALITY_MODE_HINT);
 		}
-		if (!this.tonalityTonic.equals("a") && 
-				!this.tonalityTonic.equals("aflat") && 
-				!this.tonalityTonic.equals("asharp") && 
-				!this.tonalityTonic.equals("b") &&
-				!this.tonalityTonic.equals("bflat") &&
-				!this.tonalityTonic.equals("bsharp") &&
-				!this.tonalityTonic.equals("c") &&
-				!this.tonalityTonic.equals("cflat") &&
-				!this.tonalityTonic.equals("csharp") &&
-				!this.tonalityTonic.equals("d") &&
-				!this.tonalityTonic.equals("dflat") &&
-				!this.tonalityTonic.equals("dsharp") &&
-				!this.tonalityTonic.equals("e") &&
-				!this.tonalityTonic.equals("eflat") &&
-				!this.tonalityTonic.equals("esharp") &&
-				!this.tonalityTonic.equals("f") &&
-				!this.tonalityTonic.equals("fflat") &&
-				!this.tonalityTonic.equals("fsharp") &&
-				!this.tonalityTonic.equals("g") &&
-				!this.tonalityTonic.equals("gflat") &&
-				!this.tonalityTonic.equals("gsharp") &&
+		if (!this.tonalityTonic.equals("A") && 
+				!this.tonalityTonic.equals("bA") && 
+				!this.tonalityTonic.equals("xA") && 
+				!this.tonalityTonic.equals("B") &&
+				!this.tonalityTonic.equals("bB") &&
+				!this.tonalityTonic.equals("xB") &&
+				!this.tonalityTonic.equals("C") &&
+				!this.tonalityTonic.equals("bC") &&
+				!this.tonalityTonic.equals("xC") &&
+				!this.tonalityTonic.equals("D") &&
+				!this.tonalityTonic.equals("bD") &&
+				!this.tonalityTonic.equals("xD") &&
+				!this.tonalityTonic.equals("E") &&
+				!this.tonalityTonic.equals("bE") &&
+				!this.tonalityTonic.equals("xE") &&
+				!this.tonalityTonic.equals("F") &&
+				!this.tonalityTonic.equals("bF") &&
+				!this.tonalityTonic.equals("xF") &&
+				!this.tonalityTonic.equals("G") &&
+				!this.tonalityTonic.equals("bG") &&
+				!this.tonalityTonic.equals("xG") &&
 				!this.tonalityTonic.equals("")){
 			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_TONALITY_TONIC_DESCRIPTION+" ["+this.tonalityTonic+"]",ErrorCodes.INVALID_TONALITY_TONIC_CODE,ErrorCodes.INVALID_TONALITY_TONIC_HINT);
 		}
 		if(!this.melodyEncoding.equals("pea")) {
 			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_MELODY_ENCODING_DESCRIPTION+" ["+this.melodyEncoding+"]",ErrorCodes.INVALID_MELODY_ENCODING_CODE,ErrorCodes.INVALID_MELODY_ENCODING_HINT);
 		}
-		if(!isDatasourceValid(this) && !this.requestType.equals("describeservice")) {
+		if(!isDatasourceValid(this) && !this.requestType.equals("describeservice") && !this.requestType.equals("checklog")) {
 			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_DATASOURCE_DESCRIPTION+" ["+ this.source + "]",ErrorCodes.INVALID_DATASOURCE_CODE,ErrorCodes.INVALID_DATASOURCE_HINT);
 		}
 		if((this.requestType.equals("getscore") || this.requestType.equals("deletescore") ) && this.identifier.equals("")) {
@@ -299,7 +320,6 @@ public class WMSSRequest {
 	public String getRequestType() {
 		return requestType;
 	}
-
 
 	public String getFormat() {
 		return format;
@@ -424,7 +444,14 @@ public class WMSSRequest {
 	public ArrayList<String> getDateIssuedArray() {
 		return dateIssuedArray;
 	}
-	
-	
-	
+
+	public int getLogPreview() {
+		return logPreview;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+		
 }

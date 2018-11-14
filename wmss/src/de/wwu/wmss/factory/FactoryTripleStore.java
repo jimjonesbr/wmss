@@ -61,7 +61,7 @@ public class FactoryTripleStore {
 		String format = "";
 		//DataSource ds = Util.getDataSource(parameters);
 		DataSource ds = null;
-		String scoreId = Util.getScoreRequestData(parameters).getScoreId();
+		//String scoreId = Util.getScoreRequestData(parameters).getScoreId();
 				
 		try {
 
@@ -69,11 +69,11 @@ public class FactoryTripleStore {
 
 			if(format.equals("") || format.equals("musicxml")){
 
-				query = "SELECT ?document WHERE { <" + scoreId + "> <http://linkeddata.uni-muenster.de/ontology/musicscore#asMusicXML> ?document}";
+				//query = "SELECT ?document WHERE { <" + scoreId + "> <http://linkeddata.uni-muenster.de/ontology/musicscore#asMusicXML> ?document}";
 
 			} else if (format.equals("mei")){
 
-				query = "SELECT ?document WHERE { <" + scoreId + "> <http://linkeddata.uni-muenster.de/ontology/musicscore#asMEI> ?document}";
+				//query = "SELECT ?document WHERE { <" + scoreId + "> <http://linkeddata.uni-muenster.de/ontology/musicscore#asMEI> ?document}";
 
 			}
 

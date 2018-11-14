@@ -15,14 +15,14 @@ public class ErrorCodes {
 	public static String INVALID_DOCUMENT_FORMAT_CODE = "E0003";
 	public static String INVALID_DOCUMENT_FORMAT_DESCRIPTION  = "Invalid document format";
 	public static String INVALID_DOCUMENT_FORMAT_HINT = "Provide one of the following XML formats: musicxml, mei";
-	
+
 	public static String INVALID_TONALITY_MODE_CODE = "E0004";
 	public static String INVALID_TONALITY_MODE_DESCRIPTION  = "Invalid tonality";
 	public static String INVALID_TONALITY_MODE_HINT = "Tonalities can be only either 'minor' or 'major'";
 
 	public static String INVALID_TONALITY_TONIC_CODE = "E0005";
 	public static String INVALID_TONALITY_TONIC_DESCRIPTION  = "Invalid tonic";
-	public static String INVALID_TONALITY_TONIC_HINT = "Provide one of the following tonics: 'a','aflat','asharp','b','bflat','bsharp','c','cflat','csharp','d','dflat','dsharp','e','eflat','esharp','f','fflat','fsharp','g','gflat','gsharp'.";
+	public static String INVALID_TONALITY_TONIC_HINT = "Provide one of the following tonics: 'A','bA','xA','B','bB','xB','C','bC','xC','D','bD','xD','E','bE','xE','F','bF','xF','G','bG','xG'.";
 
 	public static String INVALID_DATASOURCE_CODE = "E0006";
 	public static String INVALID_DATASOURCE_DESCRIPTION  = "Invalid data source";
@@ -67,8 +67,15 @@ public class ErrorCodes {
 	public static String INVALID_RDFFORMAT_CODE = "E0016";
 	public static String INVALID_RDFFORMAT_DESCRIPTION  = "Invalid RDF format";
 	public static String INVALID_RDFFORMAT_HINT = "Please provide one for the following formats in the 'format' parameter: JSON-LD, Turtle, RDF/XML and N-Triples";
+	
+	public static String INVALID_KEY_CODE = "E0017";
+	public static String INVALID_KEY_DESCRIPTION  = "Invalid key";
+	public static String INVALID_KEY_HINT = 
+			"Provide one of the following keys: '$' (C major/A minor), '$xF' (G major/E minor), '$xFC' (D major/B minor), '$xFCG' (A major/F# minor), '$xFCGD' (E major/C# minor), '$xFCGDA' (B major/G# minor), '$xFCGDAE' (F# major/D# minor), '$xFCGDAEB' (C# major/A# minor),"
+			+ "'$bB' (F major/D minor), '$bBE' (Bb major/G minor), '$bBEA' (Eb major/C minor), '$bBEAD' (Ab major/F minor), '$bBEADG' (Db major/Bb minor), '$bBEADGC' (Gb major/Eb minor), '$bBEADGCF' (Cb major/Ab minor) ";
 
-	//"Request Conflict: The searched melody contains chords but the parameter 'ignoreChords' ist set to 'true'. The 'ignoreChords' parameter will be ignored."
+
+	//Request Conflict: The searched melody contains chords but the parameter 'ignoreChords' ist set to 'true'. The 'ignoreChords' parameter will be ignored."
 	
 	
 	public static String WARNING_CONFLICTING_CHORDS_PARAMETER_CODE = "W0001";

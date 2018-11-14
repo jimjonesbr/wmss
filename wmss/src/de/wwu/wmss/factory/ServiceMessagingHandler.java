@@ -66,7 +66,6 @@ public class ServiceMessagingHandler {
 		return StringEscapeUtils.unescapeJson(gson.toJson(deletedScore));
 	
 	}
-
 	
 	private static DataSource loadDataSource(WMSSRequest request) {
 	
