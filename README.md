@@ -132,14 +132,17 @@ An example of a Service Description Report can be found [here](https://github.co
  ```
 
  #### Collections
+**Parameter**: `collection`
 
 To facilitate the management of large repositories, WMSS offers the possibility to add music scores to specific collections. The collection uri, required for this parameter, is delivered together with the music score in the Score List and Service Description Reports.
 
- ```http
+```http
  http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&collection=https://url.collection.de
 ```
 
 #### Persons
+
+**Parameters**: `person` / `personRole`
 
 Selects all music scores containing specific persons and optionally with their respective roles. For instance, a request to list all scores from the person "Elgar" as a "Composer" is enconded like this:
 
@@ -162,6 +165,8 @@ The __personRole__ parameter may contain the following values:
 
 #### Performance Medium (Instrument)
 
+**Parameters**: `performanceMedium` / `solo`
+
 Selects all music scores containing specific performance mediums. The performance mediums are structure follows the principles adopted by [MusicXML 3.0 Standard Sounds](https://github.com/w3c/musicxml/blob/v3.1/schema/sounds.xml). For instance, requesting a list of all scores containing cello voices can be enconded like this:
 
  ```http
@@ -177,6 +182,8 @@ To constraint the search for the given performance medium to only solo mediums, 
 A complete list of performance mediums containing approx. 900 items can be found [here](https://github.com/jimjonesbr/wmss/tree/master/wmss/data/system/mediums.csv).
 
 ##### Performance Medium Type
+
+**Parameter**: `performanceMediumType`
 
 It is also possible to select music scores based on performance medium types, e.g. Strings, Keyboard. The example bellow selects all records that contain movements that are played with bowed string instruments:
  
@@ -198,6 +205,8 @@ The performanceMediumType paramater is also based on the [MusicXML 3.0 Standard 
 
 #### Tempo
 
+**Parameters**: `tempoBeatUnit` / `tempoBeatsPerMinute`
+
 Selects records containing movements played in a specific tempo, e.g. *adagio*, *largo*, *andante*, etc. Tempo markings may vary depending on the country of orign and century of composition, therefore tempo searches are encoded in two abstract parameters, namely `tempoBeatsPerMinute` and `tempoBeatUnit`. Beat units indicates the graphical note type to use in a metronome mark, which follows the principles adpoted by the [MusicXML Beat-Unit Element](https://usermanuals.musicxml.com/MusicXML/Content/EL-MusicXML-beat-unit.htm). The beats per unit parameter can be provided as a single integer value or an interval thereof. For instance, a *quarter* beat unit with an interval of 100-125 beats per minute, can be encoded as follows:
 
  ```http
@@ -205,6 +214,8 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&tempoBeatUnit=
 ```
  
 #### Date Issued
+
+**Parameter**: `dateIssued`
 
 Selects records composed at a given date or time interval, e.g. 1910-1920:
 
@@ -216,7 +227,8 @@ Dates and intervals must be encoded as `yyyyMMdd`, `yyyyMM` or `yyyy`.
 
 
 #### Format
- 
+**Parameter**: `format`
+
 Selects records available in a specific format. The supported formats are:
 
   * `mei` (Music Encoding Initiative files)
@@ -266,29 +278,31 @@ If you're only looking for a sequence of rhythmical elements (useful for percuss
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,8AB'CDxDE&ignorePitch=true
 ```
 
-##### Embedded Melodies (Note sequences inside chords) 
+##### Embedded Sequences (Note sequences inside chords) 
 Parameter: `ignoreChords`
 
-The melody search enables also to look for sequences, whose notes are inside of chords (played in the same voice). To achieve this, set the parameter `ignoreChords` to `false` (`true` by default). 
+It is also possible to look for sequences whose notes are inside of chords. To achieve this, set the parameter `ignoreChords` to `false` (`true` by default). 
 
 Consider the following chords ..
 
 ![three_chords](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/3_chords.jpg)
 
-.. and the following search criteria `,,2GB8G`:
+.. and the following search criteria `,,2GB8G`, which are notes embedded in the chords above:
 
 ![embedded_sequence](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/embedded_sequence.jpg)
 
-Note that the sequence in these search criteria is embedded in the chords. To be able to find such an *embedded sequence*, set the parameter `ignoreChords` to `false`:
+To be able to find such an *embedded sequence*, set the parameter `ignoreChords` to `false`:
 
 ```http
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,,2GB8G&ignoreChords=false
 ```
+**Note**: This feature assumes that the elements of such an embedded sequence are notes of the same voice. 
 
-##### Chords
+##### Chords search
+
 Parameter: `melody`
 
-Melodies containing chords can be searched by means of using the [PEA chords notation](https://www.iaml.info/plaine-easie-code#toc-19), which states that every note of a chord are separated by `^`, starting by the upper note; then follow the lower ones.
+Melodies containing chords can be searched by means of using the [PEA chords notation](https://www.iaml.info/plaine-easie-code#toc-19). The PEA notation states that every note of a chord is to be separated by `^`, starting by the upper note; then followed by the lower ones.
 
 Searching for the following chord `,,2E^B^,G^'E` .. 
 
