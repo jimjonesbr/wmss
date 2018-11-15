@@ -266,6 +266,40 @@ If you're only looking for a sequence of rhythmical elements (useful for percuss
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,8AB'CDxDE&ignorePitch=true
 ```
 
+##### Embedded Melodies (Note sequences inside chords) 
+Parameter: `ignoreChords`
+
+The melody search enables also to look for sequences, whose notes are inside of chords (played in the same voice). To achieve this, set the parameter `ignoreChords` to `false` (`true` by default). 
+
+Consider the following chords ..
+
+![three_chords](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/3_chords.jpg)
+
+.. and the following search criteria `,,2GB8G`:
+
+![embedded_sequence](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/embedded_sequence.jpg)
+
+Note that the sequence in these search criteria is embedded in the chords. To be able to find such an *embedded sequence*, set the parameter `ignoreChords` to `false`:
+
+```http
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,,2GB8G&ignoreChords=false
+```
+
+##### Chords
+Parameter: `melody`
+
+Melodies containing chords can be searched by means of using the [PEA chords notation](https://www.iaml.info/plaine-easie-code#toc-19), which states that every note of a chord are separated by `^`, starting by the upper note; then follow the lower ones.
+
+Searching for the following chord `,,2E^B^,G^'E` .. 
+
+![embedded_sequence](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/1_chord.jpg)
+
+.. can be done like this:
+
+```http
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,,2E^B^,G^'E
+```
+
 ##### Key signatures
 **Parameters**: `melody` / `key`
 
