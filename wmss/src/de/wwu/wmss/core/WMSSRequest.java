@@ -144,7 +144,7 @@ public class WMSSRequest {
 				
 				this.ensemble = Boolean.parseBoolean(httpRequest.getParameter(parameter));
 				
-			} else if (parameter.toLowerCase().equals("ignoreoctaves")) {
+			} else if (parameter.toLowerCase().equals("ignoreoctave")) {
 				
 				this.ignoreOctaves = Boolean.parseBoolean(httpRequest.getParameter(parameter));
 				
