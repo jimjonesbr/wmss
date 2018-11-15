@@ -53,7 +53,8 @@ public class Neo4jConnector {
 		{
 			result = session.run(cypher);
 		}
-
+		
+		logger.debug(cypher);
 		logger.debug("Cypher query time ["+ds.getHost()+"]: " + Util.timeElapsed(start, new Date()));
 
 		ds.getNeo4jConnectionDriver().session().close();
