@@ -5,8 +5,6 @@ The Web Music Score Service (WMSS) provides an interface allowing requests for m
 ## Index
 
 - [WMSS Data Model](#wmss-data-model)
-	- [Relational Databases](#relational-databases)
-  - [RDF Model](#rdf-model)
 - [Configuring WMSS](#configuring-wmss)
 - [Requests](#requests)
   - [DescribeService](#describeservice)
@@ -232,23 +230,22 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&format=musicxm
 **Parameter**: `melody`
 
 
-Selects records containing a specific a sequence of notes or phrases (not limited to *incipt*) throughout the database, encoded using the [Plaine & Easie musical notation](https://www.iaml.info/plaine-easie-code#toc-4) (PEA).  For instance, the value `'8ABCDxDE`, which is going to be used throughout this section, corresponds to: 
+Selects records containing a specific a sequence of notes or phrases (not limited to *incipt*) throughout the database, encoded using the [Plaine & Easie musical notation](https://www.iaml.info/plaine-easie-code#toc-4) (PEA).  For instance, the value `,8AB'CDxDE`, which is going to be used throughout this section, corresponds to: 
 
 ![melody_sample](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/melody_sample.jpg)
 
-Notes: `A`, `B`, `C`, `D`, `D#` and `E` 
+Notes: `A` 3rd octave, `B` 3rd octave, `C` 4th octave, `D` 4th octave, `D#` 4th octave and `E` 4th octave. 
 
 Duration:  `Eighth` 
 
-Octave: `4`
 
 ##### Octaves
 **Parameter**: `ignoreOctave`
 
-To search for melodies encoded in specific octaves, set the parameter `ignoreOctave` to `false` (`true` by default). Note that in the PEA string the 4th octave is assumed, if no octave is explicitly defined. The following example searches for scores matching the set of pitches `A`, `B`, `C`, `D`, `D#` and `E`, all with the duration `eighth`, in the octave `4` (as described above):
+To search for melodies encoded in specific octaves, set the parameter `ignoreOctave` to `false` (`true` by default). Note that in the PEA string the 4th octave is assumed, if no octave is explicitly defined. The following example searches for scores matching the sequence `A` 3rd octave, `B` 3rd octave, `C` 4th octave, `D` 4th octave, `D#` 4th octave and `E` 4th octave, all with the duration `eighth` (as described above):
 
 ```http
-http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody='8ABCDxDE&ignoreOctave=false
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,8AB'CDxDE&ignoreOctave=false
 ```
 
 ##### Durations 
@@ -257,7 +254,7 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody='8ABCDx
 It is possible to search only for a sequence of pitches, ignoring their durations. It can be achieved by means of setting the parameter `ignoreDuration` to `true` (`false` by default). The following example searches for all scores containing the pitch sequence `A`, `B`, `C`, `D`, `D#` and `E`, ignoring their durations:
 
 ```http
-http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody='8ABCDxDE&ignoreDuration=true
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,8AB'CDxDE&ignoreDuration=true
 ```
 
 ##### Pitches 
@@ -266,7 +263,7 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody='8ABCDx
 If you're only looking for a sequence of rhythmical elements (useful for percussionists), just set the parameter `ignorePitch` to `true` (`false` by default). The following example searches for all scores containing a sequence of 6 `eighth` notes, ignoring pitches:
 
 ```http
-http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody='8ABCDxDE&ignorePitch=true
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,8AB'CDxDE&ignorePitch=true
 ```
 
 ##### Key signatures
