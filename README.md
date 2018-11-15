@@ -302,7 +302,7 @@ See also: *UNIMARC field 036 $n — MARC21 field 789 $f — MAB field 681 $k (RI
 To search for melodies encoded with an specific key signature, place the key before the melody (preceded by space). For instance, searching the previously mentioned melody with the signature G Major / E minor can be done as follows:
 
 ```http
-http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=$xF 8ABCDxDE
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=$xF ,8AB'CDxDE
 ```
 
 Alternatively, key signatures alone can be searched using the parameter `key`. The following request seraches for all music scores containing measures written in `C♯ minor`:
