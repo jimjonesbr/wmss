@@ -229,8 +229,10 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&format=musicxm
 ```
 
 #### Melody
+**Parameter**: `melody`
 
-Selects records containing a specific melody (a sequence of notes or phrases) encoded using the [Plaine & Easie musical notation](https://www.iaml.info/plaine-easie-code#toc-4) (PEA). For instance, the value `8ABCDxDE`, which corresponds to the note sequence ...
+
+Selects records containing a specific a sequence of notes or phrases (not limited to *incipt*) throughout the database, encoded using the [Plaine & Easie musical notation](https://www.iaml.info/plaine-easie-code#toc-4) (PEA).  For instance, the value `'8ABCDxDE`, which is going to be used throughout this section, corresponds to: 
 
 ![melody_sample](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/melody_sample.jpg)
 
@@ -238,21 +240,37 @@ Notes: `A`, `B`, `C`, `D`, `D#` and `E`
 
 Duration:  `Eighth` 
 
-... can be searched as follows:
+Octave: `4`
 
-```
-http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=8ABCDxDE
-```
+##### Octaves
+**Parameter**: `ignoreOctave`
 
-To search for melodies encoded in specific octaves, set the parameter `ignoreOctaves` to `false` (set to `true` by default). The following fairly complex example deals with a melody with 36 notes in containing durations and octaves:
-
-![elgar_theme](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/elgar_theme.jpg)
+To search for melodies encoded in specific octaves, set the parameter `ignoreOctave` to `false` (`true` by default). Note that in the PEA string the 4th octave is assumed, if no octave is explicitly defined. The following example searches for scores matching the set of pitches `A`, `B`, `C`, `D`, `D#` and `E`, all with the duration `eighth`, in the octave `4` (as described above):
 
 ```http
-http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody='4xF8G4xF8A4B8A4G8E4D8E4C,8B4A8B4A'8C4D8C,4B8G4xF8G4E8D4xC8D4xC8E4xF8E4D,,8B4xA8B4G8xF2B&ignoreOctaves=false
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody='8ABCDxDE&ignoreOctave=false
 ```
 
-##### Searching specific key signatures
+##### Durations 
+**Parameter**: `ignoreDuration`
+
+It is possible to search only for a sequence of pitches, ignoring their durations. It can be achieved by means of setting the parameter `ignoreDuration` to `true` (`false` by default). The following example searches for all scores containing the pitch sequence `A`, `B`, `C`, `D`, `D#` and `E`, ignoring their durations:
+
+```http
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody='8ABCDxDE&ignoreDuration=true
+```
+
+##### Pitches 
+**Parameter**: `ignorePitch`
+
+If you're only looking for a sequence of rhythmical elements (useful for percussionists), just set the parameter `ignorePitch` to `true` (`false` by default). The following example searches for all scores containing a sequence of 6 `eighth` notes, ignoring pitches:
+
+```http
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody='8ABCDxDE&ignorePitch=true
+```
+
+##### Key signatures
+**Parameters**: `melody` / `key`
 
 Keys signatures are to be encoded according to the [PEA key signature notation](https://www.iaml.info/plaine-easie-code#toc-2). Accidentals are preceded by the character `$`; if there are no accidentals the `$` is omitted. The symbol `x` indicates sharpened keys, `b` flattened keys; the symbol is followed by the capital letters indicating the altered notes.
 
@@ -282,7 +300,7 @@ Flattened keys have to be encoded in the following order: `B♭ E♭ A♭ D♭ G
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/G-flat-major_e-flat-minor.svg/100px-G-flat-major_e-flat-minor.svg.png" width="80">|G♭ major|E♭ minor|`$bBEADGC`|
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/C-flat-major_a-flat-minor.svg/100px-C-flat-major_a-flat-minor.svg.png" width="80">|C♭ major|A♭ minor|`$bBEADGCF`|
 
-Equivalents: *UNIMARC field 036 $n — MARC21 field 789 $f — MAB field 681 $k (RISM field 826 — first part)*
+See also: *UNIMARC field 036 $n — MARC21 field 789 $f — MAB field 681 $k (RISM field 826 — first part)*
 
 To search for melodies encoded with an specific key signature, place the key before the melody (preceded by space). For instance, searching the previously mentioned melody with the signature G Major / E minor can be done as follows:
 
@@ -295,6 +313,20 @@ Alternatively, key signatures alone can be searched using the parameter `key`. T
 ```http
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&key=$xFCGDA
 ```
+
+
+##### ListScore Request Examples 
+
+The following example deals with a melody of 36 notes in containing several durations and octaves:
+
+![elgar_theme](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/elgar_theme.jpg)
+
+```http
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody='4xF8G4xF8A4B8A4G8E4D8E4C,8B4A8B4A'8C4D8C,4B8G4xF8G4E8D4xC8D4xC8E4xF8E4D,,8B4xA8B4G8xF2B&ignoreOctave=false
+```
+
+
+
 #### [Score List Report](https://github.com/jimjonesbr/wmss/blob/master/README.md#score-list-report)
 The Score List Document is provided as JSON and is structured as follows:
 
