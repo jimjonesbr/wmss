@@ -181,7 +181,7 @@ To constraint the search for the given performance medium to only solo mediums, 
 
 A complete list of performance mediums containing approx. 900 items can be found [here](https://github.com/jimjonesbr/wmss/tree/master/wmss/data/system/mediums.csv).
 
-##### Performance Medium Type
+#### Performance Medium Type
 
 **Parameter**: `performanceMediumType`
 
@@ -251,7 +251,7 @@ Notes: `A` 3rd octave, `B` 3rd octave, `C` 4th octave, `D` 4th octave, `D#` 4th 
 Duration:  `Eighth` 
 
 
-##### Octaves
+#### Octaves
 **Parameter**: `ignoreOctave`
 
 To search for melodies encoded in specific octaves, set the parameter `ignoreOctave` to `false` (`true` by default). Note that in the PEA string the 4th octave is assumed, if no octave is explicitly defined. The following example searches for scores matching the sequence `A` 3rd octave, `B` 3rd octave, `C` 4th octave, `D` 4th octave, `D#` 4th octave and `E` 4th octave, all with the duration `eighth` (as described above):
@@ -260,7 +260,7 @@ To search for melodies encoded in specific octaves, set the parameter `ignoreOct
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,8AB'CDxDE&ignoreOctave=false
 ```
 
-##### Durations 
+#### Durations 
 **Parameter**: `ignoreDuration`
 
 It is possible to search only for a sequence of pitches, ignoring their durations. It can be achieved by means of setting the parameter `ignoreDuration` to `true` (`false` by default). The following example searches for all scores containing the pitch sequence `A`, `B`, `C`, `D`, `D#` and `E`, ignoring their durations:
@@ -269,7 +269,7 @@ It is possible to search only for a sequence of pitches, ignoring their duration
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,8AB'CDxDE&ignoreDuration=true
 ```
 
-##### Pitches 
+#### Pitches 
 **Parameter**: `ignorePitch`
 
 If you're only looking for a sequence of rhythmical elements (useful for percussionists), just set the parameter `ignorePitch` to `true` (`false` by default). The following example searches for all scores containing a sequence of 6 `eighth` notes, ignoring pitches:
@@ -278,7 +278,7 @@ If you're only looking for a sequence of rhythmical elements (useful for percuss
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,8AB'CDxDE&ignorePitch=true
 ```
 
-##### Embedded Sequences (Note sequences inside chords) 
+#### Embedded Sequences (Note sequences inside chords) 
 Parameter: `ignoreChords`
 
 It is also possible to look for sequences whose notes are inside of chords. To achieve this, set the parameter `ignoreChords` to `false` (`true` by default). 
@@ -298,7 +298,7 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,,2GB8G
 ```
 **Note**: This feature assumes that the elements of such an embedded sequence are notes of the same voice. 
 
-##### Chords search
+#### Chords search
 
 Parameter: `melody`
 
@@ -314,7 +314,7 @@ Searching for the following chord `,,2E^B^,G^'E` ..
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,,2E^B^,G^'E
 ```
 
-##### Key signatures
+#### Key signatures
 **Parameters**: `melody` / `key`
 
 Keys signatures are to be encoded according to the [PEA key signature notation](https://www.iaml.info/plaine-easie-code#toc-2). Accidentals are preceded by the character `$`; if there are no accidentals the `$` is omitted. The symbol `x` indicates sharpened keys, `b` flattened keys; the symbol is followed by the capital letters indicating the altered notes.
