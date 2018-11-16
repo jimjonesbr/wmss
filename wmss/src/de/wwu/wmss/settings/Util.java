@@ -11,6 +11,7 @@ import de.wwu.wmss.core.DataSource;
 import de.wwu.wmss.core.ErrorCodes;
 import de.wwu.wmss.core.InvalidKeyException;
 import de.wwu.wmss.core.InvalidMelodyException;
+import de.wwu.wmss.core.InvalidTimeSignatureException;
 import de.wwu.wmss.core.InvalidWMSSRequestException;
 import de.wwu.wmss.core.Note;
 
@@ -125,10 +126,12 @@ public class Util {
 		String currentOctave = "4";
 		String currentDuration = "";
 		String currentKey = "";
-		
+		String currentTimeSignature = "";
 
 		boolean chord = false;
 		boolean keySegment = false;
+		boolean timeSegment = false;
+		
 		ArrayList<Note> sequence = new ArrayList<Note>();
 
 		for (int i = 0; i < pea.length(); i++) {
@@ -137,13 +140,21 @@ public class Util {
 
 			if(element.equals("$")) {
 				keySegment = true;
-			} else if(element.equals(" ") || element.equals("@")) {
+				timeSegment = false;
+			} else if(element.equals("@")) {
+				timeSegment = true;
 				keySegment = false;
-			}
+			} else if(element.equals(" ")) {
+				keySegment = false;
+				timeSegment = false;
+			} 
 
-
-			if(keySegment) {
-
+			if(timeSegment) {
+				
+				currentTimeSignature = currentTimeSignature + element;
+				
+			} else if(keySegment) {
+				
 				currentKey = currentKey + element;
 				
 			} else { 
@@ -176,9 +187,6 @@ public class Util {
 					} else if(currentOctave.contains(",")) {
 						currentOctave = String.valueOf(5-currentOctave.length());
 					} 
-//					else if (currentOctave.equals("")) {
-//						currentOctave = "4";
-//					}
 
 					if(duration.equals("")) {
 						if(!currentDuration.equals("")) {
@@ -199,13 +207,17 @@ public class Util {
 					note.setOctave(currentOctave);
 					note.setChord(chord);
 					
+					if(!currentTimeSignature.equals("")) {
+						note.setTime(formatPEATimeSignature(currentTimeSignature));
+						currentTimeSignature = "";
+					}
+					
 					if(!currentKey.equals("")) {
-						note.setKey(formatPEAkey(currentKey));
+						note.setKey(formatPEAkey(currentKey));		
+						currentKey = "";
 					} else {
 						note.setKey("");
 					}
-
-					//System.out.println("Pitch: " + note.getPitch() + "\n" + "Duration: " + note.getDuration() +"\n" + "Octave: " + note.getOctave() +"\n" + "Accidental: " + note.getAccidental() +"\n" + "Chord: " + note.isChord() + "\n");
 
 					if(!note.getAccidental().equals("x")&&!note.getAccidental().equals("xx")&&
 							!note.getAccidental().equals("b")&&!note.getAccidental().equals("bb")&&
@@ -214,8 +226,6 @@ public class Util {
 					}
 
 					sequence.add(note);
-
-					//currentOctave = "";
 					duration = "";
 					accidental = "";
 
@@ -233,6 +243,23 @@ public class Util {
 		return sequence;
 	}
 
+	
+	private static String formatPEATimeSignature(String time) throws InvalidTimeSignatureException {
+	
+		if(!time.matches("^[0-9/c@]+$")) {
+			throw new InvalidMelodyException(ErrorCodes.INVALID_TIMESIGNATURE_DESCRIPTION +" ["+time+"]",ErrorCodes.INVALID_TIMESIGNATURE_CODE,ErrorCodes.INVALID_TIMESIGNATURE_HINT);	
+		}
+		
+		time = time.replace("@", "");
+		
+		if(time.equals("c")) {
+			time = "4/4";
+		}
+		
+		
+		return time;
+	}
+	
 	public static String formatPEAkey(String key) throws InvalidKeyException {
 
 		String result = "";

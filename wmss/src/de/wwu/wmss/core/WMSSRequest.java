@@ -17,10 +17,13 @@ public class WMSSRequest {
 	private String performanceMedium = "";
 	private String performanceMediumType = "";
 	private boolean solo = false;
+
 	private String tonalityTonic = "";
 	private String tonalityMode = "";
+
 	private String tempoBeatUnit = "";
 	private String tempoBeatsPerMinute = "";
+	private String timeSignature = "";
 	private String dateIssued = "";
 	private String melody = "";
 	private String melodyEncoding = "";
@@ -187,7 +190,11 @@ public class WMSSRequest {
 					throw new InvalidWMSSRequestException(e.getMessage(),e.getCode(), e.getHint());
 				}
 				
-			}
+			} else if (parameter.toLowerCase().equals("time")) {
+				
+				this.timeSignature = httpRequest.getParameter(parameter);
+				
+			} 
  
 		}
 		
@@ -452,6 +459,12 @@ public class WMSSRequest {
 	public String getKey() {
 		return key;
 	}
+
+	public String getTimeSignature() {
+		return timeSignature;
+	}
+	
+	
 
 		
 }

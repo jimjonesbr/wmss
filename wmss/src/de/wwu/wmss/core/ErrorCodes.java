@@ -75,6 +75,10 @@ public class ErrorCodes {
 			+ "'$bB' (F major/D minor), '$bBE' (Bb major/G minor), '$bBEA' (Eb major/C minor), '$bBEAD' (Ab major/F minor), '$bBEADG' (Db major/Bb minor), '$bBEADGC' (Gb major/Eb minor), '$bBEADGCF' (Cb major/Ab minor) ";
 
 
+	public static String INVALID_TIMESIGNATURE_CODE = "E0018";
+	public static String INVALID_TIMESIGNATURE_DESCRIPTION  = "Invalid time signature";
+	public static String INVALID_TIMESIGNATURE_HINT = "Time signatures must be encoded in the following format: beat unit / beats. Examples: @3/4, @4/4, @6/8, @c (meaning common time, therefore interpreted as 4/4) ";
+
 	//Request Conflict: The searched melody contains chords but the parameter 'ignoreChords' ist set to 'true'. The 'ignoreChords' parameter will be ignored."
 	
 	

@@ -359,6 +359,7 @@ public class FactoryNeo4j {
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mso__ScorePart(rdfs__label);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mso__ScorePart(typeLabel);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mso__Measure(key);", Util.getDataSource(importRequest.getSource()));
+		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mso__Measure(beats,beatType);", Util.getDataSource(importRequest.getSource()));
 		
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :d1(size);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :d2(size);", Util.getDataSource(importRequest.getSource()));
@@ -875,9 +876,10 @@ public class FactoryNeo4j {
 			while(i<=noteSequence.size()-1) {
 
 				
-				String measureNode = "";				
+				String measureNode = "(measure:mso__Measure)";				
+				//String currentTimeSignature = "";
 				String currentDurationType = "mso__NoteSet";
-				
+								
 				if(!wmssRequest.isIgnoreDuration()) {
 					currentDurationType = "d"+ noteSequence.get(i).getDuration();					
 				}	
@@ -887,10 +889,14 @@ public class FactoryNeo4j {
 					currentPitchType = noteSequence.get(i).getPitch()+noteSequence.get(i).getAccidental();
 				}
 				
-				if(noteSequence.get(i).getKey().equals("")) {
-					measureNode = "(measure:mso__Measure)";
-				} else {
-					measureNode = "(measure:mso__Measure {key: \""+noteSequence.get(i).getKey()+"\"})"; 
+				if(!noteSequence.get(i).getTime().equals("")) {					
+					String[] time = noteSequence.get(i).getTime().split("/");
+					where = where+ "AND measure"+noteSequence.get(i).getMeasure()+".beatType="+time[1]+"\n" 
+							     + "AND measure"+noteSequence.get(i).getMeasure()+".beats="+time[0]+"\n";					
+				}
+				
+				if(!noteSequence.get(i).getKey().equals("")) {
+					where = where + "AND measure"+noteSequence.get(i).getMeasure()+".key=\""+noteSequence.get(i).getKey()+"\"\n"; 
 				}
 				
 				if(i==0) {

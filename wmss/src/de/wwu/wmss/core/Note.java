@@ -7,8 +7,9 @@ public class Note {
 	private String octave;
 	private String accidental;
 	private boolean isChord;
-	private String measure;
-	private String key;
+	private String measure = "";
+	private String key ="";
+	private String time = "";
 	
 	public Note() {
 		super();
@@ -54,6 +55,12 @@ public class Note {
 	}
 	public void setKey(String key) {
 		this.key = key;
+	}
+	public String getTime() {
+		return time;
+	}
+	public void setTime(String time) {
+		this.time = time;
 	}
 	
 }
