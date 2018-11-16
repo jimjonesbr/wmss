@@ -183,7 +183,7 @@ A complete list of performance mediums containing approx. 900 items can be found
 
 #### Performance Medium Type
 
-**Parameter**: `performanceMediumType`
+Parameter: `performanceMediumType`
 
 It is also possible to select music scores based on performance medium types, e.g. Strings, Keyboard. The example bellow selects all records that contain movements that are played with bowed string instruments:
  
@@ -205,7 +205,7 @@ The performanceMediumType paramater is also based on the [MusicXML 3.0 Standard 
 
 #### Tempo
 
-**Parameters**: `tempoBeatUnit` / `tempoBeatsPerMinute`
+Parameters: `tempoBeatUnit` / `tempoBeatsPerMinute`
 
 Selects records containing movements played in a specific tempo, e.g. *adagio*, *largo*, *andante*, etc. Tempo markings may vary depending on the country of orign and century of composition, therefore tempo searches are encoded in two abstract parameters, namely `tempoBeatsPerMinute` and `tempoBeatUnit`. Beat units indicates the graphical note type to use in a metronome mark, which follows the principles adpoted by the [MusicXML Beat-Unit Element](https://usermanuals.musicxml.com/MusicXML/Content/EL-MusicXML-beat-unit.htm). The beats per unit parameter can be provided as a single integer value or an interval thereof. For instance, a *quarter* beat unit with an interval of 100-125 beats per minute, can be encoded as follows:
 
@@ -215,7 +215,7 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&tempoBeatUnit=
  
 #### Date Issued
 
-**Parameter**: `dateIssued`
+Parameter: `dateIssued`
 
 Selects records composed at a given date or time interval, e.g. 1910-1920:
 
@@ -227,7 +227,7 @@ Dates and intervals must be encoded as `yyyyMMdd`, `yyyyMM` or `yyyy`.
 
 
 #### Format
-**Parameter**: `format`
+Parameter: `format`
 
 Selects records available in a specific format. The supported formats are:
 
@@ -239,7 +239,7 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&format=musicxm
 ```
 
 #### Melody
-**Parameter**: `melody`
+Parameter: `melody`
 
 
 Selects records containing a specific a sequence of notes or phrases (not limited to *incipt*) throughout the database, encoded using the [Plaine & Easie musical notation](https://www.iaml.info/plaine-easie-code#toc-4) (PEA).  For instance, the value `,8AB'CDxDE`, which is going to be used throughout this section, corresponds to: 
@@ -252,7 +252,7 @@ Duration:  `Eighth`
 
 
 #### Octaves
-**Parameter**: `ignoreOctave`
+Parameter: `ignoreOctave`
 
 To search for melodies encoded in specific octaves, set the parameter `ignoreOctave` to `false` (`true` by default). Note that in the PEA string the 4th octave is assumed, if no octave is explicitly defined. The following example searches for scores matching the sequence `A` 3rd octave, `B` 3rd octave, `C` 4th octave, `D` 4th octave, `D#` 4th octave and `E` 4th octave, all with the duration `eighth` (as described above):
 
@@ -261,7 +261,7 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,8AB'CD
 ```
 
 #### Durations 
-**Parameter**: `ignoreDuration`
+Parameter: `ignoreDuration`
 
 It is possible to search only for a sequence of pitches, ignoring their durations. It can be achieved by means of setting the parameter `ignoreDuration` to `true` (`false` by default). The following example searches for all scores containing the pitch sequence `A`, `B`, `C`, `D`, `D#` and `E`, ignoring their durations:
 
@@ -270,7 +270,7 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,8AB'CD
 ```
 
 #### Pitches 
-**Parameter**: `ignorePitch`
+Parameter: `ignorePitch`
 
 If you're only looking for a sequence of rhythmical elements (useful for percussionists), just set the parameter `ignorePitch` to `true` (`false` by default). The following example searches for all scores containing a sequence of 6 `eighth` notes, ignoring pitches:
 
@@ -314,8 +314,31 @@ Searching for the following chord `,,2E^B^,G^'E` ..
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,,2E^B^,G^'E
 ```
 
+#### Time signatures
+
+Time signatures are to be encoded according to the [PEA key time signature notation](https://www.iaml.info/plaine-easie-code#toc-3). The time signature is preceded by `@` and followed by beats and beat unit, separated by `/`, e.g. `@3/4` (three-four or waltz time), `@2/4` (march time). Common time signatures can be also represented as `@c` and will be considered by the system as `@4/4`.
+
+Examples
+
+Common signature: `@c 8ABCDxDE`
+
+![common_timesignature](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/common_time.jpg)
+```http
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=@c 8ABCDxDE
+```
+Waltz time: `@3/4 8ABCDxDE`
+
+![waltz_timesignature](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/waltz_time.jpg)
+```http
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=@3/4 8ABCDxDE
+```
+
+See also: UNIMARC field 036 $o — MARC21 field 789 $g — MAB field 681 $h (RISM field 823)
+
+
+
 #### Key signatures
-**Parameters**: `melody` / `key`
+Parameters: `melody` / `key`
 
 Keys signatures are to be encoded according to the [PEA key signature notation](https://www.iaml.info/plaine-easie-code#toc-2). Accidentals are preceded by the character `$`; if there are no accidentals the `$` is omitted. The symbol `x` indicates sharpened keys, `b` flattened keys; the symbol is followed by the capital letters indicating the altered notes.
 
