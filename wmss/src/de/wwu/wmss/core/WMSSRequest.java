@@ -121,6 +121,9 @@ public class WMSSRequest {
 				} catch (InvalidKeyException e) {
 					e.printStackTrace();
 					throw new InvalidWMSSRequestException(e.getMessage(),e.getCode(), e.getHint());
+				} catch (InvalidTimeSignatureException e) {
+					e.printStackTrace();
+					throw new InvalidWMSSRequestException(e.getMessage(),e.getCode(), e.getHint());
 				}
 								
 			} else if (parameter.toLowerCase().equals("identifier")) {
@@ -191,8 +194,13 @@ public class WMSSRequest {
 				}
 				
 			} else if (parameter.toLowerCase().equals("time")) {
-				
-				this.timeSignature = httpRequest.getParameter(parameter);
+												
+				try {
+					this.timeSignature = Util.formatPEAtimeSignature(httpRequest.getParameter(parameter));
+				} catch (InvalidTimeSignatureException e) {
+					e.printStackTrace();
+					throw new InvalidWMSSRequestException(e.getMessage(),e.getCode(), e.getHint());
+				}
 				
 			} 
  

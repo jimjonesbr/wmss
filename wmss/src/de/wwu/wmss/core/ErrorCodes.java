@@ -77,7 +77,7 @@ public class ErrorCodes {
 
 	public static String INVALID_TIMESIGNATURE_CODE = "E0018";
 	public static String INVALID_TIMESIGNATURE_DESCRIPTION  = "Invalid time signature";
-	public static String INVALID_TIMESIGNATURE_HINT = "Time signatures must be encoded in the following format: beat unit / beats. Examples: @3/4, @4/4, @6/8, @c (meaning common time, therefore interpreted as 4/4) ";
+	public static String INVALID_TIMESIGNATURE_HINT = "Time signatures must be encoded in the following format: beat unit / beats. Examples: @3/4, @4/4, @6/8, @c (meaning common time and interpreted as @4/4) ";
 
 	//Request Conflict: The searched melody contains chords but the parameter 'ignoreChords' ist set to 'true'. The 'ignoreChords' parameter will be ignored."
 	

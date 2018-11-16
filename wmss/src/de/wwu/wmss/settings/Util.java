@@ -208,7 +208,7 @@ public class Util {
 					note.setChord(chord);
 					
 					if(!currentTimeSignature.equals("")) {
-						note.setTime(formatPEATimeSignature(currentTimeSignature));
+						note.setTime(formatPEAtimeSignature(currentTimeSignature));
 						currentTimeSignature = "";
 					}
 					
@@ -243,19 +243,17 @@ public class Util {
 		return sequence;
 	}
 
-	
-	private static String formatPEATimeSignature(String time) throws InvalidTimeSignatureException {
+	public static String formatPEAtimeSignature(String time) throws InvalidTimeSignatureException {
 	
 		if(!time.matches("^[0-9/c@]+$")) {
-			throw new InvalidMelodyException(ErrorCodes.INVALID_TIMESIGNATURE_DESCRIPTION +" ["+time+"]",ErrorCodes.INVALID_TIMESIGNATURE_CODE,ErrorCodes.INVALID_TIMESIGNATURE_HINT);	
+			throw new InvalidTimeSignatureException(ErrorCodes.INVALID_TIMESIGNATURE_DESCRIPTION +" ["+time+"]",ErrorCodes.INVALID_TIMESIGNATURE_CODE,ErrorCodes.INVALID_TIMESIGNATURE_HINT);	
 		}
 		
 		time = time.replace("@", "");
 		
 		if(time.equals("c")) {
 			time = "4/4";
-		}
-		
+		}	
 		
 		return time;
 	}

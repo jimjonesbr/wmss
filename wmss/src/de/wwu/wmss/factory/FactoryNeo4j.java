@@ -853,7 +853,19 @@ public class FactoryNeo4j {
 		}
 		
 		match = "\nMATCH "+scoreNode+"-[:dc__creator]->"+personNode+"-[:gndo__professionOrOccupation]->"+personRoleNode+"\n";
-		 
+		
+		
+		if(!wmssRequest.getKey().equals("")) {
+			match = match + "MATCH (measure {key:\""+wmssRequest.getKey()+"\"})";
+		}
+
+		if(!wmssRequest.getTimeSignature().equals("")) {
+			String[] time = wmssRequest.getTimeSignature().split("/");
+			where = where + "AND measure.beatType="+time[1]+"\n" 
+					      + "AND measure.beats="+time[0]+"\n";					
+		}
+		
+		
 		if(!wmssRequest.getMelody().equals("")) {
 	
 			ArrayList<Note> noteSequence = wmssRequest.getNoteSequence();
@@ -874,10 +886,8 @@ public class FactoryNeo4j {
 			String previousDurationType = "";
 			
 			while(i<=noteSequence.size()-1) {
-
 				
 				String measureNode = "(measure:mso__Measure)";				
-				//String currentTimeSignature = "";
 				String currentDurationType = "mso__NoteSet";
 								
 				if(!wmssRequest.isIgnoreDuration()) {
@@ -891,8 +901,8 @@ public class FactoryNeo4j {
 				
 				if(!noteSequence.get(i).getTime().equals("")) {					
 					String[] time = noteSequence.get(i).getTime().split("/");
-					where = where+ "AND measure"+noteSequence.get(i).getMeasure()+".beatType="+time[1]+"\n" 
-							     + "AND measure"+noteSequence.get(i).getMeasure()+".beats="+time[0]+"\n";					
+					where = where + "AND measure"+noteSequence.get(i).getMeasure()+".beatType="+time[1]+"\n" 
+							      + "AND measure"+noteSequence.get(i).getMeasure()+".beats="+time[0]+"\n";					
 				}
 				
 				if(!noteSequence.get(i).getKey().equals("")) {
@@ -947,7 +957,7 @@ public class FactoryNeo4j {
 
 		} else {
 			
-			match = match + "\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-"+scoreNode+"-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->"+instrumentNode+"\n" + 
+			match = match + "\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-"+scoreNode+"-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->"+instrumentNode+"-[:mso__hasMeasure]->(measure:mso__Measure)" +  
 							"MATCH "+scoreNode+"-[:foaf__thumbnail]->(thumbnail) \n" +
 							"MATCH "+scoreNode+"-[:mo__movement]->(movements:mo__Movement) \n";	
 		}
@@ -964,9 +974,9 @@ public class FactoryNeo4j {
 			where = where  + "AND scr.collectionUri = '"+wmssRequest.getCollection()+"' \n";
 		}
 
-		if(!wmssRequest.getKey().equals("")) {
-			match = match + "MATCH (measure {key:\""+wmssRequest.getKey()+"\"})";
-		}
+//		if(!wmssRequest.getKey().equals("")) {
+//			match = match + "MATCH (measure {key:\""+wmssRequest.getKey()+"\"})";
+//		}
 		
 		return match + "\nWHERE TRUE \n" + where;		
 	}
