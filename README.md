@@ -132,7 +132,7 @@ An example of a Service Description Report can be found [here](https://github.co
  ```
 
  #### Collections
-**Parameter**: `collection`
+Parameter: `collection`
 
 To facilitate the management of large repositories, WMSS offers the possibility to add music scores to specific collections. The collection uri, required for this parameter, is delivered together with the music score in the Score List and Service Description Reports.
 
@@ -142,7 +142,7 @@ To facilitate the management of large repositories, WMSS offers the possibility 
 
 #### Persons
 
-**Parameters**: `person` / `personRole`
+Parameters: `person` / `personRole`
 
 Selects all music scores containing specific persons and optionally with their respective roles. For instance, a request to list all scores from the person "Elgar" as a "Composer" is enconded like this:
 
@@ -333,8 +333,13 @@ Waltz time: `@3/4 8ABCDxDE`
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=@3/4 8ABCDxDE
 ```
 
-See also: UNIMARC field 036 $o — MARC21 field 789 $g — MAB field 681 $h (RISM field 823)
+Alternatively, time signatures alone can be searched using the parameter `time`: 
 
+```http
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&time=@4/4
+```
+
+See also: UNIMARC field 036 $o — MARC21 field 789 $g — MAB field 681 $h (RISM field 823)
 
 
 #### Key signatures
