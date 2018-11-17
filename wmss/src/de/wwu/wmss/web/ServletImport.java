@@ -18,9 +18,9 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.log4j.Logger;
 import de.wwu.wmss.core.ErrorCodes;
-import de.wwu.wmss.core.InvalidWMSSRequestException;
 import de.wwu.wmss.core.WMSSImportRecord;
 import de.wwu.wmss.core.WMSSImportRequest;
+import de.wwu.wmss.exceptions.InvalidWMSSRequestException;
 import de.wwu.wmss.factory.FactoryNeo4j;
 import de.wwu.wmss.factory.ServiceMessagingHandler;
 

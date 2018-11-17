@@ -7,13 +7,15 @@ public class Note {
 	private String octave;
 	private String accidental;
 	private boolean isChord;
-	private String measure = "";
+	private int measure;
 	private String key ="";
 	private String time = "";
+	private String clef = "";
 	
 	public Note() {
 		super();
 	}
+	
 	public String getPitch() {
 		return pitch;
 	}
@@ -44,10 +46,10 @@ public class Note {
 	public void setAccidental(String accidental) {
 		this.accidental = accidental;
 	}
-	public String getMeasure() {
+	public int getMeasure() {
 		return measure;
 	}
-	public void setMeasure(String measure) {
+	public void setMeasure(int measure) {
 		this.measure = measure;
 	}
 	public String getKey() {
@@ -62,5 +64,12 @@ public class Note {
 	public void setTime(String time) {
 		this.time = time;
 	}
+	public String getClef() {
+		return clef;
+	}
+	public void setClef(String clef) {
+		this.clef = clef;
+	}
+
 	
 }

@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import de.wwu.wmss.core.ErrorCodes;
-import de.wwu.wmss.core.InvalidWMSSRequestException;
 import de.wwu.wmss.core.WMSSRequest;
+import de.wwu.wmss.exceptions.InvalidWMSSRequestException;
 import de.wwu.wmss.factory.ServiceMessagingHandler;
 import de.wwu.wmss.settings.Util;
 
@@ -28,6 +28,7 @@ public class ServletWMSS extends HttpServlet
 		try {
 
 			logger.info("GET Request String -> " + httpRequest.getQueryString());
+			//httpRequest.setCharacterEncoding("UTF-8");
 			WMSSRequest wmssRequest = new WMSSRequest(httpRequest);
 
 			response.addHeader("Access-Control-Allow-Origin","*");

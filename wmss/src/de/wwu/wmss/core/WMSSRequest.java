@@ -3,6 +3,12 @@ package de.wwu.wmss.core;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
+
+import de.wwu.wmss.exceptions.InvalidClefException;
+import de.wwu.wmss.exceptions.InvalidKeyException;
+import de.wwu.wmss.exceptions.InvalidMelodyException;
+import de.wwu.wmss.exceptions.InvalidTimeSignatureException;
+import de.wwu.wmss.exceptions.InvalidWMSSRequestException;
 import de.wwu.wmss.settings.SystemSettings;
 import de.wwu.wmss.settings.Util;
 
@@ -32,6 +38,7 @@ public class WMSSRequest {
 	private String source = "";
 	private String score = "";
 	private String key = "";
+	private String clef = "";
 	private boolean ignoreChords = true;
 	private boolean ensemble = false;
 	private boolean ignoreOctaves = true;
@@ -184,10 +191,9 @@ public class WMSSRequest {
 				
 			} else if (parameter.toLowerCase().equals("key")) {
 				
-				this.key = httpRequest.getParameter(parameter);
-				
+				//this.key = httpRequest.getParameter(parameter);				
 				try {
-					this.key = Util.formatPEAkey(this.key);
+					this.key = Util.formatPEAkey(httpRequest.getParameter(parameter));
 				} catch (InvalidKeyException e) {
 					e.printStackTrace();
 					throw new InvalidWMSSRequestException(e.getMessage(),e.getCode(), e.getHint());
@@ -202,7 +208,17 @@ public class WMSSRequest {
 					throw new InvalidWMSSRequestException(e.getMessage(),e.getCode(), e.getHint());
 				}
 				
-			} 
+			} else if (parameter.toLowerCase().equals("clef")) {
+				
+				try {
+					this.clef = Util.formatPEAclef(httpRequest.getParameter(parameter).replace(" ", "+"));
+				} catch (InvalidClefException e) {
+					e.printStackTrace();
+					throw new InvalidWMSSRequestException(e.getMessage(),e.getCode(), e.getHint());
+				}
+				
+				
+			}  
  
 		}
 		
@@ -470,6 +486,10 @@ public class WMSSRequest {
 
 	public String getTimeSignature() {
 		return timeSignature;
+	}
+
+	public String getClef() {
+		return clef;
 	}
 	
 	

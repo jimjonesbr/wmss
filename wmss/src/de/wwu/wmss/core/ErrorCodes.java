@@ -71,13 +71,17 @@ public class ErrorCodes {
 	public static String INVALID_KEY_CODE = "E0017";
 	public static String INVALID_KEY_DESCRIPTION  = "Invalid key";
 	public static String INVALID_KEY_HINT = 
-			"Provide one of the following keys: '$' (C major/A minor), '$xF' (G major/E minor), '$xFC' (D major/B minor), '$xFCG' (A major/F# minor), '$xFCGD' (E major/C# minor), '$xFCGDA' (B major/G# minor), '$xFCGDAE' (F# major/D# minor), '$xFCGDAEB' (C# major/A# minor),"
-			+ "'$bB' (F major/D minor), '$bBE' (Bb major/G minor), '$bBEA' (Eb major/C minor), '$bBEAD' (Ab major/F minor), '$bBEADG' (Db major/Bb minor), '$bBEADGC' (Gb major/Eb minor), '$bBEADGCF' (Cb major/Ab minor) ";
+			"Provide one of the following keys: '$' (C major/A minor), 'xF' (G major/E minor), 'xFC' (D major/B minor), 'xFCG' (A major/F# minor), 'xFCGD' (E major/C# minor), 'xFCGDA' (B major/G# minor), 'xFCGDAE' (F# major/D# minor), 'xFCGDAEB' (C# major/A# minor),"
+			+ "'bB' (F major/D minor), 'bBE' (Bb major/G minor), 'bBEA' (Eb major/C minor), 'bBEAD' (Ab major/F minor), 'bBEADG' (Db major/Bb minor), 'bBEADGC' (Gb major/Eb minor), 'bBEADGCF' (Cb major/Ab minor) ";
 
 
 	public static String INVALID_TIMESIGNATURE_CODE = "E0018";
 	public static String INVALID_TIMESIGNATURE_DESCRIPTION  = "Invalid time signature";
 	public static String INVALID_TIMESIGNATURE_HINT = "Time signatures must be encoded in the following format: beat unit / beats. Examples: @3/4, @4/4, @6/8, @c (meaning common time and interpreted as @4/4) ";
+
+	public static String INVALID_CLEF_CODE = "E0019";
+	public static String INVALID_CLEF_DESCRIPTION  = "Invalid clef";
+	public static String INVALID_CLEF_HINT = "The clef code is preceded by '%', and is three characters long. The first character specifies the clef shape (G,C,F,g). The second character is '-' to indicate modern notation, '+' to indicate mensural notation. The third character (numeric 1-5) indicates the position of the clef on the staff, starting from the bottom line. Examples: G-2, C-3, F-4.";
 
 	//Request Conflict: The searched melody contains chords but the parameter 'ignoreChords' ist set to 'true'. The 'ignoreChords' parameter will be ignored."
 	

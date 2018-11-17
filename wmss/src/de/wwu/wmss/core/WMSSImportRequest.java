@@ -3,6 +3,8 @@ package de.wwu.wmss.core;
 import java.util.Date;
 import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
+
+import de.wwu.wmss.exceptions.InvalidWMSSRequestException;
 import de.wwu.wmss.settings.SystemSettings;
 
 public class WMSSImportRequest {

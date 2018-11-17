@@ -1,16 +1,16 @@
-package de.wwu.wmss.core;
+package de.wwu.wmss.exceptions;
 
-public class InvalidTimeSignatureException extends RuntimeException{
+public class InvalidKeyException extends RuntimeException{
 
 	private static final long serialVersionUID = -4216956738951654372L;
 	private String code;
 	private String hint;
 	
-	public InvalidTimeSignatureException(String message) {
+	public InvalidKeyException(String message) {
 		super(message);
 	}
 	
-	public InvalidTimeSignatureException(String message, String code, String hint) {
+	public InvalidKeyException(String message, String code, String hint) {
 		super(message);
 		this.code = code;
 		this.hint = hint;

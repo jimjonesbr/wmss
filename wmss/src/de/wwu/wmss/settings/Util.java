@@ -9,11 +9,12 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import de.wwu.wmss.core.DataSource;
 import de.wwu.wmss.core.ErrorCodes;
-import de.wwu.wmss.core.InvalidKeyException;
-import de.wwu.wmss.core.InvalidMelodyException;
-import de.wwu.wmss.core.InvalidTimeSignatureException;
-import de.wwu.wmss.core.InvalidWMSSRequestException;
 import de.wwu.wmss.core.Note;
+import de.wwu.wmss.exceptions.InvalidClefException;
+import de.wwu.wmss.exceptions.InvalidKeyException;
+import de.wwu.wmss.exceptions.InvalidMelodyException;
+import de.wwu.wmss.exceptions.InvalidTimeSignatureException;
+import de.wwu.wmss.exceptions.InvalidWMSSRequestException;
 
 public class Util {
 
@@ -122,16 +123,17 @@ public class Util {
 
 		String duration = "";
 		String accidental = "";
-		
-		String currentOctave = "4";
+		String currentOctave = "4";		
 		String currentDuration = "";
 		String currentKey = "";
+		String currentClef = "";
 		String currentTimeSignature = "";
-
+		int currentMeasure = 1;		
 		boolean chord = false;
 		boolean keySegment = false;
 		boolean timeSegment = false;
-		
+		boolean clefSegment = false;
+
 		ArrayList<Note> sequence = new ArrayList<Note>();
 
 		for (int i = 0; i < pea.length(); i++) {
@@ -141,22 +143,33 @@ public class Util {
 			if(element.equals("$")) {
 				keySegment = true;
 				timeSegment = false;
+				clefSegment = false;
 			} else if(element.equals("@")) {
 				timeSegment = true;
 				keySegment = false;
+				clefSegment = false;
 			} else if(element.equals(" ")) {
 				keySegment = false;
+				clefSegment = false;
 				timeSegment = false;
-			} 
+			} else if(element.equals("%")) {
+				clefSegment = true;
+				keySegment = false;
+				timeSegment = false;
+			}
 
 			if(timeSegment) {
-				
+
 				currentTimeSignature = currentTimeSignature + element;
-				
+
 			} else if(keySegment) {
-				
+
 				currentKey = currentKey + element;
-				
+
+			} else if(clefSegment) {
+
+				currentClef = currentClef + element;
+
 			} else { 
 
 				if(element.equals(",")) {
@@ -179,6 +192,11 @@ public class Util {
 				if(element.equals("^")) {
 					chord = true;
 				}
+				
+				if(element.equals("/")) {
+					currentMeasure++;
+				}
+				
 
 				if(notes.contains(element)) {
 
@@ -205,13 +223,19 @@ public class Util {
 					note.setDuration(duration);
 					note.setPitch(element);
 					note.setOctave(currentOctave);
-					note.setChord(chord);
+					note.setChord(chord);												
+					note.setMeasure(currentMeasure);
 					
+					if(!currentClef.equals("")) {
+						note.setClef(formatPEAclef(currentClef));
+						currentClef = "";						
+					}
+
 					if(!currentTimeSignature.equals("")) {
 						note.setTime(formatPEAtimeSignature(currentTimeSignature));
 						currentTimeSignature = "";
 					}
-					
+
 					if(!currentKey.equals("")) {
 						note.setKey(formatPEAkey(currentKey));		
 						currentKey = "";
@@ -244,29 +268,33 @@ public class Util {
 	}
 
 	public static String formatPEAtimeSignature(String time) throws InvalidTimeSignatureException {
-	
-		if(!time.matches("^[0-9/c@]+$")) {
+
+		time = time.replace("@", "");
+
+		if(!time.matches("^[0-9/c]+$")) {
 			throw new InvalidTimeSignatureException(ErrorCodes.INVALID_TIMESIGNATURE_DESCRIPTION +" ["+time+"]",ErrorCodes.INVALID_TIMESIGNATURE_CODE,ErrorCodes.INVALID_TIMESIGNATURE_HINT);	
 		}
-		
-		time = time.replace("@", "");
-		
+
 		if(time.equals("c")) {
 			time = "4/4";
 		}	
-		
+
 		return time;
 	}
-	
+
 	public static String formatPEAkey(String key) throws InvalidKeyException {
 
 		String result = "";
-
+		
+		if(key.length()>1) {
+			key = key.replace("$", "");
+		}
+		
 		ArrayList<String> keys = new ArrayList<>();
 		keys.add("$");
-		keys.add("$xF");keys.add("$xFC");keys.add("$xFCG");keys.add("$xFCGD");keys.add("$xFCGDA");keys.add("$xFCGDAE");keys.add("$xFCGDAEB");
-		keys.add("$F");keys.add("$FC");keys.add("$FCG");keys.add("$FCGD");keys.add("$FCGDA");keys.add("$FCGDAE");keys.add("$FCGDAEB");
-		keys.add("$bB");keys.add("$bBE");keys.add("$bBEA");keys.add("$bBEAD");keys.add("$bBEADG");keys.add("$bBEADGC");keys.add("$bBEADGCF");
+		keys.add("xF");keys.add("xFC");keys.add("xFCG");keys.add("xFCGD");keys.add("xFCGDA");keys.add("xFCGDAE");keys.add("xFCGDAEB");
+		keys.add("F");keys.add("FC");keys.add("FCG");keys.add("FCGD");keys.add("FCGDA");keys.add("FCGDAE");keys.add("FCGDAEB");
+		keys.add("bB");keys.add("bBE");keys.add("bBEA");keys.add("bBEAD");keys.add("bBEADG");keys.add("bBEADGC");keys.add("bBEADGCF");
 		boolean match = false;
 
 		for (int i = 0; i < keys.size(); i++) {
@@ -288,6 +316,34 @@ public class Util {
 		return result;
 	}
 
+	public static String formatPEAclef(String clef) throws InvalidClefException {
+		
+		clef = clef.replace("%", "");
+		
+		ArrayList<String> validShapes = new ArrayList<>();
+		validShapes.add("C");
+		validShapes.add("G");
+		validShapes.add("g");
+		validShapes.add("F");
+		
+		ArrayList<String> validConnectors = new ArrayList<>();
+		validConnectors.add("-");
+		validConnectors.add("+");
+		
+		if(clef.length()!=3 ||
+		   !validShapes.contains(String.valueOf(clef.charAt(0))) ||
+		   !validConnectors.contains(String.valueOf(clef.charAt(1))) ||
+		   !StringUtils.isNumeric(String.valueOf(clef.charAt(2))) ||
+		   !String.valueOf(clef.charAt(2)).matches("[1-5]")) {
+			
+			throw new InvalidClefException(ErrorCodes.INVALID_CLEF_DESCRIPTION +" ["+clef+"]",ErrorCodes.INVALID_CLEF_CODE,ErrorCodes.INVALID_CLEF_HINT);
+		}
+		
+		
+		return clef;
+	}
+	
+	
 	public static String capitalizeFirstLetter(String string){
 
 		if(string != null && string != "" ) {

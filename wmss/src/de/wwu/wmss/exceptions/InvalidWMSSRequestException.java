@@ -1,4 +1,4 @@
-package de.wwu.wmss.core;
+package de.wwu.wmss.exceptions;
 
 public class InvalidWMSSRequestException extends RuntimeException{
 
