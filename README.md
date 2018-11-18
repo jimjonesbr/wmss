@@ -364,6 +364,26 @@ http://localhost:8295/wmss/?source=neo4j_local&request=listscores&clef=F-4
 ```
 See also: *UNIMARC field 036 $m — MARC21 field 789 $e — MAB field 681 $j (RISM field 820)*
 
+
+#### Measures
+Parameters: `melody`
+
+If necessary, it is also possible to look for melodies contained in fixed measures. For instance, the melody `'4xF8G4xF8A4B8A4G8E4D8E4C,8B` will be searched no matter how the notes are distributed:
+
+![no_measure](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/melody_no-measure.jpg)
+
+```http
+http://localhost:8295/wmss/?source=neo4j_local&request=listscores&melody='4xF8G4xF8A4B8A4G8E4D8E4C,8B
+```
+
+By splitting the melodies with the character `/`, the system will look for exact matches with the given measure/notes distribution. This example will look for the given melody contained in exactly two measures `'4xF8G4xF8A4B8A4/G8E4D8E4C,8B`:
+
+![measures](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/melody_measure.jpg)
+
+```http
+http://localhost:8295/wmss/?source=neo4j_local&request=listscores&melody='4xF8G4xF8A4B8A4/G8E4D8E4C,8B
+```
+
 #### Key signatures
 Parameters: `melody` / `key`
 
