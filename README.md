@@ -353,6 +353,7 @@ Clef examples: `G-2` (trebble clef), `F-4` (bass clef), `C-3` (alto clef), `C-4`
 <img src="https://upload.wikimedia.org/wikipedia/en/thumb/2/25/Common_clefs.svg/212px-Common_clefs.svg.png">
 
 Request example `%C-4 ,8AB'CDxD`:
+
 ![tenor_clef](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/tenor_clef.jpg)
 ```http
 http://localhost:8295/wmss/?source=neo4j_local&request=listscores&melody=%C-4 ,8AB'CDxD
@@ -378,7 +379,7 @@ http://localhost:8295/wmss/?source=neo4j_local&request=listscores&melody='4xF8G4
 
 By splitting the melodies with the character `/`, the system will look for exact matches with the given measure/notes distribution. This example will look for the given melody contained in exactly two measures `'4xF8G4xF8A4B8A4/G8E4D8E4C,8B`:
 
-![measures](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/melody_measure.jpg)
+![measures](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/melody_measure.png)
 
 ```http
 http://localhost:8295/wmss/?source=neo4j_local&request=listscores&melody='4xF8G4xF8A4B8A4/G8E4D8E4C,8B
