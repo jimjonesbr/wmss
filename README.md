@@ -124,6 +124,7 @@ An example of a Service Description Report can be found [here](https://github.co
  In order to facilitate the music score discovery, the ListScores request offers several filter capabilities:
  
  #### Data Source
+ Parameter: `source`
  
  Constraints the __Score List Document__ to a specific data source:
  
@@ -242,7 +243,7 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&format=musicxm
 Parameter: `melody`
 
 
-Selects records containing a specific a sequence of notes or phrases (not limited to *incipt*) throughout the database, encoded using the [Plaine & Easie musical notation](https://www.iaml.info/plaine-easie-code#toc-4) (PEA).  For instance, the value `,8AB'CDxDE`, which is going to be used throughout this section, corresponds to: 
+Selects records containing a specific a sequence of notes or phrases (not limited to *incipt*) throughout the database, encoded using the [Plaine & Easie musical notation](https://www.iaml.info/plaine-easie-code#toc-4) (PEA).  For instance, the value `,8AB'CDxDE` - which is going to be used throughout this section - corresponds to ..
 
 ![melody_sample](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/melody_sample.jpg)
 
@@ -250,6 +251,11 @@ Notes: `A` 3rd octave, `B` 3rd octave, `C` 4th octave, `D` 4th octave, `D#` 4th 
 
 Duration:  `Eighth` 
 
+..  and can be searched like this:
+
+```http
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,8AB'CDxDE
+```
 
 #### Octaves
 Parameter: `ignoreOctave`
@@ -340,7 +346,7 @@ Alternatively, time signatures alone can be searched using the parameter `time`:
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&time=4/4
 ```
 
-See also: UNIMARC field 036 $o — MARC21 field 789 $g — MAB field 681 $h (RISM field 823)
+See also: *UNIMARC field 036 $o — MARC21 field 789 $g — MAB field 681 $h (RISM field 823)*
 
 
 #### Clefs
@@ -353,6 +359,7 @@ Clef examples: `G-2` (trebble clef), `F-4` (bass clef), `C-3` (alto clef), `C-4`
 <img src="https://upload.wikimedia.org/wikipedia/en/thumb/2/25/Common_clefs.svg/212px-Common_clefs.svg.png">
 
 Request example `%C-4 ,8AB'CDxD`:
+
 ![tenor_clef](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/tenor_clef.jpg)
 ```http
 http://localhost:8295/wmss/?source=neo4j_local&request=listscores&melody=%C-4 ,8AB'CDxD
@@ -378,7 +385,7 @@ http://localhost:8295/wmss/?source=neo4j_local&request=listscores&melody='4xF8G4
 
 By splitting the melodies with the character `/`, the system will look for exact matches with the given measure/notes distribution. This example will look for the given melody contained in exactly two measures `'4xF8G4xF8A4B8A4/G8E4D8E4C,8B`:
 
-![measures](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/melody_measure.jpg)
+![measures](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/melody_measure.png)
 
 ```http
 http://localhost:8295/wmss/?source=neo4j_local&request=listscores&melody='4xF8G4xF8A4B8A4/G8E4D8E4C,8B
@@ -481,16 +488,20 @@ http://localhost:8295/wmss/?request=Checklog&logPreview=1000
 |E0001|No request type provided| The request type has to provided in the parameter `request`, containing one of the following request types: `ListScores`, `GetScores`, `DescribeService`, `Checklog`. |
 |E0002|Invalid request parameter| Provide one of the following request types: `ListScores`, `GetScores`, `DescribeService`, `Checklog`. |
 |E0003|Invalid document format| Provide one of the following XML formats: `musicxml`, `mei` |
-|E0004|Invalid mode| The parameter `tonalityMode` accepts only the values `major` and `minor`|
-|E0005|Invalid tonic|  |
-|E0006|Invalid boolean value for 'solo' parameter| |
-|E0007|Invalid protocol version| |
-|E0008|No identifier provided for GetScore request| |
-|E0009|Invalid data source| |
-|E0010|Invalid filter requestd| |
-|E0011|Unsupported filter| |
-|E0012|Invalid melody| |
-|E0013|Invalid collection string| |
+|E0004|Invalid time signature| Time signatures must be encoded in the following format: beat unit / beats. Examples: `3/4,` `4/4`, `6/8`, `c` (meaning common time and interpreted as `4/4`). |
+|E0005|Invalid data source| The provided data source does not exist. Check the `sources.conf` file and try again.|
+|E0006|Invalid melody encoding| The following melody encodings are currently supported: `pea` (Plaine & Easie) |
+|E0007|Invalid score identifier|Make sure you're providing a valid score identifier at the parapeter `identifier`. |
+|E0008|Invalid request mode| Please provide one of the following values: `full`, `simplified`. |
+|E0009|Invalid melody length|A melody must contain at least three valid elements. |
+|E0010|Invalid tempo beats per minute|Provide either a positive integer or an interval thereof, e.g. `148`, `98-104`. |
+|E0011|Invalid tempo beat unit|Provide one of the following beat units: `maxima`, `longa`, `breve`, `whole`, `half`, `quarter`, `eighth`, `16th`, `32nd`, `64th`, `128th`, `256th`, `512th`, `1024th`. |
+|E0012|Invalid date or interval |Provide a date or an inverval thereof in the following formats: `'yyyy`, `yyyymm`, `yyyymmdd`. For example: `1898`, `189805`, `19890501`, `19890501-19900215`, `1989-1990` |
+|E0013|Request type not supported |Check the request section at the settings file |
+|E0014|Invalid RDF file |Make sure that the imported file is properly encoded in one of the following formats: `JSON-LD`, `Turtle`, `RDF/XML` and `N-Triples` |
+|E0015|Invalid RDF format |Please provide one for the following formats in the `format` parameter: `JSON-LD`, `Turtle`, `RDF/XML` and `N-Triples` |
+|E0016|Invalid key |Provide one of the following keys: `$` (C major/A minor), `xF` (G major/E minor), `xFC` (D major/B minor), `xFCG` (A major/F# minor), `xFCGD` (E major/C# minor), `xFCGDA` (B major/G# minor), `xFCGDAE` (F# major/D# minor), `xFCGDAEB` (C# major/A# minor),`bB` (F major/D minor), `bBE` (Bb major/G minor), `bBEA` (Eb major/C minor), `bBEAD` (Ab major/F minor), `bBEADG` (Db major/Bb minor), `bBEADGC` (Gb major/Eb minor), `bBEADGCF` (Cb major/Ab minor)  |
+|E0017|Invalid clef |The clef code is preceded by `%`, and is three characters long. The first character specifies the clef shape (G,C,F,g). The second character is `-` to indicate modern notation, `+` to indicate mensural notation. The third character (numeric 1-5) indicates the position of the clef on the staff, starting from the bottom line. Examples: `G-2`, `C-3`, `F-4`. |
 
 #### [Service Exception Report](https://github.com/jimjonesbr/wmss/blob/master/README.md#service-exception-report)
 
