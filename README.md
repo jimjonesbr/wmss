@@ -315,6 +315,7 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,,2E^B^
 ```
 
 #### Time signatures
+Parameters: `melody` / `time`
 
 Time signatures are to be encoded according to the [PEA key time signature notation](https://www.iaml.info/plaine-easie-code#toc-3). The time signature is preceded by `@` and followed by beats and beat unit, separated by `/`, e.g. `@3/4` (three-four or waltz time), `@2/4` (march time). Common time signatures can be also represented as `@c` and will be considered by the system as `@4/4`.
 
@@ -336,11 +337,32 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=@3/4 8A
 Alternatively, time signatures alone can be searched using the parameter `time`: 
 
 ```http
-http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&time=@4/4
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&time=4/4
 ```
 
 See also: UNIMARC field 036 $o — MARC21 field 789 $g — MAB field 681 $h (RISM field 823)
 
+
+#### Clefs
+Parameters: `melody` / `clef`
+
+Clefs are to be encoded according to the [PEA clef notation](https://www.iaml.info/plaine-easie-code#toc-1). In the `melody` parameter, clefs are preceded by `%`, and are three characters long. The first character specifies the clef shape (`G`,`C`,`F`,`g`). The second character is `-` to indicate modern notation, `+` to indicate mensural notation. The third character (numeric 1-5) indicates the position of the clef on the staff, starting from the bottom line. 
+
+Clef examples: `G-2` (trebble clef), `F-4` (bass clef), `C-3` (alto clef), `C-4` (tenor clef).
+
+<img src="https://upload.wikimedia.org/wikipedia/en/thumb/2/25/Common_clefs.svg/212px-Common_clefs.svg.png">
+
+Request example `%C-4 ,8AB'CDxD`:
+![tenor_clef](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/tenor_clef.jpg)
+```http
+http://localhost:8295/wmss/?source=neo4j_local&request=listscores&melody=%C-4 ,8AB'CDxD
+```
+Alternatively, clefs alone can be searched using the parameter `clef`: 
+
+```http
+http://localhost:8295/wmss/?source=neo4j_local&request=listscores&clef=F-4
+```
+See also: *UNIMARC field 036 $m — MARC21 field 789 $e — MAB field 681 $j (RISM field 820)*
 
 #### Key signatures
 Parameters: `melody` / `key`
@@ -352,26 +374,26 @@ Sharpened keys have to be encoded in the following order: `F♯ C♯ G♯ D♯ A
 ||Major key   | Minor Key  | PEA key 
 |:-:|:-:|:-:|:-:
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/C-major_a-minor.svg/220px-C-major_a-minor.svg.png" width="80">|C major|A minor|`$`
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/G-major_e-minor.svg/220px-G-major_e-minor.svg.png" width="80">|G major|E minor|`$xF`|
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/D-major_h-minor.svg/220px-D-major_h-minor.svg.png" width="80">|D major|B minor|`$xFC`|
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/A-major_f-sharp-minor.svg/220px-A-major_f-sharp-minor.svg.png" width="80">|A major|F♯ minor|`$xFCG`|
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/E-major_c-sharp-minor.svg/220px-E-major_c-sharp-minor.svg.png" width="80">|E major|C♯ minor|`$xFCGD`|
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/B-major_g-sharp-minor.svg/220px-B-major_g-sharp-minor.svg.png" width="80">|B major|G♯ minor|`$xFCGDA`|
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/F-sharp-major_d-sharp-minor.svg/220px-F-sharp-major_d-sharp-minor.svg.png" width="80">|F♯ major|D♯ minor|`$xFCGDAE`|
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/C-sharp-major_a-sharp-minor.svg/220px-C-sharp-major_a-sharp-minor.svg.png" width="80">|C♯ major|A♯ minor|`$xFCGDAEB`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/G-major_e-minor.svg/220px-G-major_e-minor.svg.png" width="80">|G major|E minor|`xF`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/D-major_h-minor.svg/220px-D-major_h-minor.svg.png" width="80">|D major|B minor|`xFC`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/A-major_f-sharp-minor.svg/220px-A-major_f-sharp-minor.svg.png" width="80">|A major|F♯ minor|`xFCG`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/E-major_c-sharp-minor.svg/220px-E-major_c-sharp-minor.svg.png" width="80">|E major|C♯ minor|`xFCGD`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/B-major_g-sharp-minor.svg/220px-B-major_g-sharp-minor.svg.png" width="80">|B major|G♯ minor|`xFCGDA`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/F-sharp-major_d-sharp-minor.svg/220px-F-sharp-major_d-sharp-minor.svg.png" width="80">|F♯ major|D♯ minor|`xFCGDAE`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/C-sharp-major_a-sharp-minor.svg/220px-C-sharp-major_a-sharp-minor.svg.png" width="80">|C♯ major|A♯ minor|`xFCGDAEB`|
 
 Flattened keys have to be encoded in the following order: `B♭ E♭ A♭ D♭ G♭ C♭ F♭`
 
 ||Major key   | Minor Key  | PEA key 
 |:-:|:-:|:-:|:-:
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/C-major_a-minor.svg/220px-C-major_a-minor.svg.png" width="80">|C major|A minor|`$`|
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/F-major_d-minor.svg/220px-F-major_d-minor.svg.png" width="80">|F major|D minor|`$bB`|
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/B-flat-major_g-minor.svg/220px-B-flat-major_g-minor.svg.png" width="80">|B♭ major|G minor|`$bBE`|
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/E-flat-major_c-minor.svg/220px-E-flat-major_c-minor.svg.png" width="80">|E♭ major|C minor|`$bBEA`|
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/A-flat-major_f-minor.svg/100px-A-flat-major_f-minor.svg.png" width="80">|A♭ major|F minor|`$bBEAD`|
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/D-flat-major_b-flat-minor.svg/100px-D-flat-major_b-flat-minor.svg.png" width="80">|D♭ major|B♭ minor|`$bBEADG`|
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/G-flat-major_e-flat-minor.svg/100px-G-flat-major_e-flat-minor.svg.png" width="80">|G♭ major|E♭ minor|`$bBEADGC`|
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/C-flat-major_a-flat-minor.svg/100px-C-flat-major_a-flat-minor.svg.png" width="80">|C♭ major|A♭ minor|`$bBEADGCF`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/F-major_d-minor.svg/220px-F-major_d-minor.svg.png" width="80">|F major|D minor|`bB`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/B-flat-major_g-minor.svg/220px-B-flat-major_g-minor.svg.png" width="80">|B♭ major|G minor|`bBE`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/E-flat-major_c-minor.svg/220px-E-flat-major_c-minor.svg.png" width="80">|E♭ major|C minor|`bBEA`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/A-flat-major_f-minor.svg/100px-A-flat-major_f-minor.svg.png" width="80">|A♭ major|F minor|`bBEAD`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/D-flat-major_b-flat-minor.svg/100px-D-flat-major_b-flat-minor.svg.png" width="80">|D♭ major|B♭ minor|`bBEADG`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/G-flat-major_e-flat-minor.svg/100px-G-flat-major_e-flat-minor.svg.png" width="80">|G♭ major|E♭ minor|`bBEADGC`|
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/C-flat-major_a-flat-minor.svg/100px-C-flat-major_a-flat-minor.svg.png" width="80">|C♭ major|A♭ minor|`bBEADGCF`|
 
 See also: *UNIMARC field 036 $n — MARC21 field 789 $f — MAB field 681 $k (RISM field 826 — first part)*
 
@@ -384,7 +406,7 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=$xF ,8A
 Alternatively, key signatures alone can be searched using the parameter `key`. The following request seraches for all music scores containing measures written in `C♯ minor`:
 
 ```http
-http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&key=$xFCGDA
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&key=xFCGDA
 ```
 
 
