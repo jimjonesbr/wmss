@@ -243,34 +243,34 @@ WITH measure,tonic,mode,
    CASE tonic+'-'+mode
        WHEN 'c-major' THEN '$' 
        WHEN 'a-minor' THEN '$'        
-       WHEN 'g-major' THEN '$xF'
-       WHEN 'e-minor' THEN '$xF'       
-       WHEN 'd-major' THEN '$xFC'
-       WHEN 'b-minor' THEN '$xFC'       
-       WHEN 'a-major' THEN '$xFCG' 
-       WHEN 'fsharp-minor' THEN '$xFCG'        
-       WHEN 'e-major' THEN '$xFCGD' 
-       WHEN 'csharp-minor' THEN '$xFCGD'        
-       WHEN 'b-major' THEN '$xFCGDA' 
-       WHEN 'gsharp-minor' THEN '$xFCGDA'        
-       WHEN 'fsharp-major' THEN '$xFCGDAE'
-       WHEN 'dsharp-minor' THEN '$xFCGDAE'       
-       WHEN 'csharp-major' THEN '$xFCGDAEB'
-       WHEN 'asharp-minor' THEN '$xFCGDAEB'              
-       WHEN 'f-major' THEN '$bB'
-       WHEN 'd-minor' THEN '$bB'       
-       WHEN 'bflat-major' THEN '$bBE'
-       WHEN 'g-minor' THEN '$bBE'       
-       WHEN 'eflat-major' THEN '$bBEA'
-       WHEN 'c-minor' THEN '$bBEA'       
-       WHEN 'aflat-major' THEN '$bBEAD'
-       WHEN 'f-minor' THEN '$bBEAD'              
-       WHEN 'dflat-major' THEN '$bBEADG'
-       WHEN 'bflat-minor' THEN '$bBEADG'       
-       WHEN 'gflat-major' THEN '$bBEADGC'
-       WHEN 'eflat-minor' THEN '$bBEADGC'       
-       WHEN 'cflat-major' THEN '$bBEADGCF'
-       WHEN 'aflat-minor' THEN '$bBEADGCF'       
+       WHEN 'g-major' THEN 'xF'
+       WHEN 'e-minor' THEN 'xF'       
+       WHEN 'd-major' THEN 'xFC'
+       WHEN 'b-minor' THEN 'xFC'       
+       WHEN 'a-major' THEN 'xFCG' 
+       WHEN 'fsharp-minor' THEN 'xFCG'        
+       WHEN 'e-major' THEN 'xFCGD' 
+       WHEN 'csharp-minor' THEN 'xFCGD'        
+       WHEN 'b-major' THEN 'xFCGDA' 
+       WHEN 'gsharp-minor' THEN 'xFCGDA'        
+       WHEN 'fsharp-major' THEN 'xFCGDAE'
+       WHEN 'dsharp-minor' THEN 'xFCGDAE'       
+       WHEN 'csharp-major' THEN 'xFCGDAEB'
+       WHEN 'asharp-minor' THEN 'xFCGDAEB'              
+       WHEN 'f-major' THEN 'bB'
+       WHEN 'd-minor' THEN 'bB'       
+       WHEN 'bflat-major' THEN 'bBE'
+       WHEN 'g-minor' THEN 'bBE'       
+       WHEN 'eflat-major' THEN 'bBEA'
+       WHEN 'c-minor' THEN 'bBEA'       
+       WHEN 'aflat-major' THEN 'bBEAD'
+       WHEN 'f-minor' THEN 'bBEAD'              
+       WHEN 'dflat-major' THEN 'bBEADG'
+       WHEN 'bflat-minor' THEN 'bBEADG'       
+       WHEN 'gflat-major' THEN 'bBEADGC'
+       WHEN 'eflat-minor' THEN 'bBEADGC'       
+       WHEN 'cflat-major' THEN 'bBEADGCF'
+       WHEN 'aflat-minor' THEN 'bBEADGCF'       
      END AS key
 SET measure.key = key, 
     measure.tonic = tonic, 
@@ -315,7 +315,6 @@ CREATE INDEX ON :mo__Movement(mso__hasBeatsPerMinute);
 CREATE INDEX ON :mo__Movement(beatUnit);
 CREATE INDEX ON :mo__Movement(beatUnit,mso__hasBeatsPerMinute);
 CREATE INDEX ON :mo__Measure(tonic,mode);
-//CREATE INDEX ON :mo__Score(active);
 CREATE INDEX ON :mo__Score(issued);
 CREATE INDEX ON :mo__Score(encoderUri);
 CREATE INDEX ON :mo__Score(collectionUri);
@@ -327,12 +326,7 @@ CREATE INDEX ON :mso__ScorePart(rdfs__label);
 CREATE INDEX ON :mso__ScorePart(typeLabel);
 CREATE INDEX ON :mso__Measure(key);
 
-//CREATE INDEX ON :chord__Note(note,accidental);
-//CREATE INDEX ON :chord__Note(note,mso__hasOctave);
-//CREATE INDEX ON :chord__Note(note,accidental,mso__hasOctave);
-//CREATE INDEX ON :chord__Note(note);
-//CREATE INDEX ON :chord__Note(accidental);
-//CREATE INDEX ON :mso__NoteSet(duration);
-//CREATE INDEX ON :mso__NoteSet(duration,size);
+
+
 
 

@@ -303,34 +303,34 @@ public class FactoryNeo4j {
 				"   CASE tonic+'-'+mode\n" + 
 				"       WHEN 'c-major' THEN '$' \n" + 
 				"       WHEN 'a-minor' THEN '$'        \n" + 
-				"       WHEN 'g-major' THEN '$xF'\n" + 
-				"       WHEN 'e-minor' THEN '$xF'       \n" + 
-				"       WHEN 'd-major' THEN '$xFC'\n" + 
-				"       WHEN 'b-minor' THEN '$xFC'       \n" + 
-				"       WHEN 'a-major' THEN '$xFCG' \n" + 
-				"       WHEN 'fsharp-minor' THEN '$xFCG'        \n" + 
-				"       WHEN 'e-major' THEN '$xFCGD' \n" + 
-				"       WHEN 'csharp-minor' THEN '$xFCGD'        \n" + 
-				"       WHEN 'b-major' THEN '$xFCGDA' \n" + 
-				"       WHEN 'gsharp-minor' THEN '$xFCGDA'        \n" + 
-				"       WHEN 'fsharp-major' THEN '$xFCGDAE'\n" + 
-				"       WHEN 'dsharp-minor' THEN '$xFCGDAE'       \n" + 
-				"       WHEN 'csharp-major' THEN '$xFCGDAEB'\n" + 
-				"       WHEN 'asharp-minor' THEN '$xFCGDAEB'              \n" + 
-				"       WHEN 'f-major' THEN '$bB'\n" + 
-				"       WHEN 'd-minor' THEN '$bB'       \n" + 
-				"       WHEN 'bflat-major' THEN '$bBE'\n" + 
-				"       WHEN 'g-minor' THEN '$bBE'       \n" + 
-				"       WHEN 'eflat-major' THEN '$bBEA'\n" + 
-				"       WHEN 'c-minor' THEN '$bBEA'       \n" + 
-				"       WHEN 'aflat-major' THEN '$bBEAD'\n" + 
-				"       WHEN 'f-minor' THEN '$bBEAD'              \n" + 
-				"       WHEN 'dflat-major' THEN '$bBEADG'\n" + 
-				"       WHEN 'bflat-minor' THEN '$bBEADG'       \n" + 
-				"       WHEN 'gflat-major' THEN '$bBEADGC'\n" + 
-				"       WHEN 'eflat-minor' THEN '$bBEADGC'       \n" + 
-				"       WHEN 'cflat-major' THEN '$bBEADGCF'\n" + 
-				"       WHEN 'aflat-minor' THEN '$bBEADGCF'       \n" + 
+				"       WHEN 'g-major' THEN 'xF'\n" + 
+				"       WHEN 'e-minor' THEN 'xF'       \n" + 
+				"       WHEN 'd-major' THEN 'xFC'\n" + 
+				"       WHEN 'b-minor' THEN 'xFC'       \n" + 
+				"       WHEN 'a-major' THEN 'xFCG' \n" + 
+				"       WHEN 'fsharp-minor' THEN 'xFCG'        \n" + 
+				"       WHEN 'e-major' THEN 'xFCGD' \n" + 
+				"       WHEN 'csharp-minor' THEN 'xFCGD'        \n" + 
+				"       WHEN 'b-major' THEN 'xFCGDA' \n" + 
+				"       WHEN 'gsharp-minor' THEN 'xFCGDA'        \n" + 
+				"       WHEN 'fsharp-major' THEN 'xFCGDAE'\n" + 
+				"       WHEN 'dsharp-minor' THEN 'xFCGDAE'       \n" + 
+				"       WHEN 'csharp-major' THEN 'xFCGDAEB'\n" + 
+				"       WHEN 'asharp-minor' THEN 'xFCGDAEB'              \n" + 
+				"       WHEN 'f-major' THEN 'bB'\n" + 
+				"       WHEN 'd-minor' THEN 'bB'       \n" + 
+				"       WHEN 'bflat-major' THEN 'bBE'\n" + 
+				"       WHEN 'g-minor' THEN 'bBE'       \n" + 
+				"       WHEN 'eflat-major' THEN 'bBEA'\n" + 
+				"       WHEN 'c-minor' THEN 'bBEA'       \n" + 
+				"       WHEN 'aflat-major' THEN 'bBEAD'\n" + 
+				"       WHEN 'f-minor' THEN 'bBEAD'              \n" + 
+				"       WHEN 'dflat-major' THEN 'bBEADG'\n" + 
+				"       WHEN 'bflat-minor' THEN 'bBEADG'       \n" + 
+				"       WHEN 'gflat-major' THEN 'bBEADGC'\n" + 
+				"       WHEN 'eflat-minor' THEN 'bBEADGC'       \n" + 
+				"       WHEN 'cflat-major' THEN 'bBEADGCF'\n" + 
+				"       WHEN 'aflat-minor' THEN 'bBEADGCF'       \n" + 
 				"     END AS key\n" +
 				"WHERE measure.key IS NULL \n" +
 				"SET measure.key = key, \n" + 
@@ -338,8 +338,7 @@ public class FactoryNeo4j {
 				"    measure.mode = mode\n" + 
 				"RETURN COUNT(measure) AS MeasureKey;";			
 		Neo4jConnector.getInstance().executeQuery(tonalityStatement, Util.getDataSource(importRequest.getSource()));
-		
-		
+				
 		String collections =
 				"MATCH (collection:prov__Collection)-[:prov__hadMember]->(scr:mo__Score)\n" + 
 				"SET scr.collectionUri = collection.uri, scr.collectionLabel = collection.rdfs__label\n" + 
