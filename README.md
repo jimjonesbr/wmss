@@ -395,7 +395,7 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,,2E^B^
 #### Time signatures
 Parameters: `melody` / `time`
 
-Time signatures are to be encoded according to the [PEA key time signature notation](https://www.iaml.info/plaine-easie-code#toc-3). The time signature is preceded by `@` and followed by beats and beat unit, separated by `/`, e.g. `@3/4` (three-four or waltz time), `@2/4` (march time). Common time signatures can be also represented as `@c` and will be considered by the system as `@4/4`.
+Time signatures are to be encoded according to the [PEA key time signature notation](https://www.iaml.info/plaine-easie-code#toc-3). Time signatures embedded in melodies are preceded by `@` and followed by beats and beat unit, separated by `/`, e.g. `@3/4` (three-four or waltz time), `@2/4` (march time). Common time signatures can be also represented as `@c` and will be considered by the system as `@4/4`.
 
 Examples
 
@@ -424,7 +424,7 @@ See also: *UNIMARC field 036 $o — MARC21 field 789 $g — MAB field 681 $h (RI
 #### Clefs
 Parameters: `melody` / `clef`
 
-Clefs are to be encoded according to the [PEA clef notation](https://www.iaml.info/plaine-easie-code#toc-1). In the `melody` parameter, clefs are preceded by `%`, and are three characters long. The first character specifies the clef shape (`G`,`C`,`F`,`g`). The second character is `-` to indicate modern notation, `+` to indicate mensural notation. The third character (numeric 1-5) indicates the position of the clef on the staff, starting from the bottom line. 
+Clefs are to be encoded according to the [PEA clef notation](https://www.iaml.info/plaine-easie-code#toc-1). Clefs embedded in melodies are preceded by `%`, and are three characters long. The first character specifies the clef shape (`G`,`C`,`F`,`g`). The second character is `-` to indicate modern notation, `+` to indicate mensural notation. The third character (numeric 1-5) indicates the position of the clef on the staff, starting from the bottom line. 
 
 Clef examples: `G-2` (trebble clef), `F-4` (bass clef), `C-3` (alto clef), `C-4` (tenor clef).
 
@@ -466,7 +466,7 @@ http://localhost:8295/wmss/?source=neo4j_local&request=listscores&melody='4xF8G4
 #### Key signatures
 Parameters: `melody` / `key`
 
-Keys signatures are to be encoded according to the [PEA key signature notation](https://www.iaml.info/plaine-easie-code#toc-2). Accidentals are preceded by the character `$`; if there are no accidentals the `$` is omitted. The symbol `x` indicates sharpened keys, `b` flattened keys; the symbol is followed by the capital letters indicating the altered notes.
+Keys signatures are to be encoded according to the [PEA key signature notation](https://www.iaml.info/plaine-easie-code#toc-2). Key signatures embedded in melodies are preceded by the character `$`; The symbol `x` indicates sharpened keys, `b` flattened keys; the symbol is followed by the capital letters indicating the altered notes.
 
 Sharpened keys have to be encoded in the following order: `F♯ C♯ G♯ D♯ A♯ E♯ B♯`
 
