@@ -4,8 +4,10 @@ The Web Music Score Service (WMSS) provides an interface allowing requests for m
 
 ## Index
 
-- [WMSS Data Model](#wmss-data-model)
 - [Configuring WMSS](#configuring-wmss)
+  - [Server Settings](#server-settings)
+  - [Data Source Settings](#data-source-settings)
+  - [Starting the Server](#starting-the-server)
 - [Requests](#requests)
   - [DescribeService](#describeservice)
     - [Service Description Report](#service-description-report)
@@ -16,17 +18,87 @@ The Web Music Score Service (WMSS) provides an interface allowing requests for m
   - [Exceptions](#exceptions)
   	- [Service Exception Report](#service-exception-report)
   
-## [WMSS Data Model](https://github.com/jimjonesbr/wmss/blob/master/README.md#wmss-data-model)
-
 
 ## [Configuring WMSS](https://github.com/jimjonesbr/wmss/blob/master/README.md#configuring-wmss)
 
-tbw.
 
+#### [Server Settings](https://github.com/jimjonesbr/wmss/blob/master/README.md#server-settings)
+
+File: `config/settings.conf`
+
+`port`&nbsp;   Listening port for the WMSS server.
+
+`service`&nbsp;   Service name for the server.
+
+`pageSize`&nbsp;   Number of records per page in the Score List Document.
+
+`defaultRequestMode`&nbsp;   Default request mode for the `ListScore` requests (default `full`). Supported request modes are: `simplified`, omitting the movements and performance medium data, and `full` for a complete  Score List Document.
+
+`contact`&nbsp;   E-mail address of the server administrator.
+
+`title`&nbsp;   Server title.
+
+`logPreview`&nbsp;   Number of lines shown in the `GetLogging` request.
+
+`defaultMelodyEncoding`&nbsp;  Default encoding type for melody request. Supported encoding formats: `pea`.
+
+`maxFileSize`&nbsp;   Maximum file size for inserting new scores.
+
+`defaultRDFFormat`&nbsp;  RDF format for inserting new scores. Supported RDF formats: `JSON-LD`, `Turtle`, `RDF/XML` and `N-Triples`.
+
+`defaultCommitSize`&nbsp;   Number of triples partially committed in the insert scores transaction.
+
+#### [Data Source Settings](https://github.com/jimjonesbr/wmss/blob/master/README.md#data-source-settings)
+(multiple data sources supported)
+
+File: `config/sources.conf` 
+
+`id`&nbsp;   Data source identifier.
+
+`info`&nbsp;   Data source complementary information.
+
+`active`&nbsp;   Indicates if the data source is available for requests. Supported values: `true`, `false`.
+
+`storage`&nbsp;   Data source storage technology. Supported storages: `neo4j`
+
+`type`&nbsp;   Data source type. Supported types: `lpg` (Label Property Graphs)
+
+`port`&nbsp;   Listening port for the data source.
+
+`repository`&nbsp;   Data source repository (if applicable).
+
+`version`&nbsp;   Version of the data source application.
+
+`user`/`password`&nbsp;   Credentials for accessing the data source.
+
+#### [Starting the Server](https://github.com/jimjonesbr/wmss/blob/master/README.md#starting-the-server)
+
+**Linux**: Execute the file `start.sh` in the root directory.
+
+**Windows**: Execute the file `start.bat` in the root directory.
+
+**For developers**: Execute the main method of the Java class `de.wwu.wmss.web.Start.java`
+
+After successfully starting the server you will a message like this:
+
+```
+Web Music Score Service - University of Münster
+Service Name: wmss
+Default Protocol: 1.0
+WMSS Version: Dev-Unstable-0.0.1
+Port: 8295
+Application Startup: 2018/11/19 14:46:14
+Default Melody Encoding: pea
+Time-out: 5000ms
+Page Size: 10 records 
+System Administrator: jim.jones@math.uni-muenster.de
+```
+
+After seeing this message, you can access the server API via the HTTP requests described bellow.
 
 ## [Requests](https://github.com/jimjonesbr/wmss/blob/master/README.md#requests)
 
-The WMSS communication protocol is based on the following HTTP requests:
+The WMSS communication protocol is based on the following HTTP requests: `DescribeService`, `ListScores`, `GetScore`, `GetLogging`.
 
 ### [DescribeService](https://github.com/jimjonesbr/wmss/blob/master/README.md#describeservice)
 
@@ -117,7 +189,7 @@ An example of a Service Description Report can be found [here](https://github.co
  
  Lists all scores from available repositories. 
  
-  ```http
+ ```http
  http://localhost:8295/wmss?request=ListScores
  ```
  
@@ -128,7 +200,7 @@ An example of a Service Description Report can be found [here](https://github.co
  
  Constraints the __Score List Document__ to a specific data source:
  
-  ```http
+ ```http
  http://localhost:8295/wmss?request=ListScores&source=neo4j_local
  ```
 
