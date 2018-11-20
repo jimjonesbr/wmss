@@ -73,13 +73,14 @@ File: `config/sources.conf`
 
 #### [Starting the Server](https://github.com/jimjonesbr/wmss/blob/master/README.md#starting-the-server)
 
-**Linux**: Execute the file `start.sh` in the root directory.
+**From the console**:
+```shell
+$ java -jar wmss-[VERSION].jar
+```
 
-**Windows**: Execute the file `start.bat` in the root directory.
+**For the source code**: Execute the main method of the Java class `de.wwu.wmss.web.Start.java`
 
-**For developers**: Execute the main method of the Java class `de.wwu.wmss.web.Start.java`
-
-After successfully starting the server you will a message like this:
+After successfully starting the server you will see a message like this:
 
 ```
 Web Music Score Service - University of Münster
