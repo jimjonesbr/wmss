@@ -226,13 +226,17 @@ RETURN COUNT(measure) AS MeasureTimeSignature;
 
 // Clefs //
 
-MATCH (noteset:mso__NoteSet)-[:mso__hasClef]->(clef)
-SET noteset.clef = REPLACE(LOWER(labels(clef)[1]),'mso__','')
+//MATCH (noteset:mso__NoteSet)-[:mso__hasClef]->(clef)
+//SET noteset.clef = REPLACE(LOWER(labels(clef)[1]),'mso__','')
+//RETURN COUNT(clef) AS NotesetClef;
+
+MATCH (noteset:mso__NoteSet)-[:mso__hasClef]->(clef)-[:mso__sign]->(sign)
+SET noteset.clefSign = SUBSTRING(sign.uri,36), noteset.clefLine = clef.mso__line
 RETURN COUNT(clef) AS NotesetClef;
 
-MATCH (noteset:mso__NoteSet)-[:mso__hasClef]->(clef)
-DETACH DELETE clef 
-RETURN COUNT(noteset) AS DeletedClef;
+//MATCH (noteset:mso__NoteSet)-[:mso__hasClef]->(clef)
+//DETACH DELETE clef 
+//RETURN COUNT(noteset) AS DeletedClef;
 
 MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
 MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
@@ -330,6 +334,9 @@ CREATE INDEX ON :mso__ScorePart(typeLabel);
 CREATE INDEX ON :mso__Measure(key);
 CREATE INDEX ON :mso__Measure(beats);
 CREATE INDEX ON :mso__Measure(beatType);
+CREATE INDEX ON :mso__NoteSet(clefLine);
+CREATE INDEX ON :mso__NoteSet(clefSign);
+
 
 
 

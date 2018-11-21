@@ -293,6 +293,14 @@ public class FactoryNeo4j {
 				"RETURN COUNT(clef) AS NotesetClef;";			
 		Neo4jConnector.getInstance().executeQuery(clefStatement, Util.getDataSource(importRequest.getSource()));
 		
+		String clef =
+				"MATCH (noteset:mso__NoteSet)-[:mso__hasClef]->(clef)-[:mso__sign]->(sign)\n" + 
+				"WHERE noteset.sign IS NULL\n" + 
+				"SET noteset.clefSign = SUBSTRING(sign.uri,36), noteset.clefLine = clef.mso__line \n" + 
+				"RETURN COUNT(clef) AS NotesetClef;\n";
+		Neo4jConnector.getInstance().executeQuery(clef, Util.getDataSource(importRequest.getSource()));
+
+		
 		String tonalityStatement = 
 				"MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)\n" + 
 				"MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)\n" + 
@@ -358,6 +366,7 @@ public class FactoryNeo4j {
 				"SET noteset.voice = voice.rdfs__ID, noteset.staff = staff.rdfs__ID\n" + 
 				"RETURN COUNT(noteset);";
 		Neo4jConnector.getInstance().executeQuery(voiceStaff, Util.getDataSource(importRequest.getSource()));
+				
 		
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mo__Movement(mso__hasBeatsPerMinute);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mo__Movement(beatUnit);", Util.getDataSource(importRequest.getSource()));
@@ -374,6 +383,8 @@ public class FactoryNeo4j {
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mso__Measure(key);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mso__Measure(beats);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mso__Measure(beatType);", Util.getDataSource(importRequest.getSource()));
+		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mso__NoteSet(clefSign);", Util.getDataSource(importRequest.getSource()));
+		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mso__NoteSet(clefLine);", Util.getDataSource(importRequest.getSource()));
 		
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :d1(size);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :d2(size);", Util.getDataSource(importRequest.getSource()));
@@ -849,7 +860,7 @@ public class FactoryNeo4j {
 				}
 
 				if(!noteSequence.get(i).getClef().equals("")) {
-					where = where + "AND ns"+i+".clefShape=\""+String.valueOf(noteSequence.get(i).getClef().charAt(0))+"\"\n";
+					where = where + "AND ns"+i+".clefSign=\""+String.valueOf(noteSequence.get(i).getClef().charAt(0))+"\"\n";
 					where = where + "AND ns"+i+".clefLine="+String.valueOf(noteSequence.get(i).getClef().charAt(2))+"\n";
 				}
 
@@ -891,7 +902,8 @@ public class FactoryNeo4j {
 
 
 		} 
-				
+		
+		
 		/**
 		 * Match clause
 		 */
@@ -902,17 +914,19 @@ public class FactoryNeo4j {
 			match = match + "MATCH (movements:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart) \n";
 		}
 		
-		if(!wmssRequest.getMelody().equals("")) {
-			match = match + "MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasMeasure]->(measure1:mso__Measure)\n";
+		if(!wmssRequest.getMelody().equals("") || !wmssRequest.getKey().equals("")) {
+			if(wmssRequest.getClef().equals("")) {
+				match = match + "MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasMeasure]->(measure1:mso__Measure)\n";
+			}			
 		}
 		
 		if(!wmssRequest.getClef().equals("")) {
 			match = match + "MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasMeasure]->(measure1:mso__Measure)-[:mso__hasNoteSet]->(ns0)";
 		}
 		
-		if(!wmssRequest.getKey().equals("")) {
-			match = match + "MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasMeasure]->(measure1:mso__Measure)\n";
-		}
+//		if(!wmssRequest.getKey().equals("")) {
+//			match = match + "MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasMeasure]->(measure1:mso__Measure)\n";
+//		}
 		
 		/**
 		 * Where clause
@@ -943,7 +957,7 @@ public class FactoryNeo4j {
 		}
 
 		if(!wmssRequest.getClef().equals("")) {
-			where = where + "AND ns0.clefShape= \""+String.valueOf(wmssRequest.getClef().charAt(0))+"\"\n";
+			where = where + "AND ns0.clefSign= \""+String.valueOf(wmssRequest.getClef().charAt(0))+"\"\n";
 			where = where + "AND ns0.clefLine= "+String.valueOf(wmssRequest.getClef().charAt(2))+"\n";
 		}
 		
