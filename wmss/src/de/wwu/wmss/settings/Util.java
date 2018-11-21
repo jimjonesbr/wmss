@@ -260,6 +260,13 @@ public class Util {
 
 		}
 
+		
+		for (int i = 0; i < sequence.size(); i++) {
+			if(sequence.get(i).isChord()) {
+				sequence.get(i-1).setChord(true);
+			}
+		}
+		
 		if(sequence.size()<3) {
 			throw new InvalidMelodyException(ErrorCodes.INVALID_MELODY_LENGTH_DESCRIPTION +" ["+pea+"]",ErrorCodes.INVALID_MELODY_LENGTH_CODE,ErrorCodes.INVALID_MELODY_LENGTH_HINT);
 		}
@@ -297,23 +304,27 @@ public class Util {
 		keys.add("bB");keys.add("bBE");keys.add("bBEA");keys.add("bBEAD");keys.add("bBEADG");keys.add("bBEADGC");keys.add("bBEADGCF");
 		boolean match = false;
 
-		for (int i = 0; i < keys.size(); i++) {
-			if(keys.get(i).equals(key)) {
-				match = true;
-			};
+//		for (int i = 0; i < keys.size(); i++) {
+//			if(keys.get(i).equals(key)) {
+//				match = true;
+//			};
+//		}
+		
+		if(keys.contains(key)) {
+			match = true;
+			
 		}
-
-		if(key.length()>1 && !Character.toString(key.charAt(1)).equals("x") && !Character.toString(key.charAt(1)).equals("b") ) {
-			result = "$x"+ key.substring(1, key.length());			
-		} else {
-			result = key;
-		}
+//		if(key.length()>1 && !Character.toString(key.charAt(1)).equals("x") && !Character.toString(key.charAt(1)).equals("b") ) {
+//			result = "$x"+ key.substring(1, key.length());			
+//		} else {
+//			result = key;
+//		}
 
 		if(!match) {
 			throw new InvalidKeyException(ErrorCodes.INVALID_KEY_DESCRIPTION +" ["+key+"]",ErrorCodes.INVALID_KEY_CODE,ErrorCodes.INVALID_KEY_HINT);
 		}
 
-		return result;
+		return key;
 	}
 
 	public static String formatPEAclef(String clef) throws InvalidClefException {

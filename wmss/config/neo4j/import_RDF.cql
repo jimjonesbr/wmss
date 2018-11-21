@@ -23,9 +23,9 @@ CREATE (:NamespacePrefixDefinition {
   `http://purl.org/ontology/mo/mit#`: 'mit'
 });
 
-//CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
+CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
 //CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements_musescore.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
-CALL semantics.importRDF("file:///home/jones/git/musicowl-repository/musicowl/ntriples/elgar_cello_concerto_op.85.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
+//CALL semantics.importRDF("file:///home/jones/git/musicowl-repository/musicowl/ntriples/elgar_cello_concerto_op.85.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
 
 MATCH (mov:mo__Movement)
 OPTIONAL MATCH (mov:mo__Movement)-[:mso__hasBeatUnit]-(unit)
@@ -277,54 +277,59 @@ SET measure.key = key,
     measure.mode = mode
 RETURN COUNT(measure) AS MeasureKey;
 
-MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
-MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
-DETACH DELETE key,tonicNode,modeNode
-RETURN COUNT(key) AS DeletedKeys;
+MATCH (scr:mo__Score)-[:dc__creator]->(creator:foaf__Person)-[:gndo__professionOrOccupation]->(role:prov__Role)
+SET creator.roleUri = role.uri, creator.roleName = role.gndo__preferredNameForTheSubjectHeading
+RETURN COUNT(creator) AS CreatorRoles;
 
-MATCH (noteset:mso__NoteSet)-[predicate:mso__hasDuration]->(duration)
-OPTIONAL MATCH (duration)-[:mso__hasDurationAttribute]->(attribute)
-DETACH DELETE predicate, duration, attribute
-RETURN COUNT(duration) AS DeletedDurations;
+MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(noteset)
+SET noteset.voice = voice.rdfs__ID, noteset.staff = staff.rdfs__ID
+RETURN COUNT(noteset);
 
-MATCH (note:chord__Note)-[predicate:chord__natural]->(natural:chord__Natural)
-DETACH DELETE predicate, natural
-RETURN COUNT(natural) AS DeletedNotes;
+//MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+//MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+//DETACH DELETE key,tonicNode,modeNode
+//RETURN COUNT(key) AS DeletedKeys;
 
-MATCH (note:chord__Note)-[predicate:chord__modifier]->(modifier) 
-DETACH DELETE predicate, modifier 
-RETURN COUNT(modifier) AS DeletedModifiers;
+//MATCH (noteset:mso__NoteSet)-[predicate:mso__hasDuration]->(duration)
+//OPTIONAL MATCH (duration)-[:mso__hasDurationAttribute]->(attribute)
+//DETACH DELETE predicate, duration, attribute
+//RETURN COUNT(duration) AS DeletedDurations;
 
-MATCH (instant:mso__Instant)
-DETACH DELETE instant
-RETURN COUNT(instant) AS DeletedInstants;
+//MATCH (note:chord__Note)-[predicate:chord__natural]->(natural:chord__Natural)
+//DETACH DELETE predicate, natural
+//RETURN COUNT(natural) AS DeletedNotes;
 
-MATCH (ns:mso__NoteSet)-[:mso__hasDynamic]-(dynamic) 
-DETACH DELETE dynamic
-RETURN COUNT(dynamic) AS DeletedDynamics;
+//MATCH (note:chord__Note)-[predicate:chord__modifier]->(modifier) 
+//DETACH DELETE predicate, modifier 
+//RETURN COUNT(modifier) AS DeletedModifiers;
 
-MATCH (activity)-[:prov__generated]->(score)
-DETACH DELETE activity
-RETURN COUNT(activity) AS DeletedActivity;
+//MATCH (instant:mso__Instant)
+//DETACH DELETE instant
+//RETURN COUNT(instant) AS DeletedInstants;
 
-//MATCH (score:mo__Score) WHERE score.active IS NULL SET score.active = TRUE RETURN COUNT (score);
+//MATCH (ns:mso__NoteSet)-[:mso__hasDynamic]-(dynamic) 
+//DETACH DELETE dynamic
+//RETURN COUNT(dynamic) AS DeletedDynamics;
+
+//MATCH (activity)-[:prov__generated]->(score)
+//DETACH DELETE activity
+//RETURN COUNT(activity) AS DeletedActivity;
 
 //Indexes
 
 CREATE INDEX ON :mo__Movement(mso__hasBeatsPerMinute);
 CREATE INDEX ON :mo__Movement(beatUnit);
 CREATE INDEX ON :mo__Movement(beatUnit,mso__hasBeatsPerMinute);
-CREATE INDEX ON :mo__Measure(tonic,mode);
 CREATE INDEX ON :mo__Score(issued);
 CREATE INDEX ON :mo__Score(encoderUri);
 CREATE INDEX ON :mo__Score(collectionUri);
-CREATE INDEX ON :mso__NoteSet(size);
-CREATE INDEX ON :chord__Note(mso__hasOctave);
 CREATE INDEX ON :prov__Role(gndo__preferredNameForTheSubjectHeading);
 CREATE INDEX ON :mo__Score(format);
 CREATE INDEX ON :mso__ScorePart(rdfs__label);
 CREATE INDEX ON :mso__ScorePart(typeLabel);
 CREATE INDEX ON :mso__Measure(key);
+CREATE INDEX ON :mso__Measure(beats);
+CREATE INDEX ON :mso__Measure(beatType);
 
 
 

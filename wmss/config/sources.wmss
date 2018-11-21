@@ -1,5 +1,6 @@
 {
-    "datasource": [{
+    "datasource": 
+    [{
       "id": "postgres_local",
 	  "info": "Universität Münster - PostgreSQL repository.",
       "active": false,

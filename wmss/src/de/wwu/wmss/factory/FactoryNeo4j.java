@@ -345,9 +345,22 @@ public class FactoryNeo4j {
 				"RETURN COUNT(scr.uri) AS Collections;";		
 		Neo4jConnector.getInstance().executeQuery(collections, Util.getDataSource(importRequest.getSource()));
 		
+		String creatorRole = 
+				"MATCH (scr:mo__Score)-[:dc__creator]->(creator:foaf__Person)-[:gndo__professionOrOccupation]->(role:prov__Role)\n" + 
+				"WHERE creator.roleUri IS NULL\n" + 
+				"SET creator.roleUri = role.uri, creator.roleName = role.gndo__preferredNameForTheSubjectHeading\n" + 
+				"RETURN COUNT(creator) AS CreatorRoles";
+		Neo4jConnector.getInstance().executeQuery(creatorRole, Util.getDataSource(importRequest.getSource()));
+		
+		String voiceStaff = 
+				"MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(noteset)\n" + 
+				"WHERE noteset.voice IS NULL OR noteset.staff IS NULL\n" + 
+				"SET noteset.voice = voice.rdfs__ID, noteset.staff = staff.rdfs__ID\n" + 
+				"RETURN COUNT(noteset);";
+		Neo4jConnector.getInstance().executeQuery(voiceStaff, Util.getDataSource(importRequest.getSource()));
+		
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mo__Movement(mso__hasBeatsPerMinute);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mo__Movement(beatUnit);", Util.getDataSource(importRequest.getSource()));
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mo__Measure(tonic,mode);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mo__Score(issued);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mo__Score(encoderUri);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mo__Score(collectionUri);", Util.getDataSource(importRequest.getSource()));
@@ -359,7 +372,8 @@ public class FactoryNeo4j {
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mso__ScorePart(rdfs__label);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mso__ScorePart(typeLabel);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mso__Measure(key);", Util.getDataSource(importRequest.getSource()));
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mso__Measure(beats,beatType);", Util.getDataSource(importRequest.getSource()));
+		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mso__Measure(beats);", Util.getDataSource(importRequest.getSource()));
+		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mso__Measure(beatType);", Util.getDataSource(importRequest.getSource()));
 		
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :d1(size);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :d2(size);", Util.getDataSource(importRequest.getSource()));
@@ -371,6 +385,7 @@ public class FactoryNeo4j {
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :d8(size);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :d9(size);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :da(size);", Util.getDataSource(importRequest.getSource()));
+		
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :A(mso__hasOctave);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :B(mso__hasOctave);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :C(mso__hasOctave);", Util.getDataSource(importRequest.getSource()));
@@ -785,48 +800,146 @@ public class FactoryNeo4j {
 	
 	public static String createMelodyQuery(WMSSRequest wmssRequest) {
 	
-		String match = "";
-		String where = "";
-						
-		String personNode;
+		
+		String where = "\nWHERE TRUE \n";													
+		String match = "MATCH (scr:mo__Score)-[:mo__movement]->(movements:mo__Movement)\n";
+		
+		match = match + "MATCH (scr:mo__Score)-[:dc__creator]->(creator:foaf__Person)\n";
+		
+		if(!wmssRequest.getMelody().equals("")) {
+
+			ArrayList<Note> noteSequence = wmssRequest.getNoteSequence();
+
+			for (int j = 0; j < noteSequence.size(); j++) {
+				/**
+				 * Disables ignoreChord flag in case there are chords in the searched melody.
+				 */
+				if(noteSequence.get(j).isChord() && wmssRequest.isIgnoreChords()) {
+					wmssRequest.setIgnoreChords(false);
+					logger.warn("["+ErrorCodes.WARNING_CONFLICTING_CHORDS_PARAMETER_CODE + "] " + ErrorCodes.WARNING_CONFLICTING_CHORDS_PARAMETER_DESCRIPTION + " - " + ErrorCodes.WARNING_CONFLICTING_CHORDS_PARAMETER_HINT);
+				}
+			}
+
+			int i = 0;
+			int notesetCounter = 0;
+			int currentMeasure = 0;
+			String previousDurationType = "";
+			String measureNode ="";
+
+			while(i<=noteSequence.size()-1) {
+
+				String currentDurationType = "mso__NoteSet";								
+				if(!wmssRequest.isIgnoreDuration()) {
+					currentDurationType = "d"+ noteSequence.get(i).getDuration();					
+				}	
+
+				String currentPitchType = "chord__Note";
+				if(!wmssRequest.isIgnorePitch()) {
+					currentPitchType = noteSequence.get(i).getPitch()+noteSequence.get(i).getAccidental();
+				}
+
+				if(!noteSequence.get(i).getTime().equals("")) {					
+					String[] time = noteSequence.get(i).getTime().split("/");
+					where = where + "AND measure"+noteSequence.get(i).getMeasure()+".beatType="+time[1]+"\n" 
+								  + "AND measure"+noteSequence.get(i).getMeasure()+".beats="+time[0]+"\n";					
+				}
+
+				if(!noteSequence.get(i).getKey().equals("")) {
+					where = where + "AND measure"+noteSequence.get(i).getMeasure()+".key=\""+noteSequence.get(i).getKey()+"\"\n"; 
+				}
+
+				if(!noteSequence.get(i).getClef().equals("")) {
+					where = where + "AND ns"+i+".clefShape=\""+String.valueOf(noteSequence.get(i).getClef().charAt(0))+"\"\n";
+					where = where + "AND ns"+i+".clefLine="+String.valueOf(noteSequence.get(i).getClef().charAt(2))+"\n";
+				}
+
+				if(currentMeasure != noteSequence.get(i).getMeasure()) {
+					measureNode = "(measure"+noteSequence.get(i).getMeasure()+":mso__Measure)";
+					if(noteSequence.get(i).getMeasure()>1) {
+						match = match + "MATCH (measure"+currentMeasure+":mso__Measure)-[:mso__nextMeasure]->(measure"+noteSequence.get(i).getMeasure()+":mso__Measure)-[:mso__hasNoteSet]->(ns"+(notesetCounter)+":"+currentDurationType+")\n";						
+					}
+					currentMeasure = noteSequence.get(i).getMeasure();
+				}
+
+				if(i==0) {
+					match = match + "MATCH "+measureNode+"-[:mso__hasNoteSet]->(ns0:"+currentDurationType+")\n";
+					previousDurationType = currentDurationType;
+				}
+				
+				if(!wmssRequest.isIgnorePitch()) {																
+					match = match + "MATCH (ns"+notesetCounter+":"+currentDurationType+")-[:mso__hasNote]->(n"+i+":"+currentPitchType+") \n";
+				}															
+				if(!wmssRequest.isIgnoreOctaves()) {	
+					where = where + "AND n"+i+".mso__hasOctave="+noteSequence.get(i).getOctave()+"\n";
+				}										 
+
+				if(wmssRequest.isIgnoreChords()) {
+					where = where  + "AND ns"+notesetCounter+".size = 1 \n";
+				}
+								
+				if(!noteSequence.get(i).isChord()) {
+					
+					if(notesetCounter>0) {
+						match = match + "MATCH (ns"+(notesetCounter-1)+":"+previousDurationType+")-[:mso__nextNoteSet]->(ns"+notesetCounter+":"+currentDurationType+") \n";
+					}
+					notesetCounter++;
+				}
+								
+				previousDurationType = currentDurationType;				
+				i++;
+			}
+
+
+		} 
+				
+		/**
+		 * Match clause
+		 */
+		
+		if(!wmssRequest.getPerformanceMedium().equals("") || 
+		   !wmssRequest.getPerformanceMediumType().equals("") &&
+		    wmssRequest.getMelody().equals("")) {
+			match = match + "MATCH (movements:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart) \n";
+		}
+		
+		if(!wmssRequest.getMelody().equals("")) {
+			match = match + "MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasMeasure]->(measure1:mso__Measure)\n";
+		}
+		
+		if(!wmssRequest.getClef().equals("")) {
+			match = match + "MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasMeasure]->(measure1:mso__Measure)-[:mso__hasNoteSet]->(ns0)";
+		}
+		
+		if(!wmssRequest.getKey().equals("")) {
+			match = match + "MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasMeasure]->(measure1:mso__Measure)\n";
+		}
+		
+		/**
+		 * Where clause
+		 */
+		
+		if(!wmssRequest.getPerformanceMedium().equals("")) {
+			where = where + "AND part.rdfs__label=\""+wmssRequest.getPerformanceMedium()+"\"\n";
+		} 
+
+		if(!wmssRequest.getPerformanceMediumType().equals("")) {
+			where = where + "AND part.typeLabel=\""+wmssRequest.getPerformanceMediumType()+"\"\n";
+		}
 		
 		if(!wmssRequest.getPerson().equals("")) {
-			personNode = "(creator:foaf__Person {uri:\""+wmssRequest.getPerson()+"\"})";
-		} else {
-			personNode = "(creator:foaf__Person)";
+			where = where + "AND creator.uri=\""+wmssRequest.getPerson()+"\"\n";
 		}
-		
-		String personRoleNode;
 
 		if(!wmssRequest.getPersonRole().equals("")) {
-			personRoleNode = "(role:prov__Role {gndo__preferredNameForTheSubjectHeading:\""+wmssRequest.getPersonRole()+"\"})";
-		} else {
-			personRoleNode = "(role:prov__Role)";
+			where = where + "AND creator.roleName=\""+wmssRequest.getPersonRole()+"\"\n";
 		}
-		
-		String scoreNode = "";
-		
+				
 		if(!wmssRequest.getFormat().equals("")) {
-			scoreNode = "(scr:mo__Score {format:\""+wmssRequest.getFormat()+"\"})";
-		} else {
-			scoreNode = "(scr:mo__Score)";
-		}
+			where = where + "AND scr.format=\""+wmssRequest.getFormat()+"\"\n";
+		} 
 		
-		String instrumentNode = "";
-
-		if(!wmssRequest.getPerformanceMedium().equals("")) {
-			instrumentNode = "(part:mso__ScorePart {rdfs__label:\""+wmssRequest.getPerformanceMedium()+"\"})";
-		} else {
-			if(!wmssRequest.getPerformanceMediumType().equals("")) {
-				instrumentNode = "(part:mso__ScorePart {typeLabel:\""+wmssRequest.getPerformanceMediumType()+"\"})";
-			} else {
-				instrumentNode = "(part:mso__ScorePart)";
-			}
-		}		
-		
-	
 		if(!wmssRequest.getTempoBeatUnit().equals("")) {
-			where = "AND mov.beatUnit='"+wmssRequest.getTempoBeatUnit()+"' \n"; 
+			where = where + "AND movements.beatUnit='"+wmssRequest.getTempoBeatUnit()+"' \n"; 
 		}
 
 		if(!wmssRequest.getClef().equals("")) {
@@ -838,12 +951,12 @@ public class FactoryNeo4j {
 			String[] bpm = wmssRequest.getTempoBeatsPerMinute().split("-");
 			
 			if(bpm.length==1) {
-				where = where + "AND mov.mso__hasBeatsPerMinute = " + bpm[0] +"\n";
+				where = where + "AND movements.mso__hasBeatsPerMinute = " + bpm[0] +"\n";
 			}
 			
 			if(bpm.length==2) {
-				where = where + "AND mov.mso__hasBeatsPerMinute >= " + bpm[0] +"\n";
-				where = where + "AND mov.mso__hasBeatsPerMinute <= " + bpm[1] +"\n";
+				where = where + "AND movements.mso__hasBeatsPerMinute >= " + bpm[0] +"\n";
+				where = where + "AND movements.mso__hasBeatsPerMinute <= " + bpm[1] +"\n";
 			}
 		}
 		
@@ -856,12 +969,9 @@ public class FactoryNeo4j {
 				where = where + "AND scr.issued <= datetime('"+wmssRequest.getDateIssuedArray().get(1)+"') \n";
 			}
 		}
-		
-		match = "\nMATCH "+scoreNode+"-[:dc__creator]->"+personNode+"-[:gndo__professionOrOccupation]->"+personRoleNode+"\n";
-		
-		
+			
 		if(!wmssRequest.getKey().equals("")) {
-			match = match + "MATCH (measure {key:\""+wmssRequest.getKey()+"\"})";
+			where = where + "AND measure1.key=\""+wmssRequest.getKey()+"\"\n";
 		}
 
 		if(!wmssRequest.getTimeSignature().equals("")) {
@@ -870,126 +980,19 @@ public class FactoryNeo4j {
 					      + "AND measure.beats="+time[0]+"\n";					
 		}
 		
-		
-		if(!wmssRequest.getMelody().equals("")) {
-	
-			ArrayList<Note> noteSequence = wmssRequest.getNoteSequence();
-			
-			for (int j = 0; j < noteSequence.size(); j++) {
-				/**
-				 * Disables ignoreChord flag in case there are chords in the searched melody.
-				 */
-				if(noteSequence.get(j).isChord() && wmssRequest.isIgnoreChords()) {
-					wmssRequest.setIgnoreChords(false);
-					logger.warn("["+ErrorCodes.WARNING_CONFLICTING_CHORDS_PARAMETER_CODE + "] " + ErrorCodes.WARNING_CONFLICTING_CHORDS_PARAMETER_DESCRIPTION + " - " + ErrorCodes.WARNING_CONFLICTING_CHORDS_PARAMETER_HINT);
-				}
-			}
-			
-			int i = 0;
-			int notesetCounter = 0;
-			int currentMeasure = 0;
-			String previousDurationType = "";
-			String measureNode ="";
-			
-			while(i<=noteSequence.size()-1) {
-				
-				
-				String currentDurationType = "mso__NoteSet";								
-				if(!wmssRequest.isIgnoreDuration()) {
-					currentDurationType = "d"+ noteSequence.get(i).getDuration();					
-				}	
-				
-				String currentPitchType = "chord__Note";
-				if(!wmssRequest.isIgnorePitch()) {
-					currentPitchType = noteSequence.get(i).getPitch()+noteSequence.get(i).getAccidental();
-				}
-				
-				if(!noteSequence.get(i).getTime().equals("")) {					
-					String[] time = noteSequence.get(i).getTime().split("/");
-					where = where + "AND measure"+noteSequence.get(i).getMeasure()+".beatType="+time[1]+"\n" 
-							      + "AND measure"+noteSequence.get(i).getMeasure()+".beats="+time[0]+"\n";					
-				}
-				
-				if(!noteSequence.get(i).getKey().equals("")) {
-					where = where + "AND measure"+noteSequence.get(i).getMeasure()+".key=\""+noteSequence.get(i).getKey()+"\"\n"; 
-				}
-				
-				if(!noteSequence.get(i).getClef().equals("")) {
-					where = where + "AND ns"+i+".clefShape=\""+String.valueOf(noteSequence.get(i).getClef().charAt(0))+"\"\n";
-					where = where + "AND ns"+i+".clefLine="+String.valueOf(noteSequence.get(i).getClef().charAt(2))+"\n";
-				}
-				
-				
-			    if(currentMeasure!=noteSequence.get(i).getMeasure()) {
-					measureNode = "(measure"+noteSequence.get(i).getMeasure()+":mso__Measure)";
-					if(noteSequence.get(i).getMeasure()>1) {
-						match=match+"MATCH (measure"+currentMeasure+":mso__Measure)-[:mso__nextMeasure]->(measure"+noteSequence.get(i).getMeasure()+":mso__Measure)-[:mso__hasNoteSet]->(ns"+(notesetCounter+1)+":"+currentDurationType+")\n";
-						
-					}
-					currentMeasure = noteSequence.get(i).getMeasure();
-				}
-				
-				if(i==0) {
-
-					match = match + "MATCH "+scoreNode+"-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->"+instrumentNode+"-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(ns0:"+currentDurationType+")\n" + 
-									"MATCH "+scoreNode+"-[:mo__movement]->(movements:mo__Movement) \n";// + 
-									//"MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->"+measureNode+"-[:mso__hasNoteSet]->(ns0:"+currentDurationType+") \n";
-							
-					if(!wmssRequest.isIgnorePitch()) {						
-						match = match +	"MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->"+measureNode+"-[:mso__hasNoteSet]->(ns0:"+currentDurationType+")-[:mso__hasNote]->(n0:"+currentPitchType+") \n";
-					}
-															
-					if(!wmssRequest.isIgnoreOctaves()) {
-						match = match +	"MATCH (n0:"+currentPitchType+" {mso__hasOctave:"+noteSequence.get(i).getOctave()+"}) \n";
-					}
-					
-					previousDurationType = currentDurationType;
-					
-				} else {
-					
-					if(!noteSequence.get(i).isChord()) {
-						notesetCounter++;
-						if(notesetCounter>0) {
-							match = match + "MATCH (ns"+(notesetCounter-1)+":"+previousDurationType+")-[:mso__nextNoteSet]->(ns"+notesetCounter+":"+currentDurationType+") \n";
-						}						
-					}
-					if(!wmssRequest.isIgnorePitch()) {											
-						match = match + "MATCH (ns"+notesetCounter+":"+currentDurationType+")-[:mso__hasNote]->(n"+i+":"+currentPitchType+") \n";
-					}															
-					if(!wmssRequest.isIgnoreOctaves()) {	
-						match = match +	"MATCH (n"+i+":" + currentPitchType + "{mso__hasOctave:"+noteSequence.get(i).getOctave()+"}) \n";
-					}										 
-				}
-
-				if(wmssRequest.isIgnoreChords()) {
-					where = where  + "AND ns"+notesetCounter+".size = 1 \n";
-				}
-								
-				previousDurationType = currentDurationType;				
-				i++;
-			}
-			
-
-		} else {
-			
-			match = match + "\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-"+scoreNode+"-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->"+instrumentNode+"-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasNoteSet]->(ns0)" +  
-							"MATCH "+scoreNode+"-[:foaf__thumbnail]->(thumbnail) \n" +
-							"MATCH "+scoreNode+"-[:mo__movement]->(movements:mo__Movement) \n";	
-		}
-		
 		if(wmssRequest.isSolo()) {
-			match = match + "\nMATCH (part:mso__ScorePart {mso__isSolo:\""+wmssRequest.isSolo()+"\"})";	
+			where = where + "AND part.mso__isSolo=\""+wmssRequest.isSolo()+"\"";
 		}
 		
 		if(wmssRequest.isEnsemble()) {
-			match = match + "\nMATCH (part:mso__ScorePart {mso__isEnsemble:\""+wmssRequest.isEnsemble()+"\"})";	
+			where = where + "AND part.mso__isEnsemble=\""+wmssRequest.isEnsemble()+"\"";
 		}
 
 		if(!wmssRequest.getCollection().equals("")) {
 			where = where  + "AND scr.collectionUri = '"+wmssRequest.getCollection()+"' \n";
 		}
-
-		return match + "\nWHERE TRUE \n" + where;		
+		
+		return match + where;		
 	}
 			
 	public static ArrayList<DeletedRecord> deleteScore(WMSSRequest request, DataSource dataSource) {
@@ -1044,7 +1047,7 @@ public class FactoryNeo4j {
 				"    {persons: COLLECT(DISTINCT\n" + 
 				"       {name: creator.foaf__name, \n" + 
 				"     	 identifier: creator.uri, \n" +
-				"	     role: role.gndo__preferredNameForTheSubjectHeading} \n" + 
+				"	     role: creator.roleName} \n" + 
 				"    )} AS persons,\n" + 
 				"    {persons: COLLECT(DISTINCT{name: scr.encoderName, identifier: scr.encoderUri, role: \"Encoder\"})} AS encoders, \n";
 		
@@ -1055,8 +1058,8 @@ public class FactoryNeo4j {
 				"      movementIdentifier: mov.uri,\n" + 
 				"      movementName: mov.dc__title,\n" + 
 				"      startingMeasure: measure1.rdfs__ID, \n" + 
-				"      staff: staff.rdfs__ID , \n" + 
-				"      voice: voice.rdfs__ID, \n" + 
+				"      staff: ns0.staff, \n" + 
+				"      voice: ns0.voice, \n" + 
 				"      instrumentName: part.dc__description \n" + 
 				"    })} AS locations, \n";				
 		}		

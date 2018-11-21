@@ -246,33 +246,33 @@ public class WMSSRequest {
 		if (!this.format.equals("mei") && !this.format.equals("musicxml") && !this.format.equals("") ){
 			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_DOCUMENT_FORMAT_DESCRIPTION+" ["+this.format+"]",ErrorCodes.INVALID_DOCUMENT_FORMAT_CODE,ErrorCodes.INVALID_DOCUMENT_FORMAT_HINT);
 		}
-		if (!this.tonalityMode.equals("minor") && !this.tonalityMode.equals("major") && !this.tonalityMode.equals("") ){
-			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_TONALITY_MODE_DESCRIPTION+" ["+this.tonalityMode+"]",ErrorCodes.INVALID_TONALITY_MODE_DESCRIPTION,ErrorCodes.INVALID_TONALITY_MODE_HINT);
-		}
-		if (!this.tonalityTonic.equals("A") && 
-				!this.tonalityTonic.equals("bA") && 
-				!this.tonalityTonic.equals("xA") && 
-				!this.tonalityTonic.equals("B") &&
-				!this.tonalityTonic.equals("bB") &&
-				!this.tonalityTonic.equals("xB") &&
-				!this.tonalityTonic.equals("C") &&
-				!this.tonalityTonic.equals("bC") &&
-				!this.tonalityTonic.equals("xC") &&
-				!this.tonalityTonic.equals("D") &&
-				!this.tonalityTonic.equals("bD") &&
-				!this.tonalityTonic.equals("xD") &&
-				!this.tonalityTonic.equals("E") &&
-				!this.tonalityTonic.equals("bE") &&
-				!this.tonalityTonic.equals("xE") &&
-				!this.tonalityTonic.equals("F") &&
-				!this.tonalityTonic.equals("bF") &&
-				!this.tonalityTonic.equals("xF") &&
-				!this.tonalityTonic.equals("G") &&
-				!this.tonalityTonic.equals("bG") &&
-				!this.tonalityTonic.equals("xG") &&
-				!this.tonalityTonic.equals("")){
-			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_TONALITY_TONIC_DESCRIPTION+" ["+this.tonalityTonic+"]",ErrorCodes.INVALID_TONALITY_TONIC_CODE,ErrorCodes.INVALID_TONALITY_TONIC_HINT);
-		}
+//		if (!this.tonalityMode.equals("minor") && !this.tonalityMode.equals("major") && !this.tonalityMode.equals("") ){
+//			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_TONALITY_MODE_DESCRIPTION+" ["+this.tonalityMode+"]",ErrorCodes.INVALID_TONALITY_MODE_DESCRIPTION,ErrorCodes.INVALID_TONALITY_MODE_HINT);
+//		}
+//		if (!this.tonalityTonic.equals("A") && 
+//				!this.tonalityTonic.equals("bA") && 
+//				!this.tonalityTonic.equals("xA") && 
+//				!this.tonalityTonic.equals("B") &&
+//				!this.tonalityTonic.equals("bB") &&
+//				!this.tonalityTonic.equals("xB") &&
+//				!this.tonalityTonic.equals("C") &&
+//				!this.tonalityTonic.equals("bC") &&
+//				!this.tonalityTonic.equals("xC") &&
+//				!this.tonalityTonic.equals("D") &&
+//				!this.tonalityTonic.equals("bD") &&
+//				!this.tonalityTonic.equals("xD") &&
+//				!this.tonalityTonic.equals("E") &&
+//				!this.tonalityTonic.equals("bE") &&
+//				!this.tonalityTonic.equals("xE") &&
+//				!this.tonalityTonic.equals("F") &&
+//				!this.tonalityTonic.equals("bF") &&
+//				!this.tonalityTonic.equals("xF") &&
+//				!this.tonalityTonic.equals("G") &&
+//				!this.tonalityTonic.equals("bG") &&
+//				!this.tonalityTonic.equals("xG") &&
+//				!this.tonalityTonic.equals("")){
+//			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_TONALITY_TONIC_DESCRIPTION+" ["+this.tonalityTonic+"]",ErrorCodes.INVALID_TONALITY_TONIC_CODE,ErrorCodes.INVALID_TONALITY_TONIC_HINT);
+//		}
 		if(!this.melodyEncoding.equals("pea")) {
 			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_MELODY_ENCODING_DESCRIPTION+" ["+this.melodyEncoding+"]",ErrorCodes.INVALID_MELODY_ENCODING_CODE,ErrorCodes.INVALID_MELODY_ENCODING_HINT);
 		}
