@@ -262,7 +262,7 @@ Parameter: `performanceMediumType`
 It is also possible to select music scores based on performance medium types, e.g. Strings, Keyboard. The example bellow selects all records that contain movements that are played with bowed string instruments:
  
  ```http
- http://localhost:8295/wmss?request=ListScores&performanceMediumType=strings
+ http://localhost:8295/wmss?request=ListScores&source=neo4j_local&performanceMediumType=strings
 ```
 
 The performanceMediumType paramater is also based on the [MusicXML 3.0 Standard Sounds](https://github.com/w3c/musicxml/blob/v3.1/schema/sounds.xml) and the following codes:
