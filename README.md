@@ -73,13 +73,14 @@ File: `config/sources.conf`
 
 #### [Starting the Server](https://github.com/jimjonesbr/wmss/blob/master/README.md#starting-the-server)
 
-**Linux**: Execute the file `start.sh` in the root directory.
+**From the console**:
+```shell
+$ java -jar wmss-[VERSION].jar
+```
 
-**Windows**: Execute the file `start.bat` in the root directory.
+**For the source code**: Execute the main method of the Java class `de.wwu.wmss.web.Start.java`
 
-**For developers**: Execute the main method of the Java class `de.wwu.wmss.web.Start.java`
-
-After successfully starting the server you will a message like this:
+After successfully starting the server you will see a message like this:
 
 ```
 Web Music Score Service - University of Münster
@@ -261,7 +262,7 @@ Parameter: `performanceMediumType`
 It is also possible to select music scores based on performance medium types, e.g. Strings, Keyboard. The example bellow selects all records that contain movements that are played with bowed string instruments:
  
  ```http
- http://localhost:8295/wmss?request=ListScores&performanceMediumType=strings
+ http://localhost:8295/wmss?request=ListScores&source=neo4j_local&performanceMediumType=strings
 ```
 
 The performanceMediumType paramater is also based on the [MusicXML 3.0 Standard Sounds](https://github.com/w3c/musicxml/blob/v3.1/schema/sounds.xml) and the following codes:
@@ -389,7 +390,7 @@ Searching for the following chord `,,2E^B^,G^'E` ..
 .. can be done like this:
 
 ```http
-http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,,2E^B^,G^'E
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,,2E^B^,G^'E&ignoreOctave=false
 ```
 
 #### Time signatures
