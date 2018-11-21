@@ -390,7 +390,7 @@ Searching for the following chord `,,2E^B^,G^'E` ..
 .. can be done like this:
 
 ```http
-http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,,2E^B^,G^'E
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,,2E^B^,G^'E&ignoreOctave=false
 ```
 
 #### Time signatures
