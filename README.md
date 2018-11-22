@@ -588,3 +588,45 @@ The Service Exception Report is provided as JSON and is structured as follows:
   "hint": "The provided data source cannot be found. Check the 'Service Description Report' for more information on the available data sources."  
 }
 ```
+
+#### Importing Scores
+
+New music scores can be inserted ther via POST requests, which requires the following parameters:
+
+
+`source`&nbsp;  Data source where the file will be inserted. See Service Description Report for more details.
+
+`format`&nbsp; Indicates the file RDF format. Supported formats are: `JSON-LD`, `Turtle`, `RDF/XML` and `N-Triples`
+
+`commitSize`&nbsp; Commits a partial transaction every *n* triples. Useful for large RDF files.
+
+Example using CURL:
+
+```shell
+curl -F file=@file.nt "http://localhost:8295/wmss/import?source=neo4j_local&format=n-triples&commitsize=10000"
+```
+
+If everything goes well, you will recieve a `ImportReport`:
+
+```json
+{
+  "timeElapsed": "780 ms",
+  "size": 1,
+  "files": [
+    {
+      "file": "elgar_cello_concerto_op.85.nt",
+      "size": "2 MB",
+      "records": 10846
+    }
+  ],
+  "type": "ImportReport"
+}
+```
+
+For inserting multiple files just add extra `-F` parameters to your command:
+
+```shell
+curl -F file=@file2.nt -F file=@file2.nt "http://localhost:8295/wmss/import?source=neo4j_local&format=n-triples&commitsize=10000"
+```
+
+
