@@ -603,7 +603,7 @@ New music scores can be inserted ther via POST requests, which requires the foll
 Example using CURL:
 
 ```shell
-curl -F file=@file.nt "http://localhost:8295/wmss/import?source=neo4j_local&format=n-triples&commitsize=10000"
+curl -F file=@elgar_cello_concerto_op.85.nt "http://localhost:8295/wmss/import?source=neo4j_local&format=n-triples&commitsize=10000"
 ```
 
 If everything goes well, you will recieve a `ImportReport`:
