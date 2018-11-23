@@ -37,12 +37,10 @@ The application relies on datasets encoded using the [MusicOWL ontology](http://
     - [Score List Report](#score-list-report)  
   - [GetScore](#getscore)
   - [DeleteScore](#deletescore)    
-  - [Importing Scores](#importing-scores)  
-
-  - [Logging](#logging)
-  - [Exceptions](#exceptions)
-  	- [Service Exception Report](#service-exception-report)
-
+  - [GetLogging](#logging)
+- [Exceptions](#exceptions)
+  - [Service Exception Report](#service-exception-report)
+- [Importing Scores](#importing-scores)  
 
 ## [Configuring WMSS](https://github.com/jimjonesbr/wmss/blob/master/README.md#configuring-wmss)
 
