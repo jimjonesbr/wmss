@@ -220,7 +220,6 @@ RETURN COUNT(noteset) AS Duration;
 
 MATCH (measure)-[r:mso__hasTime]->(time)
 SET measure.beats = time.mso__hasBeats, measure.beatType = time.mso__hasBeatType
-DELETE r,time
 RETURN COUNT(measure) AS MeasureTimeSignature;
 
 
