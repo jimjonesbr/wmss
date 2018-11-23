@@ -36,10 +36,13 @@ The application relies on datasets encoded using the [MusicOWL ontology](http://
     - [Key Signatures](#key-signatures)  
     - [Score List Report](#score-list-report)  
   - [GetScore](#getscore)
+  - [DeleteScore](#deletescore)    
+  - [Importing Scores](#importing-scores)  
+
   - [Logging](#logging)
   - [Exceptions](#exceptions)
   	- [Service Exception Report](#service-exception-report)
-  - [Importing Scores](#importing-scores)  
+
 
 ## [Configuring WMSS](https://github.com/jimjonesbr/wmss/blob/master/README.md#configuring-wmss)
 
@@ -552,7 +555,7 @@ An example of a Score List Report can be found [here](https://github.com/jimjone
 
   ### [GetScore](https://github.com/jimjonesbr/wmss/blob/master/README.md#getscore)
   
-Retrieves a specific record based on its identifier:
+Retrieves a specific score based on its identifier:
 
   ```http
   http://localhost:8295/wmss/?request=GetScore&source=neo4j_local&identifier=http://dbpedia.org/resource/Cello_Concerto_(Elgar)
@@ -598,19 +601,6 @@ http://localhost:8295/wmss/?request=Checklog&logPreview=1000
 |E0016|Invalid key |Provide one of the following keys: `$` (C major/A minor), `xF` (G major/E minor), `xFC` (D major/B minor), `xFCG` (A major/F# minor), `xFCGD` (E major/C# minor), `xFCGDA` (B major/G# minor), `xFCGDAE` (F# major/D# minor), `xFCGDAEB` (C# major/A# minor),`bB` (F major/D minor), `bBE` (Bb major/G minor), `bBEA` (Eb major/C minor), `bBEAD` (Ab major/F minor), `bBEADG` (Db major/Bb minor), `bBEADGC` (Gb major/Eb minor), `bBEADGCF` (Cb major/Ab minor)  |
 |E0017|Invalid clef |The clef code is preceded by `%`, and is three characters long. The first character specifies the clef shape (G,C,F,g). The second character is `-` to indicate modern notation, `+` to indicate mensural notation. The third character (numeric 1-5) indicates the position of the clef on the staff, starting from the bottom line. Examples: `G-2`, `C-3`, `F-4`. |
 
-#### [Service Exception Report](https://github.com/jimjonesbr/wmss/blob/master/README.md#service-exception-report)
-
-The Service Exception Report is provided as JSON and is structured as follows:
-
-```json
-{
-  "type": "ExceptionReport",
-  "code": "E0009",
-  "message": "Invalid data source [fake_repo].",
-  "hint": "The provided data source cannot be found. Check the 'Service Description Report' for more information on the available data sources."  
-}
-```
-
 #### [Importing Scores](https://github.com/jimjonesbr/wmss/blob/master/README.md#importing-scores)
 
 New music scores can be inserted ther via POST requests, which requires the following parameters:
@@ -650,5 +640,38 @@ For inserting multiple files just add extra `-F` parameters to your command:
 ```shell
 curl -F file=@file2.nt -F file=@file2.nt "http://localhost:8295/wmss/import?source=neo4j_local&format=n-triples&commitsize=10000"
 ```
+#### [DeleteScore](https://github.com/jimjonesbr/wmss/blob/master/README.md#deletescore)
 
+Deletes a specific score based on its identifier:
 
+```
+http://localhost:8295/wmss/?source=neo4j_local&request=DeleteScore&identifier=http://dbpedia.org/resource/Cello_Concerto_(Elgar)
+```
+
+If the score was successfully deleted, the `DeleteScoreReport` is shown:
+
+```json
+{
+ "type": "DeleteScoreReport",
+  "score": [
+    {
+      "scoreIdentifier": "http://dbpedia.org/resource/Cello_Concerto_(Elgar)",
+      "title": "Cellokonzert e-Moll op. 85",
+      "collection": "https://url.collection.de"
+    }
+  ] 
+}
+```
+
+#### [Service Exception Report](https://github.com/jimjonesbr/wmss/blob/master/README.md#service-exception-report)
+
+The Service Exception Report is provided as JSON and is structured as follows:
+
+```json
+{
+  "type": "ExceptionReport",
+  "code": "E0009",
+  "message": "Invalid data source [fake_repo].",
+  "hint": "The provided data source cannot be found. Check the 'Service Description Report' for more information on the available data sources."  
+}
+```
