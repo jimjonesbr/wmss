@@ -133,13 +133,14 @@ public class Util {
 		boolean keySegment = false;
 		boolean timeSegment = false;
 		boolean clefSegment = false;
+		int dots = 0;
 
 		ArrayList<Note> sequence = new ArrayList<Note>();
 
 		for (int i = 0; i < pea.length(); i++) {
 
 			String element = Character.toString(pea.charAt(i));
-
+			
 			if(element.equals("$")) {
 				keySegment = true;
 				timeSegment = false;
@@ -179,6 +180,10 @@ public class Util {
 				if(element.equals("'")) {
 					currentOctave = currentOctave + element;
 				}
+				
+				if(element.equals(".")) {
+					dots++;
+				}				
 
 				if(StringUtils.isNumeric(element)) {
 					duration = element;
@@ -225,6 +230,7 @@ public class Util {
 					note.setOctave(currentOctave);
 					note.setChord(chord);												
 					note.setMeasure(currentMeasure);
+					note.setDotted(dots);
 					
 					if(!currentClef.equals("")) {
 						note.setClef(formatPEAclef(currentClef));
@@ -252,7 +258,7 @@ public class Util {
 					sequence.add(note);
 					duration = "";
 					accidental = "";
-
+					dots = 0;
 					chord = false;
 				}
 
@@ -290,8 +296,6 @@ public class Util {
 	}
 
 	public static String formatPEAkey(String key) throws InvalidKeyException {
-
-		String result = "";
 		
 		if(key.length()>1) {
 			key = key.replace("$", "");
@@ -302,27 +306,17 @@ public class Util {
 		keys.add("xF");keys.add("xFC");keys.add("xFCG");keys.add("xFCGD");keys.add("xFCGDA");keys.add("xFCGDAE");keys.add("xFCGDAEB");
 		keys.add("F");keys.add("FC");keys.add("FCG");keys.add("FCGD");keys.add("FCGDA");keys.add("FCGDAE");keys.add("FCGDAEB");
 		keys.add("bB");keys.add("bBE");keys.add("bBEA");keys.add("bBEAD");keys.add("bBEADG");keys.add("bBEADGC");keys.add("bBEADGCF");
-		boolean match = false;
 
-//		for (int i = 0; i < keys.size(); i++) {
-//			if(keys.get(i).equals(key)) {
-//				match = true;
-//			};
-//		}
-		
-		if(keys.contains(key)) {
-			match = true;
-			
-		}
-//		if(key.length()>1 && !Character.toString(key.charAt(1)).equals("x") && !Character.toString(key.charAt(1)).equals("b") ) {
-//			result = "$x"+ key.substring(1, key.length());			
-//		} else {
-//			result = key;
-//		}
-
-		if(!match) {
+		if(!keys.contains(key)) {
 			throw new InvalidKeyException(ErrorCodes.INVALID_KEY_DESCRIPTION +" ["+key+"]",ErrorCodes.INVALID_KEY_CODE,ErrorCodes.INVALID_KEY_HINT);
 		}
+		
+		if(key.equals("xF")) {
+			
+		}
+			
+
+
 
 		return key;
 	}
@@ -353,8 +347,7 @@ public class Util {
 		
 		return clef;
 	}
-	
-	
+		
 	public static String capitalizeFirstLetter(String string){
 
 		if(string != null && string != "" ) {

@@ -11,6 +11,7 @@ public class Note {
 	private String key ="";
 	private String time = "";
 	private String clef = "";
+	private int dotted = 0;
 	
 	public Note() {
 		super();
@@ -69,6 +70,14 @@ public class Note {
 	}
 	public void setClef(String clef) {
 		this.clef = clef;
+	}
+
+	public int getDotted() {
+		return dotted;
+	}
+
+	public void setDotted(int dotted) {
+		this.dotted = dotted;
 	}
 
 	

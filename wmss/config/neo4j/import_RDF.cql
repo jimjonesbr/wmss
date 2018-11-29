@@ -1,4 +1,4 @@
-MATCH (n) DETACH DELETE n RETURN COUNT(n);
+//MATCH (n) DETACH DELETE n RETURN COUNT(n);
 
 CREATE INDEX ON :Resource(uri);
 CREATE INDEX ON :URI(uri);
@@ -23,7 +23,7 @@ CREATE (:NamespacePrefixDefinition {
   `http://purl.org/ontology/mo/mit#`: 'mit'
 });
 
-CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
+//CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
 //CALL semantics.importRDF("http://linkeddata.uni-muenster.de/datasets/opendata/musicscores/statements_musescore.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
 //CALL semantics.importRDF("file:///home/jones/git/musicowl-repository/musicowl/ntriples/elgar_cello_concerto_op.85.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
 
@@ -97,10 +97,6 @@ WHERE instrument.typeUri IS NULL
 SET instrument.typeUri = type.uri,
     instrument.typeLabel = type.skos__prefLabel
 RETURN COUNT(instrument) AS Instruments;
-
-
-
-
 
 
 
@@ -202,6 +198,19 @@ WHERE SUBSTRING(labels(duration)[1],5) = '128th' SET noteset :d7 RETURN COUNT(du
 MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)
 WHERE SUBSTRING(labels(duration)[1],5) = '256th' SET noteset :da RETURN COUNT(duration) AS twohundredtwentyeighth;
 
+
+MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)-[:mso__hasDurationAttribute]->(attribute:mso__Dot)
+SET noteset :dotted
+RETURN COUNT(attribute);
+
+MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)-[:mso__hasDurationAttribute]->(attribute:mso__DoubleDot)
+SET noteset :doubleDotted
+RETURN COUNT(attribute);
+
+MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)-[:mso__hasDurationAttribute]->(attribute:mso__TripleDot)
+SET noteset :tripleDotted
+RETURN COUNT(attribute);
+
 MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)
 WITH noteset,CASE SUBSTRING(labels(duration)[1],5)
                 WHEN 'Longa' THEN 0
@@ -220,23 +229,216 @@ RETURN COUNT(noteset) AS Duration;
 
 MATCH (measure)-[r:mso__hasTime]->(time)
 SET measure.beats = time.mso__hasBeats, measure.beatType = time.mso__hasBeatType
-DELETE r,time
 RETURN COUNT(measure) AS MeasureTimeSignature;
 
 
 // Clefs //
 
-//MATCH (noteset:mso__NoteSet)-[:mso__hasClef]->(clef)
-//SET noteset.clef = REPLACE(LOWER(labels(clef)[1]),'mso__','')
-//RETURN COUNT(clef) AS NotesetClef;
 
 MATCH (noteset:mso__NoteSet)-[:mso__hasClef]->(clef)-[:mso__sign]->(sign)
 SET noteset.clefSign = SUBSTRING(sign.uri,36), noteset.clefLine = clef.mso__line
 RETURN COUNT(clef) AS NotesetClef;
 
-//MATCH (noteset:mso__NoteSet)-[:mso__hasClef]->(clef)
-//DETACH DELETE clef 
-//RETURN COUNT(noteset) AS DeletedClef;
+
+
+
+
+
+
+
+
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "c" AND LOWER(SUBSTRING(modeNode.uri,39)) = "major") 
+SET measure :cmajor
+RETURN COUNT(measure) AS cmajor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "g" AND LOWER(SUBSTRING(modeNode.uri,39)) = "major") 
+SET measure :gmajor
+RETURN COUNT(measure) AS gmajor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "d" AND LOWER(SUBSTRING(modeNode.uri,39)) = "major") 
+SET measure :dmajor
+RETURN COUNT(measure) AS dmajor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "a" AND LOWER(SUBSTRING(modeNode.uri,39)) = "major") 
+SET measure :amajor
+RETURN COUNT(measure) AS amajor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "e" AND LOWER(SUBSTRING(modeNode.uri,39)) = "major") 
+SET measure :emajor
+RETURN COUNT(measure) AS emajor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "b" AND LOWER(SUBSTRING(modeNode.uri,39)) = "major") 
+SET measure :bmajor
+RETURN COUNT(measure) AS bmajor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "fsharp" AND LOWER(SUBSTRING(modeNode.uri,39)) = "major") 
+SET measure :fsharpmajor
+RETURN COUNT(measure) AS fsharpmajor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "csharp" AND LOWER(SUBSTRING(modeNode.uri,39)) = "major") 
+SET measure :csharpmajor
+RETURN COUNT(measure) AS csharpmajor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "f" AND LOWER(SUBSTRING(modeNode.uri,39)) = "major") 
+SET measure :fmajor
+RETURN COUNT(measure) AS fmajor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "bflat" AND LOWER(SUBSTRING(modeNode.uri,39)) = "major") 
+SET measure :bflatmajor
+RETURN COUNT(measure) AS bflatmajor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "eflat" AND LOWER(SUBSTRING(modeNode.uri,39)) = "major") 
+SET measure :eflatmajor
+RETURN COUNT(measure) AS eflatmajor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "aflat" AND LOWER(SUBSTRING(modeNode.uri,39)) = "major") 
+SET measure :aflatmajor
+RETURN COUNT(measure) AS aflatmajor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "dflat" AND LOWER(SUBSTRING(modeNode.uri,39)) = "major") 
+SET measure :dflatmajor
+RETURN COUNT(measure) AS dflatmajor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "gflat" AND LOWER(SUBSTRING(modeNode.uri,39)) = "major") 
+SET measure :gflatmajor
+RETURN COUNT(measure) AS gflatmajor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "cflat" AND LOWER(SUBSTRING(modeNode.uri,39)) = "major") 
+SET measure :cflatmajor
+RETURN COUNT(measure) AS cflatmajor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "a" AND LOWER(SUBSTRING(modeNode.uri,39)) = "minor") 
+SET measure :aminor
+RETURN COUNT(measure) AS aminor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "e" AND LOWER(SUBSTRING(modeNode.uri,39)) = "minor") 
+SET measure :eminor
+RETURN COUNT(measure) AS eminor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "b" AND LOWER(SUBSTRING(modeNode.uri,39)) = "minor") 
+SET measure :bminor
+RETURN COUNT(measure) AS bminor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "fsharp" AND LOWER(SUBSTRING(modeNode.uri,39)) = "minor") 
+SET measure :fsharpminor
+RETURN COUNT(measure) AS fsharpminor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "csharp" AND LOWER(SUBSTRING(modeNode.uri,39)) = "minor") 
+SET measure :csharpminor
+RETURN COUNT(measure) AS chsarpminor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "gsharp" AND LOWER(SUBSTRING(modeNode.uri,39)) = "minor") 
+SET measure :gsharpminor
+RETURN COUNT(measure) AS gsharpminor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "dsharp" AND LOWER(SUBSTRING(modeNode.uri,39)) = "minor") 
+SET measure :dsharpminor
+RETURN COUNT(measure) AS dsharpminor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "asharp" AND LOWER(SUBSTRING(modeNode.uri,39)) = "minor") 
+SET measure :asharpminor
+RETURN COUNT(measure) AS asharpminor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "d" AND LOWER(SUBSTRING(modeNode.uri,39)) = "minor") 
+SET measure :dminor
+RETURN COUNT(measure) AS dminor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "g" AND LOWER(SUBSTRING(modeNode.uri,39)) = "minor") 
+SET measure :gminor
+RETURN COUNT(measure) AS gminor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "c" AND LOWER(SUBSTRING(modeNode.uri,39)) = "minor") 
+SET measure :cminor
+RETURN COUNT(measure) AS cminor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "f" AND LOWER(SUBSTRING(modeNode.uri,39)) = "minor") 
+SET measure :fminor
+RETURN COUNT(measure) AS fminor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "bflat" AND LOWER(SUBSTRING(modeNode.uri,39)) = "minor") 
+SET measure :bflatminor
+RETURN COUNT(measure) AS bflatminor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "eflat" AND LOWER(SUBSTRING(modeNode.uri,39)) = "minor") 
+SET measure :eflatminor
+RETURN COUNT(measure) AS eflatminor;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WHERE (LOWER(SUBSTRING(tonicNode.uri,36)) = "aflat" AND LOWER(SUBSTRING(modeNode.uri,39)) = "minor") 
+SET measure :aflatminor
+RETURN COUNT(measure) AS aflatminor;
+
+MATCH (scr:mo__Score)-[:dc__creator]->(creator:foaf__Person)-[:gndo__professionOrOccupation]->(role:prov__Role)
+SET creator.roleUri = role.uri, creator.roleName = role.gndo__preferredNameForTheSubjectHeading
+RETURN COUNT(creator) AS CreatorRoles;
+
+MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(noteset)
+SET noteset.voice = voice.rdfs__ID, noteset.staff = staff.rdfs__ID
+RETURN COUNT(noteset);
+
+
+
+
 
 MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
 MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
@@ -281,43 +483,6 @@ SET measure.key = key,
     measure.mode = mode
 RETURN COUNT(measure) AS MeasureKey;
 
-MATCH (scr:mo__Score)-[:dc__creator]->(creator:foaf__Person)-[:gndo__professionOrOccupation]->(role:prov__Role)
-SET creator.roleUri = role.uri, creator.roleName = role.gndo__preferredNameForTheSubjectHeading
-RETURN COUNT(creator) AS CreatorRoles;
-
-MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(noteset)
-SET noteset.voice = voice.rdfs__ID, noteset.staff = staff.rdfs__ID
-RETURN COUNT(noteset);
-
-//MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
-//MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
-//DETACH DELETE key,tonicNode,modeNode
-//RETURN COUNT(key) AS DeletedKeys;
-
-//MATCH (noteset:mso__NoteSet)-[predicate:mso__hasDuration]->(duration)
-//OPTIONAL MATCH (duration)-[:mso__hasDurationAttribute]->(attribute)
-//DETACH DELETE predicate, duration, attribute
-//RETURN COUNT(duration) AS DeletedDurations;
-
-//MATCH (note:chord__Note)-[predicate:chord__natural]->(natural:chord__Natural)
-//DETACH DELETE predicate, natural
-//RETURN COUNT(natural) AS DeletedNotes;
-
-//MATCH (note:chord__Note)-[predicate:chord__modifier]->(modifier) 
-//DETACH DELETE predicate, modifier 
-//RETURN COUNT(modifier) AS DeletedModifiers;
-
-//MATCH (instant:mso__Instant)
-//DETACH DELETE instant
-//RETURN COUNT(instant) AS DeletedInstants;
-
-//MATCH (ns:mso__NoteSet)-[:mso__hasDynamic]-(dynamic) 
-//DETACH DELETE dynamic
-//RETURN COUNT(dynamic) AS DeletedDynamics;
-
-//MATCH (activity)-[:prov__generated]->(score)
-//DETACH DELETE activity
-//RETURN COUNT(activity) AS DeletedActivity;
 
 //Indexes
 

@@ -466,7 +466,7 @@ public class FactoryNeo4j {
 			StatementResult rs = Neo4jConnector.getInstance().executeQuery(createPredicates, Util.getDataSource(importRequest.getSource()));
 						
 			String importRDF = "CALL semantics.importRDF(\""+file.toURI().toURL()+"\",\""+importRequest.getFormat()+"\",{shortenUrls: true, commitSize: "+importRequest.getCommitSize()+"});";	
-			logger.debug(importRDF);
+			logger.info(importRDF);
 			
 			rs = Neo4jConnector.getInstance().executeQuery(importRDF, Util.getDataSource(importRequest.getSource()));
 
@@ -864,6 +864,16 @@ public class FactoryNeo4j {
 					where = where + "AND ns"+i+".clefLine="+String.valueOf(noteSequence.get(i).getClef().charAt(2))+"\n";
 				}
 
+				if(noteSequence.get(i).getDotted()!=0) {
+					if(noteSequence.get(i).getDotted()==1) {
+						where = where + "AND ns"+i+":dotted \n";
+					} else if(noteSequence.get(i).getDotted()==2) {
+						where = where + "AND ns"+i+":doubleDotted \n";
+					} else if(noteSequence.get(i).getDotted()==3) {
+						where = where + "AND ns"+i+":tripleDotted \n";
+					}
+				}
+				
 				if(currentMeasure != noteSequence.get(i).getMeasure()) {
 					measureNode = "(measure"+noteSequence.get(i).getMeasure()+":mso__Measure)";
 					if(noteSequence.get(i).getMeasure()>1) {
@@ -879,7 +889,8 @@ public class FactoryNeo4j {
 				
 				if(!wmssRequest.isIgnorePitch()) {																
 					match = match + "MATCH (ns"+notesetCounter+":"+currentDurationType+")-[:mso__hasNote]->(n"+i+":"+currentPitchType+") \n";
-				}															
+				}		
+				
 				if(!wmssRequest.isIgnoreOctaves()) {	
 					where = where + "AND n"+i+".mso__hasOctave="+noteSequence.get(i).getOctave()+"\n";
 				}										 
@@ -923,10 +934,6 @@ public class FactoryNeo4j {
 		if(!wmssRequest.getClef().equals("")) {
 			match = match + "MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasMeasure]->(measure1:mso__Measure)-[:mso__hasNoteSet]->(ns0)";
 		}
-		
-//		if(!wmssRequest.getKey().equals("")) {
-//			match = match + "MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasMeasure]->(measure1:mso__Measure)\n";
-//		}
 		
 		/**
 		 * Where clause

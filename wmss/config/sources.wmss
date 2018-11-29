@@ -168,6 +168,41 @@
             }
           
       
+    },
+     {
+      "id": "neo4j_ulb",
+      "info": "Universität Münster - Neo4j repository.",
+      "active": true,
+      "type": "lpg",
+      "storage": "neo4j",
+      "port": "7687",
+      "host": "bolt://10.102.3.88",
+      "repository": "",
+      "version": "3.4.0",
+      "user": "neo4j",
+      "password": "123456",
+            "filterCapabilities": 
+            {
+              "melody": true,
+              "collection": true,
+              "person": true,
+              "personRole": true,
+              "performanceMedium": true,
+              "performanceMediumType": true,
+              "solo": true,
+              "tonalityTonic": true,
+              "tonalityMode": true,
+              "tempo": true,
+              "creationDate": true,
+              "creationDateFrom": true,
+              "creationDateTo": true,
+              "source": true,
+              "identifier": true,
+              "format": true              
+            }
+          
+      
     }
+    
   ]
 }
