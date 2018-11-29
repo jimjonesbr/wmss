@@ -16,14 +16,6 @@ public class ErrorCodes {
 	public static String INVALID_DOCUMENT_FORMAT_DESCRIPTION  = "Invalid document format";
 	public static String INVALID_DOCUMENT_FORMAT_HINT = "Provide one of the following XML formats: musicxml, mei";
 
-//	public static String INVALID_TONALITY_MODE_CODE = "E0004";
-//	public static String INVALID_TONALITY_MODE_DESCRIPTION  = "Invalid tonality";
-//	public static String INVALID_TONALITY_MODE_HINT = "Tonalities can be only either 'minor' or 'major'";
-
-//	public static String INVALID_TONALITY_TONIC_CODE = "E0004";
-//	public static String INVALID_TONALITY_TONIC_DESCRIPTION  = "Invalid tonic";
-//	public static String INVALID_TONALITY_TONIC_HINT = "Provide one of the following tonics: 'A','bA','xA','B','bB','xB','C','bC','xC','D','bD','xD','E','bE','xE','F','bF','xF','G','bG','xG'.";
-
 	public static String INVALID_TIMESIGNATURE_CODE = "E0004";
 	public static String INVALID_TIMESIGNATURE_DESCRIPTION  = "Invalid time signature";
 	public static String INVALID_TIMESIGNATURE_HINT = "Time signatures must be encoded in the following format: beat unit / beats. Examples: @3/4, @4/4, @6/8, @c (meaning common time and interpreted as @4/4) ";

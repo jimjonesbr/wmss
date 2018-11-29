@@ -2,6 +2,10 @@
 
 The Web Music Score Service (WMSS) provides an interface allowing requests for music scores on the web using platform-independent clients. It serves as an intermediate layer between data sets and application clients, providing standard access to MEI and MusicXML files. 
 
+![wmss](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/wmss.png)
+
+The application relies on datasets encoded using the [MusicOWL ontology](http://linkeddata.uni-muenster.de/ontology/musicscore/mso.owl). For more information on creating MusicOWL datasets see [MusicXML to RDF converter](https://github.com/jimjonesbr/musicowl).  
+
 ## Index
 
 - [Configuring WMSS](#configuring-wmss)
@@ -12,12 +16,31 @@ The Web Music Score Service (WMSS) provides an interface allowing requests for m
   - [DescribeService](#describeservice)
     - [Service Description Report](#service-description-report)
   - [ListScores](#listscores)
+    - [Data Source](#data-source)  
+    - [Collections](#collections)  
+    - [Persons](#persons)  
+    - [Performance Medium (Instrument)](#performance-medium-instrument)  
+    - [Performance Medium Type](#performance-medium-type)
+    - [Tempo](#tempo)    
+    - [Date Issued](#date-issued)  
+    - [Format](#format)  
+    - [Melodies](#melody)  
+    - [Octaves](#octaves)
+    - [Durations](#durations)    
+    - [Pitches](#pitches)  
+    - [Embedded Note Sequences](#embedded-sequences-note-sequences-inside-chords)  
+    - [Chords Search](#chords-search)  
+    - [Time Signatures](#time-signatures)
+    - [Clefs](#clefs)
+    - [Measures](#measures)
+    - [Key Signatures](#key-signatures)  
     - [Score List Report](#score-list-report)  
   - [GetScore](#getscore)
-  - [Logging](#logging)
-  - [Exceptions](#exceptions)
-  	- [Service Exception Report](#service-exception-report)
-  
+  - [DeleteScore](#deletescore)    
+  - [GetLogging](#logging)
+- [Exceptions](#exceptions)
+  - [Service Exception Report](#service-exception-report)
+- [Importing Scores](#importing-scores)  
 
 ## [Configuring WMSS](https://github.com/jimjonesbr/wmss/blob/master/README.md#configuring-wmss)
 
@@ -196,7 +219,7 @@ An example of a Service Description Report can be found [here](https://github.co
  
  In order to facilitate the music score discovery, the ListScores request offers several filter capabilities:
  
- #### Data Source
+ #### [Data Source](https://github.com/jimjonesbr/wmss/blob/master/README.md#data-source)
  Parameter: `source`
  
  Constraints the __Score List Document__ to a specific data source:
@@ -205,7 +228,7 @@ An example of a Service Description Report can be found [here](https://github.co
  http://localhost:8295/wmss?request=ListScores&source=neo4j_local
  ```
 
- #### Collections
+ #### [Collections](https://github.com/jimjonesbr/wmss/blob/master/README.md#collections)
 Parameter: `collection`
 
 To facilitate the management of large repositories, WMSS offers the possibility to add music scores to specific collections. The collection uri, required for this parameter, is delivered together with the music score in the Score List and Service Description Reports.
@@ -214,7 +237,7 @@ To facilitate the management of large repositories, WMSS offers the possibility 
  http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&collection=https://url.collection.de
 ```
 
-#### Persons
+#### [Persons](https://github.com/jimjonesbr/wmss/blob/master/README.md#persons)
 
 Parameters: `person` / `personRole`
 
@@ -237,7 +260,7 @@ The __personRole__ parameter may contain the following values:
 * `performer`
 
 
-#### Performance Medium (Instrument)
+#### [Performance Medium (Instrument)](https://github.com/jimjonesbr/wmss/blob/master/README.md#performance-medium-instrument)
 
 **Parameters**: `performanceMedium` / `solo`
 
@@ -255,7 +278,7 @@ To constraint the search for the given performance medium to only solo mediums, 
 
 A complete list of performance mediums containing approx. 900 items can be found [here](https://github.com/jimjonesbr/wmss/tree/master/wmss/data/system/mediums.csv).
 
-#### Performance Medium Type
+#### [Performance Medium Type](https://github.com/jimjonesbr/wmss/blob/master/README.md#performance-medium-type)
 
 Parameter: `performanceMediumType`
 
@@ -277,7 +300,7 @@ The performanceMediumType paramater is also based on the [MusicXML 3.0 Standard 
 |`wind`|Wind|`wood`|wood|
 
 
-#### Tempo
+#### [Tempo](https://github.com/jimjonesbr/wmss/blob/master/README.md#tempo)
 
 Parameters: `tempoBeatUnit` / `tempoBeatsPerMinute`
 
@@ -287,7 +310,7 @@ Selects records containing movements played in a specific tempo, e.g. *adagio*, 
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&tempoBeatUnit=quarter&tempoBeatsPerMinute=100-125
 ```
  
-#### Date Issued
+#### [Date Issued](https://github.com/jimjonesbr/wmss/blob/master/README.md#date-issued)
 
 Parameter: `dateIssued`
 
@@ -300,7 +323,7 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&dateIssued=191
 Dates and intervals must be encoded as `yyyyMMdd`, `yyyyMM` or `yyyy`.
 
 
-#### Format
+#### [Format](https://github.com/jimjonesbr/wmss/blob/master/README.md#format)
 Parameter: `format`
 
 Selects records available in a specific format. The supported formats are:
@@ -312,7 +335,7 @@ Selects records available in a specific format. The supported formats are:
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&format=musicxml
 ```
 
-#### Melody
+#### [Melody](https://github.com/jimjonesbr/wmss/blob/master/README.md#melody)
 Parameter: `melody`
 
 
@@ -330,7 +353,7 @@ Duration:  `Eighth`
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,8AB'CDxDE
 ```
 
-#### Octaves
+#### [Octaves](https://github.com/jimjonesbr/wmss/blob/master/README.md#octaves)
 Parameter: `ignoreOctave`
 
 To search for melodies encoded in specific octaves, set the parameter `ignoreOctave` to `false` (`true` by default). Note that in the PEA string the 4th octave is assumed, if no octave is explicitly defined. The following example searches for scores matching the sequence `A` 3rd octave, `B` 3rd octave, `C` 4th octave, `D` 4th octave, `D#` 4th octave and `E` 4th octave, all with the duration `eighth` (as described above):
@@ -339,7 +362,7 @@ To search for melodies encoded in specific octaves, set the parameter `ignoreOct
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,8AB'CDxDE&ignoreOctave=false
 ```
 
-#### Durations 
+#### [Durations](https://github.com/jimjonesbr/wmss/blob/master/README.md#durations) 
 Parameter: `ignoreDuration`
 
 It is possible to search only for a sequence of pitches, ignoring their durations. It can be achieved by means of setting the parameter `ignoreDuration` to `true` (`false` by default). The following example searches for all scores containing the pitch sequence `A`, `B`, `C`, `D`, `D#` and `E`, ignoring their durations:
@@ -348,7 +371,7 @@ It is possible to search only for a sequence of pitches, ignoring their duration
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,8AB'CDxDE&ignoreDuration=true
 ```
 
-#### Pitches 
+#### [Pitches](https://github.com/jimjonesbr/wmss/blob/master/README.md#pitches) 
 Parameter: `ignorePitch`
 
 If you're only looking for a sequence of rhythmical elements (useful for percussionists), just set the parameter `ignorePitch` to `true` (`false` by default). The following example searches for all scores containing a sequence of 6 `eighth` notes, ignoring pitches:
@@ -357,7 +380,7 @@ If you're only looking for a sequence of rhythmical elements (useful for percuss
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,8AB'CDxDE&ignorePitch=true
 ```
 
-#### Embedded Sequences (Note sequences inside chords) 
+#### [Embedded Sequences (Note sequences inside chords)](https://github.com/jimjonesbr/wmss/blob/master/README.md#embedded-sequences-note-sequences-inside-chords)
 Parameter: `ignoreChords`
 
 It is also possible to look for sequences whose notes are inside of chords. To achieve this, set the parameter `ignoreChords` to `false` (`true` by default). 
@@ -377,7 +400,7 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,,2GB8G
 ```
 **Note**: This feature assumes that the elements of such an embedded sequence are notes of the same voice. 
 
-#### Chords search
+#### [Chords search](https://github.com/jimjonesbr/wmss/blob/master/README.md#chords-search)
 
 Parameter: `melody`
 
@@ -393,7 +416,7 @@ Searching for the following chord `,,2E^B^,G^'E` ..
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,,2E^B^,G^'E&ignoreOctave=false
 ```
 
-#### Time signatures
+#### [Time signatures](https://github.com/jimjonesbr/wmss/blob/master/README.md#time-signatures)
 Parameters: `melody` / `time`
 
 Time signatures are to be encoded according to the [PEA key time signature notation](https://www.iaml.info/plaine-easie-code#toc-3). Time signatures embedded in melodies are preceded by `@` and followed by beats and beat unit, separated by `/`, e.g. `@3/4` (three-four or waltz time), `@2/4` (march time). Common time signatures can be also represented as `@c` and will be considered by the system as `@4/4`.
@@ -422,7 +445,7 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&time=4/4
 See also: *UNIMARC field 036 $o — MARC21 field 789 $g — MAB field 681 $h (RISM field 823)*
 
 
-#### Clefs
+#### [Clefs](https://github.com/jimjonesbr/wmss/blob/master/README.md#clefs)
 Parameters: `melody` / `clef`
 
 Clefs are to be encoded according to the [PEA clef notation](https://www.iaml.info/plaine-easie-code#toc-1). Clefs embedded in melodies are preceded by `%`, and are three characters long. The first character specifies the clef shape (`G`,`C`,`F`,`g`). The second character is `-` to indicate modern notation, `+` to indicate mensural notation. The third character (numeric 1-5) indicates the position of the clef on the staff, starting from the bottom line. 
@@ -445,7 +468,7 @@ http://localhost:8295/wmss/?source=neo4j_local&request=listscores&clef=F-4
 See also: *UNIMARC field 036 $m — MARC21 field 789 $e — MAB field 681 $j (RISM field 820)*
 
 
-#### Measures
+#### [Measures](https://github.com/jimjonesbr/wmss/blob/master/README.md#measures)
 Parameters: `melody`
 
 If necessary, it is also possible to look for melodies contained in fixed measures. For instance, the melody `'4xF8G4xF8A4B8A4G8E4D8E4C,8B` will be searched no matter how the notes are distributed:
@@ -464,7 +487,7 @@ By splitting the melodies with the character `/`, the system will look for exact
 http://localhost:8295/wmss/?source=neo4j_local&request=listscores&melody='4xF8G4xF8A4B8A4/G8E4D8E4C,8B
 ```
 
-#### Key signatures
+#### [Key signatures](https://github.com/jimjonesbr/wmss/blob/master/README.md#key-signatures)
 Parameters: `melody` / `key`
 
 Keys signatures are to be encoded according to the [PEA key signature notation](https://www.iaml.info/plaine-easie-code#toc-2). Key signatures embedded in melodies are preceded by the character `$`; The symbol `x` indicates sharpened keys, `b` flattened keys; the symbol is followed by the capital letters indicating the altered notes.
@@ -530,7 +553,7 @@ An example of a Score List Report can be found [here](https://github.com/jimjone
 
   ### [GetScore](https://github.com/jimjonesbr/wmss/blob/master/README.md#getscore)
   
-Retrieves a specific record based on its identifier:
+Retrieves a specific score based on its identifier:
 
   ```http
   http://localhost:8295/wmss/?request=GetScore&source=neo4j_local&identifier=http://dbpedia.org/resource/Cello_Concerto_(Elgar)
@@ -575,6 +598,68 @@ http://localhost:8295/wmss/?request=Checklog&logPreview=1000
 |E0015|Invalid RDF format |Please provide one for the following formats in the `format` parameter: `JSON-LD`, `Turtle`, `RDF/XML` and `N-Triples` |
 |E0016|Invalid key |Provide one of the following keys: `$` (C major/A minor), `xF` (G major/E minor), `xFC` (D major/B minor), `xFCG` (A major/F# minor), `xFCGD` (E major/C# minor), `xFCGDA` (B major/G# minor), `xFCGDAE` (F# major/D# minor), `xFCGDAEB` (C# major/A# minor),`bB` (F major/D minor), `bBE` (Bb major/G minor), `bBEA` (Eb major/C minor), `bBEAD` (Ab major/F minor), `bBEADG` (Db major/Bb minor), `bBEADGC` (Gb major/Eb minor), `bBEADGCF` (Cb major/Ab minor)  |
 |E0017|Invalid clef |The clef code is preceded by `%`, and is three characters long. The first character specifies the clef shape (G,C,F,g). The second character is `-` to indicate modern notation, `+` to indicate mensural notation. The third character (numeric 1-5) indicates the position of the clef on the staff, starting from the bottom line. Examples: `G-2`, `C-3`, `F-4`. |
+
+#### [Importing Scores](https://github.com/jimjonesbr/wmss/blob/master/README.md#importing-scores)
+
+New music scores can be inserted ther via POST requests, which requires the following parameters:
+
+
+`source`&nbsp;  Data source where the file will be inserted. See Service Description Report for more details.
+
+`format`&nbsp; Indicates the file RDF format. Supported formats are: `JSON-LD`, `Turtle`, `RDF/XML` and `N-Triples`
+
+`commitSize`&nbsp; Commits a partial transaction every *n* triples. Useful for large RDF files.
+
+Example using CURL:
+
+```shell
+curl -F file=@elgar_cello_concerto_op.85.nt "http://localhost:8295/wmss/import?source=neo4j_local&format=n-triples&commitsize=10000"
+```
+
+If everything goes well, you will recieve a `ImportReport`:
+
+```json
+{
+  "timeElapsed": "780 ms",
+  "size": 1,
+  "files": [
+    {
+      "file": "elgar_cello_concerto_op.85.nt",
+      "size": "2 MB",
+      "records": 10846
+    }
+  ],
+  "type": "ImportReport"
+}
+```
+
+For inserting multiple files just add extra `-F` parameters to your command:
+
+```shell
+curl -F file=@file2.nt -F file=@file2.nt "http://localhost:8295/wmss/import?source=neo4j_local&format=n-triples&commitsize=10000"
+```
+#### [DeleteScore](https://github.com/jimjonesbr/wmss/blob/master/README.md#deletescore)
+
+Deletes a specific score based on its identifier:
+
+```
+http://localhost:8295/wmss/?source=neo4j_local&request=DeleteScore&identifier=http://dbpedia.org/resource/Cello_Concerto_(Elgar)
+```
+
+If the score was successfully deleted, the `DeleteScoreReport` is shown:
+
+```json
+{
+ "type": "DeleteScoreReport",
+  "score": [
+    {
+      "scoreIdentifier": "http://dbpedia.org/resource/Cello_Concerto_(Elgar)",
+      "title": "Cellokonzert e-Moll op. 85",
+      "collection": "https://url.collection.de"
+    }
+  ] 
+}
+```
 
 #### [Service Exception Report](https://github.com/jimjonesbr/wmss/blob/master/README.md#service-exception-report)
 
