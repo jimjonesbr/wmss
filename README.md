@@ -26,7 +26,8 @@ The application relies on datasets encoded using the [MusicOWL ontology](http://
     - [Format](#format)  
     - [Melodies](#melody)  
     - [Octaves](#octaves)
-    - [Durations](#durations)    
+    - [Durations](#durations)   
+    - [Dotted Durations](#dotted-durations) 
     - [Pitches](#pitches)  
     - [Embedded Note Sequences](#embedded-sequences-note-sequences-inside-chords)  
     - [Chords Search](#chords-search)  
@@ -370,6 +371,17 @@ It is possible to search only for a sequence of pitches, ignoring their duration
 ```http
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,8AB'CDxDE&ignoreDuration=true
 ```
+
+#### [Dotted Durations](https://github.com/jimjonesbr/wmss/blob/master/README.md#dotted-durations) 
+
+To extend the note duration add either a `.` (dot), `..` (double dot) or `...` (triple dot) right after the note duration, as described at [Plaine & Easie rhythmic values](https://www.iaml.info/plaine-easie-code#toc-7). For instance `4.G4.xF4.G4.xF`
+
+![embedded_sequence](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/dotted.jpg)
+
+```http
+http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=4.G4.xF4.G4.xF
+```
+
 
 #### [Pitches](https://github.com/jimjonesbr/wmss/blob/master/README.md#pitches) 
 Parameter: `ignorePitch`
