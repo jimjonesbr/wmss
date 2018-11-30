@@ -259,6 +259,21 @@ public class FactoryNeo4j {
 		String twohundred56th =	"MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration:mso__256th) WHERE NOT 'da' IN labels(noteset) SET noteset :da RETURN COUNT(duration);\n";			
 		Neo4jConnector.getInstance().executeQuery(twohundred56th, Util.getDataSource(importRequest.getSource()));
 
+		String dot = "MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)-[:mso__hasDurationAttribute]->(attribute:mso__Dot)\n" + 
+				     "SET noteset :dotted\n" + 
+				     "RETURN COUNT(attribute) AS dotted;";			
+		Neo4jConnector.getInstance().executeQuery(dot, Util.getDataSource(importRequest.getSource()));
+		
+		String doubleDot = "MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)-[:mso__hasDurationAttribute]->(attribute:mso__DoubleDot)\n" + 
+				     "SET noteset :doubleDotted\n" + 
+				     "RETURN COUNT(attribute);";			
+		Neo4jConnector.getInstance().executeQuery(doubleDot, Util.getDataSource(importRequest.getSource()));
+
+		String tripleDot = "MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)-[:mso__hasDurationAttribute]->(attribute:mso__TripleDot)\n" + 
+						   "SET noteset :tripleDotted\n" + 
+						   "RETURN COUNT(attribute);";			
+		Neo4jConnector.getInstance().executeQuery(tripleDot, Util.getDataSource(importRequest.getSource()));
+
 		String durationStatement =					
 				"MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)\n" + 
 				"WITH  noteset,CASE SUBSTRING(labels(duration)[1],5)\n" + 

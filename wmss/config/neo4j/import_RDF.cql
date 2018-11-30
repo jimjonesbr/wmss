@@ -502,8 +502,3 @@ CREATE INDEX ON :mso__Measure(beatType);
 CREATE INDEX ON :mso__NoteSet(clefLine);
 CREATE INDEX ON :mso__NoteSet(clefSign);
 
-
-
-
-
-
