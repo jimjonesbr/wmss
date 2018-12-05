@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-public class ServletFiles extends HttpServlet {
+public class ServletWebAdmin extends HttpServlet {
 
 	/**
 	 * @author Jim Jones
@@ -38,8 +38,7 @@ public class ServletFiles extends HttpServlet {
 		} catch (IOException e) {
 		}
 		String content = contentBuilder.toString();
-		
-		
+				
 		response.setContentType("text/html");
 		response.setStatus(HttpServletResponse.SC_OK);
 		response.getWriter().println(content);
@@ -48,5 +47,7 @@ public class ServletFiles extends HttpServlet {
 //        view.forward(httpRequest, response);    
 	}
 
+	
+	
 }
 

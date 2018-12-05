@@ -154,7 +154,6 @@ public class ServiceMessagingHandler {
 			}
 			
 		}
-
 		
 		serviceDescription.put("datasources", dsArray);
 

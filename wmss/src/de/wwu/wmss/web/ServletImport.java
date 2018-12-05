@@ -34,9 +34,9 @@ public class ServletImport extends HttpServlet {
 	protected void doPost(HttpServletRequest httpRequest, HttpServletResponse response) throws ServletException, IOException{
 
 		ServletFileUpload sf = new ServletFileUpload(new DiskFileItemFactory());
-								
+
 		try {
-			
+
 			WMSSImportRequest importRequest = new WMSSImportRequest(httpRequest);
 
 			logger.info("POST Request -> " + httpRequest.getQueryString());
@@ -44,45 +44,43 @@ public class ServletImport extends HttpServlet {
 			response.addHeader("Access-Control-Allow-Origin","*");
 			response.addHeader("Access-Control-Allow-Methods","GET,POST");
 			response.addHeader("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");
-			
+
 			List<FileItem> multifiles = sf.parseRequest(httpRequest);			
 			ArrayList<WMSSImportRecord> fileList = new ArrayList<WMSSImportRecord>();
-			
+
 			for(FileItem item : multifiles) {
-				
+
 				File file = new File("upload/"+item.getName());
-				
+				logger.info("Uploaded: " + "upload/"+item.getName() );
 				item.write(file);	
 				logger.debug("Checking file integrity of "+item.getName()+" [" + FileUtils.byteCountToDisplaySize(item.getSize())  + "] ...");
-				
+
 				if(checkFile("upload/"+item.getName())) {
 					WMSSImportRecord record = new WMSSImportRecord();
 					record.setFile(file.getName());
 					record.setSize(FileUtils.byteCountToDisplaySize(item.getSize()));
 					record.setRecords(FactoryNeo4j.insertScore(file, importRequest));
-					fileList.add(record);
-				
-				} else {
-					
+					fileList.add(record);				
+				} else {					
 					response.setContentType("text/javascript");
 					response.setStatus(HttpServletResponse.SC_OK);
 					response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport(ErrorCodes.INVALID_RDFFILE_CODE, ErrorCodes.INVALID_RDFFILE_DESCRIPTION +" ["+item.getName()+"]", ErrorCodes.INVALID_RDFFILE_HINT));
 				}
 			}
-			
+
 			FactoryNeo4j.formatGraph(importRequest);
-			
+
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.getWriter().println(ServiceMessagingHandler.getImportReport(fileList, importRequest));
 
 		} catch (InvalidWMSSRequestException e) {
-			
+
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport(e.getCode(), e.getMessage(), e.getHint()));
 			e.printStackTrace();
-			
+
 		} catch (FileUploadException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -91,19 +89,19 @@ public class ServletImport extends HttpServlet {
 
 	}
 
+
 	private boolean checkFile(String filePath) {
 
 		boolean result = true;
 
 		try {
-			
-			
-			Model model = ModelFactory.createDefaultModel() ;
-			model.read(filePath) ;		
-			model.close();
-			
+
+//			Model model = ModelFactory.createDefaultModel() ;
+//			model.read(filePath) ;		
+//			model.close();
+
 		} catch (Exception e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 			result = false;
 		}
 

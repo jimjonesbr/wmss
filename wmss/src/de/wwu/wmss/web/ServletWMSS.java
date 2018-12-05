@@ -49,6 +49,7 @@ public class ServletWMSS extends HttpServlet
 
 			} else if (wmssRequest.getRequestType().equals("getscore")) { 
 
+				response.setHeader("Content-disposition", "attachment; filename=score.xml");
 				response.setContentType("text/xml");
 				response.setStatus(HttpServletResponse.SC_OK);
 				response.getWriter().println(ServiceMessagingHandler.getScore(wmssRequest));

@@ -13,6 +13,7 @@ public class WMSSImportRequest {
 	private String commitSize = SystemSettings.getDefaultCommitSize();
 	private String source = "";
 	private Date startDate = new Date();
+	private String hostname = "";
 	
 	public WMSSImportRequest(HttpServletRequest httpRequest) throws InvalidWMSSRequestException{
 		
@@ -47,6 +48,9 @@ public class WMSSImportRequest {
 			if (parameter.toLowerCase().equals("source")) {							
 				this.source = httpRequest.getParameter(parameter);				
 			}
+													
+			this.hostname = httpRequest.getServerName();				
+			
 		}
 
 		
@@ -66,6 +70,10 @@ public class WMSSImportRequest {
 
 	public Date getStartDate() {
 		return startDate;
+	}
+
+	public String getHostname() {
+		return hostname;
 	}
 	
 	

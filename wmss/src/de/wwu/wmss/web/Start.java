@@ -14,22 +14,16 @@ public class Start {
 		SystemSettings.loadSystemSettings();
 		SystemSettings.loadDataSources();
 
-		Server server = new Server(SystemSettings.getPort());
-
 		ServletContextHandler contextAPI = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		contextAPI.setContextPath("/"+SystemSettings.getService());
-		
-		server.setHandler(contextAPI);
-		
 		contextAPI.addServlet(new ServletHolder(new ServletWMSS()),"/*");
 		contextAPI.addServlet(new ServletHolder(new ServletImport()),"/import");
+		contextAPI.addServlet(new ServletHolder(new ServletWebAdmin()),"/admin");
+		contextAPI.addServlet(new ServletHolder(new ServletFileAccess()),"/file");
+
+		Server server = new Server(SystemSettings.getPort());	
+		server.setHandler(contextAPI);
 		
-		ServletContextHandler contextWebApp = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		contextWebApp.setContextPath("/admin");
-		contextWebApp.addServlet(new ServletHolder(new ServletFiles()),"/");
-		
-		server.setHandler(contextWebApp);
-					
 		server.start();
 		server.join();
 

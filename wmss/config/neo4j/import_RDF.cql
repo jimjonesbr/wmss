@@ -436,7 +436,10 @@ MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->
 SET noteset.voice = voice.rdfs__ID, noteset.staff = staff.rdfs__ID
 RETURN COUNT(noteset);
 
-
+MATCH (score:mo__Score)-[:mo__movement]->(movement:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:skos__broader]->(type) 
+MERGE (movement)-[:hasMediumType]-(t:mediumType {mediumTypeId:type.uri, mediumTypeDescription: type.skos__prefLabel})
+MERGE (t)-[:hasMedium]->(i:Medium {mediumId: part.uri,mediumDescription: part.skos__prefLabel, mediumScoreDescription: part.dc__description, mediumCode: part.rdfs__label, ensemble: part.mso__isEnsemble, solo:part.mso__isSolo})
+RETURN COUNT(i) AS mediums;
 
 
 

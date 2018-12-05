@@ -2,6 +2,7 @@ package de.wwu.wmss.factory;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -31,6 +32,7 @@ import de.wwu.wmss.core.Provenance;
 import de.wwu.wmss.core.WMSSRequest;
 import de.wwu.wmss.core.Tonality;
 import de.wwu.wmss.core.WMSSImportRequest;
+import de.wwu.wmss.settings.SystemSettings;
 import de.wwu.wmss.settings.Util;
 
 public class FactoryNeo4j {
@@ -259,6 +261,13 @@ public class FactoryNeo4j {
 		String twohundred56th =	"MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration:mso__256th) WHERE NOT 'da' IN labels(noteset) SET noteset :da RETURN COUNT(duration);\n";			
 		Neo4jConnector.getInstance().executeQuery(twohundred56th, Util.getDataSource(importRequest.getSource()));
 
+		String mediums = 
+				"MATCH (score:mo__Score)-[:mo__movement]->(movement:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:skos__broader]->(type) \n" +  
+				"MERGE (movement)-[:hasMediumType]-(t:mediumType {mediumTypeId:type.uri, mediumTypeDescription: type.skos__prefLabel})\n" + 
+				"MERGE (t)-[:hasMedium]->(i:Medium {mediumId: part.uri,mediumDescription: part.skos__prefLabel, mediumScoreDescription: part.dc__description, mediumCode: part.rdfs__label, ensemble: part.mso__isEnsemble, solo:part.mso__isSolo})\n" + 
+				"RETURN COUNT(i) AS mediums";
+		Neo4jConnector.getInstance().executeQuery(mediums, Util.getDataSource(importRequest.getSource()));
+		
 		String dot = "MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)-[:mso__hasDurationAttribute]->(attribute:mso__Dot)\n" + 
 				     "SET noteset :dotted\n" + 
 				     "RETURN COUNT(attribute) AS dotted;";			
@@ -476,11 +485,15 @@ public class FactoryNeo4j {
 					"  `http://www.w3.org/2004/02/skos/core#`: 'skos',\n" + 
 					"  `http://purl.org/ontology/mo/mit#`: 'mit'\n" + 
 					"});";
-			
-			
+						
 			StatementResult rs = Neo4jConnector.getInstance().executeQuery(createPredicates, Util.getDataSource(importRequest.getSource()));
 						
 			String importRDF = "CALL semantics.importRDF(\""+file.toURI().toURL()+"\",\""+importRequest.getFormat()+"\",{shortenUrls: true, commitSize: "+importRequest.getCommitSize()+"});";	
+			
+			importRDF = "CALL semantics.importRDF(\"http://"+ importRequest.getHostname()+":"+
+															  SystemSettings.getPort()+"/"+
+															  SystemSettings.getService()+"/file?get="+ 
+															  URLEncoder.encode(file.getName(), "UTF-8") + "\",\""+importRequest.getFormat()+"\",{shortenUrls: true, commitSize: "+importRequest.getCommitSize()+"});";
 			logger.info(importRDF);
 			
 			rs = Neo4jConnector.getInstance().executeQuery(importRDF, Util.getDataSource(importRequest.getSource()));
@@ -490,8 +503,7 @@ public class FactoryNeo4j {
 				result = record.get("triplesLoaded").asInt();
 				logger.info(file.getName() +" [" + FileUtils.byteCountToDisplaySize(file.length()) +"] - RDF Triples Loaded: " + result);
 			}
-	
-			
+				
 			//formatGraph(importRequest);
 
 									
@@ -711,24 +723,33 @@ public class FactoryNeo4j {
 		
 	}
 	
-	public static PerformanceMediumType getPerformanceMediums(String scoreURI, String movementURI, DataSource dataSource){
+	public static ArrayList<Movement> getMovementData(String scoreURI, DataSource dataSource){
 
-		PerformanceMediumType result = new PerformanceMediumType();
-
-		String cypher = "\n\nMATCH (:mo__Score {uri:\""+scoreURI+"\"})-[:mo__movement]->(:mo__Movement {uri:\""+movementURI+"\"})-[:mso__hasScorePart]->(instrument:mo__Instrument) \n" + 
-						"OPTIONAL MATCH (instrument:mo__Instrument)-[:skos__broader]->(type) \n" +				
-						"RETURN\n" + 
-						"  {mediumsList :\n" + 
-						"     {type: type.skos__prefLabel, \n" + 
-						"      typeIdentifier: type.uri,\n" + 
-						"      performanceMediums: COLLECT(DISTINCT {\n" + 
-						"	   mediumCode: instrument.rdfs__label,\n"+
-						"      mediumIdentifier: instrument.uri,\n" + 
-						"      mediumName: instrument.skos__prefLabel,\n" +
-						"	   mediumLabel: instrument.dc__description,\n" +
-						"	   solo: instrument.mso__isSolo,\n" +
-						"	   ensemble: instrument.mso__isEnsemble}\n" + 
-						"      )}} AS mediumsListResultset \n";
+		ArrayList<Movement> result = new ArrayList<Movement>();
+		
+		String cypher = 
+				"MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:hasMediumType]->(mediumType:mediumType)-[:hasMedium]->(medium:Medium)\n" + 
+				"WHERE scr.uri=\""+ scoreURI +"\"\n" + 
+				"WITH  \n" + 
+				"  mov.uri AS movementIdentifier,\n" + 
+				"  mov.dc__title AS  movementName,\n" + 
+				"  mov.beatUnit AS beatUnit,\n" + 
+				"  mov.mso__hasBeatsPerMinute AS beatsPerMinute,    \n" + 
+				"    {type: mediumType.mediumTypeDescription,\n" + 
+				"     typeIdentifier: mediumType.mediumTypeId,\n" + 
+				"     performanceMediums: COLLECT(DISTINCT{\n" + 
+				"       mediumCode: medium.mediumCode,\n" + 
+				"       mediumIdentifier: medium.mediumId,\n" + 
+				"       mediumName: medium.mediumDescription,\n" + 
+				"       mediumLabel: medium.mediumScoreDescription,\n" + 
+				"       solo: medium.solo,\n" + 
+				"       ensemble: medium.ensemble})} AS mediumsListResultset\n" + 
+				"RETURN \n" + 
+				"  {movementIdentifier: movementIdentifier,\n" + 
+				"   movementName: movementName, \n" + 
+				"   beatUnit: beatUnit,\n" + 
+				"   beatsPerMinute: beatsPerMinute,\n" + 
+				"   mediumsList: COLLECT(mediumsListResultset)} AS movementsResultset \n";
 
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, dataSource);
 
@@ -739,58 +760,59 @@ public class FactoryNeo4j {
 			JSONParser parser = new JSONParser();
 
 			try {
-
-				Object objResultset = parser.parse(gson.toJson(record.get("mediumsListResultset").asMap()));
-
-				JSONObject jsonObject = (JSONObject) objResultset;
-				JSONObject mediumList = (JSONObject) jsonObject.get("mediumsList");			
-
-				if(mediumList.get("type") == null) {
-					result.setMediumTypeDescription("Unknown");
-				} else {
-					result.setMediumTypeDescription(mediumList.get("type").toString());	
-				}
-
-				if(mediumList.get("type") == null) {
-					result.setMediumTypeId("Unknown");
-				} else {
-					result.setMediumTypeId(mediumList.get("typeIdentifier").toString());
-				}		
-
-				JSONArray mediumListJsonArray = (JSONArray) mediumList.get("performanceMediums");
-
-				for (int j = 0; j < mediumListJsonArray.size(); j++) {
-
-					PerformanceMedium medium = new PerformanceMedium();	
-
-					JSONObject mediumJsonObject = (JSONObject) mediumListJsonArray.get(j);
-					medium.setMediumDescription(mediumJsonObject.get("mediumName").toString().trim());
-					medium.setMediumId(mediumJsonObject.get("mediumIdentifier").toString().trim());
-					medium.setMediumScoreDescription(mediumJsonObject.get("mediumLabel").toString().trim());
-					medium.setMediumCode(mediumJsonObject.get("mediumCode").toString().trim());
+				
+				Movement movement = new Movement();
+				
+				JSONObject movementsObject = (JSONObject) parser.parse(gson.toJson(record.get("movementsResultset").asMap()));
+				movement.setMovementIdentifier(movementsObject.get("movementIdentifier").toString().trim());
+				movement.setMovementName(movementsObject.get("movementName").toString());
+				movement.setBeatUnit(movementsObject.get("beatUnit").toString());
+				movement.setBeatsPerMinute(Integer.parseInt(movementsObject.get("beatsPerMinute").toString()));
+				
+				JSONArray mediumTypeArray = (JSONArray) movementsObject.get("mediumsList");
+				
+				for (int i = 0; i < mediumTypeArray.size(); i++) {
 					
+					JSONObject mediumTypeObject = (JSONObject) mediumTypeArray.get(i);
+
+					PerformanceMediumType mediumType = new PerformanceMediumType();	
+					mediumType.setMediumTypeId(mediumTypeObject.get("typeIdentifier").toString().trim());
+					mediumType.setMediumTypeDescription(mediumTypeObject.get("type").toString().trim());
 					
-					if(mediumJsonObject.get("solo")!=null) {
-						medium.setSolo(Boolean.parseBoolean(mediumJsonObject.get("solo").toString().trim()));
+					JSONArray mediumsArray = (JSONArray) mediumTypeObject.get("performanceMediums");
+				
+					for (int j = 0; j < mediumsArray.size(); j++) {
+						
+						PerformanceMedium medium = new PerformanceMedium();	
+
+						JSONObject mediumJsonObject = (JSONObject) mediumsArray.get(j);
+						medium.setMediumDescription(mediumJsonObject.get("mediumName").toString().trim());
+						medium.setMediumId(mediumJsonObject.get("mediumIdentifier").toString().trim());
+						medium.setMediumScoreDescription(mediumJsonObject.get("mediumLabel").toString().trim());
+						medium.setMediumCode(mediumJsonObject.get("mediumCode").toString().trim());
+												
+						if(mediumJsonObject.get("solo")!=null) {
+							medium.setSolo(Boolean.parseBoolean(mediumJsonObject.get("solo").toString().trim()));
+						}
+						
+						if(mediumJsonObject.get("ensemble")!=null) {
+							medium.setEnsemble(Boolean.parseBoolean(mediumJsonObject.get("ensemble").toString().trim()));
+						}
+						
+						mediumType.getMediums().add(medium);
 					}
 					
-					if(mediumJsonObject.get("ensemble")!=null) {
-						medium.setEnsemble(Boolean.parseBoolean(mediumJsonObject.get("ensemble").toString().trim()));
-					}
-
-					
-					result.getMediums().add(medium);
-					
+					movement.getPerformanceMediumList().add(mediumType);
+					result.add(movement);
 				}
-
-			} catch (org.json.simple.parser.ParseException e) {
+				
+			}  catch (org.json.simple.parser.ParseException e) {
 				e.printStackTrace();
 			}
 
 		}
 
 		return result;
-
 	}
 	
 	public static Provenance getProvenance(String json) {
@@ -827,10 +849,8 @@ public class FactoryNeo4j {
 	public static String createMelodyQuery(WMSSRequest wmssRequest) {
 	
 		
-		String where = "\nWHERE TRUE \n";													
-		String match = "MATCH (scr:mo__Score)-[:mo__movement]->(movements:mo__Movement)\n";
-		
-		match = match + "MATCH (scr:mo__Score)-[:dc__creator]->(creator:foaf__Person)\n";
+		String where = "\nWHERE TRUE \n";														
+		String match = "MATCH (scr:mo__Score)-[:dc__creator]->(creator:foaf__Person)\n";
 		
 		if(!wmssRequest.getMelody().equals("")) {
 
@@ -1074,12 +1094,6 @@ public class FactoryNeo4j {
 				"    scr.thumbnail AS thumbnail,\n " +
 			    "	 scr.collectionUri AS collectionIdentifier, \n"+
 			    "	 scr.collectionLabel AS collectionLabel, \n"+
-				"    {movements: COLLECT(DISTINCT \n" + 
-				"    	{movementIdentifier: movements.uri,\n" + 
-				"        movementName: movements.dc__title ,\n" + 
-				"        beatUnit: movements.beatUnit,\n" + 
-				"        beatsPerMinute: movements.mso__hasBeatsPerMinute}\n" + 
-				"    )} AS movements,\n" + 
 				"    {persons: COLLECT(DISTINCT\n" + 
 				"       {name: creator.foaf__name, \n" + 
 				"     	 identifier: creator.uri, \n" +
@@ -1138,12 +1152,9 @@ public class FactoryNeo4j {
 			score.setProvenance(prov);
 						
 			if(!request.getRequestMode().equals("simplified")) {
-				score.getMovements().addAll(getMovements(gson.toJson(record.get("movements").asMap())));
-				for (int i = 0; i < score.getMovements().size(); i++) {			
-					score.getMovements().get(i).getPerformanceMediumList().add(getPerformanceMediums(score.getScoreId(),score.getMovements().get(i).getMovementId(),dataSource));
-				}
+				score.getMovements().addAll(getMovementData(score.getScoreId(), dataSource));
 			}	
-			
+
 			if(record.get("musicxml").asBoolean()) {
 				Format format = new Format();
 				format.setFormatId("musicxml");
@@ -1163,40 +1174,7 @@ public class FactoryNeo4j {
 		return result;
 		
 	}
-	
-	
-	
-	private static ArrayList<Movement> getMovements(String json){
 		
-		JSONParser parser = new JSONParser();
-		ArrayList<Movement> result = new ArrayList<Movement>();
-		
-		try {
-		
-			Object obj = parser.parse(json);
-			JSONObject jsonObject = (JSONObject) obj;
-			JSONArray movementsJsonArray = (JSONArray) jsonObject.get("movements");
-			
-			for (int i = 0; i < movementsJsonArray.size(); i++) {
-				
-				Movement movement = new Movement();
-				JSONObject movementsJsonObject = (JSONObject) movementsJsonArray.get(i);
-				movement.setMovementIdentifier(movementsJsonObject.get("movementIdentifier").toString());
-				movement.setMovementName(movementsJsonObject.get("movementName").toString());
-				movement.setBeatsPerMinute(Integer.parseInt(movementsJsonObject.get("beatsPerMinute").toString()));
-				movement.setBeatUnit(movementsJsonObject.get("beatUnit").toString());
-				result.add(movement);
-			}
-		
-		} catch (org.json.simple.parser.ParseException e) {
-			e.printStackTrace();
-		}
-		
-		return result;
-
-	}
-	
-	
 	private static ArrayList<Person> getPersons(String json){
 		
 		JSONParser parser = new JSONParser();
@@ -1222,8 +1200,7 @@ public class FactoryNeo4j {
 		}
 		return result;
 	}
-	
-	
+		
 	private static ArrayList<MelodyLocationGroup> getMelodyLocations (String json, String melodyQuery){
 
 		JSONParser parser = new JSONParser();
