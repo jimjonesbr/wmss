@@ -207,11 +207,17 @@ public class ServiceMessagingHandler {
 									
 					int totalSize;
 					
-					if(request.getOffset()==0) {
+					if(request.getOffset()==0 && listScores.size() == request.getPageSize()) {						
 						totalSize = FactoryNeo4j.getResultsetSize(request, SystemSettings.sourceList.get(i));
 						repo.put("requestSize",totalSize);	
 					} else {
-						totalSize = request.getTotalSize();
+						
+						if(request.getOffset()==0) {
+							totalSize = listScores.size();
+						} else {
+							totalSize = request.getTotalSize();
+						}
+						
 					}
 					
 					if(request.getOffset() + listScores.size() < totalSize ) {
