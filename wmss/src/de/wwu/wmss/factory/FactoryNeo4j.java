@@ -11,6 +11,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.StatementResult;
+
+import com.google.common.base.CaseFormat;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.wwu.wmss.connectors.Neo4jConnector;
@@ -876,12 +878,56 @@ public class FactoryNeo4j {
 
 				String currentDurationType = "mso__NoteSet";								
 				if(!wmssRequest.isIgnoreDuration()) {
-					currentDurationType = "d"+ noteSequence.get(i).getDuration();					
+					//currentDurationType = "d"+ noteSequence.get(i).getDuration();					
+					currentDurationType = "d_"+ noteSequence.get(i).getDuration();
+					
+					switch (noteSequence.get(i).getDuration()) {
+					case "0":
+						currentDurationType = "d_longa";
+						break;
+					case "1":
+						currentDurationType = "d_whole";
+						break;
+					case "2":
+						currentDurationType = "d_half";
+						break;
+					case "3":
+						currentDurationType = "d_32nd";
+						break;
+					case "4":
+						currentDurationType = "d_quarter";
+						break;
+					case "5":
+						currentDurationType = "d_64th";
+						break;
+					case "6":
+						currentDurationType = "d_16th";
+						break;
+					case "7":
+						currentDurationType = "d_128th";
+						break;
+					case "8":
+						currentDurationType = "d_eighth";
+						break;
+					case "9":
+						currentDurationType = "d_breve";
+						break;
+					case "a":
+						currentDurationType = "d_256th";
+						break;
+					default:
+						break;
+					}
+					
 				}	
 
 				String currentPitchType = "chord__Note";
 				if(!wmssRequest.isIgnorePitch()) {
-					currentPitchType = noteSequence.get(i).getPitch()+noteSequence.get(i).getAccidental();
+					currentPitchType = noteSequence.get(i).getAccidental()+noteSequence.get(i).getPitch();
+					if(!wmssRequest.isIgnoreOctaves()) {
+						currentPitchType = currentPitchType + noteSequence.get(i).getOctave();
+					}
+
 				}
 
 				if(!noteSequence.get(i).getTime().equals("")) {					
@@ -917,31 +963,53 @@ public class FactoryNeo4j {
 					currentMeasure = noteSequence.get(i).getMeasure();
 				}
 
+											
 				if(i==0) {
-					match = match + "MATCH "+measureNode+"-[:mso__hasNoteSet]->(ns0:"+currentDurationType+")\n";
+					match = match + "MATCH "+measureNode+"-[:mso__hasNoteSet]->(ns"+i+":"+currentDurationType+":"+currentPitchType+")\n";
 					previousDurationType = currentDurationType;
 				}
 				
-				if(!wmssRequest.isIgnorePitch()) {																
-					match = match + "MATCH (ns"+notesetCounter+":"+currentDurationType+")-[:mso__hasNote]->(n"+i+":"+currentPitchType+") \n";
-				}		
-				
-				if(!wmssRequest.isIgnoreOctaves()) {	
-					where = where + "AND n"+i+".mso__hasOctave="+noteSequence.get(i).getOctave()+"\n";
-				}										 
-
-				if(wmssRequest.isIgnoreChords()) {
-					where = where  + "AND ns"+notesetCounter+".size = 1 \n";
-				}
-								
 				if(!noteSequence.get(i).isChord()) {
+										
+					//if(notesetCounter>0) {
 					
 					if(notesetCounter>0) {
-						match = match + "MATCH (ns"+(notesetCounter-1)+":"+previousDurationType+")-[:mso__nextNoteSet]->(ns"+notesetCounter+":"+currentDurationType+") \n";
+						match = match + "MATCH (ns"+(notesetCounter-1)+":"+previousDurationType+")-[:mso__nextNoteSet]->(ns"+notesetCounter+":"+currentDurationType+":"+currentPitchType+") \n";
 					}
-					notesetCounter++;
+					
+					
+					if(wmssRequest.isIgnoreChords()) {
+						where = where  + "AND ns"+notesetCounter+".size = 1 \n";
+					}
+					
+					
+					
+					
+						notesetCounter++;
+						
+					
+									
+				} else {
+					match = match + "MATCH (ns"+notesetCounter+":"+currentPitchType+")\n";
 				}
-								
+				
+				
+				
+				System.out.println("notesetCounter >" + notesetCounter+ " > " +currentPitchType + "> isChord? " +noteSequence.get(i).isChord());
+				
+				
+//				if(!wmssRequest.isIgnorePitch()) {																
+//					/**
+//					 * match = match + "MATCH (ns"+notesetCounter+":"+currentDurationType+")-[:mso__hasNote]->(n"+i+":"+currentPitchType+") \n"; 
+//					 */					
+//				}						
+//				if(!wmssRequest.isIgnoreOctaves()) {	
+//					/**
+//					 * where = where + "AND n"+i+".mso__hasOctave="+noteSequence.get(i).getOctave()+"\n"; 
+//					 */					
+//				}		
+
+
 				previousDurationType = currentDurationType;				
 				i++;
 			}

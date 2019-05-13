@@ -176,7 +176,7 @@
       "type": "lpg",
       "storage": "neo4j",
       "port": "7687",
-      "host": "bolt://10.102.3.88",
+      "host": "bolt://neo4j.uni-muenster.de",
       "repository": "",
       "version": "3.4.0",
       "user": "neo4j",

@@ -173,7 +173,6 @@ public class ServiceMessagingHandler {
 
 			JSONArray repoArray = new JSONArray();
 
-
 			for (int i = 0; i < SystemSettings.sourceList.size(); i++) {
 
 				if(request.getSource().equals(SystemSettings.sourceList.get(i).getId()) || request.getSource().equals("")){
