@@ -871,6 +871,7 @@ public class FactoryNeo4j {
 			int i = 0;
 			int notesetCounter = 0;
 			int currentMeasure = 0;
+			int chordSize = 0;
 			String previousDurationType = "";
 			String measureNode ="";
 
@@ -970,34 +971,32 @@ public class FactoryNeo4j {
 				}
 				
 				if(!noteSequence.get(i).isChord()) {
-										
-					//if(notesetCounter>0) {
-					
+																		
 					if(notesetCounter>0) {
 						match = match + "MATCH (ns"+(notesetCounter-1)+":"+previousDurationType+")-[:mso__nextNoteSet]->(ns"+notesetCounter+":"+currentDurationType+":"+currentPitchType+") \n";
 					}
-					
-					
+									
 					if(wmssRequest.isIgnoreChords()) {
+						
 						where = where  + "AND ns"+notesetCounter+".size = 1 \n";
+						
+					}													
+					
+					if(chordSize>1) {
+						where = where  + "AND ns"+notesetCounter+".size = "+chordSize+" \n";
 					}
 					
-					
-					
-					
-						notesetCounter++;
-						
-					
+					chordSize = 0;	
+					notesetCounter++;
 									
 				} else {
+					
 					match = match + "MATCH (ns"+notesetCounter+":"+currentPitchType+")\n";
+					chordSize++;
+					
 				}
-				
-				
-				
+											
 				System.out.println("notesetCounter >" + notesetCounter+ " > " +currentPitchType + "> isChord? " +noteSequence.get(i).isChord());
-				
-				
 //				if(!wmssRequest.isIgnorePitch()) {																
 //					/**
 //					 * match = match + "MATCH (ns"+notesetCounter+":"+currentDurationType+")-[:mso__hasNote]->(n"+i+":"+currentPitchType+") \n"; 
@@ -1008,7 +1007,6 @@ public class FactoryNeo4j {
 //					 * where = where + "AND n"+i+".mso__hasOctave="+noteSequence.get(i).getOctave()+"\n"; 
 //					 */					
 //				}		
-
 
 				previousDurationType = currentDurationType;				
 				i++;
@@ -1041,6 +1039,7 @@ public class FactoryNeo4j {
 		/**
 		 * Where clause
 		 */
+		
 		
 		if(!wmssRequest.getPerformanceMedium().equals("")) {
 			where = where + "AND part.rdfs__label=\""+wmssRequest.getPerformanceMedium()+"\"\n";
