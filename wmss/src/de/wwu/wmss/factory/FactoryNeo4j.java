@@ -971,23 +971,26 @@ public class FactoryNeo4j {
 				}
 				
 				if(!noteSequence.get(i).isChord()) {
-																		
-					if(notesetCounter>0) {
-						match = match + "MATCH (ns"+(notesetCounter-1)+":"+previousDurationType+")-[:mso__nextNoteSet]->(ns"+notesetCounter+":"+currentDurationType+":"+currentPitchType+") \n";
+							
+					
+					if(chordSize>1) {
+						where = where  + "AND ns"+notesetCounter+".size = "+chordSize+" \n";
 					}
+					
+					notesetCounter++;
+					
+					if( (notesetCounter>0)) {
+						match = match + "MATCH (ns"+(notesetCounter-1)+":"+previousDurationType+")-[:mso__nextNoteSet]->(ns"+notesetCounter+":"+currentDurationType+":"+currentPitchType+") \n";
+					} 
 									
 					if(wmssRequest.isIgnoreChords()) {
 						
 						where = where  + "AND ns"+notesetCounter+".size = 1 \n";
 						
 					}													
-					
-					if(chordSize>1) {
-						where = where  + "AND ns"+notesetCounter+".size = "+chordSize+" \n";
-					}
-					
+										
 					chordSize = 0;	
-					notesetCounter++;
+					
 									
 				} else {
 					
@@ -996,17 +999,7 @@ public class FactoryNeo4j {
 					
 				}
 											
-				System.out.println("notesetCounter >" + notesetCounter+ " > " +currentPitchType + "> isChord? " +noteSequence.get(i).isChord());
-//				if(!wmssRequest.isIgnorePitch()) {																
-//					/**
-//					 * match = match + "MATCH (ns"+notesetCounter+":"+currentDurationType+")-[:mso__hasNote]->(n"+i+":"+currentPitchType+") \n"; 
-//					 */					
-//				}						
-//				if(!wmssRequest.isIgnoreOctaves()) {	
-//					/**
-//					 * where = where + "AND n"+i+".mso__hasOctave="+noteSequence.get(i).getOctave()+"\n"; 
-//					 */					
-//				}		
+				//System.out.println("notesetCounter >" + notesetCounter+ " > " +currentPitchType + "> isChord? " +noteSequence.get(i).isChord());
 
 				previousDurationType = currentDurationType;				
 				i++;
