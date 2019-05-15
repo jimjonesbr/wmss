@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+
+import javax.servlet.FilterRegistration;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -874,7 +877,8 @@ public class FactoryNeo4j {
 			int chordSize = 0;
 			String previousDurationType = "";
 			String measureNode ="";
-
+			boolean firstElement = true;
+			
 			while(i<=noteSequence.size()-1) {
 
 				String currentDurationType = "mso__NoteSet";								
@@ -922,7 +926,9 @@ public class FactoryNeo4j {
 					
 				}	
 
-				String currentPitchType = "chord__Note";
+				String currentPitchType = "mso__NoteSet";
+				//String currentPitchType = "chord__Note";
+				
 				if(!wmssRequest.isIgnorePitch()) {
 					currentPitchType = noteSequence.get(i).getAccidental()+noteSequence.get(i).getPitch();
 					if(!wmssRequest.isIgnoreOctaves()) {
@@ -973,22 +979,24 @@ public class FactoryNeo4j {
 				if(!noteSequence.get(i).isChord()) {
 							
 					
-					if(chordSize>1) {
+					if(chordSize>0) {
 						where = where  + "AND ns"+notesetCounter+".size = "+chordSize+" \n";
 					}
 					
-					notesetCounter++;
-					
-					if( (notesetCounter>0)) {
+					if( (notesetCounter>0) ) {
+						match = match + "MATCH (ns"+(notesetCounter-1)+":"+previousDurationType+")-[:mso__nextNoteSet]->(ns"+notesetCounter+":"+currentDurationType+":"+currentPitchType+") \n";						
+					} else if (!firstElement) {
+						notesetCounter++;
 						match = match + "MATCH (ns"+(notesetCounter-1)+":"+previousDurationType+")-[:mso__nextNoteSet]->(ns"+notesetCounter+":"+currentDurationType+":"+currentPitchType+") \n";
-					} 
-									
+					}
+					
 					if(wmssRequest.isIgnoreChords()) {
 						
 						where = where  + "AND ns"+notesetCounter+".size = 1 \n";
 						
 					}													
-										
+					
+					notesetCounter++;
 					chordSize = 0;	
 					
 									
@@ -996,7 +1004,7 @@ public class FactoryNeo4j {
 					
 					match = match + "MATCH (ns"+notesetCounter+":"+currentPitchType+")\n";
 					chordSize++;
-					
+					firstElement = false;
 				}
 											
 				//System.out.println("notesetCounter >" + notesetCounter+ " > " +currentPitchType + "> isChord? " +noteSequence.get(i).isChord());
