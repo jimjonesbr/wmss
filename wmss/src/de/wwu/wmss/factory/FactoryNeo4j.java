@@ -4,9 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-
-import javax.servlet.FilterRegistration;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -14,8 +11,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.StatementResult;
-
-import com.google.common.base.CaseFormat;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.wwu.wmss.connectors.Neo4jConnector;
@@ -97,7 +92,15 @@ public class FactoryNeo4j {
 				"RETURN COUNT(scr) AS Thumbnails;";
 		
 		Neo4jConnector.getInstance().executeQuery(thumbnailStatement, Util.getDataSource(importRequest.getSource()));
-		
+
+		String notesetSizeStatement = 
+				"MATCH (noteset:mso__NoteSet)-[r:mso__hasNote]-()\n" + 
+				"WITH noteset,COUNT(r) AS size\n" + 
+				"SET noteset.size = size\n" + 
+				"RETURN COUNT(noteset) AS NoteSets;";		
+		Neo4jConnector.getInstance().executeQuery(notesetSizeStatement, Util.getDataSource(importRequest.getSource()));
+
+		/**
 		String notesetSizeStatement = 
 				"MATCH (noteset:mso__NoteSet)-[r:mso__hasNote]-()\n" + 
 				"WITH noteset,COUNT(r) AS size,\n" + 
@@ -106,10 +109,9 @@ public class FactoryNeo4j {
 				"  WHEN COUNT(r)=1 THEN FALSE END AS chord\n" + 
 				"WHERE noteset.size IS NULL  \n" + 
 				"SET noteset.size = size\n" + 
-				"RETURN COUNT(noteset) AS NoteSets;";
-		
+				"RETURN COUNT(noteset) AS NoteSets;";		
 		Neo4jConnector.getInstance().executeQuery(notesetSizeStatement, Util.getDataSource(importRequest.getSource()));
-		
+		**/
 		String formatStatement =
 				"MATCH (score:mo__Score)\n" + 
 				"WITH  score, \n" + 
@@ -119,8 +121,7 @@ public class FactoryNeo4j {
 				"  END AS docFormat\n" + 
 				"WHERE score.format IS NULL  \n" + 
 				"SET score.format = docFormat\n" + 
-				"RETURN COUNT(docFormat) AS Format;";
-		
+				"RETURN COUNT(docFormat) AS Format;";		
 		Neo4jConnector.getInstance().executeQuery(formatStatement, Util.getDataSource(importRequest.getSource()));
 		
 		String instrumentStatement =
@@ -129,10 +130,73 @@ public class FactoryNeo4j {
 				"WHERE instrument.typeUri IS NULL \n" + 
 				"SET instrument.typeUri = type.uri,\n" + 
 				"    instrument.typeLabel = type.skos__prefLabel\n" + 
-				"RETURN instrument;";
-				
+				"RETURN instrument;";				
 		Neo4jConnector.getInstance().executeQuery(instrumentStatement, Util.getDataSource(importRequest.getSource()));
 		
+		
+		String accidentalStatements = "MATCH (note:chord__Note)-[:chord__natural]->(natural:chord__Natural) \n" + 
+				"OPTIONAL MATCH (note:chord__Note)-[:chord__modifier]->(modifier)\n" + 
+				"WITH note, CASE SUBSTRING(modifier.uri,31) \n" + 
+				"        	WHEN 'flat' THEN 'b'\n" + 
+				"        	WHEN 'doubleflat' THEN 'bb'\n" + 
+				"        	WHEN 'sharp' THEN 'x'\n" + 
+				"        	WHEN 'doublesharp' THEN 'xx'\n" + 
+				"        	WHEN NULL THEN ''\n" + 
+				"           END AS modifier,\n" + 
+				"       SUBSTRING(natural.uri,36) AS natural           \n" + 
+				"SET note.signature = modifier+natural+note.mso__hasOctave,\n" + 
+				"    note.note = modifier+natural,\n" + 
+				"    note.octave = note.mso__hasOctave\n" + 
+				"WITH note\n" + 
+				"CALL apoc.create.addLabels(id(note),[note.signature,note.note]) YIELD node \n" +  
+				"RETURN COUNT(node)";
+		Neo4jConnector.getInstance().executeQuery(accidentalStatements, Util.getDataSource(importRequest.getSource()));
+		
+		String signatureStatement = "MATCH (ns:mso__NoteSet)-[:mso__hasNote]->(n:chord__Note) \n" + 
+									"CALL apoc.create.addLabels(id(ns),[n.signature]) YIELD node \n" +
+									"RETURN COUNT(node);";
+		Neo4jConnector.getInstance().executeQuery(signatureStatement, Util.getDataSource(importRequest.getSource()));
+
+		String notesStatement = "MATCH (ns:mso__NoteSet)-[:mso__hasNote]->(n:chord__Note) \n" + 
+								"CALL apoc.create.addLabels(id(ns),[n.note]) YIELD node \n" + 
+								"RETURN COUNT(node)";
+		Neo4jConnector.getInstance().executeQuery(notesStatement, Util.getDataSource(importRequest.getSource()));
+
+		String durationsStatement = "MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)\n" + 
+				"CALL apoc.create.addLabels(id(noteset),['d_'+LOWER(SUBSTRING(labels(duration)[0],5))]) YIELD node\n" + 
+				"RETURN COUNT(node)";
+		Neo4jConnector.getInstance().executeQuery(durationsStatement, Util.getDataSource(importRequest.getSource()));
+		
+		String restStatement = 
+				"MATCH (note:chord__Note)\n" + 
+				"WHERE note.note IS NULL  \n" + 
+				"SET note.note = '-', note.accidental = ''\n" + 
+				"RETURN COUNT(note) AS Rests;";		
+		Neo4jConnector.getInstance().executeQuery(restStatement, Util.getDataSource(importRequest.getSource()));
+		
+		
+		
+		/**
+		String accidentalStatements = "MATCH (note:chord__Note)-[:chord__natural]->(natural:chord__Natural) \n" + 
+				"OPTIONAL MATCH (note:chord__Note)-[:chord__modifier]->(modifier)\n" + 
+				"WITH note, CASE SUBSTRING(modifier.uri,31) \n" + 
+				"        	WHEN 'flat' THEN 'b'\n" + 
+				"        	WHEN 'doubleflat' THEN 'bb'\n" + 
+				"        	WHEN 'sharp' THEN 'x'\n" + 
+				"        	WHEN 'doublesharp' THEN 'xx'\n" + 
+				"        	WHEN NULL THEN ''\n" + 
+				"           END AS modifier,\n" + 
+				"       SUBSTRING(natural.uri,36) AS natural           \n" + 
+				"SET note.signature = modifier+natural+note.mso__hasOctave,\n" + 
+				"    note.note = modifier+natural,\n" + 
+				"    note.octave = note.mso__hasOctave\n" + 
+				"WITH note\n" + 
+				"CALL apoc.create.addLabels(id(note),[note.signature,note.note]) YIELD node\n" +  
+				"RETURN COUNT(node)";
+		Neo4jConnector.getInstance().executeQuery(accidentalStatements, Util.getDataSource(importRequest.getSource()));
+		**/
+		
+		/**
 		String accidentalStatements = 
 				"MATCH (note:chord__Note)-[:chord__natural]->(natural:chord__Natural) \n" + 
 				"OPTIONAL MATCH (note:chord__Note)-[:chord__modifier]->(modifier)\n" + 
@@ -148,14 +212,9 @@ public class FactoryNeo4j {
 				"SET note.note = natural, note.accidental = modifier \n" + 
 				"RETURN COUNT(note) AS Note_Accidentals;";		
 		Neo4jConnector.getInstance().executeQuery(accidentalStatements, Util.getDataSource(importRequest.getSource()));
-		
-		String restStatement = 
-				"MATCH (note:chord__Note)\n" + 
-				"WHERE note.note IS NULL  \n" + 
-				"SET note.note = '-', note.accidental = ''\n" + 
-				"RETURN COUNT(note) AS Rests;";		
-		Neo4jConnector.getInstance().executeQuery(restStatement, Util.getDataSource(importRequest.getSource()));
-		
+		**/
+				
+		/**
 		String noteA = "MATCH (note:chord__Note {note:'A', accidental: ''}) WHERE NOT 'A' IN labels(note) SET note :A RETURN COUNT(note) AS A;";
 		Neo4jConnector.getInstance().executeQuery(noteA, Util.getDataSource(importRequest.getSource()));
 		String noteAx = "MATCH (note:chord__Note {note:'A', accidental: 'x'}) WHERE NOT 'Ax' IN labels(note) SET note :Ax RETURN COUNT(note) AS Ax;";
@@ -232,6 +291,7 @@ public class FactoryNeo4j {
 		Neo4jConnector.getInstance().executeQuery(noteGb, Util.getDataSource(importRequest.getSource()));
 		String noteGbb = "MATCH (note:chord__Note {note:'G', accidental: 'bb'}) WHERE NOT 'Gbb' IN labels(note) SET note :Gbb RETURN COUNT(note) AS Gbb;";
 		Neo4jConnector.getInstance().executeQuery(noteGbb, Util.getDataSource(importRequest.getSource()));
+
 		
 		String longa =	"MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration:mso__Longa) WHERE NOT 'd0' IN labels(noteset) SET noteset :d0 RETURN COUNT(duration);\n";			
 		Neo4jConnector.getInstance().executeQuery(longa, Util.getDataSource(importRequest.getSource()));
@@ -266,6 +326,8 @@ public class FactoryNeo4j {
 		String twohundred56th =	"MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration:mso__256th) WHERE NOT 'da' IN labels(noteset) SET noteset :da RETURN COUNT(duration);\n";			
 		Neo4jConnector.getInstance().executeQuery(twohundred56th, Util.getDataSource(importRequest.getSource()));
 
+		 **/
+				
 		String mediums = 
 				"MATCH (score:mo__Score)-[:mo__movement]->(movement:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:skos__broader]->(type) \n" +  
 				"MERGE (movement)-[:hasMediumType]-(t:mediumType {mediumTypeId:type.uri, mediumTypeDescription: type.skos__prefLabel})\n" + 
@@ -415,6 +477,20 @@ public class FactoryNeo4j {
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mso__NoteSet(clefSign);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mso__NoteSet(clefLine);", Util.getDataSource(importRequest.getSource()));
 		
+		
+		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :d_whole(size);", Util.getDataSource(importRequest.getSource()));
+		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :d_half(size);", Util.getDataSource(importRequest.getSource()));
+		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :d3(size);", Util.getDataSource(importRequest.getSource()));
+		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :d_quarter(size);", Util.getDataSource(importRequest.getSource()));
+		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :d5(size);", Util.getDataSource(importRequest.getSource()));
+		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :d6(size);", Util.getDataSource(importRequest.getSource()));
+		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :d7(size);", Util.getDataSource(importRequest.getSource()));
+		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :d_eighth(size);", Util.getDataSource(importRequest.getSource()));
+		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :d9(size);", Util.getDataSource(importRequest.getSource()));
+		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :da(size);", Util.getDataSource(importRequest.getSource()));
+
+		/**
+		 * 
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :d1(size);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :d2(size);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :d3(size);", Util.getDataSource(importRequest.getSource()));
@@ -425,7 +501,7 @@ public class FactoryNeo4j {
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :d8(size);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :d9(size);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :da(size);", Util.getDataSource(importRequest.getSource()));
-		
+		 
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :A(mso__hasOctave);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :B(mso__hasOctave);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :C(mso__hasOctave);", Util.getDataSource(importRequest.getSource()));
@@ -462,7 +538,7 @@ public class FactoryNeo4j {
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :Fbb(mso__hasOctave);", Util.getDataSource(importRequest.getSource()));
 		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :Gbb(mso__hasOctave);", Util.getDataSource(importRequest.getSource()));
 		
-
+		 */
 		
 	}
 	
@@ -944,7 +1020,8 @@ public class FactoryNeo4j {
 				}
 
 				if(!noteSequence.get(i).getKey().equals("")) {
-					where = where + "AND measure"+noteSequence.get(i).getMeasure()+".key=\""+noteSequence.get(i).getKey()+"\"\n"; 
+					//where = where + "AND measure"+noteSequence.get(i).getMeasure()+".key=\""+noteSequence.get(i).getKey()+"\"\n"; 
+					match = match + "MATCH (measure1:"+noteSequence.get(i).getKey()+")\n";
 				}
 
 				if(!noteSequence.get(i).getClef().equals("")) {
@@ -954,11 +1031,11 @@ public class FactoryNeo4j {
 
 				if(noteSequence.get(i).getDotted()!=0) {
 					if(noteSequence.get(i).getDotted()==1) {
-						where = where + "AND ns"+i+":dotted \n";
+						where = where + "AND ns"+i+":dot \n";
 					} else if(noteSequence.get(i).getDotted()==2) {
-						where = where + "AND ns"+i+":doubleDotted \n";
+						where = where + "AND ns"+i+":doubledot \n";
 					} else if(noteSequence.get(i).getDotted()==3) {
-						where = where + "AND ns"+i+":tripleDotted \n";
+						where = where + "AND ns"+i+":tripledot \n";
 					}
 				}
 				
@@ -1015,8 +1092,7 @@ public class FactoryNeo4j {
 
 
 		} 
-		
-		
+				
 		/**
 		 * Match clause
 		 */
@@ -1037,18 +1113,23 @@ public class FactoryNeo4j {
 			match = match + "MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasMeasure]->(measure1:mso__Measure)-[:mso__hasNoteSet]->(ns0)";
 		}
 		
+
+		
+		if(!wmssRequest.getPerformanceMedium().equals("")) {
+			//where = where + "AND part.rdfs__label=\""+wmssRequest.getPerformanceMedium()+"\"\n";
+			match = match + "MATCH (part:"+wmssRequest.getPerformanceMedium().replace(".", "_")+")\n";
+		} 
+
+		if(!wmssRequest.getPerformanceMediumType().equals("")) {
+			//where = where + "AND part.typeLabel=\""+wmssRequest.getPerformanceMediumType()+"\"\n";
+			match = match + "MATCH (part:"+wmssRequest.getPerformanceMediumType().toLowerCase()+")\n";
+		}
+		
+		
 		/**
 		 * Where clause
 		 */
 		
-		
-		if(!wmssRequest.getPerformanceMedium().equals("")) {
-			where = where + "AND part.rdfs__label=\""+wmssRequest.getPerformanceMedium()+"\"\n";
-		} 
-
-		if(!wmssRequest.getPerformanceMediumType().equals("")) {
-			where = where + "AND part.typeLabel=\""+wmssRequest.getPerformanceMediumType()+"\"\n";
-		}
 		
 		if(!wmssRequest.getPerson().equals("")) {
 			where = where + "AND creator.uri=\""+wmssRequest.getPerson()+"\"\n";
@@ -1063,7 +1144,9 @@ public class FactoryNeo4j {
 		} 
 		
 		if(!wmssRequest.getTempoBeatUnit().equals("")) {
-			where = where + "AND movements.beatUnit='"+wmssRequest.getTempoBeatUnit()+"' \n"; 
+			//where = where + "AND movements.beatUnit='"+wmssRequest.getTempoBeatUnit()+"' \n"; 
+			match = match + "MATCH (scr:mo__Score)-[:mo__movement]->(movements:mo__Movement {beatUnit: '"+wmssRequest.getTempoBeatUnit()+"'})\n";
+			
 		}
 
 		if(!wmssRequest.getClef().equals("")) {
@@ -1095,7 +1178,8 @@ public class FactoryNeo4j {
 		}
 			
 		if(!wmssRequest.getKey().equals("")) {
-			where = where + "AND measure1.key=\""+wmssRequest.getKey()+"\"\n";
+			//where = where + "AND measure1.key=\""+wmssRequest.getKey()+"\"\n";
+			match = match + "MATCH (measure1:"+wmssRequest.getKey()+")";
 		}
 
 		if(!wmssRequest.getTimeSignature().equals("")) {
