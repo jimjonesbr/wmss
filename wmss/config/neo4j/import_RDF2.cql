@@ -75,7 +75,7 @@ SET scr.encoderUri = encoder.uri,
     scr.encoderName = encoder.foaf__name,
     scr.provGeneratedAtTime = activity.prov__startedAtTime,
     scr.provComments = activity.rdfs__comment
-RETURN COUNT(scr) AS Encoder;
+RETURN COUNT(scr) AS encoder;
 
 MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)-[:mso__hasDurationAttribute]->(attribute)
 REMOVE attribute:Resource
@@ -143,8 +143,6 @@ MERGE (movement)-[:hasMediumType]-(t:mediumType {mediumTypeId:type.uri, mediumTy
 MERGE (t)-[:hasMedium]->(i:Medium {mediumId: part.uri,mediumDescription: part.skos__prefLabel, mediumScoreDescription: part.dc__description, mediumCode: part.rdfs__label, ensemble: part.mso__isEnsemble, solo:part.mso__isSolo})
 RETURN COUNT(i) AS mediums;
 
-
-
 MATCH (mov:mo__Movement)
 OPTIONAL MATCH (mov:mo__Movement)-[:mso__hasBeatUnit]-(unit)
 WITH mov,CASE unit WHEN NULL THEN "unknown" 
@@ -155,9 +153,22 @@ SET mov.beatUnit = b
 RETURN COUNT(mov) AS movements_beatunit;
 
 
-
 MATCH (noteset:mso__NoteSet)-[:mso__hasClef]->(clef)
 REMOVE clef:Resource
 WITH noteset,clef
 SET noteset.clef = REPLACE(LOWER(labels(clef)[0]),'mso__','')
 RETURN COUNT(clef) AS noteset_clef;
+
+MATCH (noteset:mso__NoteSet)-[:mso__hasClef]->(clef)-[:mso__sign]->(sign)
+CALL apoc.create.addLabels(id(noteset),['c_'+SUBSTRING(sign.uri,36)+clef.mso__line]) YIELD node
+RETURN COUNT(clef) AS noteset_clef_sign;
+
+MATCH (score:mo__Score)
+WITH  score, 
+  CASE 
+    WHEN NOT score.mso__asMusicXML = '' THEN 'musicxml'
+    WHEN NOT score.mso__asMEI = '' THEN 'mei'
+  END AS docFormat
+WHERE score.format IS NULL  
+SET score.format = docFormat
+RETURN COUNT(docFormat) AS format;
