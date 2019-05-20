@@ -176,11 +176,21 @@ WHERE score.format IS NULL
 SET score.format = docFormat
 RETURN COUNT(docFormat) AS format;
 
+MATCH (mov:mo__Movement)
+WITH mov, CASE mov.mso__hasBeatsPerMinute 
+            WHEN NULL THEN 0
+            ELSE toInt(mov.mso__hasBeatsPerMinute) 
+          END AS bpm
+SET mov.mso__hasBeatsPerMinute = bpm
+RETURN COUNT(mov) AS BPM;
+
+
 MATCH (n1)-[r:mso__nextNoteSet]->(n2) CREATE (n1)-[r2:NEXT]->(n2) DELETE r;
 MATCH (n1)-[r:mso__nextMeasure]->(n2) CREATE (n1)-[r2:NEXT]->(n2) DELETE r;
 MATCH (n1)-[r:mso__hasMeasure]->(n2) CREATE (n1)-[r2:MEASURE]->(n2) DELETE r;
 MATCH (n1)-[r:mso__hasNoteSet]->(n2) CREATE (n1)-[r2:NOTESET]->(n2) DELETE r;
 MATCH (n:mso__Measure) SET n :Measure REMOVE n:mso__Measure;
+
 
 CREATE INDEX ON :mo__Movement(mso__hasBeatsPerMinute);
 CREATE INDEX ON :mo__Movement(beatUnit);

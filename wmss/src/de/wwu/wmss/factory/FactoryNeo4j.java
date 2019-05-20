@@ -9,8 +9,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Scanner;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -52,8 +50,8 @@ public class FactoryNeo4j {
 		try {
 			is = new FileInputStream("config/neo4j/formatGraph.cql");
 
-	    	BufferedReader buf = new BufferedReader(new InputStreamReader(is));
-	        
+	    	@SuppressWarnings("resource")
+			BufferedReader buf = new BufferedReader(new InputStreamReader(is));        
 	    	String line = buf.readLine();
 	    	StringBuilder sb = new StringBuilder();
 	    	        
@@ -77,11 +75,7 @@ public class FactoryNeo4j {
 			e.printStackTrace();
 		}
 
-        
-        
-		
-		/**
-		
+		/**		
 		String notes_octave_signature = "MATCH (note:chord__Note)-[:chord__natural]->(natural:chord__Natural) \n" + 
 				"OPTIONAL MATCH (note:chord__Note)-[:chord__modifier]->(modifier)\n" + 
 				"WITH note, CASE SUBSTRING(modifier.uri,31) \n" + 
@@ -145,7 +139,6 @@ public class FactoryNeo4j {
 				"RETURN COUNT(scr) AS Encoder;";
 		Neo4jConnector.getInstance().executeQuery(encoder, Util.getDataSource(importRequest.getSource()));
 		
-		
 		String dots = "MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)-[:mso__hasDurationAttribute]->(attribute)\n" + 
 				"REMOVE attribute:Resource\n" + 
 				"WITH noteset,attribute\n" + 
@@ -202,8 +195,7 @@ public class FactoryNeo4j {
 				"CALL apoc.create.addLabels(id(measure),[key]) YIELD node\n" + 
 				"RETURN COUNT(measure) AS MeasureKey;";
 		Neo4jConnector.getInstance().executeQuery(measure_key, Util.getDataSource(importRequest.getSource()));
-		
-		
+				
 		String instrument = "MATCH (part:mso__ScorePart)\n" + 
 				"CALL apoc.create.addLabels(id(part),[REPLACE(part.rdfs__label,'.','_')]) YIELD node\n" + 
 				"WITH node AS part\n" + 
@@ -245,10 +237,7 @@ public class FactoryNeo4j {
 				"RETURN COUNT(docFormat) AS format;";
 		Neo4jConnector.getInstance().executeQuery(format, Util.getDataSource(importRequest.getSource()));
 		
-		
-		
 		// Renaming labels and properties to fit the neo4j naming conventions
-
 						
 		String nextNoteSet = "MATCH (n1)-[r:mso__nextNoteSet]->(n2) CREATE (n1)-[r2:NEXT]->(n2) DELETE r"; 
 		Neo4jConnector.getInstance().executeQuery(nextNoteSet, Util.getDataSource(importRequest.getSource()));
