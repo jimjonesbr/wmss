@@ -1,12 +1,7 @@
-
 CREATE INDEX ON :Resource(uri);
 CREATE INDEX ON :URI(uri);
 CREATE INDEX ON :BNode(uri);
 CREATE INDEX ON :Class(uri);
-
-
-MATCH (n) DETACH DELETE (n);
-
 
 CREATE (:NamespacePrefixDefinition {
   `http://linkeddata.uni-muenster.de/ontology/musicscore#`: 'mso',
@@ -25,8 +20,6 @@ CREATE (:NamespacePrefixDefinition {
   `http://www.w3.org/2004/02/skos/core#`: 'skos',
   `http://purl.org/ontology/mo/mit#`: 'mit'
 });
-
-CALL semantics.importRDF("file:///home/jones/git/musicowl-repository/musicowl/ntriples/elgar_cello_concerto_op.85.nt","N-Triples",{shortenUrls: true, commitSize: 10000});
 
 MATCH (note:chord__Note)-[:chord__natural]->(natural:chord__Natural) 
 OPTIONAL MATCH (note:chord__Note)-[:chord__modifier]->(modifier)
@@ -183,21 +176,12 @@ WHERE score.format IS NULL
 SET score.format = docFormat
 RETURN COUNT(docFormat) AS format;
 
-
-//////////////////////////////////////////////
-//// Fitting neo4j naming conventions
-//////////////////////////////////////////////
-
 MATCH (n1)-[r:mso__nextNoteSet]->(n2) CREATE (n1)-[r2:NEXT]->(n2) DELETE r;
 MATCH (n1)-[r:mso__nextMeasure]->(n2) CREATE (n1)-[r2:NEXT]->(n2) DELETE r;
 MATCH (n1)-[r:mso__hasMeasure]->(n2) CREATE (n1)-[r2:MEASURE]->(n2) DELETE r;
 MATCH (n1)-[r:mso__hasNoteSet]->(n2) CREATE (n1)-[r2:NOTESET]->(n2) DELETE r;
 MATCH (n:mso__Measure) SET n :Measure REMOVE n:mso__Measure;
 
-
-//////////////////////////////////////////////
-//// Creating indexes
-//////////////////////////////////////////////
 CREATE INDEX ON :mo__Movement(mso__hasBeatsPerMinute);
 CREATE INDEX ON :mo__Movement(beatUnit);
 CREATE INDEX ON :mo__Score(issued);
