@@ -336,7 +336,7 @@ public class FactoryNeo4j {
 	public static String getMusicXML(WMSSRequest request){
 		
 		String result = "";
-		String cypher = "\n\nMATCH (score:mo__Score {uri:\""+request.getIdentifier()+"\"})\n";
+		String cypher = "\n\nMATCH (score:Score {uri:\""+request.getIdentifier()+"\"})\n";
 
 		if(request.getFormat().equals("musicxml")||request.getFormat().equals("")) {
 			cypher = cypher +"RETURN score.mso__asMusicXML AS xml\n"; 
@@ -419,7 +419,7 @@ public class FactoryNeo4j {
 	
 	public static int getScoresCount(DataSource ds) {
 	
-		String cypher = "MATCH (score:mo__Score) RETURN COUNT(score) AS total";
+		String cypher = "MATCH (score:Score) RETURN COUNT(score) AS total";
 		
 		logger.debug("getScoresCount:\n" + cypher);	
 		
@@ -434,7 +434,7 @@ public class FactoryNeo4j {
 	
 		ArrayList<PersonDescription> result = new ArrayList<PersonDescription>();
 		
-		String cypher = "\n\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:foaf__Person)<-[:dc__creator]-(scr:mo__Score)\n" + 
+		String cypher = "\n\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:Person)<-[:CREATOR]-(scr:Score)\n" + 
 						"RETURN DISTINCT creator.uri AS identifier, creator.foaf__name AS name, role.gndo__preferredNameForTheSubjectHeading AS role, COUNT(scr) AS total\n" + 
 						"ORDER BY total DESC\n";
 
@@ -462,10 +462,9 @@ public class FactoryNeo4j {
 
 		ArrayList<Format> result = new ArrayList<Format>();
 
-		String cypher = "\n\nMATCH (scr:mo__Score)\n" + 
-					    "RETURN DISTINCT CASE WHEN scr.mso__asMusicXML IS NULL THEN FALSE ELSE TRUE END AS musicxml\n";
+		String cypher = "MATCH (scr:Score) RETURN DISTINCT CASE WHEN scr.mso__asMusicXML IS NULL THEN FALSE ELSE TRUE END AS musicxml; \n";
 
-		logger.debug("getFormats:\n" + cypher);
+		logger.info("getFormats:\n" + cypher);
 
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);
 		Record record = rs.next();
@@ -477,7 +476,7 @@ public class FactoryNeo4j {
 			result.add(musicxml);
 		}
 
-		cypher = "\n\nMATCH (scr:mo__Score)\n" + 
+		cypher = "\n\nMATCH (scr:Score)\n" + 
 				 "RETURN DISTINCT CASE WHEN scr.mso__asMEI IS NULL THEN FALSE ELSE TRUE END AS mei\n";
 
 		rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);
@@ -522,7 +521,7 @@ public class FactoryNeo4j {
 		
 		ArrayList<Collection> result = new ArrayList<Collection>();
 		
-		String cypher = "\n\nMATCH (score:mo__Score)\n" + 
+		String cypher = "\n\nMATCH (score:Score)\n" + 
 					    "RETURN DISTINCT score.collectionUri AS identifier, score.collectionLabel AS label \n";
 		
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);		
@@ -547,7 +546,7 @@ public class FactoryNeo4j {
 		ArrayList<Movement> result = new ArrayList<Movement>();
 		
 		String cypher = 
-				"MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:hasMediumType]->(mediumType:mediumType)-[:hasMedium]->(medium:Medium)\n" + 
+				"MATCH (scr:Score)-[:MOVEMENT]->(mov:Movement)-[:hasMediumType]->(mediumType:mediumType)-[:hasMedium]->(medium:Medium)\n" + 
 				"WHERE scr.uri=\""+ scoreURI +"\"\n" + 
 				"WITH  \n" + 
 				"  mov.uri AS movementIdentifier,\n" + 
@@ -669,7 +668,7 @@ public class FactoryNeo4j {
 	
 		
 		String where = "\nWHERE TRUE \n";														
-		String match = "MATCH (scr:mo__Score)-[:dc__creator]->(creator:foaf__Person)\n";
+		String match = "MATCH (scr:Score)-[:CREATOR]->(creator:Person)\n";
 		
 		if(!wmssRequest.getMelody().equals("")) {
 
@@ -695,7 +694,7 @@ public class FactoryNeo4j {
 			
 			while(i<=noteSequence.size()-1) {
 
-				String currentDurationType = "mso__NoteSet";								
+				String currentDurationType = "NoteSet";								
 				if(!wmssRequest.isIgnoreDuration()) {
 					//currentDurationType = "d"+ noteSequence.get(i).getDuration();					
 					currentDurationType = "D_"+ noteSequence.get(i).getDuration();
@@ -740,7 +739,7 @@ public class FactoryNeo4j {
 					
 				}	
 
-				String currentPitchType = "mso__NoteSet";
+				String currentPitchType = "NoteSet";
 				//String currentPitchType = "chord__Note";
 				
 				if(!wmssRequest.isIgnorePitch()) {
@@ -842,17 +841,17 @@ public class FactoryNeo4j {
 		if(!wmssRequest.getPerformanceMedium().equals("") || 
 		   !wmssRequest.getPerformanceMediumType().equals("") &&
 		    wmssRequest.getMelody().equals("")) {
-			match = match + "MATCH (movements:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart) \n";
+			match = match + "MATCH (movements:Movement)-[:PART]->(part:Part) \n";
 		}
 		
 		if(!wmssRequest.getMelody().equals("") || !wmssRequest.getKey().equals("")) {
 			if(wmssRequest.getClef().equals("")) {
-				match = match + "MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:MEASURE]->(measure1:Measure)\n";
+				match = match + "MATCH (scr:Score)-[:MOVEMENT]->(mov:Movement)-[:PART]->(part:Part)-[:MEASURE]->(measure1:Measure)\n";
 			}			
 		}
 		
 		if(!wmssRequest.getClef().equals("")) {
-			match = match + "MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:MEASURE]->(measure1:Measure)-[:NOTESET]->(ns0)\n";
+			match = match + "MATCH (scr:Score)-[:MOVEMENT]->(mov:Movement)-[:PART]->(part:Part)-[:MEASURE]->(measure1:Measure)-[:NOTESET]->(ns0)\n";
 		}
 		
 		
@@ -886,7 +885,7 @@ public class FactoryNeo4j {
 		
 		if(!wmssRequest.getTempoBeatUnit().equals("")) {
 			//where = where + "AND movements.beatUnit='"+wmssRequest.getTempoBeatUnit()+"' \n"; 
-			match = match + "MATCH (scr:mo__Score)-[:mo__movement]->(movements:mo__Movement {beatUnit: '"+wmssRequest.getTempoBeatUnit()+"'})\n";
+			match = match + "MATCH (scr:Score)-[:MOVEMENT]->(movements:Movement {beatUnit: '"+wmssRequest.getTempoBeatUnit()+"'})\n";
 			
 		}
 
@@ -948,8 +947,8 @@ public class FactoryNeo4j {
 	public static ArrayList<DeletedRecord> deleteScore(WMSSRequest request, DataSource dataSource) {
 
 		ArrayList<DeletedRecord> result = new ArrayList<DeletedRecord>();
-		String cypherQuery = "MATCH (score:mo__Score)-[:mo__movement]->(movement)-[:mso__hasScorePart]->(part)-[:mso__hasStaff]->(staff)-[:mso__hasVoice]->(voice)-[:NOTESET]->(noteset)-[:mso__hasNote]->(note)\n" + 
-				"MATCH (score:mo__Score)-[:mo__movement]->(movement)-[:mso__hasScorePart]->(part)-[:MEASURE]->(measure)\n" + 
+		String cypherQuery = "MATCH (score:Score)-[:MOVEMENT]->(movement)-[:PART]->(part)-[:mso__hasStaff]->(staff)-[:mso__hasVoice]->(voice)-[:NOTESET]->(noteset)-[:mso__hasNote]->(note)\n" + 
+				"MATCH (score:Score)-[:MOVEMENT]->(movement)-[:PART]->(part)-[:MEASURE]->(measure)\n" + 
 				"WHERE score.uri = '"+request.getIdentifier()+"'\n" + 
 				"WITH note,noteset,voice,staff,measure,part,movement,score,score.dc__title AS title, score.uri AS identifier, score.collectionUri AS collection\n" + 
 				"DETACH DELETE note,noteset,voice,staff,measure,part,movement,score\n" + 
@@ -1045,9 +1044,9 @@ public class FactoryNeo4j {
 			
 			score.setProvenance(prov);
 						
-			if(!request.getRequestMode().equals("simplified")) {
-				score.getMovements().addAll(getMovementData(score.getScoreId(), dataSource));
-			}	
+			//if(!request.getRequestMode().equals("simplified")) {
+			score.getMovements().addAll(getMovementData(score.getScoreId(), dataSource));
+			//}	
 
 			if(record.get("musicxml").asBoolean()) {
 				Format format = new Format();
