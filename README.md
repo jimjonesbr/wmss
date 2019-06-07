@@ -13,6 +13,7 @@ The application relies on datasets encoded using the [MusicOWL ontology](http://
 - [Configuring WMSS](#configuring-wmss)
   - [Server Settings](#server-settings)
   - [Data Source Settings](#data-source-settings)
+  - [Configuring Neo4j](#configuring-neo4j)
   - [Starting the Server](#starting-the-server)
 - [Requests](#requests)
   - [DescribeService](#describeservice)
@@ -96,6 +97,22 @@ File: `config/sources.conf`
 `version`&nbsp;   Version of the data source application.
 
 `user`/`password`&nbsp;   Credentials for accessing the data source.
+
+#### [Configuring Neo4j](https://github.com/jimjonesbr/wmss/blob/master/README.md#configuring-neo4j)
+
+In order to be able to import RDF data into Neo4j, WMSS requires the plugins [neosemantics](https://github.com/jbarrasa/neosemantics/) and [APOC](https://github.com/neo4j-contrib/neo4j-apoc-procedures/). Neo4j and its plugins are constantly being updated, which makes the compatibility among them quite hard sometimes. To make things a little easier, you may use this compatibility matrix for Neo4j 3.5.5 - in case you're installing Neo4j from scratch.
+
+| Neo4j | neosemantics          | APOC             |
+|-------|-----------------------|------------------|
+| [3.5.5](https://neo4j.com/download-center/) | [neosemantics-3.5.0.1](https://github.com/jbarrasa/neosemantics/releases/download/3.5.0.1/neosemantics-3.5.0.1.jar) | [apoc-3.5.0.3-all](https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/3.5.0.1/apoc-3.5.0.1-all.jar) |
+
+Depding on the amount of RDF data you want to import, consider increasing the memory settings in the `neo4j.conf` file. 
+Example:
+```
+dbms.memory.heap.initial_size=12G
+dbms.memory.heap.max_size=12G
+```
+Click [here](https://neo4j.com/developer/guide-performance-tuning/) for more information on the Neo4j memory guidelines.
 
 #### [Starting the Server](https://github.com/jimjonesbr/wmss/blob/master/README.md#starting-the-server)
 
