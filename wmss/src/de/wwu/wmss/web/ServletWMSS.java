@@ -34,6 +34,7 @@ public class ServletWMSS extends HttpServlet
 			response.addHeader("Access-Control-Allow-Origin","*");
 			response.addHeader("Access-Control-Allow-Methods","GET,POST");
 			response.addHeader("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");
+			response.setCharacterEncoding("UTF-8");
 
 			if (wmssRequest.getRequestType().equals("checklog")) {
 
