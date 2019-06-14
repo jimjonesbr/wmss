@@ -1,7 +1,10 @@
 package de.wwu.wmss.web;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Enumeration;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,7 +24,8 @@ public class ServletFileAccess extends HttpServlet {
 		response.addHeader("Access-Control-Allow-Origin","*");
 		response.addHeader("Access-Control-Allow-Methods","GET,POST");
 		response.addHeader("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");
-		
+		response.setCharacterEncoding("UTF-8");
+
 		Enumeration<String> listParameters = httpRequest.getParameterNames();
 		
 		while(listParameters.hasMoreElements() ) {
@@ -37,7 +41,13 @@ public class ServletFileAccess extends HttpServlet {
 		} else {		
 			StringBuilder contentBuilder = new StringBuilder();
 			try {
-			    BufferedReader in = new BufferedReader(new FileReader("upload/"+file));
+				
+//				File myFile = new File("upload/"+file);
+//				FileInputStream fIn = new FileInputStream(myFile);
+//				BufferedReader in = new BufferedReader(new InputStreamReader(fIn));
+//				BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream("upload/"+file), "UTF8"));
+				
+				BufferedReader in = new BufferedReader(new FileReader("upload/"+file));
 			    String str;
 			    while ((str = in.readLine()) != null) {
 			        contentBuilder.append(str +System.getProperty("line.separator"));

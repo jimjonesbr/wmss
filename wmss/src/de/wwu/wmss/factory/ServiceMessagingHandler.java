@@ -306,7 +306,7 @@ public class ServiceMessagingHandler {
 			listScoresJSON.put("size", repoArray.size());
 
 			result = StringEscapeUtils.unescapeJson(gson.toJson(listScoresJSON));
-
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("Unexpected error at the ListScores request.");
