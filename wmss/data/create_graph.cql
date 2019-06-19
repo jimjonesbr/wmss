@@ -1,0 +1,12 @@
+CREATE (score:Score {n:"Score"})-[:has {n:"has [1..n]"}]->(movement:Movement {n:"Move ment"})
+CREATE (movement)-[:has  {n:"has [1..n]"}]->(p:Part {n:"Instru ment"})-[:has {n:"has [1..n]"}]->(m:Measure {n:"Measure"})-[:has {n:"has [1..1]"}]->(k:Key {n:"Key"})
+CREATE (m)-[:has {n:"has [1..n]"}]->(ns:NoteSet {n:"NoteSet"})-[:has {n:"has [1..1]"}]->(clef:Clef {n:"Clef"})
+CREATE (ns)-[:has {n:"has [1..n]"}]->(note:Note {n:"Note"})
+CREATE (ns)-[:has {n:"next [1..1]"}]->(ns2:NoteSet {n:"NoteSet"})-[:has {n:"has"}]->({n:"..."})
+CREATE (ns)-[:has {n:"has [1..1]"}]->(dur:Duration {n:"Duration"})
+CREATE (p)-[:has  {n:"has [1..n]"}]->(st:Staff {n:"Staff"})-[:has  {n:"has [1..n]"}]->(v:Voice {n:"Voice"})-[:has {n:"has [1..n]"}]->(ns)
+CREATE (score)-[:has {n:"has [n..n]"}]->(au:Author {n:"Author"})
+CREATE (score)-[:has {n:"has [1..n]"}]->(frmt:Format {n:"Format"})
+CREATE (score)-[:has {n:"has [1..1]"}]->(prov:Provenance {n:"Prove nance"})
+CREATE (collection:Collection {n:"Collection"})-[:has {n:"has [n..n]"}]->(score)
+RETURN *
