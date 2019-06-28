@@ -43,7 +43,41 @@ import de.wwu.wmss.settings.Util;
 public class FactoryNeo4j {
 
 	private static Logger logger = Logger.getLogger("Neo4j-Factory");
-				
+
+	
+	public static void prepareDatabase(WMSSImportRequest importRequest) {
+
+    	InputStream is;
+		try {
+			is = new FileInputStream("config/neo4j/prepareDatabase.cql");
+
+	    	@SuppressWarnings("resource")
+			BufferedReader buf = new BufferedReader(new InputStreamReader(is));        
+	    	String line = buf.readLine();
+	    	StringBuilder sb = new StringBuilder();
+	    	        
+	    	while(line != null){
+	    	   sb.append(line).append("\n");
+	    	   line = buf.readLine();
+	    	}
+	    		    	
+	    	String arrayCypher[] = sb.toString().split(";");
+	    	logger.info("Preparing Graph ... ");
+	    	for (int i = 0; i < arrayCypher.length; i++) {
+	    		if(!arrayCypher[i].trim().equals("")) {
+	    			Neo4jConnector.getInstance().executeQuery(arrayCypher[i].replaceAll("\n", " "), Util.getDataSource(importRequest.getSource()));	
+	    		}	    		
+			}
+	    	logger.info("Neo4j prepared for import statements.");
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
 	public static void formatGraph(WMSSImportRequest importRequest) {
 				
     	InputStream is;
@@ -285,14 +319,14 @@ public class FactoryNeo4j {
 		int result = 0;
 		
 		try {
-						
+			/**			
 			String createPredicates = 
 					"CREATE (:NamespacePrefixDefinition {\n" + 
 					"  `http://linkeddata.uni-muenster.de/ontology/musicscore#`: 'mso',\n" + 
 					"  `http://purl.org/ontology/chord/`: 'chord',\n" + 
 					"  `http://purl.org/dc/elements/1.1/`: 'dc',\n" + 
 					"  `http://purl.org/dc/terms/`: 'dcterms',\n" + 
-					"  `http://www.w3.org/1999/02/22-rdf-syntax-ns#`: 'rdfs',\n" + 
+					"  `http://www.w3.org/2000/01/rdf-schema#`: 'rdfs',\n" + 
 					"  `http://purl.org/ontology/chord/note/`: 'note',\n" + 
 					"  `http://purl.org/ontology/tonality/`: 'ton',\n" + 
 					"  `http://purl.org/ontology/tonality/mode/`: 'mode',\n" + 
@@ -300,22 +334,24 @@ public class FactoryNeo4j {
 					"  `http://xmlns.com/foaf/0.1/`: 'foaf',\n" + 
 					"  `http://www.w3.org/ns/prov#`: 'prov',\n" + 
 					"  `http://d-nb.info/standards/elementset/gnd#`: 'gndo',\n" + 
-					"  `http://www.w3.org/2000/01/rdf-schema#`: 'rdfs',\n" + 
 					"  `http://www.w3.org/2004/02/skos/core#`: 'skos',\n" + 
 					"  `http://purl.org/ontology/mo/mit#`: 'mit'\n" + 
 					"});";
 						
-			StatementResult rs = Neo4jConnector.getInstance().executeQuery(createPredicates, Util.getDataSource(importRequest.getSource()));
-						
+			//StatementResult rs = Neo4jConnector.getInstance().executeQuery(createPredicates, Util.getDataSource(importRequest.getSource()));
+			
 			String importRDF = "CALL semantics.importRDF(\""+file.toURI().toURL()+"\",\""+importRequest.getFormat()+"\",{shortenUrls: true, commitSize: "+importRequest.getCommitSize()+"});";	
 			
-			importRDF = "CALL semantics.importRDF(\"http://"+ importRequest.getHostname()+":"+
+			
+			*/		
+			
+			String importRDF = "CALL semantics.importRDF(\"http://"+ importRequest.getHostname()+":"+
 															  SystemSettings.getPort()+"/"+
 															  SystemSettings.getService()+"/file?get="+ 
 															  URLEncoder.encode(file.getName(), "UTF-8") + "\",\""+importRequest.getFormat()+"\",{shortenUrls: true, commitSize: "+importRequest.getCommitSize()+"});";
 			logger.info(importRDF);
 			
-			rs = Neo4jConnector.getInstance().executeQuery(importRDF, Util.getDataSource(importRequest.getSource()));
+			StatementResult rs = Neo4jConnector.getInstance().executeQuery(importRDF, Util.getDataSource(importRequest.getSource()));
 
 			while ( rs.hasNext() ){
 				Record record = rs.next();
@@ -324,7 +360,6 @@ public class FactoryNeo4j {
 			}
 				
 			//formatGraph(importRequest);
-
 									
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -339,9 +374,9 @@ public class FactoryNeo4j {
 		String cypher = "\n\nMATCH (score:Score {uri:\""+request.getIdentifier()+"\"})\n";
 
 		if(request.getFormat().equals("musicxml")||request.getFormat().equals("")) {
-			cypher = cypher +"RETURN score.mso__asMusicXML AS xml\n"; 
+			cypher = cypher +"RETURN score.asMusicXML AS xml\n"; 
 		} else if (request.getFormat().equals("mei")) {
-			cypher = cypher +"RETURN score.mso__asMEI AS xml\n";
+			cypher = cypher +"RETURN score.asMEI AS xml\n";
 		}
 
 		logger.debug("getMusicXML:\n"+cypher);
@@ -462,7 +497,7 @@ public class FactoryNeo4j {
 
 		ArrayList<Format> result = new ArrayList<Format>();
 
-		String cypher = "MATCH (scr:Score) RETURN DISTINCT CASE WHEN scr.mso__asMusicXML IS NULL THEN FALSE ELSE TRUE END AS musicxml; \n";
+		String cypher = "MATCH (scr:Score) RETURN DISTINCT CASE WHEN scr.asMusicXML IS NULL THEN FALSE ELSE TRUE END AS musicxml; \n";
 
 		logger.info("getFormats:\n" + cypher);
 
@@ -477,7 +512,7 @@ public class FactoryNeo4j {
 		}
 
 		cypher = "\n\nMATCH (scr:Score)\n" + 
-				 "RETURN DISTINCT CASE WHEN scr.mso__asMEI IS NULL THEN FALSE ELSE TRUE END AS mei\n";
+				 "RETURN DISTINCT CASE WHEN scr.asMEI IS NULL THEN FALSE ELSE TRUE END AS mei\n";
 
 		rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);
 		record = rs.next();
@@ -495,7 +530,7 @@ public class FactoryNeo4j {
 	public static ArrayList<Tonality> getTonalities(DataSource ds){
 		
 		ArrayList<Tonality> result = new ArrayList<Tonality>();
-		String cypher = "MATCH (measure:measure) RETURN DISTINCT measure.tonic AS tonic, measure.mode AS mode";
+		String cypher = "MATCH (measure:Measure) RETURN DISTINCT measure.tonic AS tonic, measure.mode AS mode";
 		
 		logger.debug("getTonalities:\n" + cypher);
 		
@@ -550,7 +585,7 @@ public class FactoryNeo4j {
 				"WHERE scr.uri=\""+ scoreURI +"\"\n" + 
 				"WITH  \n" + 
 				"  mov.uri AS movementIdentifier,\n" + 
-				"  mov.dc__title AS  movementName,\n" + 
+				"  mov.title AS  movementName,\n" + 
 				"  mov.beatUnit AS beatUnit,\n" + 
 				"  mov.mso__hasBeatsPerMinute AS beatsPerMinute,    \n" + 
 				"    {type: mediumType.mediumTypeDescription,\n" + 
@@ -930,11 +965,11 @@ public class FactoryNeo4j {
 		}
 		
 		if(wmssRequest.isSolo()) {
-			where = where + "AND part.mso__isSolo=\""+wmssRequest.isSolo()+"\"";
+			where = where + "AND part.isSolo=\""+wmssRequest.isSolo()+"\"";
 		}
 		
 		if(wmssRequest.isEnsemble()) {
-			where = where + "AND part.mso__isEnsemble=\""+wmssRequest.isEnsemble()+"\"";
+			where = where + "AND part.isEnsemble=\""+wmssRequest.isEnsemble()+"\"";
 		}
 
 		if(!wmssRequest.getCollection().equals("")) {
@@ -979,7 +1014,7 @@ public class FactoryNeo4j {
 		String matchClause = createMelodyQuery(request);
 		
 		returnClause =   "\nRETURN \n" + 				
-				"    scr.dc__title AS title,\n" + 
+				"    scr.title AS title,\n" + 
 				"    scr.uri AS identifier,\n" +
 				"    toString(scr.dcterms__issued) AS issued,\n" +
 				"    scr.provGeneratedAtTime AS provGeneratedAtTime,\n " +
@@ -999,17 +1034,17 @@ public class FactoryNeo4j {
 				returnClause = returnClause +"	 {locations: \n" +
 				"    COLLECT(DISTINCT{ \n" + 
 				"      movementIdentifier: mov.uri,\n" + 
-				"      movementName: mov.dc__title,\n" + 
-				"      startingMeasure: measure1.rdfs__ID, \n" + 
+				"      movementName: mov.title,\n" + 
+				"      startingMeasure: measure1.rdfs__label, \n" + 
 				"      staff: ns0.staff, \n" + 
 				"      voice: ns0.voice, \n" + 
 				"      instrumentName: part.dc__description \n" + 
 				"    })} AS locations, \n";				
 		}		
 				
-		returnClause = returnClause +	"   CASE WHEN scr.mso__asMusicXML IS NULL THEN FALSE ELSE TRUE END AS musicxml,\n" + 
-									    "   CASE WHEN scr.mso__asMEI IS NULL THEN FALSE ELSE TRUE END AS mei \n" + 
-									    "ORDER BY scr.dc__title \n" +
+		returnClause = returnClause +	"   CASE WHEN scr.asMusicXML IS NULL THEN FALSE ELSE TRUE END AS musicxml,\n" + 
+									    "   CASE WHEN scr.asMEI IS NULL THEN FALSE ELSE TRUE END AS mei \n" + 
+									    "ORDER BY scr.title \n" +
 									    "SKIP " + request.getOffset() + "\n" + 
 									    "LIMIT " + request.getPageSize();
 				

@@ -1,26 +1,3 @@
-CREATE INDEX ON :Resource(uri);
-CREATE INDEX ON :URI(uri);
-CREATE INDEX ON :BNode(uri);
-CREATE INDEX ON :Class(uri);
-
-CREATE (:NamespacePrefixDefinition {
-  `http://linkeddata.uni-muenster.de/ontology/musicscore#`: 'mso',
-  `http://purl.org/ontology/chord/`: 'chord',
-  `http://purl.org/dc/elements/1.1/`: 'dc',
-  `http://purl.org/dc/terms/`: 'dcterms',
-  `http://www.w3.org/1999/02/22-rdf-syntax-ns#`: 'rdfs',
-  `http://purl.org/ontology/chord/note/`: 'note',
-  `http://purl.org/ontology/tonality/`: 'ton',
-  `http://purl.org/ontology/tonality/mode/`: 'mode',
-  `http://purl.org/ontology/mo/`: 'mo',
-  `http://xmlns.com/foaf/0.1/`: 'foaf',
-  `http://www.w3.org/ns/prov#`: 'prov',
-  `http://d-nb.info/standards/elementset/gnd#`: 'gndo',
-  `http://www.w3.org/2000/01/rdf-schema#`: 'rdfs',
-  `http://www.w3.org/2004/02/skos/core#`: 'skos',
-  `http://purl.org/ontology/mo/mit#`: 'mit'
-});
-
 MATCH (note:chord__Note)-[:chord__natural]->(natural:chord__Natural) 
 OPTIONAL MATCH (note:chord__Note)-[:chord__modifier]->(modifier)
 WITH note, CASE SUBSTRING(modifier.uri,31) 
@@ -62,8 +39,8 @@ OPTIONAL MATCH (collection:prov__Collection)-[:prov__hadMember]->(scr:mo__Score)
 OPTIONAL MATCH (scr:mo__Score)-[:dc__creator]->(creator:foaf__Person)-[:gndo__professionOrOccupation]->(role:prov__Role)
 OPTIONAL MATCH (scr:mo__Score)-[:foaf__thumbnail]->(thumbnail)
 SET scr.thumbnail = thumbnail.uri,
-    noteset.voice = voice.rdfs__ID, 
-    noteset.staff = staff.rdfs__ID, 
+    noteset.voice = voice.rdfs__label, 
+    noteset.staff = staff.rdfs__label, 
     scr.collectionUri =  collection.uri, 
     scr.collectionLabel = collection.rdfs__label,
     scr.issued = datetime(scr.dcterms__issued),
@@ -134,6 +111,14 @@ WITH measure,tonic,mode,
 CALL apoc.create.addLabels(id(measure),[key]) YIELD node
 RETURN COUNT(measure) AS MeasureKey;
 
+MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
+MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
+WITH measure, tonicNode,modeNode, 
+     LOWER(SUBSTRING(modeNode.uri,39)) AS mode, 
+     SUBSTRING(tonicNode.uri,36) AS tonic
+SET measure.tonic = tonic, measure.mode = mode
+RETURN COUNT(measure) AS MeasureKey;
+
 MATCH (part:mso__ScorePart)
 CALL apoc.create.addLabels(id(part),[REPLACE(part.rdfs__label,'.','_')]) YIELD node
 WITH node AS part
@@ -185,6 +170,39 @@ SET mov.mso__hasBeatsPerMinute = bpm
 RETURN COUNT(mov) AS BPM;
 
 
+MATCH (score:mo__Score)
+SET score.asMusicXML = score.mso__asMusicXML
+REMOVE score.mso__asMusicXML
+RETURN COUNT(score.asMusicXML) AS asMusicXML;
+
+MATCH (score:mo__Score)
+SET score.asMEI = score.mso__asMEI
+REMOVE score.mso__asMEI
+RETURN COUNT(score.asMEI) AS asMEI;
+
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[r0:mso__hasKey]-(key)-[r1:ton__tonic]->(tonicNode)
+MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[r0:mso__hasKey]-(key)-[r2:ton__mode]->(modeNode)
+DETACH DELETE key,tonicNode,modeNode
+RETURN COUNT(key) AS DeletedKeys;
+
+MATCH (mov:mo__Movement)
+SET mov.title = mov.dc__title
+REMOVE mov.dc__title
+RETURN COUNT(mov) AS MovementTitlesChanged;
+
+MATCH (part:mso__ScorePart)
+SET part.solo = part.mso__isSolo,
+    part.isEnsemble = part.mso__isEnsemble
+REMOVE part.mso__isSolo, part.mso__isEnsemble
+RETURN COUNT(part) AS MovementTitlesChanged;
+
+MATCH (score:mo_Score)
+SET score.title = score.dc__title,
+    score.issued = score.dcterms__issued
+REMOVE score.dc__title,score.dcterms__issued
+RETURN COUNT(score) AS ScoreTitlesChanged;
+
+
 MATCH (n1)-[r:mso__nextNoteSet]->(n2) CREATE (n1)-[r2:NEXT]->(n2) DELETE r;
 MATCH (n1)-[r:mso__nextMeasure]->(n2) CREATE (n1)-[r2:NEXT]->(n2) DELETE r;
 MATCH (n1)-[r:mso__hasMeasure]->(n2) CREATE (n1)-[r2:MEASURE]->(n2) DELETE r;
@@ -193,12 +211,19 @@ MATCH (n1)-[r:dc__creator]->(n2) CREATE (n1)-[r2:CREATOR]->(n2) DELETE r;
 MATCH (n1)-[r:mo__movement]->(n2) CREATE (n1)-[r2:MOVEMENT]->(n2) DELETE r;
 MATCH (n1)-[r:mso__hasScorePart]->(n2) CREATE (n1)-[r2:PART]->(n2) DELETE r;
 
+
+MATCH (n:mso__Instant) SET n :Instant REMOVE n:mso__Instant;
 MATCH (n:mso__NoteSet) SET n :NoteSet REMOVE n:mso__NoteSet;
 MATCH (n:foaf__Person) SET n :Person REMOVE n:foaf__Person;
 MATCH (n:mso__ScorePart) SET n :Part REMOVE n:mso__ScorePart;
 MATCH (n:mo__Movement) SET n :Movement REMOVE n:mo__Movement;
 MATCH (n:mso__Measure) SET n :Measure REMOVE n:mso__Measure;
 MATCH (n:mo__Score) SET n :Score REMOVE n:mo__Score;
+
+
+
+
+
 
 CREATE INDEX ON :Movement(mso__hasBeatsPerMinute);
 CREATE INDEX ON :Movement(beatUnit);

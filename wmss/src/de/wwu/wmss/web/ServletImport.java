@@ -46,6 +46,8 @@ public class ServletImport extends HttpServlet {
 			List<FileItem> multifiles = sf.parseRequest(httpRequest);			
 			ArrayList<WMSSImportRecord> fileList = new ArrayList<WMSSImportRecord>();
 
+			FactoryNeo4j.prepareDatabase(importRequest);
+			
 			for(FileItem item : multifiles) {
 
 				File file = new File("upload/"+item.getName());
@@ -65,7 +67,7 @@ public class ServletImport extends HttpServlet {
 					response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport(ErrorCodes.INVALID_RDFFILE_CODE, ErrorCodes.INVALID_RDFFILE_DESCRIPTION +" ["+item.getName()+"]", ErrorCodes.INVALID_RDFFILE_HINT));
 				}
 			}
-
+			
 			FactoryNeo4j.formatGraph(importRequest);
 
 			response.setContentType("text/javascript");
