@@ -365,7 +365,12 @@ public class WMSSRequest {
 	}
 
 	public String getPersonRole() {
-		return personRole;
+		String result = "";
+		if(personRole.length()>0) {
+			result = personRole.substring(0, 1).toUpperCase() + personRole.substring(1).toLowerCase() ;
+		}
+		return result;
+		
 	}
 
 	public String getPerformanceMedium() {

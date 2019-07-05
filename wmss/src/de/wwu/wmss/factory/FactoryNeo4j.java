@@ -98,7 +98,8 @@ public class FactoryNeo4j {
 	    	logger.info("Formatting graph ... ");
 	    	for (int i = 0; i < arrayCypher.length; i++) {
 	    		if(!arrayCypher[i].trim().equals("")) {
-	    			Neo4jConnector.getInstance().executeQuery(arrayCypher[i].replaceAll("\n", " "), Util.getDataSource(importRequest.getSource()));	
+	    			logger.info(arrayCypher[i]);
+	    			Neo4jConnector.getInstance().executeQuery(arrayCypher[i].replaceAll("\n", " "), Util.getDataSource(importRequest.getSource()));		    			
 	    		}	    		
 			}
 	    	logger.info("Neo4j graph complete.");
@@ -108,209 +109,6 @@ public class FactoryNeo4j {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		/**		
-		String notes_octave_signature = "MATCH (note:chord__Note)-[:chord__natural]->(natural:chord__Natural) \n" + 
-				"OPTIONAL MATCH (note:chord__Note)-[:chord__modifier]->(modifier)\n" + 
-				"WITH note, CASE SUBSTRING(modifier.uri,31) \n" + 
-				"        	WHEN 'flat' THEN 'b'\n" + 
-				"        	WHEN 'doubleflat' THEN 'bb'\n" + 
-				"        	WHEN 'sharp' THEN 'x'\n" + 
-				"        	WHEN 'doublesharp' THEN 'xx'\n" + 
-				"        	WHEN NULL THEN ''\n" + 
-				"           END AS modifier,\n" + 
-				"       SUBSTRING(natural.uri,36) AS natural           \n" + 
-				"SET note.signature = modifier+natural+note.mso__hasOctave,\n" + 
-				"    note.note = modifier+natural,\n" + 
-				"    note.octave = note.mso__hasOctave\n" + 
-				"WITH note\n" + 
-				"CALL apoc.create.addLabels(id(note),[note.signature,note.note]) YIELD node\n" + 
-				"RETURN COUNT(node) AS note_octave_signature";
-		Neo4jConnector.getInstance().executeQuery(notes_octave_signature, Util.getDataSource(importRequest.getSource()));
-		
-		String noteset_signature_label = "MATCH (ns:mso__NoteSet)-[:mso__hasNote]->(n:chord__Note)\n" + 
-				"CALL apoc.create.addLabels(id(ns),[n.signature]) YIELD node\n" + 
-				"WITH node AS ns\n" + 
-				"MATCH (ns)-[:mso__hasNote]->(n:chord__Note)\n" + 
-				"CALL apoc.create.addLabels(id(ns),[n.note]) YIELD node\n" + 
-				"RETURN COUNT(node) AS noteset_signature_label;";
-		Neo4jConnector.getInstance().executeQuery(noteset_signature_label, Util.getDataSource(importRequest.getSource()));
-		
-		String noteset_size = "MATCH (noteset:mso__NoteSet)-[r:mso__hasNote]-()\n" + 
-				"WITH noteset,COUNT(r) AS size\n" + 
-				"SET noteset.size = size\n" + 
-				"RETURN COUNT(noteset) AS noteset_size;";
-		Neo4jConnector.getInstance().executeQuery(noteset_size, Util.getDataSource(importRequest.getSource()));
-		
-		String durations = "MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)\n" + 
-				"REMOVE duration:Resource\n" + 
-				"WITH noteset,LOWER(SUBSTRING(labels(duration)[0],5)) AS d\n" + 
-				"CALL apoc.create.addLabels(id(noteset),['D_'+d]) YIELD node\n" + 
-				"RETURN COUNT(node) AS durations;";
-		Neo4jConnector.getInstance().executeQuery(durations, Util.getDataSource(importRequest.getSource()));
-		
-		String voice_staff_collection_role_dateissued = "MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(noteset)\n" + 
-				"OPTIONAL MATCH (collection:prov__Collection)-[:prov__hadMember]->(scr:mo__Score)\n" + 
-				"OPTIONAL MATCH (scr:mo__Score)-[:dc__creator]->(creator:foaf__Person)-[:gndo__professionOrOccupation]->(role:prov__Role)\n" + 
-				"OPTIONAL MATCH (scr:mo__Score)-[:foaf__thumbnail]->(thumbnail)\n" + 
-				"SET scr.thumbnail = thumbnail.uri,\n" + 
-				"    noteset.voice = voice.rdfs__ID, \n" + 
-				"    noteset.staff = staff.rdfs__ID, \n" + 
-				"    scr.collectionUri =  collection.uri, \n" + 
-				"    scr.collectionLabel = collection.rdfs__label,\n" + 
-				"    scr.issued = datetime(scr.dcterms__issued),\n" + 
-				"    creator.roleUri = role.uri, \n" + 
-				"    creator.roleName = role.gndo__preferredNameForTheSubjectHeading\n" + 
-				"RETURN COUNT(noteset) AS voice_staff_collection_role_dateissued;";
-		Neo4jConnector.getInstance().executeQuery(voice_staff_collection_role_dateissued, Util.getDataSource(importRequest.getSource()));
-		
-		String encoder = "MATCH (scr:mo__Score)-[:prov__wasGeneratedBy]->(activity:prov__Activity)-[:prov__wasAssociatedWith]->(encoder:foaf__Person)\n" + 
-				"WHERE scr.encoderUri IS NULL \n" + 
-				"SET scr.encoderUri = encoder.uri,\n" + 
-				"    scr.encoderName = encoder.foaf__name,\n" + 
-				"    scr.provGeneratedAtTime = activity.prov__startedAtTime,\n" + 
-				"    scr.provComments = activity.rdfs__comment\n" + 
-				"RETURN COUNT(scr) AS Encoder;";
-		Neo4jConnector.getInstance().executeQuery(encoder, Util.getDataSource(importRequest.getSource()));
-		
-		String dots = "MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)-[:mso__hasDurationAttribute]->(attribute)\n" + 
-				"REMOVE attribute:Resource\n" + 
-				"WITH noteset,attribute\n" + 
-				"CALL apoc.create.addLabels(id(noteset),[SUBSTRING(labels(attribute)[0],5)]) YIELD node\n" + 
-				"RETURN COUNT(node) AS dots;\n";
-		Neo4jConnector.getInstance().executeQuery(dots, Util.getDataSource(importRequest.getSource()));
-		
-		String measure_timesignature = "MATCH (measure:mso__Measure)-[r:mso__hasTime]->(time)\n" + 
-				"WHERE measure.beats IS NULL\n" + 
-				"SET measure.beats = time.mso__hasBeats, measure.beatType = time.mso__hasBeatType\n" + 
-				"DELETE r,time\n" + 
-				"RETURN COUNT(measure) AS MeasureTimeSignature;";
-		Neo4jConnector.getInstance().executeQuery(measure_timesignature, Util.getDataSource(importRequest.getSource()));
-		
-		
-		String measure_key = "MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)\n" + 
-				"MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)\n" + 
-				"WITH measure, tonicNode,modeNode, \n" + 
-				"     LOWER(SUBSTRING(modeNode.uri,39)) AS mode, \n" + 
-				"     LOWER(SUBSTRING(tonicNode.uri,36)) AS tonic\n" + 
-				"WITH measure,tonic,mode,\n" + 
-				"   CASE tonic+'-'+mode\n" + 
-				"       WHEN 'c-major' THEN 'standard_key' \n" + 
-				"       WHEN 'a-minor' THEN 'standard_key'        \n" + 
-				"       WHEN 'g-major' THEN 'xF'\n" + 
-				"       WHEN 'e-minor' THEN 'xF'       \n" + 
-				"       WHEN 'd-major' THEN 'xFC'\n" + 
-				"       WHEN 'b-minor' THEN 'xFC'       \n" + 
-				"       WHEN 'a-major' THEN 'xFCG' \n" + 
-				"       WHEN 'fsharp-minor' THEN 'xFCG'        \n" + 
-				"       WHEN 'e-major' THEN 'xFCGD' \n" + 
-				"       WHEN 'csharp-minor' THEN 'xFCGD'        \n" + 
-				"       WHEN 'b-major' THEN 'xFCGDA' \n" + 
-				"       WHEN 'gsharp-minor' THEN 'xFCGDA'        \n" + 
-				"       WHEN 'fsharp-major' THEN 'xFCGDAE'\n" + 
-				"       WHEN 'dsharp-minor' THEN 'xFCGDAE'       \n" + 
-				"       WHEN 'csharp-major' THEN 'xFCGDAEB'\n" + 
-				"       WHEN 'asharp-minor' THEN 'xFCGDAEB'              \n" + 
-				"       WHEN 'f-major' THEN 'bB'\n" + 
-				"       WHEN 'd-minor' THEN 'bB'       \n" + 
-				"       WHEN 'bflat-major' THEN 'bBE'\n" + 
-				"       WHEN 'g-minor' THEN 'bBE'       \n" + 
-				"       WHEN 'eflat-major' THEN 'bBEA'\n" + 
-				"       WHEN 'c-minor' THEN 'bBEA'       \n" + 
-				"       WHEN 'aflat-major' THEN 'bBEAD'\n" + 
-				"       WHEN 'f-minor' THEN 'bBEAD'              \n" + 
-				"       WHEN 'dflat-major' THEN 'bBEADG'\n" + 
-				"       WHEN 'bflat-minor' THEN 'bBEADG'       \n" + 
-				"       WHEN 'gflat-major' THEN 'bBEADGC'\n" + 
-				"       WHEN 'eflat-minor' THEN 'bBEADGC'       \n" + 
-				"       WHEN 'cflat-major' THEN 'bBEADGCF'\n" + 
-				"       WHEN 'aflat-minor' THEN 'bBEADGCF'       \n" + 
-				"     END AS key\n" + 
-				"CALL apoc.create.addLabels(id(measure),[key]) YIELD node\n" + 
-				"RETURN COUNT(measure) AS MeasureKey;";
-		Neo4jConnector.getInstance().executeQuery(measure_key, Util.getDataSource(importRequest.getSource()));
-				
-		String instrument = "MATCH (part:mso__ScorePart)\n" + 
-				"CALL apoc.create.addLabels(id(part),[REPLACE(part.rdfs__label,'.','_')]) YIELD node\n" + 
-				"WITH node AS part\n" + 
-				"MATCH (part)-[:skos__broader]->(type)\n" + 
-				"CALL apoc.create.addLabels(id(part),[type.skos__prefLabel]) YIELD node\n" + 
-				"RETURN COUNT(node) AS instrument;";
-		Neo4jConnector.getInstance().executeQuery(instrument, Util.getDataSource(importRequest.getSource()));
-		
-		String mediums = "MATCH (score:mo__Score)-[:mo__movement]->(movement:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:skos__broader]->(type) \n" + 
-				"MERGE (movement)-[:hasMediumType]-(t:mediumType {mediumTypeId:type.uri, mediumTypeDescription: type.skos__prefLabel})\n" + 
-				"MERGE (t)-[:hasMedium]->(i:Medium {mediumId: part.uri,mediumDescription: part.skos__prefLabel, mediumScoreDescription: part.dc__description, mediumCode: part.rdfs__label, ensemble: part.mso__isEnsemble, solo:part.mso__isSolo})\n" + 
-				"RETURN COUNT(i) AS mediums;";
-		Neo4jConnector.getInstance().executeQuery(mediums, Util.getDataSource(importRequest.getSource()));
-		
-		String movemements_beatunit = "\n" + 
-				"MATCH (mov:mo__Movement)\n" + 
-				"OPTIONAL MATCH (mov:mo__Movement)-[:mso__hasBeatUnit]-(unit)\n" + 
-				"WITH mov,CASE unit WHEN NULL THEN \"unknown\" \n" + 
-				"         ELSE LOWER(SUBSTRING(unit.uri,54))\n" + 
-				"		 END AS b\n" + 
-				"WHERE mov.beatUnit IS NULL\n" + 
-				"SET mov.beatUnit = b\n" + 
-				"RETURN COUNT(mov) AS movements_beatunit;";
-		Neo4jConnector.getInstance().executeQuery(movemements_beatunit, Util.getDataSource(importRequest.getSource()));
-		
-		String noteset_clef_sign = "MATCH (noteset:mso__NoteSet)-[:mso__hasClef]->(clef)-[:mso__sign]->(sign)\n" + 
-				"CALL apoc.create.addLabels(id(noteset),['c_'+SUBSTRING(sign.uri,36)+clef.mso__line]) YIELD node\n" + 
-				"RETURN COUNT(clef) AS noteset_clef_sign;";
-		Neo4jConnector.getInstance().executeQuery(noteset_clef_sign, Util.getDataSource(importRequest.getSource()));
-		
-		String format  = "MATCH (score:mo__Score)\n" + 
-				"WITH  score, \n" + 
-				"  CASE \n" + 
-				"    WHEN NOT score.mso__asMusicXML = '' THEN 'musicxml'\n" + 
-				"    WHEN NOT score.mso__asMEI = '' THEN 'mei'\n" + 
-				"  END AS docFormat\n" + 
-				"WHERE score.format IS NULL  \n" + 
-				"SET score.format = docFormat\n" + 
-				"RETURN COUNT(docFormat) AS format;";
-		Neo4jConnector.getInstance().executeQuery(format, Util.getDataSource(importRequest.getSource()));
-		
-		// Renaming labels and properties to fit the neo4j naming conventions
-						
-		String nextNoteSet = "MATCH (n1)-[r:mso__nextNoteSet]->(n2) CREATE (n1)-[r2:NEXT]->(n2) DELETE r"; 
-		Neo4jConnector.getInstance().executeQuery(nextNoteSet, Util.getDataSource(importRequest.getSource()));
-		String nextMeasure = "MATCH (n1)-[r:mso__nextMeasure]->(n2) CREATE (n1)-[r2:NEXT]->(n2) DELETE r"; 
-		Neo4jConnector.getInstance().executeQuery(nextMeasure, Util.getDataSource(importRequest.getSource()));		
-		String hasMeasure = "MATCH (n1)-[r:mso__hasMeasure]->(n2) CREATE (n1)-[r2:MEASURE]->(n2) DELETE r;"; 
-		Neo4jConnector.getInstance().executeQuery(hasMeasure, Util.getDataSource(importRequest.getSource()));
-		String noteset  = "MATCH (n1)-[r:mso__hasNoteSet]->(n2) CREATE (n1)-[r2:NOTESET]->(n2) DELETE r;"; 
-		Neo4jConnector.getInstance().executeQuery(noteset, Util.getDataSource(importRequest.getSource()));
-		String measure = "MATCH (n:mso__Measure) SET n :Measure REMOVE n:mso__Measure;"; 
-		Neo4jConnector.getInstance().executeQuery(measure, Util.getDataSource(importRequest.getSource()));	
-		
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mo__Movement(mso__hasBeatsPerMinute);", Util.getDataSource(importRequest.getSource()));
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mo__Movement(beatUnit);", Util.getDataSource(importRequest.getSource()));
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mo__Score(issued);", Util.getDataSource(importRequest.getSource()));
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mo__Score(encoderUri);", Util.getDataSource(importRequest.getSource()));
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mo__Score(collectionUri);", Util.getDataSource(importRequest.getSource()));
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mso__NoteSet(size);", Util.getDataSource(importRequest.getSource()));		
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mso__NoteSet(clefShape,clefLine);", Util.getDataSource(importRequest.getSource()));
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :prov__Role(gndo__preferredNameForTheSubjectHeading);", Util.getDataSource(importRequest.getSource()));
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mo__Score(format);", Util.getDataSource(importRequest.getSource()));
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :Measure(key);", Util.getDataSource(importRequest.getSource()));
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :Measure(beats);", Util.getDataSource(importRequest.getSource()));
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :Measure(beatType);", Util.getDataSource(importRequest.getSource()));
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mso__NoteSet(clefSign);", Util.getDataSource(importRequest.getSource()));
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :mso__NoteSet(clefLine);", Util.getDataSource(importRequest.getSource()));
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :D_longa(size);", Util.getDataSource(importRequest.getSource()));
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :D_whole(size);", Util.getDataSource(importRequest.getSource()));
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :D_half(size);", Util.getDataSource(importRequest.getSource()));
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :D_quarter(size);", Util.getDataSource(importRequest.getSource()));
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :D_eighth(size);", Util.getDataSource(importRequest.getSource()));
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :D_16th(size);", Util.getDataSource(importRequest.getSource()));
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :D_32nd(size);", Util.getDataSource(importRequest.getSource()));
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :D_64th(size);", Util.getDataSource(importRequest.getSource()));
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :D_128th(size);", Util.getDataSource(importRequest.getSource()));
-		Neo4jConnector.getInstance().executeQuery("CREATE INDEX ON :D_256th(size);", Util.getDataSource(importRequest.getSource()));
-		
-		
-		**/
 		
 	}
 	
@@ -319,31 +117,6 @@ public class FactoryNeo4j {
 		int result = 0;
 		
 		try {
-			/**			
-			String createPredicates = 
-					"CREATE (:NamespacePrefixDefinition {\n" + 
-					"  `http://linkeddata.uni-muenster.de/ontology/musicscore#`: 'mso',\n" + 
-					"  `http://purl.org/ontology/chord/`: 'chord',\n" + 
-					"  `http://purl.org/dc/elements/1.1/`: 'dc',\n" + 
-					"  `http://purl.org/dc/terms/`: 'dcterms',\n" + 
-					"  `http://www.w3.org/2000/01/rdf-schema#`: 'rdfs',\n" + 
-					"  `http://purl.org/ontology/chord/note/`: 'note',\n" + 
-					"  `http://purl.org/ontology/tonality/`: 'ton',\n" + 
-					"  `http://purl.org/ontology/tonality/mode/`: 'mode',\n" + 
-					"  `http://purl.org/ontology/mo/`: 'mo',\n" + 
-					"  `http://xmlns.com/foaf/0.1/`: 'foaf',\n" + 
-					"  `http://www.w3.org/ns/prov#`: 'prov',\n" + 
-					"  `http://d-nb.info/standards/elementset/gnd#`: 'gndo',\n" + 
-					"  `http://www.w3.org/2004/02/skos/core#`: 'skos',\n" + 
-					"  `http://purl.org/ontology/mo/mit#`: 'mit'\n" + 
-					"});";
-						
-			//StatementResult rs = Neo4jConnector.getInstance().executeQuery(createPredicates, Util.getDataSource(importRequest.getSource()));
-			
-			String importRDF = "CALL semantics.importRDF(\""+file.toURI().toURL()+"\",\""+importRequest.getFormat()+"\",{shortenUrls: true, commitSize: "+importRequest.getCommitSize()+"});";	
-			
-			
-			*/		
 			
 			String importRDF = "CALL semantics.importRDF(\"http://"+ importRequest.getHostname()+":"+
 															  SystemSettings.getPort()+"/"+
@@ -396,14 +169,14 @@ public class FactoryNeo4j {
 		
 		ArrayList<PerformanceMediumType> result = new ArrayList<PerformanceMediumType>();
 		
-		String cypher = "\n\nMATCH (instrument:mo__Instrument)-[:skos__broader]->(type)\n" + 
+		String cypher = "\n\nMATCH (instrument:Part)-[:skos__broader]->(type)\n" + 
 						"RETURN DISTINCT\n" + 
 						"     {performanceMediumList: {mediumTypeId: type.uri,\n" + 
 						"      mediumTypeDescription: type.skos__prefLabel,\n" + 
 						"      instruments: COLLECT(DISTINCT\n" + 
 						"         {\n" + 
-						"          mediumCode: instrument.rdfs__label,\n" + 
-						"          mediumDescription: instrument.skos__prefLabel\n" + 
+						"          mediumCode: instrument.label,\n" + 
+						"          mediumDescription: instrument.prefLabel\n" + 
 						"         })}} AS performanceMediumList\n";
 		
 		logger.debug("getPerformanceMedium:\n"+cypher);
@@ -469,11 +242,15 @@ public class FactoryNeo4j {
 	
 		ArrayList<PersonDescription> result = new ArrayList<PersonDescription>();
 		
-		String cypher = "\n\nMATCH (role:prov__Role)<-[:gndo__professionOrOccupation]-(creator:Person)<-[:CREATOR]-(scr:Score)\n" + 
-						"RETURN DISTINCT creator.uri AS identifier, creator.foaf__name AS name, role.gndo__preferredNameForTheSubjectHeading AS role, COUNT(scr) AS total\n" + 
-						"ORDER BY total DESC\n";
+//		String cypher = "\n\nMATCH (role:prov__Role)<-[:OCCUPATION]-(creator:Person)<-[:CREATOR]-(scr:Score)\n" + 
+//						"RETURN DISTINCT creator.uri AS identifier, creator.name AS name, role.gndo__preferredNameForTheSubjectHeading AS role, COUNT(scr) AS total\n" + 
+//						"ORDER BY total DESC\n";
+		
+		String cypher = "\n\nMATCH (creator:Person)<-[:CREATOR]-(scr:Score)\n" + 
+				"RETURN DISTINCT creator.uri AS identifier, creator.name AS name, labels(creator)[2] AS role, COUNT(scr) AS total\n" + 
+				"ORDER BY total DESC\n";
 
-		logger.debug("getRoles:\n" + cypher);
+		logger.info("getRoles:\n" + cypher);
 		
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);
 		
@@ -581,13 +358,13 @@ public class FactoryNeo4j {
 		ArrayList<Movement> result = new ArrayList<Movement>();
 		
 		String cypher = 
-				"MATCH (scr:Score)-[:MOVEMENT]->(mov:Movement)-[:hasMediumType]->(mediumType:mediumType)-[:hasMedium]->(medium:Medium)\n" + 
+				"MATCH (scr:Score)-[:MOVEMENT]->(mov:Movement)-[:MEDIUMTYPE]->(mediumType:mediumType)-[:MEDIUM]->(medium:Medium)\n" + 
 				"WHERE scr.uri=\""+ scoreURI +"\"\n" + 
 				"WITH  \n" + 
 				"  mov.uri AS movementIdentifier,\n" + 
 				"  mov.title AS  movementName,\n" + 
 				"  mov.beatUnit AS beatUnit,\n" + 
-				"  mov.mso__hasBeatsPerMinute AS beatsPerMinute,    \n" + 
+				"  mov.beatsPerMinute AS beatsPerMinute,    \n" + 
 				"    {type: mediumType.mediumTypeDescription,\n" + 
 				"     typeIdentifier: mediumType.mediumTypeId,\n" + 
 				"     performanceMediums: COLLECT(DISTINCT{\n" + 
@@ -604,6 +381,8 @@ public class FactoryNeo4j {
 				"   beatsPerMinute: beatsPerMinute,\n" + 
 				"   mediumsList: COLLECT(mediumsListResultset)} AS movementsResultset \n";
 
+		logger.debug("getMovementData:\n"+cypher);
+		
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, dataSource);
 
 		while ( rs.hasNext() )
@@ -703,7 +482,8 @@ public class FactoryNeo4j {
 	
 		
 		String where = "\nWHERE TRUE \n";														
-		String match = "MATCH (scr:Score)-[:CREATOR]->(creator:Person)\n";
+		//String match = "MATCH (scr:Score)-[:CREATOR]->(creator:Person)\n";
+		String match = "MATCH (scr:Score)-[:MOVEMENT]->(movements:Movement)\n";
 		
 		if(!wmssRequest.getMelody().equals("")) {
 
@@ -732,41 +512,41 @@ public class FactoryNeo4j {
 				String currentDurationType = "NoteSet";								
 				if(!wmssRequest.isIgnoreDuration()) {
 					//currentDurationType = "d"+ noteSequence.get(i).getDuration();					
-					currentDurationType = "D_"+ noteSequence.get(i).getDuration();
+					currentDurationType = "Duration_"+ noteSequence.get(i).getDuration();
 					
 					switch (noteSequence.get(i).getDuration()) {
 					case "0":
-						currentDurationType = "D_longa";
+						currentDurationType = "Duration_longa";
 						break;
 					case "1":
-						currentDurationType = "D_whole";
+						currentDurationType = "Duration_whole";
 						break;
 					case "2":
-						currentDurationType = "D_half";
+						currentDurationType = "Duration_half";
 						break;
 					case "3":
-						currentDurationType = "D_32nd";
+						currentDurationType = "Duration_32nd";
 						break;
 					case "4":
-						currentDurationType = "D_quarter";
+						currentDurationType = "Duration_quarter";
 						break;
 					case "5":
-						currentDurationType = "D_64th";
+						currentDurationType = "Duration_64th";
 						break;
 					case "6":
-						currentDurationType = "D_16th";
+						currentDurationType = "Duration_16th";
 						break;
 					case "7":
-						currentDurationType = "D_128th";
+						currentDurationType = "Duration_128th";
 						break;
 					case "8":
-						currentDurationType = "D_eighth";
+						currentDurationType = "Duration_eighth";
 						break;
 					case "9":
-						currentDurationType = "D_breve";
+						currentDurationType = "Duration_breve";
 						break;
 					case "a":
-						currentDurationType = "D_256th";
+						currentDurationType = "Duration_256th";
 						break;
 					default:
 						break;
@@ -799,7 +579,7 @@ public class FactoryNeo4j {
 				if(!noteSequence.get(i).getClef().equals("")) {
 					//where = where + "AND ns"+i+".clefSign=\""+String.valueOf(noteSequence.get(i).getClef().charAt(0))+"\"\n";
 					//where = where + "AND ns"+i+".clefLine="+String.valueOf(noteSequence.get(i).getClef().charAt(2))+"\n";
-					match = match + "MATCH (ns"+i+":c_"+String.valueOf(noteSequence.get(i).getClef().charAt(0))+String.valueOf(noteSequence.get(i).getClef().charAt(2))+")\n";
+					match = match + "MATCH (ns"+i+":Clef_"+String.valueOf(noteSequence.get(i).getClef().charAt(0))+String.valueOf(noteSequence.get(i).getClef().charAt(2))+")\n";
 				}
 
 				if(noteSequence.get(i).getDotted()!=0) {
@@ -867,11 +647,9 @@ public class FactoryNeo4j {
 			}
 
 
-		} 
+		}
+		
 				
-		/**
-		 * Match clause
-		 */
 		
 		if(!wmssRequest.getPerformanceMedium().equals("") || 
 		   !wmssRequest.getPerformanceMediumType().equals("") &&
@@ -908,10 +686,13 @@ public class FactoryNeo4j {
 		
 		if(!wmssRequest.getPerson().equals("")) {
 			where = where + "AND creator.uri=\""+wmssRequest.getPerson()+"\"\n";
-		}
+		} 
 
 		if(!wmssRequest.getPersonRole().equals("")) {
-			where = where + "AND creator.roleName=\""+wmssRequest.getPersonRole()+"\"\n";
+			match = match + "MATCH (scr:Score)-[:CREATOR]->(creator:"+wmssRequest.getPersonRole()+")\n";
+			//where = where + "AND creator.roleName=\""+wmssRequest.getPersonRole()+"\"\n";
+		} else {
+			match = match + "MATCH (scr:Score)-[:CREATOR]->(creator:Person)\n";
 		}
 				
 		if(!wmssRequest.getFormat().equals("")) {
@@ -927,19 +708,19 @@ public class FactoryNeo4j {
 		if(!wmssRequest.getClef().equals("")) {
 			//where = where + "AND ns0.clefSign= \""+String.valueOf(wmssRequest.getClef().charAt(0))+"\"\n";
 			//where = where + "AND ns0.clefLine= "+String.valueOf(wmssRequest.getClef().charAt(2))+"\n";
-			match = match + "MATCH (ns0:c_"+String.valueOf(wmssRequest.getClef().charAt(0))+String.valueOf(wmssRequest.getClef().charAt(2))+")\n";
+			match = match + "MATCH (ns0:Clef_"+String.valueOf(wmssRequest.getClef().charAt(0))+String.valueOf(wmssRequest.getClef().charAt(2))+")\n";
 		}
 		
 		if(!wmssRequest.getTempoBeatsPerMinute().equals("")) {
 			String[] bpm = wmssRequest.getTempoBeatsPerMinute().split("-");
 			
 			if(bpm.length==1) {
-				where = where + "AND movements.mso__hasBeatsPerMinute = " + bpm[0] +"\n";
+				where = where + "AND movements.beatsPerMinute = " + bpm[0] +"\n";
 			}
 			
 			if(bpm.length==2) {
-				where = where + "AND movements.mso__hasBeatsPerMinute >= " + bpm[0] +"\n";
-				where = where + "AND movements.mso__hasBeatsPerMinute <= " + bpm[1] +"\n";
+				where = where + "AND movements.beatsPerMinute >= " + bpm[0] +"\n";
+				where = where + "AND movements.beatsPerMinute <= " + bpm[1] +"\n";
 			}
 		}
 		
@@ -954,7 +735,6 @@ public class FactoryNeo4j {
 		}
 			
 		if(!wmssRequest.getKey().equals("")) {
-			//where = where + "AND measure1.key=\""+wmssRequest.getKey()+"\"\n";
 			match = match + "MATCH (measure1:"+wmssRequest.getKey()+")";
 		}
 
@@ -965,11 +745,11 @@ public class FactoryNeo4j {
 		}
 		
 		if(wmssRequest.isSolo()) {
-			where = where + "AND part.isSolo=\""+wmssRequest.isSolo()+"\"";
+			where = where + "AND part.solo=\""+wmssRequest.isSolo()+"\"";
 		}
 		
 		if(wmssRequest.isEnsemble()) {
-			where = where + "AND part.isEnsemble=\""+wmssRequest.isEnsemble()+"\"";
+			where = where + "AND part.ensemble=\""+wmssRequest.isEnsemble()+"\"";
 		}
 
 		if(!wmssRequest.getCollection().equals("")) {
@@ -985,11 +765,11 @@ public class FactoryNeo4j {
 		String cypherQuery = "MATCH (score:Score)-[:MOVEMENT]->(movement)-[:PART]->(part)-[:mso__hasStaff]->(staff)-[:mso__hasVoice]->(voice)-[:NOTESET]->(noteset)-[:mso__hasNote]->(note)\n" + 
 				"MATCH (score:Score)-[:MOVEMENT]->(movement)-[:PART]->(part)-[:MEASURE]->(measure)\n" + 
 				"WHERE score.uri = '"+request.getIdentifier()+"'\n" + 
-				"WITH note,noteset,voice,staff,measure,part,movement,score,score.dc__title AS title, score.uri AS identifier, score.collectionUri AS collection\n" + 
+				"WITH note,noteset,voice,staff,measure,part,movement,score,score.title AS title, score.uri AS identifier, score.collectionUri AS collection\n" + 
 				"DETACH DELETE note,noteset,voice,staff,measure,part,movement,score\n" + 
 				"RETURN DISTINCT title,identifier,collection";
 		
-		logger.info("[deleteScore]:\n\n"+cypherQuery+"\n");
+		//logger.info("[deleteScore]:\n\n"+cypherQuery+"\n");
 		
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypherQuery, dataSource);
 
@@ -1016,18 +796,17 @@ public class FactoryNeo4j {
 		returnClause =   "\nRETURN \n" + 				
 				"    scr.title AS title,\n" + 
 				"    scr.uri AS identifier,\n" +
-				"    toString(scr.dcterms__issued) AS issued,\n" +
-				"    scr.provGeneratedAtTime AS provGeneratedAtTime,\n " +
-				"    scr.provComments AS provComments,\n " +
+				"    toString(scr.issued) AS issued,\n" +
+				"    scr.generatedAtTime AS generatedAtTime,\n " +
+				"    scr.comments AS comments,\n " +
 				"    scr.thumbnail AS thumbnail,\n " +
 			    "	 scr.collectionUri AS collectionIdentifier, \n"+
 			    "	 scr.collectionLabel AS collectionLabel, \n"+
 				"    {persons: COLLECT(DISTINCT\n" + 
-				"       {name: creator.foaf__name, \n" + 
+				"       {name: creator.name, \n" + 
 				"     	 identifier: creator.uri, \n" +
-				"	     role: creator.roleName} \n" + 
-				"    )} AS persons,\n" + 
-				"    {persons: COLLECT(DISTINCT{name: scr.encoderName, identifier: scr.encoderUri, role: \"Encoder\"})} AS encoders, \n";
+				"	     role: labels(creator)[2]} \n" + 
+				"    )} AS persons,";
 		
 		if(!request.getMelody().equals("")) {
 			
@@ -1035,10 +814,10 @@ public class FactoryNeo4j {
 				"    COLLECT(DISTINCT{ \n" + 
 				"      movementIdentifier: mov.uri,\n" + 
 				"      movementName: mov.title,\n" + 
-				"      startingMeasure: measure1.rdfs__label, \n" + 
+				"      startingMeasure: measure1.label, \n" + 
 				"      staff: ns0.staff, \n" + 
 				"      voice: ns0.voice, \n" + 
-				"      instrumentName: part.dc__description \n" + 
+				"      instrumentName: part.description \n" + 
 				"    })} AS locations, \n";				
 		}		
 				
@@ -1072,10 +851,10 @@ public class FactoryNeo4j {
 				score.getMelodyLocation().addAll(getMelodyLocations(gson.toJson(record.get("locations").asMap()),request.getMelody()));
 			}
 			score.getPersons().addAll(getPersons(gson.toJson(record.get("persons").asMap())));
-			score.getPersons().addAll(getPersons(gson.toJson(record.get("encoders").asMap())));			
+			//score.getPersons().addAll(getPersons(gson.toJson(record.get("encoders").asMap())));			
 			Provenance prov = new Provenance();
-			prov.setGeneratedAtTime(record.get("provGeneratedAtTime").asString());
-			prov.setComments(record.get("provComments").asString());
+			prov.setGeneratedAtTime(record.get("generatedAtTime").asString());
+			prov.setComments(record.get("comments").asString());
 			
 			score.setProvenance(prov);
 						

@@ -28,10 +28,11 @@ WITH noteset,COUNT(r) AS size
 SET noteset.size = size
 RETURN COUNT(noteset) AS noteset_size;
 
-MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)
+MATCH (noteset:mso__NoteSet)-[r1:mso__hasDuration]->(duration)
 REMOVE duration:Resource
-WITH noteset,LOWER(SUBSTRING(labels(duration)[0],5)) AS d
-CALL apoc.create.addLabels(id(noteset),["D_"+d]) YIELD node
+WITH noteset,LOWER(SUBSTRING(labels(duration)[0],5)) AS d,r1
+CALL apoc.create.addLabels(id(noteset),["Duration_"+d]) YIELD node
+DELETE r1
 RETURN COUNT(node) AS durations;
 
 MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(noteset)
@@ -51,9 +52,7 @@ RETURN COUNT(noteset) AS voice_staff_collection_role_dateissued;
 
 MATCH (scr:mo__Score)-[:prov__wasGeneratedBy]->(activity:prov__Activity)-[:prov__wasAssociatedWith]->(encoder:foaf__Person)
 WHERE scr.encoderUri IS NULL 
-SET scr.encoderUri = encoder.uri,
-    scr.encoderName = encoder.foaf__name,
-    scr.provGeneratedAtTime = activity.prov__startedAtTime,
+SET scr.provGeneratedAtTime = activity.prov__startedAtTime,
     scr.provComments = activity.rdfs__comment
 RETURN COUNT(scr) AS encoder;
 
@@ -120,15 +119,15 @@ SET measure.tonic = tonic, measure.mode = mode
 RETURN COUNT(measure) AS MeasureKey;
 
 MATCH (part:mso__ScorePart)
-CALL apoc.create.addLabels(id(part),[REPLACE(part.rdfs__label,'.','_')]) YIELD node
+CALL apoc.create.addLabels(id(part),[REPLACE(part.skos__altLabel,'.','_')]) YIELD node
 WITH node AS part
 MATCH (part)-[:skos__broader]->(type)
 CALL apoc.create.addLabels(id(part),[type.skos__prefLabel]) YIELD node
 RETURN COUNT(node) AS instrument;
 
 MATCH (score:mo__Score)-[:mo__movement]->(movement:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:skos__broader]->(type) 
-MERGE (movement)-[:hasMediumType]-(t:mediumType {mediumTypeId:type.uri, mediumTypeDescription: type.skos__prefLabel})
-MERGE (t)-[:hasMedium]->(i:Medium {mediumId: part.uri,mediumDescription: part.skos__prefLabel, mediumScoreDescription: part.dc__description, mediumCode: part.rdfs__label, ensemble: part.mso__isEnsemble, solo:part.mso__isSolo})
+MERGE (movement)-[:MEDIUMTYPE]-(t:mediumType {mediumTypeId:type.uri, mediumTypeDescription: type.skos__prefLabel})
+MERGE (t)-[:MEDIUM]->(i:Medium {mediumId: part.uri,mediumDescription: part.skos__prefLabel, mediumScoreDescription: part.dc__description, mediumCode: part.rdfs__label, ensemble: part.mso__isEnsemble, solo:part.mso__isSolo})
 RETURN COUNT(i) AS mediums;
 
 MATCH (mov:mo__Movement)
@@ -140,16 +139,6 @@ WHERE mov.beatUnit IS NULL
 SET mov.beatUnit = b
 RETURN COUNT(mov) AS movements_beatunit;
 
-
-MATCH (noteset:mso__NoteSet)-[:mso__hasClef]->(clef)
-REMOVE clef:Resource
-WITH noteset,clef
-SET noteset.clef = REPLACE(LOWER(labels(clef)[0]),'mso__','')
-RETURN COUNT(clef) AS noteset_clef;
-
-MATCH (noteset:mso__NoteSet)-[:mso__hasClef]->(clef)-[:mso__sign]->(sign)
-CALL apoc.create.addLabels(id(noteset),['c_'+SUBSTRING(sign.uri,36)+clef.mso__line]) YIELD node
-RETURN COUNT(clef) AS noteset_clef_sign;
 
 MATCH (score:mo__Score)
 WITH  score, 
@@ -166,8 +155,25 @@ WITH mov, CASE mov.mso__hasBeatsPerMinute
             WHEN NULL THEN 0
             ELSE toInt(mov.mso__hasBeatsPerMinute) 
           END AS bpm
-SET mov.mso__hasBeatsPerMinute = bpm
+SET mov.beatsPerMinute = bpm
 RETURN COUNT(mov) AS BPM;
+
+
+
+
+
+
+
+
+
+
+
+MATCH (noteset:mso__NoteSet)-[r1:mso__hasClef]->(clef)-[r2:mso__sign]->(sign)
+MATCH (noteset)-[r3:mso__nextNoteSet]->(nextNoteset:mso__NoteSet)
+CALL apoc.create.addLabels(id(noteset),['Clef_'+SUBSTRING(sign.uri,36)+clef.mso__line]) YIELD node
+CREATE (noteset)-[:NEXT]->(nextNoteset)
+DELETE r2,r1,r3
+RETURN COUNT(clef) AS noteset_clef_sign;
 
 
 MATCH (score:mo__Score)
@@ -180,59 +186,153 @@ SET score.asMEI = score.mso__asMEI
 REMOVE score.mso__asMEI
 RETURN COUNT(score.asMEI) AS asMEI;
 
-MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[r0:mso__hasKey]-(key)-[r1:ton__tonic]->(tonicNode)
-MATCH (part:mso__ScorePart)-[:mso__hasMeasure]->(measure:mso__Measure)-[r0:mso__hasKey]-(key)-[r2:ton__mode]->(modeNode)
-DETACH DELETE key,tonicNode,modeNode
-RETURN COUNT(key) AS DeletedKeys;
+MATCH (part:mso__ScorePart)-[r3:mso__hasMeasure]->(measure:mso__Measure)-[r0:mso__hasKey]-(key)-[r1:ton__tonic]->(tonicNode)
+MATCH (measure:mso__Measure)-[r0:mso__hasKey]-(key)-[r2:ton__mode]->(modeNode)
+SET measure.label = measure.rdfs__label
+REMOVE measure.rdfs__label
+CREATE (part)-[:MEASURE]->(measure)
+DELETE r3 
+DETACH DELETE key,tonicNode,modeNode;
 
-MATCH (mov:mo__Movement)
-SET mov.title = mov.dc__title
-REMOVE mov.dc__title
-RETURN COUNT(mov) AS MovementTitlesChanged;
-
-MATCH (part:mso__ScorePart)
-SET part.solo = part.mso__isSolo,
-    part.isEnsemble = part.mso__isEnsemble
-REMOVE part.mso__isSolo, part.mso__isEnsemble
-RETURN COUNT(part) AS MovementTitlesChanged;
-
-MATCH (score:mo_Score)
-SET score.title = score.dc__title,
-    score.issued = score.dcterms__issued
-REMOVE score.dc__title,score.dcterms__issued
-RETURN COUNT(score) AS ScoreTitlesChanged;
+MATCH (measure:mso__Measure)-[r1:mso__hasNoteSet]-(noteset:mso__NoteSet)
+MATCH (noteset)-[r2:mso__hasNote]->(note)
+CREATE (measure)-[:NOTESET]->(noteset)
+DELETE r1,r2;
 
 
-MATCH (n1)-[r:mso__nextNoteSet]->(n2) CREATE (n1)-[r2:NEXT]->(n2) DELETE r;
-MATCH (n1)-[r:mso__nextMeasure]->(n2) CREATE (n1)-[r2:NEXT]->(n2) DELETE r;
-MATCH (n1)-[r:mso__hasMeasure]->(n2) CREATE (n1)-[r2:MEASURE]->(n2) DELETE r;
-MATCH (n1)-[r:mso__hasNoteSet]->(n2) CREATE (n1)-[r2:NOTESET]->(n2) DELETE r;
-MATCH (n1)-[r:dc__creator]->(n2) CREATE (n1)-[r2:CREATOR]->(n2) DELETE r;
-MATCH (n1)-[r:mo__movement]->(n2) CREATE (n1)-[r2:MOVEMENT]->(n2) DELETE r;
-MATCH (n1)-[r:mso__hasScorePart]->(n2) CREATE (n1)-[r2:PART]->(n2) DELETE r;
+MATCH (score:mo__Score)-[r1:dc__creator]->(person:foaf__Person)
+MATCH (person)-[r2:dbont__occupation]->(occupation)
+MATCH (person)-[r3:gndo__professionOrOccupation]->(role:prov__Role) 	
+MATCH (person)-[r4:prov__hadRole]->(role:prov__Role)
+WITH score,person,occupation,role,r1,r2,r3,r4,
+  CASE occupation.uri
+      WHEN 'http://dbpedia.org/resource/Composer' THEN 'Composer'
+      WHEN 'http://dbpedia.org/resource/Lyricist' THEN 'Lyricist'
+      WHEN 'http://dbpedia.org/resource/Arranger' THEN 'Arranger'
+      WHEN 'http://dbpedia.org/resource/Librettist' THEN 'Librettist'
+      WHEN 'http://dbpedia.org/resource/Editor' THEN 'Editor'
+      WHEN 'http://dbpedia.org/resource/Performer' THEN 'Performer'
+      WHEN 'http://dbpedia.org/resource/Translator' THEN 'Translator'
+      WHEN 'http://dbpedia.org/resource/Dedicatee' THEN 'Dedicatee'
+      WHEN 'http://dbpedia.org/resource/Composer' THEN 'Composer'
+      WHEN 'http://dbpedia.org/resource/Unknown' THEN 'Unknown'
+  END AS occupationType
+CALL apoc.create.addLabels(id(person),[occupationType]) YIELD node
+CREATE (score)-[:CREATOR]->(person)
+SET person.name = person.foaf__name
+DELETE r1,r2,r3,r4,role,occupation
+RETURN COUNT(person);
 
 
-MATCH (n:mso__Instant) SET n :Instant REMOVE n:mso__Instant;
+MATCH (person:foaf__Person)<-[r1:prov__wasAssociatedWith]-(activity:prov__Activity)
+MATCH (activity:prov__Activity)-[r2:prov__generated]->(score:mo__Score)
+MATCH (person)-[r3:gndo__professionOrOccupation]->(role:prov__Role)
+MATCH (person)-[r4:prov__hadRole]->(role:prov__Role)
+MATCH (person)-[r5:dbont__occupation]->(occupation)
+SET person:Encoder,	
+	person.roleUri = 'http://dbpedia.org/resource/EncoderXX',
+	person.name = person.foaf__name
+CREATE (score)-[:CREATOR]->(person)
+CREATE (activity)-[:ASSOCIATEDWITH]->(person)
+DELETE r1,r3,r4,r5,occupation,role;
+
+
+
+
+MATCH (score:mo__Score)-[r1:mo__movement]->(movement:mo__Movement) 
+MATCH (movement)-[r3:mso__hasScorePart]->(part:mso__ScorePart) 
+CREATE (score)-[:MOVEMENT]->(movement) 
+CREATE (movement)-[:PART]->(part)
+DELETE r1,r3;
+
+MATCH (movement:mo__Movement)-[:PART]->(part:mso__ScorePart)
+SET 
+	movement.title = movement.dc__title,
+    part.description = part.dc__description,
+    part.solo = part.mso__isSolo,
+    part.ensemble = part.mso__isEnsemble,
+    part.label = part.rdfs__label,
+    part.altLabel = part.skos__altLabel,
+    part.prefLabel = part.skos__prefLabel;
+    
+MATCH (movement:mo__Movement)-[:PART]->(part:mso__ScorePart)    
+REMOVE 
+	movement.mso__hasBeatsPerMinute,
+    movement.dc__title,
+    part.dc__description,
+    part.mso__isEnsemble,
+    part.mso__isSolo,
+    part.rdfs__label,
+    part.skos__altLabel,
+    part.skos__prefLabel;
+
+
+
+
+
+MATCH (activity:prov__Activity)-[r4:prov__wasAssociatedWith]->(software:prov__SoftwareAgent)
+MATCH (score:mo__Score)-[r5:prov__wasGeneratedBy]->(activity:prov__Activity)
+MATCH (activity:prov__Activity)-[r6:prov__generated]->(score:mo__Score)
+MATCH (score:mo__Score)-[r7:prov__wasGeneratedBy]->(software:prov__SoftwareAgent)
+MATCH (score:mo__Score)-[r8:foaf__thumbnail]->(thumbnail)
+MATCH (collection:prov__Collection)-[r9:prov__hadMember]->(score:mo__Score)
+SET	software.label = software.rdfs__label,
+    activity :Activity, 
+	activity.startedAtTime = activity.prov__startedAtTime,
+	activity.endedAtTime = activity.prov__endedAtTime,
+	activity.comment = activity.rdfs__comment,
+	score.title = score.dc__title,
+    score.issued = score.dcterms__issued,
+	score.generatedAtTime = score.provGeneratedAtTime,
+	score.comments = score.provComments,
+	score.thumbnail = thumbnail.uri,
+	collection :Collection,
+	collection.label = collection.rdfs__label
+REMOVE 
+	score.dc__title, 
+	score.dcterms__issued,
+	score.provComments,
+	score.provGeneratedAtTime,
+	software:prov__SoftwareAgent,
+	software.rdfs__label,
+	software.foaf__name,
+	collection.rdfs__label,
+	collection:prov__Collection	
+CREATE (activity)-[:ASSOCIATEDWITH]->(software)
+CREATE (activity)-[:GENERATED]->(score)
+CREATE (score)-[:COLLECTION]->(collection)
+DELETE r4,r5,r6,r7,r8,r9,thumbnail;
+
+		
+MATCH (n)-[r1:mso__hasVoice]->(voice:mso__Voice)
+MATCH (voice)-[r2:mso__hasNoteSet]->(noteset:mso__NoteSet)
+DELETE r1,r2,voice;
+MATCH (instant:mso__Instant)-[r1:mso__hasMeasure]-(measure:mso__Measure)
+MATCH (instant)-[r2:mso__nextInstant]-(next)
+DELETE r1,r2,instant,next;
+MATCH (n1)-[r:mso__nextMeasure]->(n2) 
+CREATE (n1)-[r2:NEXT]->(n2) 
+DELETE r;
+MATCH (n1)-[r:mso__hasStaff]->(staff:mso__Staff)
+DELETE r,staff;
+
+
+MATCH (n:mo__Score) SET n :Score REMOVE n:mo__Score;
+MATCH (n:mo__Movement) SET n :Movement REMOVE n:mo__Movement;
+MATCH (n:mso__ScorePart) SET n :Part REMOVE n:mso__ScorePart;
+MATCH (n:mo__Instrument) SET n :Instrument REMOVE n:mo__Instrument, n:skos__Concept;
+MATCH (n:mso__Measure) SET n :Measure REMOVE n:mso__Measure;
 MATCH (n:mso__NoteSet) SET n :NoteSet REMOVE n:mso__NoteSet;
 MATCH (n:foaf__Person) SET n :Person REMOVE n:foaf__Person;
-MATCH (n:mso__ScorePart) SET n :Part REMOVE n:mso__ScorePart;
-MATCH (n:mo__Movement) SET n :Movement REMOVE n:mo__Movement;
-MATCH (n:mso__Measure) SET n :Measure REMOVE n:mso__Measure;
-MATCH (n:mo__Score) SET n :Score REMOVE n:mo__Score;
+MATCH (n:prov__Activity) SET n :Activity REMOVE n:prov__Activity;
+MATCH (n:prov__SoftwareAgent) SET n :Software REMOVE n:prov__SoftwareAgent;
+MATCH (n:prov__Collection) SET n :Collection REMOVE n:prov__Collection;
 
-
-
-
-
-
-CREATE INDEX ON :Movement(mso__hasBeatsPerMinute);
 CREATE INDEX ON :Movement(beatUnit);
-CREATE INDEX ON :Score(issued);
 CREATE INDEX ON :Score(encoderUri);
 CREATE INDEX ON :Score(collectionUri);
 CREATE INDEX ON :NoteSet(size);		
 CREATE INDEX ON :NoteSet(clefShape,clefLine);
-CREATE INDEX ON :prov__Role(gndo__preferredNameForTheSubjectHeading);
 CREATE INDEX ON :Score(format);
 CREATE INDEX ON :Measure(key);
 CREATE INDEX ON :Measure(beats);
