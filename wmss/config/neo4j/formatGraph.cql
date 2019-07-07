@@ -317,9 +317,9 @@ CREATE (n1)-[r2:NEXT]->(n2)
 DELETE r;
 MATCH (n1)-[r:mso__hasStaff]->(staff:mso__Staff)
 DELETE r,staff;
-MATCH (note:chord__Note)-[:mso__hasNoteAttribute]->(attribute) DETACH DELETE note,attribute;
-MATCH (note:chord__Note) DETACH DELETE note;
 
+MATCH (note:chord__Note) DETACH DELETE note;
+MATCH (noteset:NoteSet)-[:mso__hasDuration]->(duration) DETACH DELETE duration;
 MATCH (n) WHERE NOT (n)--() DELETE n;
 
 MATCH (n:mo__Score) SET n :Score REMOVE n:mo__Score;
