@@ -32,7 +32,6 @@ MATCH (noteset:mso__NoteSet)-[r1:mso__hasDuration]->(duration)
 REMOVE duration:Resource
 WITH noteset,LOWER(SUBSTRING(labels(duration)[0],5)) AS d,r1
 CALL apoc.create.addLabels(id(noteset),["Duration_"+d]) YIELD node
-DELETE r1
 RETURN COUNT(node) AS durations;
 
 MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(noteset)
@@ -56,11 +55,12 @@ SET scr.provGeneratedAtTime = activity.prov__startedAtTime,
     scr.provComments = activity.rdfs__comment
 RETURN COUNT(scr) AS encoder;
 
-MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)-[:mso__hasDurationAttribute]->(attribute)
-REMOVE attribute:Resource
-WITH noteset,attribute
-CALL apoc.create.addLabels(id(noteset),[SUBSTRING(labels(attribute)[0],5)]) YIELD node
-RETURN COUNT(node) AS dots;
+MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)-[:mso__hasDurationAttribute]->(attribute:mso__Dot)
+SET noteset :Dot;
+MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)-[:mso__hasDurationAttribute]->(attribute:mso__DoubleDot)
+SET noteset :DoubleDot;
+MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)-[:mso__hasDurationAttribute]->(attribute:mso__TripleDot)
+SET noteset :TripleDot;
 
 MATCH (measure:mso__Measure)-[r:mso__hasTime]->(time)
 WHERE measure.beats IS NULL

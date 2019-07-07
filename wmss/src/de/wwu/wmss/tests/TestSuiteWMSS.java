@@ -9,6 +9,6 @@ import org.junit.runners.Suite;
 	ListScoresRequest.class
 })
 
-public class TestSuite {
+public class TestSuiteWMSS {
 
 }

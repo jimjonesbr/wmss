@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import org.json.JSONArray;
@@ -57,7 +58,7 @@ public class ListScoresRequest {
 			String url = server+":"+port+"/wmss/?request=ListScores";
 			
 			for (int i = 0; i < parameters.size(); i++) {
-				url = url + "&" + parameters.get(i).getRequest()+"="+parameters.get(i).getValue();
+				url = url + "&" + parameters.get(i).getRequest()+"="+ URLEncoder.encode(parameters.get(i).getValue(),"UTF-8");
 			}
 			
 			System.out.println("\nRequest: " + url + "\n");
@@ -220,4 +221,104 @@ public class ListScoresRequest {
 		assertEquals(true, this.listScoresRequest(score, location, parameters));
 	}
 	
+	
+	@Test
+	public void elgarCelloConcerto_EmbeddedMelody() {
+		
+		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
+		parameters.add(new RequestParameter("ignoreOtctave", "true"));
+		parameters.add(new RequestParameter("ignorePitch", "false"));
+		parameters.add(new RequestParameter("ignoreDuration", "false"));
+		parameters.add(new RequestParameter("ignoreChords", "false"));
+		parameters.add(new RequestParameter("melody", ",,2GB8G"));
+		parameters.add(new RequestParameter("source", source));
+		
+		MusicScore score = new MusicScore();
+		score.setTitle("Cellokonzert e-Moll op. 85");
+		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setDateIssued("1919");		
+		MelodyLocation location = new MelodyLocation();
+		location.setStartingMeasure("1");
+		location.setVoice("1");
+		location.setStaff("1");
+		location.setInstrumentName("Violoncello");
+		location.setMelody(",,2GB8G");
+				
+		assertEquals(true, this.listScoresRequest(score, location, parameters));
+	}
+	
+	@Test
+	public void elgarCelloConcerto_6Notes_TimeSignatureC() {
+		
+		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
+		parameters.add(new RequestParameter("ignoreOtctave", "false"));
+		parameters.add(new RequestParameter("ignorePitch", "false"));
+		parameters.add(new RequestParameter("ignoreDuration", "false"));
+		parameters.add(new RequestParameter("ignoreChords", "false"));
+		parameters.add(new RequestParameter("melody", "@c 8ABCDxDE"));
+		parameters.add(new RequestParameter("source", source));
+		
+		MusicScore score = new MusicScore();
+		score.setTitle("Cellokonzert e-Moll op. 85");
+		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setDateIssued("1919");		
+		MelodyLocation location = new MelodyLocation();
+		location.setStartingMeasure("8");
+		location.setVoice("1");
+		location.setStaff("1");
+		location.setInstrumentName("Violoncello");
+		location.setMelody("@c 8ABCDxDE");
+				
+		assertEquals(true, this.listScoresRequest(score, location, parameters));
+	}
+	
+	@Test
+	public void elgarCelloConcerto_6Notes_Key() {
+		
+		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
+		parameters.add(new RequestParameter("ignoreOtctave", "false"));
+		parameters.add(new RequestParameter("ignorePitch", "false"));
+		parameters.add(new RequestParameter("ignoreDuration", "false"));
+		parameters.add(new RequestParameter("ignoreChords", "false"));
+		parameters.add(new RequestParameter("melody", "$xF ,8AB'CDxDE"));
+		parameters.add(new RequestParameter("source", source));
+		
+		MusicScore score = new MusicScore();
+		score.setTitle("Cellokonzert e-Moll op. 85");
+		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setDateIssued("1919");		
+		MelodyLocation location = new MelodyLocation();
+		location.setStartingMeasure("8");
+		location.setVoice("1");
+		location.setStaff("1");
+		location.setInstrumentName("Violoncello");
+		location.setMelody("$xF ,8AB'CDxDE");
+				
+		assertEquals(true, this.listScoresRequest(score, location, parameters));
+	}
+	
+	@Test
+	public void elgarCelloConcerto_5Notes_Dotted() {
+		
+		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
+		parameters.add(new RequestParameter("ignoreOtctave", "false"));
+		parameters.add(new RequestParameter("ignorePitch", "false"));
+		parameters.add(new RequestParameter("ignoreDuration", "false"));
+		parameters.add(new RequestParameter("ignoreChords", "false"));
+		parameters.add(new RequestParameter("melody", "4.E4.xD.ExD,8A"));
+		parameters.add(new RequestParameter("source", source));
+		
+		MusicScore score = new MusicScore();
+		score.setTitle("Cellokonzert e-Moll op. 85");
+		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setDateIssued("1919");		
+		MelodyLocation location = new MelodyLocation();
+		location.setStartingMeasure("48");
+		location.setVoice("1");
+		location.setStaff("1");
+		location.setInstrumentName("Violoncello");
+		location.setMelody("4.E4.xD.ExD,8A");
+				
+		assertEquals(true, this.listScoresRequest(score, location, parameters));
+	}
 }
