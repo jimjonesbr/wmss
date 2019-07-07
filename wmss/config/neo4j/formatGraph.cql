@@ -162,10 +162,12 @@ RETURN COUNT(mov) AS BPM;
 
 
 
-
-
-
-
+MATCH (noteset:mso__NoteSet)-[:mso__hasNote]->(note:chord__Note) 
+MATCH (note)-[:mso__hasNoteAttribute]->(grace:mso__GraceNote)
+MATCH (previousNoteSet:mso__NoteSet)-[:mso__nextNoteSet]->(noteset)
+MATCH (noteset)-[:mso__nextNoteSet]->(nextNoteSet:mso__NoteSet)
+SET noteset :GraceNote
+CREATE (previousNoteSet)-[:NEXT]->(nextNoteSet);
 
 
 MATCH (noteset:mso__NoteSet)-[r1:mso__hasClef]->(clef)-[r2:mso__sign]->(sign)
@@ -315,7 +317,10 @@ CREATE (n1)-[r2:NEXT]->(n2)
 DELETE r;
 MATCH (n1)-[r:mso__hasStaff]->(staff:mso__Staff)
 DELETE r,staff;
+MATCH (note:chord__Note)-[:mso__hasNoteAttribute]->(attribute) DETACH DELETE note,attribute;
+MATCH (note:chord__Note) DETACH DELETE note;
 
+MATCH (n) WHERE NOT (n)--() DELETE n;
 
 MATCH (n:mo__Score) SET n :Score REMOVE n:mo__Score;
 MATCH (n:mo__Movement) SET n :Movement REMOVE n:mo__Movement;
