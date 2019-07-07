@@ -91,11 +91,13 @@ public class ListScoresRequest {
 							  melody.getJSONObject(l).get("melody").toString().equals(location.getMelody()) &&
 							  scores.getJSONObject(j).getString("title").equals(score.getTitle()) &&
 							  scores.getJSONObject(j).getString("scoreIdentifier").equals(score.getScoreId()) &&
-							  scores.getJSONObject(j).getString("dateIssued").equals(score.getDateIssued())
+							  scores.getJSONObject(j).getString("dateIssued").equals(score.getDateIssued()) &&
+							  melodies.getJSONObject(k).get("movementName").toString().equals(location.getMovementName())
 							  ) {
 								result = true;
 							}
 							
+							System.out.println("- Movement        : "+melodies.getJSONObject(j).get("movementName"));
 							System.out.println("- Starting Measure: "+melody.getJSONObject(l).get("startingMeasure"));
 							System.out.println("- Voice           : "+melody.getJSONObject(l).get("voice"));
 							System.out.println("- Staff           : "+melody.getJSONObject(l).get("staff"));
@@ -140,6 +142,7 @@ public class ListScoresRequest {
 		location.setVoice("1");
 		location.setStaff("1");
 		location.setInstrumentName("Violoncello");
+		location.setMovementName("Adagio");
 		location.setMelody(",8AB'CDxDE");
 				
 		assertEquals(true, this.listScoresRequest(score, location, parameters));
@@ -165,6 +168,7 @@ public class ListScoresRequest {
 		location.setVoice("1");
 		location.setStaff("1");
 		location.setInstrumentName("Violoncello");
+		location.setMovementName("Adagio");
 		location.setMelody("'4xF8G4xF8A4B8A4G8E4D8E4C,8B4A8B4A'8C4D8C,4B8G4xF8G4E8D4xC8D4xC8E4xF8E4D,,8B4xA8B4G8xF2B");
 				
 		assertEquals(true, this.listScoresRequest(score, location, parameters));
@@ -191,6 +195,7 @@ public class ListScoresRequest {
 		location.setVoice("1");
 		location.setStaff("1");
 		location.setInstrumentName("Violoncello");
+		location.setMovementName("Adagio");
 		location.setMelody("'4xF8G4xF8A4B8A4/G8E4D8E4C,8B/,4A8B4A'8C4D8C/,4B8G4xF8G4E8D");
 				
 		assertEquals(true, this.listScoresRequest(score, location, parameters));
@@ -216,6 +221,7 @@ public class ListScoresRequest {
 		location.setVoice("1");
 		location.setStaff("1");
 		location.setInstrumentName("Violoncello");
+		location.setMovementName("Adagio");
 		location.setMelody(",,2E^B^,G^'E");
 				
 		assertEquals(true, this.listScoresRequest(score, location, parameters));
@@ -242,6 +248,7 @@ public class ListScoresRequest {
 		location.setVoice("1");
 		location.setStaff("1");
 		location.setInstrumentName("Violoncello");
+		location.setMovementName("Adagio");
 		location.setMelody(",,2GB8G");
 				
 		assertEquals(true, this.listScoresRequest(score, location, parameters));
@@ -267,6 +274,7 @@ public class ListScoresRequest {
 		location.setVoice("1");
 		location.setStaff("1");
 		location.setInstrumentName("Violoncello");
+		location.setMovementName("Adagio");
 		location.setMelody("@c 8ABCDxDE");
 				
 		assertEquals(true, this.listScoresRequest(score, location, parameters));
@@ -292,6 +300,7 @@ public class ListScoresRequest {
 		location.setVoice("1");
 		location.setStaff("1");
 		location.setInstrumentName("Violoncello");
+		location.setMovementName("Adagio");
 		location.setMelody("$xF ,8AB'CDxDE");
 				
 		assertEquals(true, this.listScoresRequest(score, location, parameters));
@@ -317,7 +326,84 @@ public class ListScoresRequest {
 		location.setVoice("1");
 		location.setStaff("1");
 		location.setInstrumentName("Violoncello");
+		location.setMovementName("Adagio");
 		location.setMelody("4.E4.xD.ExD,8A");
+				
+		assertEquals(true, this.listScoresRequest(score, location, parameters));
+	}
+	
+	
+	@Test
+	public void achiledGrandOpera_4Notes() {
+		
+		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
+		parameters.add(new RequestParameter("ignoreOtctave", "false"));
+		parameters.add(new RequestParameter("ignorePitch", "false"));
+		parameters.add(new RequestParameter("ignoreDuration", "false"));
+		parameters.add(new RequestParameter("melody", "6DFbED"));
+		parameters.add(new RequestParameter("source", source));
+		
+		MusicScore score = new MusicScore();
+		score.setTitle("Achilles: Grand Opera");
+		score.setScoreId("https://sammlungen.ulb.uni-muenster.de/id/5731633");
+		score.setDateIssued("1802");		
+		MelodyLocation location = new MelodyLocation();
+		location.setStartingMeasure("6");
+		location.setVoice("1");
+		location.setStaff("1");
+		location.setInstrumentName("Violine I");
+		location.setMovementName("No. 3. Larghetto.");
+		location.setMelody("6DFbED");
+				
+		assertEquals(true, this.listScoresRequest(score, location, parameters));
+	}
+	
+	@Test
+	public void achiledGrandOpera_5Notes() {
+		
+		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
+		parameters.add(new RequestParameter("ignoreOtctave", "false"));
+		parameters.add(new RequestParameter("ignorePitch", "false"));
+		parameters.add(new RequestParameter("ignoreDuration", "false"));
+		parameters.add(new RequestParameter("melody", "5CDEFG"));
+		parameters.add(new RequestParameter("source", source));
+		
+		MusicScore score = new MusicScore();
+		score.setTitle("Achilles: Grand Opera");
+		score.setScoreId("https://sammlungen.ulb.uni-muenster.de/id/5731633");
+		score.setDateIssued("1802");		
+		MelodyLocation location = new MelodyLocation();
+		location.setStartingMeasure("8");
+		location.setVoice("1");
+		location.setStaff("1");
+		location.setInstrumentName("Violine I");
+		location.setMovementName("No. 6. Adagio.");
+		location.setMelody("5CDEFG");
+				
+		assertEquals(true, this.listScoresRequest(score, location, parameters));
+	}
+	
+	@Test
+	public void siegesMaersche_13Notes() {
+		
+		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
+		parameters.add(new RequestParameter("ignoreOtctave", "false"));
+		parameters.add(new RequestParameter("ignorePitch", "false"));
+		parameters.add(new RequestParameter("ignoreDuration", "false"));
+		parameters.add(new RequestParameter("melody", "4FbA8CbAGFFEDCBCDE"));
+		parameters.add(new RequestParameter("source", source));
+		
+		MusicScore score = new MusicScore();
+		score.setTitle("Sieges Mærsche für's Piano-Forte : gewidmet den Witwen und Waisen der Landwehr-mäner des k.k. Hoch und Deutschmeister Regiments");
+		score.setScoreId("https://sammlungen.ulb.uni-muenster.de/id/5393365");
+		score.setDateIssued("1850");		
+		MelodyLocation location = new MelodyLocation();
+		location.setStartingMeasure("20");
+		location.setVoice("1");
+		location.setStaff("1");
+		location.setInstrumentName("Piano");
+		location.setMovementName("Marsch Nº1.");
+		location.setMelody("4FbA8CbAGFFEDCBCDE");
 				
 		assertEquals(true, this.listScoresRequest(score, location, parameters));
 	}
