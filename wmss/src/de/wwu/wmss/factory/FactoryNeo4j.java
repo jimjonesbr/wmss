@@ -98,7 +98,7 @@ public class FactoryNeo4j {
 	    	logger.info("Formatting graph ... ");
 	    	for (int i = 0; i < arrayCypher.length; i++) {
 	    		if(!arrayCypher[i].trim().equals("")) {
-	    			logger.info(arrayCypher[i]);
+	    			logger.debug(arrayCypher[i]);
 	    			Neo4jConnector.getInstance().executeQuery(arrayCypher[i].replaceAll("\n", " "), Util.getDataSource(importRequest.getSource()));		    			
 	    		}	    		
 			}
@@ -250,7 +250,7 @@ public class FactoryNeo4j {
 				"RETURN DISTINCT creator.uri AS identifier, creator.name AS name, labels(creator)[2] AS role, COUNT(scr) AS total\n" + 
 				"ORDER BY total DESC\n";
 
-		logger.info("getRoles:\n" + cypher);
+		logger.debug("getRoles:\n" + cypher);
 		
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);
 		
@@ -276,7 +276,7 @@ public class FactoryNeo4j {
 
 		String cypher = "MATCH (scr:Score) RETURN DISTINCT CASE WHEN scr.asMusicXML IS NULL THEN FALSE ELSE TRUE END AS musicxml; \n";
 
-		logger.info("getFormats:\n" + cypher);
+		logger.debug("getFormats:\n" + cypher);
 
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);
 		Record record = rs.next();
