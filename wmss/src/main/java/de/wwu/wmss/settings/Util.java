@@ -130,6 +130,7 @@ public class Util {
 		String currentTimeSignature = "";
 		int currentMeasure = 1;		
 		boolean chord = false;
+		boolean grace = false;
 		boolean keySegment = false;
 		boolean timeSegment = false;
 		boolean clefSegment = false;
@@ -198,6 +199,10 @@ public class Util {
 					chord = true;
 				}
 				
+				if(element.equals("g")||element.equals("q")) {
+					grace = true;
+				}
+				
 				if(element.equals("/")) {
 					currentMeasure++;
 				}
@@ -228,7 +233,8 @@ public class Util {
 					note.setDuration(duration);
 					note.setPitch(element);
 					note.setOctave(currentOctave);
-					note.setChord(chord);												
+					note.setChord(chord);			
+					note.setGrace(grace);
 					note.setMeasure(currentMeasure);
 					note.setDotted(dots);
 					
@@ -260,6 +266,7 @@ public class Util {
 					accidental = "";
 					dots = 0;
 					chord = false;
+					grace = false;
 				}
 
 			}

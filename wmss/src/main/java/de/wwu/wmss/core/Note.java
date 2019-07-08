@@ -7,6 +7,7 @@ public class Note {
 	private String octave;
 	private String accidental;
 	private boolean isChord;
+	private boolean isGrace;
 	private int measure;
 	private String key ="";
 	private String time = "";
@@ -15,8 +16,7 @@ public class Note {
 	
 	public Note() {
 		super();
-	}
-	
+	}	
 	public String getPitch() {
 		return pitch;
 	}
@@ -71,14 +71,16 @@ public class Note {
 	public void setClef(String clef) {
 		this.clef = clef;
 	}
-
 	public int getDotted() {
 		return dotted;
 	}
-
 	public void setDotted(int dotted) {
 		this.dotted = dotted;
 	}
-
-	
+	public boolean isGrace() {
+		return isGrace;
+	}
+	public void setGrace(boolean isGrace) {
+		this.isGrace = isGrace;
+	}	
 }

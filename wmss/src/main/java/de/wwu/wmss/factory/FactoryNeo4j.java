@@ -241,11 +241,7 @@ public class FactoryNeo4j {
 	public static ArrayList<PersonDescription> getRoles(DataSource ds){
 	
 		ArrayList<PersonDescription> result = new ArrayList<PersonDescription>();
-		
-//		String cypher = "\n\nMATCH (role:prov__Role)<-[:OCCUPATION]-(creator:Person)<-[:CREATOR]-(scr:Score)\n" + 
-//						"RETURN DISTINCT creator.uri AS identifier, creator.name AS name, role.gndo__preferredNameForTheSubjectHeading AS role, COUNT(scr) AS total\n" + 
-//						"ORDER BY total DESC\n";
-		
+				
 		String cypher = "\n\nMATCH (creator:Person)<-[:CREATOR]-(scr:Score)\n" + 
 				"RETURN DISTINCT creator.uri AS identifier, creator.name AS name, labels(creator)[2] AS role, COUNT(scr) AS total\n" + 
 				"ORDER BY total DESC\n";
@@ -570,14 +566,17 @@ public class FactoryNeo4j {
 				}
 
 				if(!noteSequence.get(i).getTime().equals("")) {					
+					
 					String[] time = noteSequence.get(i).getTime().split("/");
 					where = where + "AND measure"+noteSequence.get(i).getMeasure()+".beatType="+time[1]+"\n" 
-								  + "AND measure"+noteSequence.get(i).getMeasure()+".beats="+time[0]+"\n";					
+								  + "AND measure"+noteSequence.get(i).getMeasure()+".beats="+time[0]+"\n";
+					
 				}
 
 				if(!noteSequence.get(i).getKey().equals("")) {
 
 					match = match + "MATCH (measure1:"+noteSequence.get(i).getKey()+")\n";
+					
 				}
 
 				if(!noteSequence.get(i).getClef().equals("")) {
@@ -628,7 +627,13 @@ public class FactoryNeo4j {
 						
 						where = where  + "AND ns"+notesetCounter+".size = 1 \n";
 						
-					}													
+					}
+					
+					if(noteSequence.get(i).isGrace()) {
+						
+						match = match + "MATCH (ns"+notesetCounter+":GraceNote)\n";
+						
+					}
 					
 					notesetCounter++;
 					chordSize = 0;	
@@ -640,8 +645,6 @@ public class FactoryNeo4j {
 					chordSize++;
 					firstElement = false;
 				}
-											
-				//System.out.println("notesetCounter >" + notesetCounter+ " > " +currentPitchType + "> isChord? " +noteSequence.get(i).isChord());
 
 				previousDurationType = currentDurationType;				
 				i++;
@@ -670,13 +673,15 @@ public class FactoryNeo4j {
 		
 		
 		if(!wmssRequest.getPerformanceMedium().equals("")) {
-			//where = where + "AND part.rdfs__label=\""+wmssRequest.getPerformanceMedium()+"\"\n";
+
 			match = match + "MATCH (part:"+wmssRequest.getPerformanceMedium().replace(".", "_")+")\n";
+			
 		} 
 
 		if(!wmssRequest.getPerformanceMediumType().equals("")) {
-			//where = where + "AND part.typeLabel=\""+wmssRequest.getPerformanceMediumType()+"\"\n";
+			
 			match = match + "MATCH (part:"+wmssRequest.getPerformanceMediumType().toLowerCase()+")\n";
+			
 		}
 		
 		
@@ -686,30 +691,35 @@ public class FactoryNeo4j {
 		
 		
 		if(!wmssRequest.getPerson().equals("")) {
+			
 			where = where + "AND creator.uri=\""+wmssRequest.getPerson()+"\"\n";
+			
 		} 
 
 		if(!wmssRequest.getPersonRole().equals("")) {
+
 			match = match + "MATCH (scr:Score)-[:CREATOR]->(creator:"+wmssRequest.getPersonRole()+")\n";
-			//where = where + "AND creator.roleName=\""+wmssRequest.getPersonRole()+"\"\n";
+
 		} else {
+			
 			match = match + "MATCH (scr:Score)-[:CREATOR]->(creator:Person)\n";
 		}
 				
 		if(!wmssRequest.getFormat().equals("")) {
+			
 			where = where + "AND scr.format=\""+wmssRequest.getFormat()+"\"\n";
 		} 
 		
 		if(!wmssRequest.getTempoBeatUnit().equals("")) {
-			//where = where + "AND movements.beatUnit='"+wmssRequest.getTempoBeatUnit()+"' \n"; 
+
 			match = match + "MATCH (scr:Score)-[:MOVEMENT]->(movements:Movement {beatUnit: '"+wmssRequest.getTempoBeatUnit()+"'})\n";
 			
 		}
 
 		if(!wmssRequest.getClef().equals("")) {
-			//where = where + "AND ns0.clefSign= \""+String.valueOf(wmssRequest.getClef().charAt(0))+"\"\n";
-			//where = where + "AND ns0.clefLine= "+String.valueOf(wmssRequest.getClef().charAt(2))+"\n";
+
 			match = match + "MATCH (ns0:Clef_"+String.valueOf(wmssRequest.getClef().charAt(0))+String.valueOf(wmssRequest.getClef().charAt(2))+")\n";
+			
 		}
 		
 		if(!wmssRequest.getTempoBeatsPerMinute().equals("")) {
@@ -769,8 +779,6 @@ public class FactoryNeo4j {
 				"WITH note,noteset,voice,staff,measure,part,movement,score,score.title AS title, score.uri AS identifier, score.collectionUri AS collection\n" + 
 				"DETACH DELETE note,noteset,voice,staff,measure,part,movement,score\n" + 
 				"RETURN DISTINCT title,identifier,collection";
-		
-		//logger.info("[deleteScore]:\n\n"+cypherQuery+"\n");
 		
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypherQuery, dataSource);
 
@@ -851,17 +859,15 @@ public class FactoryNeo4j {
 			if(!request.getMelody().equals("")) {
 				score.getMelodyLocation().addAll(getMelodyLocations(gson.toJson(record.get("locations").asMap()),request.getMelody()));
 			}
-			score.getPersons().addAll(getPersons(gson.toJson(record.get("persons").asMap())));
-			//score.getPersons().addAll(getPersons(gson.toJson(record.get("encoders").asMap())));			
+
+			score.getPersons().addAll(getPersons(gson.toJson(record.get("persons").asMap())));			
 			Provenance prov = new Provenance();
 			prov.setGeneratedAtTime(record.get("generatedAtTime").asString());
 			prov.setComments(record.get("comments").asString());
 			
 			score.setProvenance(prov);
-						
-			//if(!request.getRequestMode().equals("simplified")) {
 			score.getMovements().addAll(getMovementData(score.getScoreId(), dataSource));
-			//}	
+	
 
 			if(record.get("musicxml").asBoolean()) {
 				Format format = new Format();

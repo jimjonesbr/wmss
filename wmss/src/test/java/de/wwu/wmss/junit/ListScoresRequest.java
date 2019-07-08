@@ -365,6 +365,32 @@ public class ListScoresRequest {
 		parameters.add(new RequestParameter("ignorePitch", "false"));
 		parameters.add(new RequestParameter("ignoreDuration", "false"));
 		parameters.add(new RequestParameter("ignoreChords", "false"));
+		parameters.add(new RequestParameter("melody", ",8GxFgAG"));
+		parameters.add(new RequestParameter("source", source));
+		
+		MusicScore score = new MusicScore();
+		score.setTitle("Cellokonzert e-Moll op. 85");
+		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setDateIssued("1919");		
+		MelodyLocation location = new MelodyLocation();
+		location.setStartingMeasure("3");
+		location.setVoice("1");
+		location.setStaff("1");
+		location.setInstrumentName("Violoncello");
+		location.setMovementName("Adagio");
+		location.setMelody(",8GxFgAG");
+				
+		assertEquals(true, this.listScoresRequest(score, location, parameters));
+	}
+	
+	@Test
+	public void elgarCelloConcerto_3Notes_ExplicitGraceNote() {
+		
+		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
+		parameters.add(new RequestParameter("ignoreOtctave", "false"));
+		parameters.add(new RequestParameter("ignorePitch", "false"));
+		parameters.add(new RequestParameter("ignoreDuration", "false"));
+		parameters.add(new RequestParameter("ignoreChords", "false"));
 		parameters.add(new RequestParameter("melody", ",8xFG2C"));
 		parameters.add(new RequestParameter("source", source));
 		
@@ -382,6 +408,7 @@ public class ListScoresRequest {
 				
 		assertEquals(true, this.listScoresRequest(score, location, parameters));
 	}
+	
 	
 	@Test
 	public void achiledGrandOpera_4Notes() {
