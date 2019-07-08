@@ -328,8 +328,13 @@ DETACH DELETE role,occupation;
 MATCH (measure:mso__Measure)-[r:mso__hasTime]->(time)
 DETACH DELETE time;
 
-MATCH (note:chord__Note) DETACH DELETE note;
+MATCH (movement:mo__Movement)-[:mso__hasBeatUnit]->(unit)
+DETACH DELETE unit;
 
+MATCH (part:mso__ScorePart)-[:skos__broader]-(mit)
+DETACH DELETE mit;
+
+MATCH (note:chord__Note) DETACH DELETE note;
 MATCH (noteset:NoteSet)-[:mso__hasDuration]->(duration) DETACH DELETE duration;
 
 MATCH (n) WHERE NOT (n)--() DELETE n;

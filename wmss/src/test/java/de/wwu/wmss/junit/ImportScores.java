@@ -21,8 +21,7 @@ public class ImportScores {
 	private static String server = "http://localhost";
 	private static String port = "8888";
 	private static String source = "neo4j_local";
-	//private static String rdfDirectory = "/home/jones/git/musicowl/musicowl/src/test/resources/rdf/";
-	private static String rdfDirectory = "/home/jones/graphdb-import/";
+	private static String rdfDirectory = "data/rdf/";
 	private boolean post(File file, String format, int commitSize) {
 
 		boolean result = false;
