@@ -1,4 +1,4 @@
-package de.wwu.wmss.tests;
+package de.wwu.wmss.junit;
 
 import static org.junit.Assert.assertEquals;
 import java.io.File;
@@ -16,12 +16,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Test;
 
-import de.wwu.wmss.web.Start;
-
 public class ImportScores {
 
 	private static String server = "http://localhost";
-	private static String port = "8295";
+	private static String port = "8888";
 	private static String source = "neo4j_local";
 	private static String rdfDirectory = "/home/jones/git/musicowl/musicowl/src/test/resources/rdf/";
 	

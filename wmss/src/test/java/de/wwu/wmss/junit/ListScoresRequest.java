@@ -1,4 +1,4 @@
-package de.wwu.wmss.tests;
+package de.wwu.wmss.junit;
 
 import static org.junit.Assert.assertEquals;
 
@@ -23,7 +23,7 @@ import de.wwu.wmss.core.RequestParameter;
 public class ListScoresRequest {
 
 	private static String server = "http://localhost";
-	private static String port = "8295";
+	private static String port = "8888";
 	private static String source = "neo4j_local";
 		
 	private static String readAll(Reader rd) throws IOException {

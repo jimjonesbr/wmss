@@ -6,11 +6,20 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import de.wwu.wmss.settings.SystemSettings;
 
-public class Start {
+public class Start implements Runnable {
 
 	private static Logger logger = Logger.getLogger("WMSS-Servlet");
+	public static int port = 0;
 	
-	public static void main(String[] args) throws Exception {
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		Start.port = port;
+	}
+
+	public static void main(String[] args) throws Exception  {
 
 		startWMSS();
 
@@ -29,7 +38,13 @@ public class Start {
 		contextAPI.addServlet(new ServletHolder(new ServletImport()),"/import");
 		contextAPI.addServlet(new ServletHolder(new ServletWebAdmin()),"/admin");
 		contextAPI.addServlet(new ServletHolder(new ServletFileAccess()),"/file");
-
+		
+		
+		if(port!=0) {
+			//port = SystemSettings.getPort();
+			SystemSettings.setPort(port);
+		}
+		
 		Server server = new Server(SystemSettings.getPort());	
 		server.setHandler(contextAPI);
 
@@ -47,6 +62,13 @@ public class Start {
 
 
 
+	}
+
+	@Override
+	public void run() {
+		
+		startWMSS();
+		
 	}
 
 }

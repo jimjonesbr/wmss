@@ -170,6 +170,10 @@ public class SystemSettings {
 	public static int getPort() {
 		return port;
 	}
+	
+	public static void setPort(int port) {
+		SystemSettings.port = port;
+	}
 
 	public static String getService() {
 		return service;

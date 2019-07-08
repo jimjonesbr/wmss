@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package de.wwu.wmss.tests;
+package de.wwu.wmss.junit;
 
 import java.io.File;
 import java.io.IOException;
