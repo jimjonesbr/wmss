@@ -36,6 +36,7 @@ The application relies on datasets encoded using the [MusicOWL ontology](http://
     - [Time Signatures](#time-signatures)
     - [Clefs](#clefs)
     - [Measures](#measures)
+    - [Rests](#rests)      
     - [Key Signatures](#key-signatures)  
     - [Score List Report](#score-list-report)  
   - [GetScore](#getscore)
@@ -411,6 +412,7 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,8AB'CD
 ```
 
 #### [Grace Notes](https://github.com/jimjonesbr/wmss/blob/master/README.md#grace-notes) 
+Parameters: `melody`
 
 Read this carefully. In case a sequence of notes in the database contains a grace note, a few things need to be taken into account:
 
@@ -418,6 +420,7 @@ Read this carefully. In case a sequence of notes in the database contains a grac
 * __Grace notes are also explicity encoded__: Grace notes are encoded as such and are linked to their predecessors and successors in the note sequence. 
 
 In other words, a search for `,8AGxFgAG2C` or `,8AGxFG2C` will return the following match:
+
 
 ![embedded_sequence](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/grace.jpg)
 
@@ -529,6 +532,14 @@ By splitting the melodies with the character `/`, the system will look for exact
 ```http
 http://localhost:8295/wmss/?source=neo4j_local&request=listscores&melody='4xF8G4xF8A4B8A4/G8E4D8E4C,8B
 ```
+
+#### [Rests](https://github.com/jimjonesbr/wmss/blob/master/README.md#rests) 
+Parameters: `melody`
+
+Melody containing [rests](https://www.iaml.info/plaine-easie-code#toc-12) can be encoded by replacing the pitch with a `-`, e.g. `,,2E-/-4.-6,,B,xC`
+
+![rests](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/rest.jpg)
+
 
 #### [Key signatures](https://github.com/jimjonesbr/wmss/blob/master/README.md#key-signatures)
 Parameters: `melody` / `key`
