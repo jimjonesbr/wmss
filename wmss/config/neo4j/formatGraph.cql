@@ -1,4 +1,4 @@
-MATCH (note:chord__Note)-[:chord__natural]->(natural:chord__Natural) 
+MATCH (note:chord__Note)-[:chord__natural]->(natural) 
 OPTIONAL MATCH (note:chord__Note)-[:chord__modifier]->(modifier)
 WITH note, CASE SUBSTRING(modifier.uri,31) 
         	WHEN 'flat' THEN 'b'
@@ -10,11 +10,7 @@ WITH note, CASE SUBSTRING(modifier.uri,31)
        SUBSTRING(natural.uri,36) AS natural           
 SET note.signature = modifier+natural+note.mso__hasOctave,
     note.note = modifier+natural,
-    note.octave = note.mso__hasOctave
-WITH note
-CALL apoc.create.addLabels(id(note),[note.signature,note.note]) YIELD node
-RETURN COUNT(node) AS note_octave_signature;
-
+    note.octave = note.mso__hasOctave;
 
 MATCH (ns:mso__NoteSet)-[:mso__hasNote]->(n:chord__Note)
 CALL apoc.create.addLabels(id(ns),[n.signature]) YIELD node

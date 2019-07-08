@@ -482,7 +482,6 @@ public class FactoryNeo4j {
 	
 		
 		String where = "\nWHERE TRUE \n";														
-		//String match = "MATCH (scr:Score)-[:CREATOR]->(creator:Person)\n";
 		String match = "MATCH (scr:Score)-[:MOVEMENT]->(movements:Movement)\n";
 		
 		if(!wmssRequest.getMelody().equals("")) {
@@ -511,7 +510,7 @@ public class FactoryNeo4j {
 
 				String currentDurationType = "NoteSet";								
 				if(!wmssRequest.isIgnoreDuration()) {
-					//currentDurationType = "d"+ noteSequence.get(i).getDuration();					
+					
 					currentDurationType = "Duration_"+ noteSequence.get(i).getDuration();
 					
 					switch (noteSequence.get(i).getDuration()) {
@@ -555,12 +554,17 @@ public class FactoryNeo4j {
 				}	
 
 				String currentPitchType = "NoteSet";
-				//String currentPitchType = "chord__Note";
 				
 				if(!wmssRequest.isIgnorePitch()) {
+
 					currentPitchType = noteSequence.get(i).getAccidental()+noteSequence.get(i).getPitch();
+					
 					if(!wmssRequest.isIgnoreOctaves()) {
 						currentPitchType = currentPitchType + noteSequence.get(i).getOctave();
+					}
+					
+					if(currentPitchType.equals("-")) {
+						currentPitchType = "Rest";
 					}
 
 				}
@@ -572,25 +576,22 @@ public class FactoryNeo4j {
 				}
 
 				if(!noteSequence.get(i).getKey().equals("")) {
-					//where = where + "AND measure"+noteSequence.get(i).getMeasure()+".key=\""+noteSequence.get(i).getKey()+"\"\n"; 
+
 					match = match + "MATCH (measure1:"+noteSequence.get(i).getKey()+")\n";
 				}
 
 				if(!noteSequence.get(i).getClef().equals("")) {
-					//where = where + "AND ns"+i+".clefSign=\""+String.valueOf(noteSequence.get(i).getClef().charAt(0))+"\"\n";
-					//where = where + "AND ns"+i+".clefLine="+String.valueOf(noteSequence.get(i).getClef().charAt(2))+"\n";
+
 					match = match + "MATCH (ns"+i+":Clef_"+String.valueOf(noteSequence.get(i).getClef().charAt(0))+String.valueOf(noteSequence.get(i).getClef().charAt(2))+")\n";
+					
 				}
 
 				if(noteSequence.get(i).getDotted()!=0) {
-					if(noteSequence.get(i).getDotted()==1) {
-						//where = where + "AND ns"+i+":dot \n";
+					if(noteSequence.get(i).getDotted()==1) {					
 						match = match + "MATCH (ns"+i+":Dot) \n";
-					} else if(noteSequence.get(i).getDotted()==2) {
-						//where = where + "AND ns"+i+":doubledot \n";
+					} else if(noteSequence.get(i).getDotted()==2) {					
 						match = match + "MATCH (ns"+i+":DoubleDot) \n";
-					} else if(noteSequence.get(i).getDotted()==3) {
-						//where = where + "AND ns"+i+":tripledot \n";
+					} else if(noteSequence.get(i).getDotted()==3) {					
 						match = match + "MATCH (ns"+i+":TripleDot) \n";
 					}
 				}

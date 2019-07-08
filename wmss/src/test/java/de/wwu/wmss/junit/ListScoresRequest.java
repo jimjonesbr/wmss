@@ -148,6 +148,30 @@ public class ListScoresRequest {
 		assertEquals(true, this.listScoresRequest(score, location, parameters));
 	}
 
+	@Test
+	public void elgarCelloConcerto_6Notes_Full_MutipleRests() {
+		
+		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
+		parameters.add(new RequestParameter("ignoreOtctave", "false"));
+		parameters.add(new RequestParameter("ignorePitch", "false"));
+		parameters.add(new RequestParameter("ignoreDuration", "false"));
+		parameters.add(new RequestParameter("melody", "2E--4.-6,,B,xC"));
+		parameters.add(new RequestParameter("source", source));
+		
+		MusicScore score = new MusicScore();
+		score.setTitle("Cellokonzert e-Moll op. 85");
+		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setDateIssued("1919");		
+		MelodyLocation location = new MelodyLocation();
+		location.setStartingMeasure("5");
+		location.setVoice("1");
+		location.setStaff("1");
+		location.setInstrumentName("Violoncello");
+		location.setMovementName("Adagio");
+		location.setMelody("2E--4.-6,,B,xC");
+				
+		assertEquals(true, this.listScoresRequest(score, location, parameters));
+	}
 
 	@Test
 	public void elgarCelloConcerto_36Notes_Full() {
@@ -391,7 +415,7 @@ public class ListScoresRequest {
 		parameters.add(new RequestParameter("ignoreOtctave", "false"));
 		parameters.add(new RequestParameter("ignorePitch", "false"));
 		parameters.add(new RequestParameter("ignoreDuration", "false"));
-		parameters.add(new RequestParameter("melody", "5CDEFG"));
+		parameters.add(new RequestParameter("melody", "8.G6bE8.G6bE"));
 		parameters.add(new RequestParameter("source", source));
 		
 		MusicScore score = new MusicScore();
@@ -399,14 +423,14 @@ public class ListScoresRequest {
 		score.setScoreId("https://sammlungen.ulb.uni-muenster.de/id/5731633");
 		score.setDateIssued("1802");		
 		MelodyLocation location = new MelodyLocation();
-		location.setStartingMeasure("8");
+		location.setStartingMeasure("5");
 		location.setVoice("1");
 		location.setStaff("1");
-		location.setInstrumentName("Violine I");
-		location.setMovementName("No. 6. Adagio.");
-		location.setMelody("5CDEFG");
+		location.setInstrumentName("Violine II");
+		location.setMovementName("No. 3. Larghetto.");
+		location.setMelody("8.G6bE8.G6bE");
 				
-		//assertEquals(true, this.listScoresRequest(score, location, parameters));
+		assertEquals(true, this.listScoresRequest(score, location, parameters));
 	}
 	
 	@Test
