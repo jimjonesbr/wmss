@@ -417,7 +417,7 @@ Read this carefully. In case a sequence of notes in the database contains a grac
 * __Grace notes are bypassed__: It creates a link between the last __non__-grace note and the next one. This link enables searches that do not explicity 
 * __Grace notes are also explicity encoded__: Grace notes are encoded as such and are linked to their predecessors and successors in the note sequence. 
 
-In other words, a search for `,8A,,GxFgAG2C` and `,8A,,GxFG2C` will have the following match:
+In other words, a search for `,8AGxFgAG2C` or `,8AGxFG2C` will return the following match:
 
 ![embedded_sequence](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/grace.jpg)
 
