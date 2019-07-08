@@ -1,5 +1,3 @@
-![](https://img.shields.io/badge/powered%20by-neo4j-green.svg)
-
 # Web Music Score Service 
 
 The Web Music Score Service (WMSS) provides an interface allowing requests for music scores on the web using platform-independent clients. It serves as an intermediate layer between data sets and application clients, providing standard access to MEI and MusicXML files. 
@@ -32,6 +30,7 @@ The application relies on datasets encoded using the [MusicOWL ontology](http://
     - [Durations](#durations)   
     - [Dotted Durations](#dotted-durations) 
     - [Pitches](#pitches)  
+    - [Grace Notes](#grace-notes)  
     - [Embedded Note Sequences](#embedded-sequences-note-sequences-inside-chords)  
     - [Chords Search](#chords-search)  
     - [Time Signatures](#time-signatures)
@@ -410,6 +409,19 @@ If you're only looking for a sequence of rhythmical elements (useful for percuss
 ```http
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,8AB'CDxDE&ignorePitch=true
 ```
+
+#### [Grace Notes](https://github.com/jimjonesbr/wmss/blob/master/README.md#grace-notes) 
+
+Read this carefully. In case a sequence of notes in the database contains a grace note, a few things need to be taken into account:
+
+* __Grace notes are bypassed__: It creates a link between the last __non__-grace note and the next one. This link enables searches that do not explicity 
+* __Grace notes are also explicity encoded__: Grace notes are encoded as such and are linked to their predecessors and successors in the note sequence. 
+
+In other words, a search for `,8A,,GxFgAG2C` and `,8A,,GxFG2C` will have the following match:
+
+![embedded_sequence](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/grace.jpg)
+
+Grace notes in melody searches are to be encoded using either `g` (acciaccatura) or `q` (appoggiatura), according to the [Plaine & Easie notation](https://www.iaml.info/plaine-easie-code#toc-11). 
 
 #### [Embedded Sequences (Note sequences inside chords)](https://github.com/jimjonesbr/wmss/blob/master/README.md#embedded-sequences-note-sequences-inside-chords)
 Parameter: `ignoreChords`
