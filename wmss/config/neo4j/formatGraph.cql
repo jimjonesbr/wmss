@@ -61,7 +61,7 @@ SET noteset :TripleDot;
 MATCH (measure:mso__Measure)-[r:mso__hasTime]->(time)
 WHERE measure.beats IS NULL
 SET measure.beats = time.mso__hasBeats, measure.beatType = time.mso__hasBeatType
-DELETE r,time
+DELETE r
 RETURN COUNT(measure) AS MeasureTimeSignature;
 
 
@@ -218,7 +218,7 @@ WITH score,person,occupation,role,r1,r2,r3,r4,
 CALL apoc.create.addLabels(id(person),[occupationType]) YIELD node
 CREATE (score)-[:CREATOR]->(person)
 SET person.name = person.foaf__name
-DELETE r1,r2,r3,r4,role,occupation
+DELETE r1,r2,r3,r4
 RETURN COUNT(person);
 
 
@@ -232,7 +232,7 @@ SET person:Encoder,
 	person.name = person.foaf__name
 CREATE (score)-[:CREATOR]->(person)
 CREATE (activity)-[:ASSOCIATEDWITH]->(person)
-DELETE r1,r3,r4,r5,occupation,role;
+DELETE r1,r3,r4,r5;
 
 
 
@@ -305,17 +305,33 @@ DELETE r4,r5,r6,r7,r8,r9,thumbnail;
 MATCH (n)-[r1:mso__hasVoice]->(voice:mso__Voice)
 MATCH (voice)-[r2:mso__hasNoteSet]->(noteset:mso__NoteSet)
 DELETE r1,r2,voice;
+
 MATCH (instant:mso__Instant)-[r1:mso__hasMeasure]-(measure:mso__Measure)
 MATCH (instant)-[r2:mso__nextInstant]-(next)
 DELETE r1,r2,instant,next;
+
 MATCH (n1)-[r:mso__nextMeasure]->(n2) 
 CREATE (n1)-[r2:NEXT]->(n2) 
 DELETE r;
+
 MATCH (n1)-[r:mso__hasStaff]->(staff:mso__Staff)
 DELETE r,staff;
 
+MATCH (person)-[r2:dbont__occupation]->(occupation)
+MATCH (person)-[r3:gndo__professionOrOccupation]->(role:prov__Role) 
+DETACH DELETE role,occupation; 
+
+MATCH (person)-[r4:prov__hadRole]->(role:prov__Role)
+MATCH (person)-[r5:dbont__occupation]->(occupation)
+DETACH DELETE role,occupation;
+
+MATCH (measure:mso__Measure)-[r:mso__hasTime]->(time)
+DETACH DELETE time;
+
 MATCH (note:chord__Note) DETACH DELETE note;
+
 MATCH (noteset:NoteSet)-[:mso__hasDuration]->(duration) DETACH DELETE duration;
+
 MATCH (n) WHERE NOT (n)--() DELETE n;
 
 MATCH (n:mo__Score) SET n :Score REMOVE n:mo__Score;

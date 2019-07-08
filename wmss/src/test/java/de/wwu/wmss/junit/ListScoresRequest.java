@@ -23,7 +23,7 @@ import de.wwu.wmss.core.RequestParameter;
 public class ListScoresRequest {
 
 	private static String server = "http://localhost";
-	private static String port = "8888";
+	private static String port = "8295";
 	private static String source = "neo4j_local";
 		
 	private static String readAll(Reader rd) throws IOException {
@@ -80,7 +80,7 @@ public class ListScoresRequest {
 
 					for (int k = 0; k < melodies.length(); k++) {
 
-						JSONArray melody =  melodies.getJSONObject(j).getJSONArray("melodyLocation");
+						JSONArray melody =  melodies.getJSONObject(k).getJSONArray("melodyLocation");
 
 						for (int l = 0; l < melody.length(); l++) {
 							
@@ -97,7 +97,7 @@ public class ListScoresRequest {
 								result = true;
 							}
 							
-							System.out.println("- Movement        : "+melodies.getJSONObject(j).get("movementName"));
+							System.out.println("- Movement        : "+melodies.getJSONObject(k).get("movementName"));
 							System.out.println("- Starting Measure: "+melody.getJSONObject(l).get("startingMeasure"));
 							System.out.println("- Voice           : "+melody.getJSONObject(l).get("voice"));
 							System.out.println("- Staff           : "+melody.getJSONObject(l).get("staff"));
@@ -471,7 +471,7 @@ public class ListScoresRequest {
 		parameters.add(new RequestParameter("source", source));
 		
 		MusicScore score = new MusicScore();
-		score.setTitle("Sieges Mærsche für's Piano-Forte : gewidmet den Witwen und Waisen der Landwehr-mäner des k.k. Hoch und Deutschmeister Regiments");
+		score.setTitle("Sieges Märsche für's Piano-Forte");
 		score.setScoreId("https://sammlungen.ulb.uni-muenster.de/id/5393365");
 		score.setDateIssued("1850");		
 		MelodyLocation location = new MelodyLocation();
