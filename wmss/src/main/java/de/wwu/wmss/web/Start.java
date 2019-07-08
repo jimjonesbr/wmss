@@ -45,6 +45,18 @@ public class Start implements Runnable {
 			SystemSettings.setPort(port);
 		}
 		
+		
+		logger.info("\n\n" + SystemSettings.getTitle()+ "\n" +
+				"Service Name: " + SystemSettings.getService() + "\n" +
+				"WMSS Version: " + SystemSettings.getVersion() + "\n" +
+				"Port: " + SystemSettings.getPort() + "\n" +
+				"Application Startup: " + SystemSettings.getStartup() + "\n" +
+				"Default Melody Encoding: " + SystemSettings.getDefaultMelodyEncoding() + "\n" +
+
+				"Time-out: " + SystemSettings.getTimeout()+ "ms" + "\n" +
+				"Page Size: " + SystemSettings.getPageSize() + " records " + "\n" +
+				"System Administrator: " + SystemSettings.getContact()  + "\n");
+		
 		Server server = new Server(SystemSettings.getPort());	
 		server.setHandler(contextAPI);
 

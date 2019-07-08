@@ -72,18 +72,6 @@ public class SystemSettings {
 			Date date = new Date();
 			startup = dateFormat.format(date); 
 
-			logger.info("\n\n" + title + "\n" +
-					"Service Name: " + service + "\n" +
-					"Default Protocol: " + defaultProtocol + "\n" +
-					"WMSS Version: " + serviceVersion + "\n" +
-					"Port: " + port + "\n" +
-					"Application Startup: " + startup + "\n" +
-					"Default Melody Encoding: " + defaultMelodyEncoding + "\n" +
-
-					"Time-out: " + timeout + "ms" + "\n" +
-					"Page Size: " + pageSize + " records " + "\n" +
-					"System Administrator: " + contact  + "\n");
-
 		} catch (Exception e) {
 
 			e.printStackTrace();
