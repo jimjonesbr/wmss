@@ -61,7 +61,6 @@ SET noteset :TripleDot;
 MATCH (measure:mso__Measure)-[r:mso__hasTime]->(time)
 WHERE measure.beats IS NULL
 SET measure.beats = time.mso__hasBeats, measure.beatType = time.mso__hasBeatType
-DELETE r
 RETURN COUNT(measure) AS MeasureTimeSignature;
 
 
@@ -166,13 +165,12 @@ SET noteset :GraceNote
 CREATE (previousNoteSet)-[:NEXT]->(nextNoteSet);
 
 
-MATCH (noteset:mso__NoteSet)-[r1:mso__hasClef]->(clef)-[r2:mso__sign]->(sign)
-MATCH (noteset)-[r3:mso__nextNoteSet]->(nextNoteset:mso__NoteSet)
+MATCH (noteset:mso__NoteSet)-[:mso__hasClef]->(clef)-[:mso__sign]->(sign)
+MATCH (noteset)-[r:mso__nextNoteSet]->(nextNoteset:mso__NoteSet)
 CALL apoc.create.addLabels(id(noteset),['Clef_'+SUBSTRING(sign.uri,36)+clef.mso__line]) YIELD node
 CREATE (noteset)-[:NEXT]->(nextNoteset)
-DELETE r2,r1,r3
+DELETE r
 RETURN COUNT(clef) AS noteset_clef_sign;
-
 
 MATCH (score:mo__Score)
 SET score.asMusicXML = score.mso__asMusicXML
@@ -189,14 +187,12 @@ MATCH (measure:mso__Measure)-[r0:mso__hasKey]-(key)-[r2:ton__mode]->(modeNode)
 SET measure.label = measure.rdfs__label
 REMOVE measure.rdfs__label
 CREATE (part)-[:MEASURE]->(measure)
-DELETE r3 
-DETACH DELETE key,tonicNode,modeNode;
+DETACH DELETE r3;
 
 MATCH (measure:mso__Measure)-[r1:mso__hasNoteSet]-(noteset:mso__NoteSet)
 MATCH (noteset)-[r2:mso__hasNote]->(note)
 CREATE (measure)-[:NOTESET]->(noteset)
-DELETE r1,r2;
-
+DELETE r1;
 
 MATCH (score:mo__Score)-[r1:dc__creator]->(person:foaf__Person)
 MATCH (person)-[r2:dbont__occupation]->(occupation)
@@ -235,13 +231,13 @@ CREATE (activity)-[:ASSOCIATEDWITH]->(person)
 DELETE r1,r3,r4,r5;
 
 
+MATCH (score:mo__Score)-[r:mo__movement]->(movement:mo__Movement) 
+CREATE (score)-[:MOVEMENT]->(movement)
+DELETE r;
 
-
-MATCH (score:mo__Score)-[r1:mo__movement]->(movement:mo__Movement) 
-MATCH (movement)-[r3:mso__hasScorePart]->(part:mso__ScorePart) 
-CREATE (score)-[:MOVEMENT]->(movement) 
+MATCH (movement:mo__Movement)-[r:mso__hasScorePart]->(part:mso__ScorePart) 
 CREATE (movement)-[:PART]->(part)
-DELETE r1,r3;
+DELETE r;
 
 MATCH (movement:mo__Movement)-[:PART]->(part:mso__ScorePart)
 SET 
@@ -299,23 +295,26 @@ REMOVE
 CREATE (activity)-[:ASSOCIATEDWITH]->(software)
 CREATE (activity)-[:GENERATED]->(score)
 CREATE (score)-[:COLLECTION]->(collection)
-DELETE r4,r5,r6,r7,r8,r9,thumbnail;
+DELETE r4,r5,r6,r7,r8,r9;
 
 		
 MATCH (n)-[r1:mso__hasVoice]->(voice:mso__Voice)
 MATCH (voice)-[r2:mso__hasNoteSet]->(noteset:mso__NoteSet)
-DELETE r1,r2,voice;
+DELETE r1,r2;
 
-MATCH (instant:mso__Instant)-[r1:mso__hasMeasure]-(measure:mso__Measure)
-MATCH (instant)-[r2:mso__nextInstant]-(next)
-DELETE r1,r2,instant,next;
 
 MATCH (n1)-[r:mso__nextMeasure]->(n2) 
 CREATE (n1)-[r2:NEXT]->(n2) 
 DELETE r;
 
 MATCH (n1)-[r:mso__hasStaff]->(staff:mso__Staff)
-DELETE r,staff;
+DELETE r;
+
+
+
+
+
+
 
 MATCH (person)-[r2:dbont__occupation]->(occupation)
 MATCH (person)-[r3:gndo__professionOrOccupation]->(role:prov__Role) 
@@ -334,10 +333,30 @@ DETACH DELETE unit;
 MATCH (part:mso__ScorePart)-[:skos__broader]-(mit)
 DETACH DELETE mit;
 
-MATCH (note:chord__Note) DETACH DELETE note;
-MATCH (noteset:NoteSet)-[:mso__hasDuration]->(duration) DETACH DELETE duration;
+MATCH (note:chord__Note) 
+DETACH DELETE note;
 
-MATCH (n) WHERE NOT (n)--() DELETE n;
+MATCH (noteset:NoteSet)-[:mso__hasDuration]->(duration) 
+DETACH DELETE duration;
+
+MATCH (clef)-[:mso__sign]->(sign)
+DETACH DELETE sign,clef;
+
+MATCH (noteset)-[:mso__hasDuration]->(duration)
+DETACH DELETE duration;
+
+MATCH (voice:mso__Voice)
+DETACH DELETE voice;
+
+MATCH (instant:mso__Instant)
+DETACH DELETE instant;
+
+MATCH (key:ton__Key)-[:ton__tonic]->(tonicNode)
+MATCH (key:ton__Key)-[:ton__mode]->(modeNode)
+DETACH DELETE key,tonicNode,modeNode;
+
+MATCH (n) WHERE NOT (n)--() 
+DELETE n;
 
 MATCH (n:mo__Score) SET n :Score REMOVE n:mo__Score;
 MATCH (n:mo__Movement) SET n :Movement REMOVE n:mo__Movement;
