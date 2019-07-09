@@ -127,7 +127,7 @@ public class ListScoresRequest {
 	public void elgarCelloConcerto_6Notes_Full() {
 		
 		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
-		parameters.add(new RequestParameter("ignoreOtctave", "false"));
+		parameters.add(new RequestParameter("ignoreOctave", "false"));
 		parameters.add(new RequestParameter("ignorePitch", "false"));
 		parameters.add(new RequestParameter("ignoreDuration", "false"));
 		parameters.add(new RequestParameter("melody", ",8AB'CDxDE"));
@@ -152,10 +152,10 @@ public class ListScoresRequest {
 	public void elgarCelloConcerto_6Notes_Full_MutipleRests() {
 		
 		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
-		parameters.add(new RequestParameter("ignoreOtctave", "false"));
+		parameters.add(new RequestParameter("ignoreOctave", "false"));
 		parameters.add(new RequestParameter("ignorePitch", "false"));
 		parameters.add(new RequestParameter("ignoreDuration", "false"));
-		parameters.add(new RequestParameter("melody", "2E--4.-6,,B,xC"));
+		parameters.add(new RequestParameter("melody", ",,2E--4.-6,,B,xC"));
 		parameters.add(new RequestParameter("source", source));
 		
 		MusicScore score = new MusicScore();
@@ -168,7 +168,7 @@ public class ListScoresRequest {
 		location.setStaff("1");
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
-		location.setMelody("2E--4.-6,,B,xC");
+		location.setMelody(",,2E--4.-6,,B,xC");
 				
 		assertEquals(true, this.listScoresRequest(score, location, parameters));
 	}
@@ -177,7 +177,7 @@ public class ListScoresRequest {
 	public void elgarCelloConcerto_36Notes_Full() {
 		
 		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
-		parameters.add(new RequestParameter("ignoreOtctave", "false"));
+		parameters.add(new RequestParameter("ignoreOctave", "false"));
 		parameters.add(new RequestParameter("ignorePitch", "false"));
 		parameters.add(new RequestParameter("ignoreDuration", "false"));
 		parameters.add(new RequestParameter("melody", "'4xF8G4xF8A4B8A4G8E4D8E4C,8B4A8B4A'8C4D8C,4B8G4xF8G4E8D4xC8D4xC8E4xF8E4D,,8B4xA8B4G8xF2B"));
@@ -203,7 +203,7 @@ public class ListScoresRequest {
 	public void elgarCelloConcerto_20Notes_Full_4Measures() {
 		
 		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
-		parameters.add(new RequestParameter("ignoreOtctave", "false"));
+		parameters.add(new RequestParameter("ignoreOctave", "false"));
 		parameters.add(new RequestParameter("ignorePitch", "false"));
 		parameters.add(new RequestParameter("ignoreDuration", "false"));
 		parameters.add(new RequestParameter("melody", "'4xF8G4xF8A4B8A4/G8E4D8E4C,8B/,4A8B4A'8C4D8C/,4B8G4xF8G4E8D"));
@@ -230,7 +230,7 @@ public class ListScoresRequest {
 	public void elgarCelloConcerto_Chord() {
 		
 		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
-		parameters.add(new RequestParameter("ignoreOtctave", "false"));
+		parameters.add(new RequestParameter("ignoreOctave", "false"));
 		parameters.add(new RequestParameter("ignorePitch", "false"));
 		parameters.add(new RequestParameter("ignoreDuration", "false"));
 		parameters.add(new RequestParameter("melody", ",,2E^B^,G^'E"));
@@ -256,7 +256,7 @@ public class ListScoresRequest {
 	public void elgarCelloConcerto_EmbeddedMelody() {
 		
 		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
-		parameters.add(new RequestParameter("ignoreOtctave", "true"));
+		parameters.add(new RequestParameter("ignoreOctave", "true"));
 		parameters.add(new RequestParameter("ignorePitch", "false"));
 		parameters.add(new RequestParameter("ignoreDuration", "false"));
 		parameters.add(new RequestParameter("ignoreChords", "false"));
@@ -282,11 +282,11 @@ public class ListScoresRequest {
 	public void elgarCelloConcerto_6Notes_TimeSignatureC() {
 		
 		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
-		parameters.add(new RequestParameter("ignoreOtctave", "false"));
+		parameters.add(new RequestParameter("ignoreOctave", "false"));
 		parameters.add(new RequestParameter("ignorePitch", "false"));
 		parameters.add(new RequestParameter("ignoreDuration", "false"));
-		parameters.add(new RequestParameter("ignoreChords", "false"));
-		parameters.add(new RequestParameter("melody", "@c 8ABCDxDE"));
+		parameters.add(new RequestParameter("ignoreChords", "true"));
+		parameters.add(new RequestParameter("melody", "@c ,8AB'CDxDExE"));
 		parameters.add(new RequestParameter("source", source));
 		
 		MusicScore score = new MusicScore();
@@ -299,7 +299,33 @@ public class ListScoresRequest {
 		location.setStaff("1");
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
-		location.setMelody("@c 8ABCDxDE");
+		location.setMelody("@c ,8AB'CDxDExE");
+				
+		assertEquals(true, this.listScoresRequest(score, location, parameters));
+	}
+	
+	@Test
+	public void elgarCelloConcerto_6Notes_TimeSignatureC_IgnoreOctave() {
+		
+		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
+		parameters.add(new RequestParameter("ignoreOctave", "true"));
+		parameters.add(new RequestParameter("ignorePitch", "false"));
+		parameters.add(new RequestParameter("ignoreDuration", "false"));
+		parameters.add(new RequestParameter("ignoreChords", "true"));
+		parameters.add(new RequestParameter("melody", "@c ,,8ABC'DxDExE"));
+		parameters.add(new RequestParameter("source", source));
+		
+		MusicScore score = new MusicScore();
+		score.setTitle("Cellokonzert e-Moll op. 85");
+		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setDateIssued("1919");		
+		MelodyLocation location = new MelodyLocation();
+		location.setStartingMeasure("8");
+		location.setVoice("1");
+		location.setStaff("1");
+		location.setInstrumentName("Violoncello");
+		location.setMovementName("Adagio");
+		location.setMelody("@c ,,8ABC'DxDExE");
 				
 		assertEquals(true, this.listScoresRequest(score, location, parameters));
 	}
@@ -308,7 +334,7 @@ public class ListScoresRequest {
 	public void elgarCelloConcerto_6Notes_Key() {
 		
 		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
-		parameters.add(new RequestParameter("ignoreOtctave", "false"));
+		parameters.add(new RequestParameter("ignoreOctave", "false"));
 		parameters.add(new RequestParameter("ignorePitch", "false"));
 		parameters.add(new RequestParameter("ignoreDuration", "false"));
 		parameters.add(new RequestParameter("ignoreChords", "false"));
@@ -334,7 +360,7 @@ public class ListScoresRequest {
 	public void elgarCelloConcerto_5Notes_Dotted() {
 		
 		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
-		parameters.add(new RequestParameter("ignoreOtctave", "false"));
+		parameters.add(new RequestParameter("ignoreOctave", "false"));
 		parameters.add(new RequestParameter("ignorePitch", "false"));
 		parameters.add(new RequestParameter("ignoreDuration", "false"));
 		parameters.add(new RequestParameter("ignoreChords", "false"));
@@ -361,7 +387,7 @@ public class ListScoresRequest {
 	public void elgarCelloConcerto_3Notes_BypassingGraceNote() {
 		
 		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
-		parameters.add(new RequestParameter("ignoreOtctave", "false"));
+		parameters.add(new RequestParameter("ignoreOctave", "false"));
 		parameters.add(new RequestParameter("ignorePitch", "false"));
 		parameters.add(new RequestParameter("ignoreDuration", "false"));
 		parameters.add(new RequestParameter("ignoreChords", "false"));
@@ -387,7 +413,7 @@ public class ListScoresRequest {
 	public void elgarCelloConcerto_3Notes_ExplicitGraceNote() {
 		
 		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
-		parameters.add(new RequestParameter("ignoreOtctave", "false"));
+		parameters.add(new RequestParameter("ignoreOctave", "false"));
 		parameters.add(new RequestParameter("ignorePitch", "false"));
 		parameters.add(new RequestParameter("ignoreDuration", "false"));
 		parameters.add(new RequestParameter("ignoreChords", "false"));
@@ -414,10 +440,10 @@ public class ListScoresRequest {
 	public void achiledGrandOpera_4Notes() {
 		
 		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
-		parameters.add(new RequestParameter("ignoreOtctave", "false"));
+		parameters.add(new RequestParameter("ignoreOctave", "false"));
 		parameters.add(new RequestParameter("ignorePitch", "false"));
 		parameters.add(new RequestParameter("ignoreDuration", "false"));
-		parameters.add(new RequestParameter("melody", "6DFbED"));
+		parameters.add(new RequestParameter("melody", "''6DFbED"));
 		parameters.add(new RequestParameter("source", source));
 		
 		MusicScore score = new MusicScore();
@@ -430,16 +456,42 @@ public class ListScoresRequest {
 		location.setStaff("1");
 		location.setInstrumentName("Violine I");
 		location.setMovementName("No. 3. Larghetto.");
-		location.setMelody("6DFbED");
+		location.setMelody("''6DFbED");
 				
 		assertEquals(true, this.listScoresRequest(score, location, parameters));
 	}
 	
 	@Test
+	public void achiledGrandOpera_31Notes_GraceNotes_AccidentalOverride() {
+		
+		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
+		parameters.add(new RequestParameter("ignoreOctave", "false"));
+		parameters.add(new RequestParameter("ignorePitch", "false"));
+		parameters.add(new RequestParameter("ignoreDuration", "false"));
+		parameters.add(new RequestParameter("melody", "''6bE3bAGFbEDCC'bBAbBAbB''C'bBbBbAGbAGbAbBbA4G-8A''4bE3qD6C'3bBA8bB"));
+		parameters.add(new RequestParameter("source", source));
+		
+		MusicScore score = new MusicScore();
+		score.setTitle("Achilles: Grand Opera");
+		score.setScoreId("https://sammlungen.ulb.uni-muenster.de/id/5731633");
+		score.setDateIssued("1802");		
+		MelodyLocation location = new MelodyLocation();
+		location.setStartingMeasure("17");
+		location.setVoice("1");
+		location.setStaff("1");
+		location.setInstrumentName("Violine I");
+		location.setMovementName("No. 3. Larghetto.");
+		location.setMelody("''6bE3bAGFbEDCC'bBAbBAbB''C'bBbBbAGbAGbAbBbA4G-8A''4bE3qD6C'3bBA8bB");
+				
+		assertEquals(true, this.listScoresRequest(score, location, parameters));
+		
+	}
+		
+	@Test
 	public void achiledGrandOpera_5Notes() {
 		
 		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
-		parameters.add(new RequestParameter("ignoreOtctave", "false"));
+		parameters.add(new RequestParameter("ignoreOctave", "false"));
 		parameters.add(new RequestParameter("ignorePitch", "false"));
 		parameters.add(new RequestParameter("ignoreDuration", "false"));
 		parameters.add(new RequestParameter("melody", "8.G6bE8.G6bE"));
@@ -464,10 +516,10 @@ public class ListScoresRequest {
 	public void siegesMaersche_13Notes() {
 		
 		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
-		parameters.add(new RequestParameter("ignoreOtctave", "false"));
+		parameters.add(new RequestParameter("ignoreOctave", "false"));
 		parameters.add(new RequestParameter("ignorePitch", "false"));
 		parameters.add(new RequestParameter("ignoreDuration", "false"));
-		parameters.add(new RequestParameter("melody", "4FbA8CbAGFFEDCBCDE"));
+		parameters.add(new RequestParameter("melody", "''4FbA8CbAGFFEDC'B''CDE"));
 		parameters.add(new RequestParameter("source", source));
 		
 		MusicScore score = new MusicScore();
@@ -480,7 +532,7 @@ public class ListScoresRequest {
 		location.setStaff("1");
 		location.setInstrumentName("Piano");
 		location.setMovementName("Marsch Nº1.");
-		location.setMelody("4FbA8CbAGFFEDCBCDE");
+		location.setMelody("''4FbA8CbAGFFEDC'B''CDE");
 				
 		assertEquals(true, this.listScoresRequest(score, location, parameters));
 	}

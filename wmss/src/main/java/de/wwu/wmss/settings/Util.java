@@ -225,7 +225,7 @@ public class Util {
 					}
 
 					if(element.equals("-")) {
-						currentOctave = "-";
+						//currentOctave = "-";
 					}
 
 					Note note = new Note();

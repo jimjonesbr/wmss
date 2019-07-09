@@ -50,7 +50,7 @@ public class ImportScores {
 			String records = importedFile.get("records").toString();
 			
  
-			System.out.println("File   : "+fileName+
+			System.out.println("\nFile   : "+fileName+
 							   "\nSize   : "+fileSize+
 							   "\nRecords: "+records+
 							   "\nTime   : "+time  +"\n");

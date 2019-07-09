@@ -551,16 +551,27 @@ public class FactoryNeo4j {
 
 				String currentPitchType = "NoteSet";
 				
+				logger.debug("Index: "+ i+ " Pitch:" + noteSequence.get(i).getPitch() + " Octave: " + noteSequence.get(i).getOctave() + " Duration: " + noteSequence.get(i).getDuration() );
+				
 				if(!wmssRequest.isIgnorePitch()) {
 
 					currentPitchType = noteSequence.get(i).getAccidental()+noteSequence.get(i).getPitch();
 					
 					if(!wmssRequest.isIgnoreOctaves()) {
-						currentPitchType = currentPitchType + noteSequence.get(i).getOctave();
+						
+						if(!noteSequence.get(i).getPitch().equals("-")) {
+							
+							currentPitchType = currentPitchType + noteSequence.get(i).getOctave();
+							
+							
+						}
+						
 					}
 					
-					if(currentPitchType.equals("-")) {
+					if(noteSequence.get(i).getPitch().equals("-")) {
+						
 						currentPitchType = "Rest";
+						
 					}
 
 				}
