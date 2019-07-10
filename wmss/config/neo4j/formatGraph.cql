@@ -392,5 +392,3 @@ CREATE INDEX ON :D_32nd(size);
 CREATE INDEX ON :D_64th(size);
 CREATE INDEX ON :D_128th(size);
 CREATE INDEX ON :D_256th(size);
-
-

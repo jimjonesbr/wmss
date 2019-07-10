@@ -23,7 +23,6 @@ import de.wwu.wmss.core.RequestParameter;
 public class ListScoresRequest {
 
 	private static String server = "http://localhost";
-	//private static String server = "http://neo4j.uni-muenster.de";
 	private static String port = "8888";
 	private static String source = "neo4j_local";
 		

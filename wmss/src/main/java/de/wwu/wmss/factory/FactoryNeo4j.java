@@ -761,9 +761,11 @@ public class FactoryNeo4j {
 		}
 
 		if(!wmssRequest.getTimeSignature().equals("")) {
+			
 			String[] time = wmssRequest.getTimeSignature().split("/");
 			where = where + "AND measure.beatType="+time[1]+"\n" 
-					      + "AND measure.beats="+time[0]+"\n";					
+					      + "AND measure.beats="+time[0]+"\n";
+			match = match + "MATCH (movements:Movement)-[:PART]->(part:Part)-[:MEASURE]->(measure:Measure) \n";
 		}
 		
 		if(wmssRequest.isSolo()) {
