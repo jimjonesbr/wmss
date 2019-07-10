@@ -19,6 +19,7 @@ import org.junit.Test;
 import de.wwu.wmss.core.MelodyLocation;
 import de.wwu.wmss.core.MusicScore;
 import de.wwu.wmss.core.RequestParameter;
+import de.wwu.wmss.settings.Util;
 
 public class ListScoresRequest {
 
@@ -26,26 +27,6 @@ public class ListScoresRequest {
 	private static String port = "8888";
 	private static String source = "neo4j_local";
 		
-	private static String readAll(Reader rd) throws IOException {
-		StringBuilder sb = new StringBuilder();
-		int cp;
-		while ((cp = rd.read()) != -1) {
-			sb.append((char) cp);
-		}
-		return sb.toString();
-	}
-
-	public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
-		InputStream is = new URL(url).openStream();
-		try {
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-			String jsonText = readAll(rd);
-			JSONObject json = new JSONObject(jsonText);
-			return json;
-		} finally {
-			is.close();
-		}
-	}
 
 	private boolean listScoresRequest(MusicScore score, MelodyLocation location, ArrayList<RequestParameter> parameters) {
 
@@ -62,7 +43,7 @@ public class ListScoresRequest {
 			}
 			
 			System.out.println("\nRequest: " + url + "\n");
-			jsonObject = readJsonFromUrl(url);
+			jsonObject = Util.readJsonFromUrl(url);
 			
 			JSONArray datasources = jsonObject.getJSONArray("datasources");//1
 

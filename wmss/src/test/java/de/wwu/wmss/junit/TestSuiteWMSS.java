@@ -7,7 +7,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
 	StartWMSS.class,
 	ImportScores.class, 
-	ListScoresRequest.class
+	ListScoresRequest.class,
+	DeleteScoreRequest.class
 })
 
 public class TestSuiteWMSS {
