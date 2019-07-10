@@ -2,7 +2,6 @@ package de.wwu.wmss.junit;
 
 import static org.junit.Assert.assertEquals;
 import java.io.File;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;

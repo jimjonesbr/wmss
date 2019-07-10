@@ -351,9 +351,11 @@ DETACH DELETE voice;
 MATCH (instant:mso__Instant)
 DETACH DELETE instant;
 
-MATCH (key:ton__Key)-[:ton__tonic]->(tonicNode)
-MATCH (key:ton__Key)-[:ton__mode]->(modeNode)
-DETACH DELETE key,tonicNode,modeNode;
+MATCH (key:ton__Key)
+DETACH DELETE key;
+
+MATCH (noteset:mso__NoteSet)-[:mso__hasDynamic]->(dynamic)
+DETACH DELETE dynamic;
 
 MATCH (n) WHERE NOT (n)--() 
 DELETE n;

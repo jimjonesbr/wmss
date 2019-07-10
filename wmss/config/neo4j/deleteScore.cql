@@ -1,21 +1,23 @@
-MATCH (score:mo__Score)-[:mo__movement]->(movement)-[:mso__hasScorePart]->(part)-[:mso__hasStaff]->(staff)-[:mso__hasVoice]->(voice)-[:mso__hasNoteSet]->(noteset)-[:mso__hasNote]->(note)
-MATCH (score)-[:dc__creator]->(creator)-[:gndo__professionOrOccupation]->(role)
+MATCH (score:Score {uri:"SCORE_URI_PLACEHOLDER"})-[:MOVEMENT]->(movement:Movement)
+MATCH (movement)-[:PART]->(part:Part)
+MATCH (part)-[:MEASURE]->(measure:Measure)
+MATCH (measure)-[:NOTESET]->(noteset:NoteSet)
+WITH score,movement,part,measure,noteset,score.uri AS uri, score.title AS title, score.collectionUri as collection
+DETACH DELETE score,movement,part,measure,noteset
+RETURN DISTINCT uri,title,collection;
 
-OPTIONAL MATCH (activity)-[:prov__generated]->(score)
-OPTIONAL MATCH (score)-[:foaf__thumbnail]->(thumbnail)
-OPTIONAL MATCH (noteset)-[:mso__hasClef]-(clef)
-OPTIONAL MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)
-OPTIONAL MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonic)
-OPTIONAL MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__mode]->(mode)
-OPTIONAL MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasTime]-(time)
+MATCH (person:Person)
+WHERE NOT ()-[:CREATOR]->(person)
+DETACH DELETE person;
 
-WHERE score.uri = 'http://dbpedia.org/resource/Cello_Concerto_(Elgar)'
-DETACH DELETE score, creator, role, movement, part, staff, voice, measure, note, noteset, key, clef, time, tonic, mode, thumbnail, activity
+MATCH (mediumType:mediumType)
+WHERE NOT ()-[:MEDIUMTYPE]->(mediumType:mediumType)
+DETACH DELETE mediumType;
 
+MATCH (activity:Activity)
+WHERE NOT (activity)-[:GENERATED]->()
+DETACH DELETE activity;
 
-/////////////////////
+MATCH (n) WHERE NOT (n)--() 
+DELETE n;
 
-MATCH (score:mo__Score)-[:mo__movement]->(movement)-[:mso__hasScorePart]->(part)-[:mso__hasStaff]->(staff)-[:mso__hasVoice]->(voice)-[:mso__hasNoteSet]->(noteset)-[:mso__hasNote]->(note)
-MATCH (score:mo__Score)-[:mo__movement]->(movement)-[:mso__hasScorePart]->(part)-[:mso__hasMeasure]->(measure)
-WHERE score.uri = 'http://dbpedia.org/resource/Cello_Concerto_(Elgar)'
-DETACH DELETE note,noteset,voice,staff,measure,part,movement,score

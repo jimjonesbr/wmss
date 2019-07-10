@@ -65,7 +65,7 @@ public class ServletWMSS extends HttpServlet
 
 				response.setContentType("text/javascript");
 				response.setStatus(HttpServletResponse.SC_OK);
-				response.getWriter().println(ServiceMessagingHandler.deleteScore(wmssRequest));
+				response.getWriter().println(ServiceMessagingHandler.deleteScore(wmssRequest)); 
 
 			} else if (wmssRequest.getRequestType().equals("insertscore")) {
 

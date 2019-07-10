@@ -783,24 +783,81 @@ public class FactoryNeo4j {
 			
 	public static ArrayList<DeletedRecord> deleteScore(WMSSRequest request, DataSource dataSource) {
 
-		ArrayList<DeletedRecord> result = new ArrayList<DeletedRecord>();
-		String cypherQuery = "MATCH (score:Score)-[:MOVEMENT]->(movement)-[:PART]->(part)-[:mso__hasStaff]->(staff)-[:mso__hasVoice]->(voice)-[:NOTESET]->(noteset)-[:mso__hasNote]->(note)\n" + 
-				"MATCH (score:Score)-[:MOVEMENT]->(movement)-[:PART]->(part)-[:MEASURE]->(measure)\n" + 
-				"WHERE score.uri = '"+request.getIdentifier()+"'\n" + 
-				"WITH note,noteset,voice,staff,measure,part,movement,score,score.title AS title, score.uri AS identifier, score.collectionUri AS collection\n" + 
-				"DETACH DELETE note,noteset,voice,staff,measure,part,movement,score\n" + 
-				"RETURN DISTINCT title,identifier,collection";
 		
-		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypherQuery, dataSource);
+		ArrayList<DeletedRecord> result = new ArrayList<DeletedRecord>();
+		
+	  	InputStream is;
+			try {
+				is = new FileInputStream("config/neo4j/deleteScore.cql");
 
-		while ( rs.hasNext() ) {
-			Record record = rs.next();
-			DeletedRecord score = new DeletedRecord();
-			score.setTitle(record.get("title").asString());
-			score.setScoreIdentifier(record.get("identifier").asString());
-			score.setCollection(record.get("collection").asString());
-			result.add(score);
-		}
+		    	@SuppressWarnings("resource")
+				BufferedReader buf = new BufferedReader(new InputStreamReader(is));        
+		    	String line = buf.readLine();
+		    	StringBuilder sb = new StringBuilder();
+		    	        
+		    	while(line != null){
+		    	   sb.append(line).append("\n");
+		    	   line = buf.readLine();
+		    	}
+		    		    	
+		    	String arrayCypher[] = sb.toString().split(";");
+		    	logger.info("Deleting music score ... ");
+		    	for (int i = 0; i < arrayCypher.length; i++) {
+		    		if(!arrayCypher[i].trim().equals("")) {
+		    			logger.debug(arrayCypher[i]);
+		    			StatementResult rs = Neo4jConnector.getInstance().executeQuery(arrayCypher[i].replaceAll("\n", " ").replace("SCORE_URI_PLACEHOLDER", request.getIdentifier()), dataSource);	
+		    			
+		    			while ( rs.hasNext() ) {
+		    				
+		    				Record record = rs.next();
+
+		    				if(record.containsKey("uri")) {
+		    					DeletedRecord score = new DeletedRecord();
+			    				score.setTitle(record.get("title").asString());
+			    				score.setScoreIdentifier(record.get("uri").asString());
+			    				score.setCollection(record.get("collection").asString());
+			    				result.add(score);
+		    				}
+		    				
+		    			}
+		    		}	    		
+				}
+		    	
+		    	logger.info("Music score deleted.");
+		    	
+
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//	
+//		String cypherQuery = "MATCH (score:Score)-[:MOVEMENT]->(movement)-[:PART]->(part)-[:mso__hasStaff]->(staff)-[:mso__hasVoice]->(voice)-[:NOTESET]->(noteset)-[:mso__hasNote]->(note)\n" + 
+//				"MATCH (score:Score)-[:MOVEMENT]->(movement)-[:PART]->(part)-[:MEASURE]->(measure)\n" + 
+//				"WHERE score.uri = '"+request.getIdentifier()+"'\n" + 
+//				"WITH note,noteset,voice,staff,measure,part,movement,score,score.title AS title, score.uri AS identifier, score.collectionUri AS collection\n" + 
+//				"DETACH DELETE note,noteset,voice,staff,measure,part,movement,score\n" + 
+//				"RETURN DISTINCT title,identifier,collection";
+//		
+//		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypherQuery, dataSource);
+//
+//		while ( rs.hasNext() ) {
+//			Record record = rs.next();
+//			DeletedRecord score = new DeletedRecord();
+//			score.setTitle(record.get("title").asString());
+//			score.setScoreIdentifier(record.get("identifier").asString());
+//			score.setCollection(record.get("collection").asString());
+//			result.add(score);
+//		}
 
 		return result;
 		
