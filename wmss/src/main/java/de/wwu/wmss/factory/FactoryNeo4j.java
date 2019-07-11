@@ -762,11 +762,11 @@ public class FactoryNeo4j {
 		
 		if(wmssRequest.getDateIssuedArray().size()!=0) {
 			if(wmssRequest.getDateIssuedArray().size()==1) {
-				where = where + "AND scr.issued = datetime('"+wmssRequest.getDateIssuedArray().get(0)+"') \n";
+				where = where + "AND date(scr.issued) = date('"+wmssRequest.getDateIssuedArray().get(0)+"') \n";
 			}
 			if(wmssRequest.getDateIssuedArray().size()==2) {
-				where = where + "AND scr.issued >= datetime('"+wmssRequest.getDateIssuedArray().get(0)+"') \n";
-				where = where + "AND scr.issued <= datetime('"+wmssRequest.getDateIssuedArray().get(1)+"') \n";
+				where = where + "AND date(scr.issued) >= date('"+wmssRequest.getDateIssuedArray().get(0)+"') \n";
+				where = where + "AND date(scr.issued) <= date('"+wmssRequest.getDateIssuedArray().get(1)+"') \n";
 			}
 		}
 			

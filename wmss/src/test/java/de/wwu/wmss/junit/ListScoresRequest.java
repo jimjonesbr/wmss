@@ -103,6 +103,46 @@ public class ListScoresRequest {
 		return result;
 
 	}
+
+	
+	@Test
+	public void elgarCelloConcerto_6Notes_Full_Collection_Composer_PerformanceMedium_nonSolo_nonEmsemble_tempo_dateInverval_time_clef() {
+		
+		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
+		parameters.add(new RequestParameter("ignoreOctave", "false"));
+		parameters.add(new RequestParameter("ignorePitch", "false"));
+		parameters.add(new RequestParameter("ignoreDuration", "false"));
+		parameters.add(new RequestParameter("collection", "https://url.collection.de"));
+		parameters.add(new RequestParameter("person", "http://dbpedia.org/resource/Edward_Elgar"));
+		parameters.add(new RequestParameter("personRole", "composer"));
+		parameters.add(new RequestParameter("performanceMedium", "strings.cello"));
+		parameters.add(new RequestParameter("solo", "false"));
+		parameters.add(new RequestParameter("ensemble", "false"));
+		parameters.add(new RequestParameter("tempoBeatUnit", "quarter"));
+		parameters.add(new RequestParameter("tempoBeatsPerMinute", "120-125"));
+		parameters.add(new RequestParameter("dateIssued", "1910-1920"));		
+		parameters.add(new RequestParameter("melody", "%C-4 ,8AB'CDxDE"));
+		//parameters.add(new RequestParameter("melody", ",8AB'CDxDE"));
+		parameters.add(new RequestParameter("format", "musicxml"));
+		parameters.add(new RequestParameter("time", "4/4"));
+		
+		parameters.add(new RequestParameter("source", source));
+		
+		MusicScore score = new MusicScore();
+		score.setTitle("Cellokonzert e-Moll op. 85");
+		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setDateIssued("1919");		
+		MelodyLocation location = new MelodyLocation();
+		location.setStartingMeasure("8");
+		location.setVoice("1");
+		location.setStaff("1");
+		location.setInstrumentName("Violoncello");
+		location.setMovementName("Adagio");
+		location.setMelody("%C-4 ,8AB'CDxDE");
+				
+		assertEquals(true, this.listScoresRequest(score, location, parameters));
+	}
+	
 	
 	@Test
 	public void elgarCelloConcerto_6Notes_Full() {

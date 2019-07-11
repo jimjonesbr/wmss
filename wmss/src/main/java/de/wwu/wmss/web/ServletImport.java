@@ -76,8 +76,7 @@ public class ServletImport extends HttpServlet {
 				record.setSize(FileUtils.byteCountToDisplaySize(item.getSize()));
 				record.setRecords(FactoryNeo4j.insertScore(file, importRequest));
 				fileList.add(record);				
-			
-				
+							
 			}
 			
 			FactoryNeo4j.formatGraph(importRequest);

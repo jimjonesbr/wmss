@@ -39,7 +39,6 @@ SET scr.thumbnail = thumbnail.uri,
     noteset.staff = staff.rdfs__label, 
     scr.collectionUri =  collection.uri, 
     scr.collectionLabel = collection.rdfs__label,
-    scr.issued = datetime(scr.dcterms__issued),
     creator.roleUri = role.uri, 
     creator.roleName = role.gndo__preferredNameForTheSubjectHeading
 RETURN COUNT(noteset) AS voice_staff_collection_role_dateissued;
