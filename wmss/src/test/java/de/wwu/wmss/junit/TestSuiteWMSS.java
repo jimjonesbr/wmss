@@ -8,6 +8,7 @@ import org.junit.runners.Suite;
 	StartWMSS.class,
 	ImportScores.class, 
 	ListScoresRequest.class,
+	ExceptionsTest.class,
 	DeleteScoreRequest.class
 })
 

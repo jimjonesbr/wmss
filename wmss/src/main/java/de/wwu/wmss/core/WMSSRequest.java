@@ -131,6 +131,9 @@ public class WMSSRequest {
 				} catch (InvalidTimeSignatureException e) {
 					e.printStackTrace();
 					throw new InvalidWMSSRequestException(e.getMessage(),e.getCode(), e.getHint());
+				} catch (InvalidClefException e) {
+					e.printStackTrace();
+					throw new InvalidClefException(e.getMessage(),e.getCode(), e.getHint());
 				}
 								
 			} else if (parameter.toLowerCase().equals("identifier")) {
@@ -246,33 +249,6 @@ public class WMSSRequest {
 		if (!this.format.equals("mei") && !this.format.equals("musicxml") && !this.format.equals("") ){
 			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_DOCUMENT_FORMAT_DESCRIPTION+" ["+this.format+"]",ErrorCodes.INVALID_DOCUMENT_FORMAT_CODE,ErrorCodes.INVALID_DOCUMENT_FORMAT_HINT);
 		}
-//		if (!this.tonalityMode.equals("minor") && !this.tonalityMode.equals("major") && !this.tonalityMode.equals("") ){
-//			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_TONALITY_MODE_DESCRIPTION+" ["+this.tonalityMode+"]",ErrorCodes.INVALID_TONALITY_MODE_DESCRIPTION,ErrorCodes.INVALID_TONALITY_MODE_HINT);
-//		}
-//		if (!this.tonalityTonic.equals("A") && 
-//				!this.tonalityTonic.equals("bA") && 
-//				!this.tonalityTonic.equals("xA") && 
-//				!this.tonalityTonic.equals("B") &&
-//				!this.tonalityTonic.equals("bB") &&
-//				!this.tonalityTonic.equals("xB") &&
-//				!this.tonalityTonic.equals("C") &&
-//				!this.tonalityTonic.equals("bC") &&
-//				!this.tonalityTonic.equals("xC") &&
-//				!this.tonalityTonic.equals("D") &&
-//				!this.tonalityTonic.equals("bD") &&
-//				!this.tonalityTonic.equals("xD") &&
-//				!this.tonalityTonic.equals("E") &&
-//				!this.tonalityTonic.equals("bE") &&
-//				!this.tonalityTonic.equals("xE") &&
-//				!this.tonalityTonic.equals("F") &&
-//				!this.tonalityTonic.equals("bF") &&
-//				!this.tonalityTonic.equals("xF") &&
-//				!this.tonalityTonic.equals("G") &&
-//				!this.tonalityTonic.equals("bG") &&
-//				!this.tonalityTonic.equals("xG") &&
-//				!this.tonalityTonic.equals("")){
-//			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_TONALITY_TONIC_DESCRIPTION+" ["+this.tonalityTonic+"]",ErrorCodes.INVALID_TONALITY_TONIC_CODE,ErrorCodes.INVALID_TONALITY_TONIC_HINT);
-//		}
 		if(!this.melodyEncoding.equals("pea")) {
 			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_MELODY_ENCODING_DESCRIPTION+" ["+this.melodyEncoding+"]",ErrorCodes.INVALID_MELODY_ENCODING_CODE,ErrorCodes.INVALID_MELODY_ENCODING_HINT);
 		}
@@ -293,12 +269,13 @@ public class WMSSRequest {
 		   !this.tempoBeatUnit.equals("128th") && !this.tempoBeatUnit.equals("256th") &&
 		   !this.tempoBeatUnit.equals("512th") && !this.tempoBeatUnit.equals("1024th") &&
 		   !this.tempoBeatUnit.equals("")) {
-			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_TEMPO_BEAT_UNIT_DESCRIPTION+" [" + this.tempoBeatUnit + "]",ErrorCodes.INVALID_TEMPO_BEAT_UNIT_DESCRIPTION,ErrorCodes.INVALID_TEMPO_BEAT_UNIT_HINT);			
+			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_TEMPO_BEAT_UNIT_DESCRIPTION+" [" + this.tempoBeatUnit + "]",ErrorCodes.INVALID_TEMPO_BEAT_UNIT_CODE,ErrorCodes.INVALID_TEMPO_BEAT_UNIT_HINT);			
 		}
 
 		if(!this.tempoBeatsPerMinute.equals("")) {
 			String[] beats = this.tempoBeatsPerMinute.replaceAll("[^\\d-]", "").split("-");
-			if(beats.length>2) {
+			
+			if(beats.length>2 || !this.tempoBeatsPerMinute.matches("^[0-9\\-]+")) {
 				throw new InvalidWMSSRequestException(ErrorCodes.INVALID_TEMPO_BPM_DESCRIPTION+" [" + this.tempoBeatsPerMinute + "]",ErrorCodes.INVALID_TEMPO_BPM_CODE,ErrorCodes.INVALID_TEMPO_BPM_HINT);
 			}
 		}
@@ -312,10 +289,10 @@ public class WMSSRequest {
 			}
 			
 			for (int i = 0; i < dates.length; i++) {
-				if(dates[i].length()!=4&&
+				if((dates[i].length()!=4&&
 				   dates[i].length()!=6&&
-				   dates[i].length()!=8) {
-					throw new InvalidWMSSRequestException(ErrorCodes.INVALID_DATE_DESCRIPTION+" [" + dates[i] + "]",ErrorCodes.INVALID_DATE_CODE,ErrorCodes.INVALID_DATE_HINT);
+				   dates[i].length()!=8) || !dates[i].matches("^[0-9\\-]+") ) {
+					throw new InvalidWMSSRequestException(ErrorCodes.INVALID_DATE_DESCRIPTION+" [" + this.dateIssued + "]",ErrorCodes.INVALID_DATE_CODE,ErrorCodes.INVALID_DATE_HINT);
 				}			
 				this.dateIssuedArray.add(dates[i]);				
 			}
