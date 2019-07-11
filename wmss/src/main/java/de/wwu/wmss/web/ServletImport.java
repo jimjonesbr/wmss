@@ -13,13 +13,23 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.riot.RiotException;
 import org.apache.log4j.Logger;
 import de.wwu.wmss.core.ErrorCodes;
+import de.wwu.wmss.core.MusicScore;
 import de.wwu.wmss.core.WMSSImportRecord;
 import de.wwu.wmss.core.WMSSImportRequest;
 import de.wwu.wmss.exceptions.InvalidWMSSRequestException;
+import de.wwu.wmss.exceptions.ScoreExistsException;
 import de.wwu.wmss.factory.FactoryNeo4j;
 import de.wwu.wmss.factory.ServiceMessagingHandler;
+import de.wwu.wmss.settings.Util;
 
 public class ServletImport extends HttpServlet {
 
@@ -49,23 +59,25 @@ public class ServletImport extends HttpServlet {
 			FactoryNeo4j.prepareDatabase(importRequest);
 			
 			for(FileItem item : multifiles) {
+				
+				isFileValid(new File("upload/"+item.getName()),importRequest);
+					
+			}
+			
+			for(FileItem item : multifiles) {
 
 				File file = new File("upload/"+item.getName());
 				logger.info("Uploaded: " + "upload/"+item.getName() );
 				item.write(file);	
 				logger.debug("Checking file integrity of "+item.getName()+" [" + FileUtils.byteCountToDisplaySize(item.getSize())  + "] ...");
-
-				if(checkFile("upload/"+item.getName())) {
-					WMSSImportRecord record = new WMSSImportRecord();
-					record.setFile(file.getName());
-					record.setSize(FileUtils.byteCountToDisplaySize(item.getSize()));
-					record.setRecords(FactoryNeo4j.insertScore(file, importRequest));
-					fileList.add(record);				
-				} else {					
-					response.setContentType("text/javascript");
-					response.setStatus(HttpServletResponse.SC_OK);
-					response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport(ErrorCodes.INVALID_RDFFILE_CODE, ErrorCodes.INVALID_RDFFILE_DESCRIPTION +" ["+item.getName()+"]", ErrorCodes.INVALID_RDFFILE_HINT));
-				}
+		
+				WMSSImportRecord record = new WMSSImportRecord();
+				record.setFile(file.getName());
+				record.setSize(FileUtils.byteCountToDisplaySize(item.getSize()));
+				record.setRecords(FactoryNeo4j.insertScore(file, importRequest));
+				fileList.add(record);				
+			
+				
 			}
 			
 			FactoryNeo4j.formatGraph(importRequest);
@@ -81,6 +93,20 @@ public class ServletImport extends HttpServlet {
 			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport(e.getCode(), e.getMessage(), e.getHint()));
 			e.printStackTrace();
 
+		} catch (ScoreExistsException e) {
+
+			response.setContentType("text/javascript");
+			response.setStatus(HttpServletResponse.SC_OK);
+			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport(ErrorCodes.SCORE_EXISTS_CODE, ErrorCodes.SCORE_EXISTS_DESCRIPTION + ". Import aborted!", e.getMessage()));
+			e.printStackTrace();
+		
+		} catch (RiotException e) {
+
+			response.setContentType("text/javascript");
+			response.setStatus(HttpServletResponse.SC_OK);
+			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport(ErrorCodes.INVALID_RDFFILE_CODE, ErrorCodes.INVALID_RDFFILE_DESCRIPTION + ": " +e.getMessage(), ErrorCodes.INVALID_RDFFILE_HINT));
+			e.printStackTrace();
+				
 		} catch (FileUploadException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -88,24 +114,44 @@ public class ServletImport extends HttpServlet {
 		}
 
 	}
+		
+	private static void isFileValid(File file, WMSSImportRequest importRequest) throws Exception {
 
+		Model model = ModelFactory.createDefaultModel() ;		
+		model.read(file.getAbsolutePath()) ;
 
-	private boolean checkFile(String filePath) {
+		String sparql = "PREFIX mo: <http://purl.org/ontology/mo/> \n"
+				+ "PREFIX dc: <http://purl.org/dc/elements/1.1/> \n"
+				+ "SELECT ?uri ?title {?uri a mo:Score . ?uri dc:title ?title . }";
 
-		boolean result = true;
+		QueryExecution qexec = QueryExecutionFactory.create(sparql, model); 
+		ResultSet results = qexec.execSelect() ;
+		
+		for ( ; results.hasNext() ; )
+		{
+			String titleFile = "";
+			String uriFile = "";
 
-		try {
+			QuerySolution soln = results.nextSolution() ;
+			uriFile = soln.get("?uri").toString();
+			titleFile = soln.get("?title").toString();
 
-//			Model model = ModelFactory.createDefaultModel() ;
-//			model.read(filePath) ;		
-//			model.close();
+			ArrayList<MusicScore> scores = FactoryNeo4j.scoreExists(uriFile, importRequest);
+			
+			for (int i = 0; i < scores.size(); i++) {
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			result = false;
+				logger.info("New Score: " + uriFile + " - " + scores.get(i).getTitle());
+
+				if(uriFile.equals(scores.get(i).getScoreId())) {
+					throw new ScoreExistsException("The provided RDF file '"+ file.getName() +", containing the music score [Identifier: '"+uriFile+"', Title: '"+ titleFile + "'], has a conflicting score in the database: [Identifier: '" + scores.get(i).getScoreId() + "', Title: '" + scores.get(i).getTitle()+"']. Either delete the existing score from the database or provide a different identifier for the new one.");
+				}
+			}
+
 		}
 
-		return result;
+
+		model.close();			
+
 	}
 }
 

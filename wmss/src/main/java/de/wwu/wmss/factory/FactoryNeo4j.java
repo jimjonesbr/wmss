@@ -45,10 +45,27 @@ public class FactoryNeo4j {
 	private static Logger logger = Logger.getLogger("Neo4j-Factory");
 
 	
+	public static ArrayList<MusicScore> scoreExists(String scoreIdentifier, WMSSImportRequest importRequest) {
+		
+		ArrayList<MusicScore> result = new ArrayList<MusicScore>();
+		StatementResult rs = Neo4jConnector.getInstance().executeQuery("MATCH (score:Score {uri:\""+scoreIdentifier+"\"}) RETURN score.uri AS uri,score.title AS title", Util.getDataSource(importRequest.getSource()));
+
+		while (rs.hasNext()){
+			Record record = rs.next();
+			MusicScore score = new MusicScore();
+			score.setScoreId(record.get("uri").asString());
+			score.setTitle(record.get("title").asString());
+			result.add(score);
+		}
+
+		return result;
+	}
+	
+	
 	public static void prepareDatabase(WMSSImportRequest importRequest) {
 
     	InputStream is;
-		try {
+		try { 
 			is = new FileInputStream("config/neo4j/prepareDatabase.cql");
 
 	    	@SuppressWarnings("resource")
@@ -131,8 +148,6 @@ public class FactoryNeo4j {
 				result = record.get("triplesLoaded").asInt();
 				logger.info(file.getName() +" [" + FileUtils.byteCountToDisplaySize(file.length()) +"] - RDF Triples Loaded: " + result);
 			}
-				
-			//formatGraph(importRequest);
 									
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -648,8 +663,7 @@ public class FactoryNeo4j {
 					
 					notesetCounter++;
 					chordSize = 0;	
-					
-									
+														
 				} else {
 					
 					match = match + "MATCH (ns"+notesetCounter+":"+currentPitchType+")\n";
@@ -833,37 +847,11 @@ public class FactoryNeo4j {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		
-//		
-//		
-//		
-//		
-//		
-//		
-//		
-//		
-//	
-//		String cypherQuery = "MATCH (score:Score)-[:MOVEMENT]->(movement)-[:PART]->(part)-[:mso__hasStaff]->(staff)-[:mso__hasVoice]->(voice)-[:NOTESET]->(noteset)-[:mso__hasNote]->(note)\n" + 
-//				"MATCH (score:Score)-[:MOVEMENT]->(movement)-[:PART]->(part)-[:MEASURE]->(measure)\n" + 
-//				"WHERE score.uri = '"+request.getIdentifier()+"'\n" + 
-//				"WITH note,noteset,voice,staff,measure,part,movement,score,score.title AS title, score.uri AS identifier, score.collectionUri AS collection\n" + 
-//				"DETACH DELETE note,noteset,voice,staff,measure,part,movement,score\n" + 
-//				"RETURN DISTINCT title,identifier,collection";
-//		
-//		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypherQuery, dataSource);
-//
-//		while ( rs.hasNext() ) {
-//			Record record = rs.next();
-//			DeletedRecord score = new DeletedRecord();
-//			score.setTitle(record.get("title").asString());
-//			score.setScoreIdentifier(record.get("identifier").asString());
-//			score.setCollection(record.get("collection").asString());
-//			result.add(score);
-//		}
 
 		return result;
 		
 	}
+
 	
 	public static ArrayList<MusicScore> getScoreList(WMSSRequest request, DataSource dataSource){
 

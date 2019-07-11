@@ -76,7 +76,11 @@ public class ErrorCodes {
 	public static String INVALID_CLEF_DESCRIPTION  = "Invalid clef";
 	public static String INVALID_CLEF_HINT = "The clef code is preceded by '%', and is three characters long. The first character specifies the clef shape (G,C,F,g). The second character is '-' to indicate modern notation, '+' to indicate mensural notation. The third character (numeric 1-5) indicates the position of the clef on the staff, starting from the bottom line. Examples: G-2, C-3, F-4.";
 
-	//Request Conflict: The searched melody contains chords but the parameter 'ignoreChords' ist set to 'true'. The 'ignoreChords' parameter will be ignored."
+	public static String SCORE_EXISTS_CODE = "E0018";
+	public static String SCORE_EXISTS_DESCRIPTION  = "Score already exists";
+	public static String SCORE_EXISTS_HINT = "Either the score already exists or there is another score with the same identifier. ";
+
+
 	
 	
 	public static String WARNING_CONFLICTING_CHORDS_PARAMETER_CODE = "W0001";

@@ -5,7 +5,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -28,7 +27,6 @@ public class SystemSettings {
 	private static String defaultRequestMode;
 	private static String defaultCommitSize;
 	private static String defaultRDFFormat;
-	private static Logger logger = Logger.getLogger("System Settings");
 	public static ArrayList<DataSource> sourceList = new ArrayList<DataSource>();
 	public static ArrayList<String> protocolVersions = new ArrayList<String>();
 	public static String REQUEST_MODE_FULL = "full";
@@ -219,8 +217,6 @@ public class SystemSettings {
 		return defaultRDFFormat;
 	}
 	
-	
-	
-	
+		
 }
 
