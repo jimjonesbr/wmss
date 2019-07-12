@@ -25,6 +25,7 @@ public class Start implements Runnable {
 
 	}
 
+	
 	public static void startWMSS() {
 
 		org.eclipse.jetty.util.log.Log.setLog(null);		
@@ -39,16 +40,14 @@ public class Start implements Runnable {
 		contextAPI.addServlet(new ServletHolder(new ServletWebAdmin()),"/admin");
 		contextAPI.addServlet(new ServletHolder(new ServletFileAccess()),"/file");
 		
-		
 		if(port!=0) {
-			//port = SystemSettings.getPort();
 			SystemSettings.setPort(port);
 		}
 		
 		
 		logger.info("\n\n" + SystemSettings.getTitle()+ "\n" +
 				"Service Name: " + SystemSettings.getService() + "\n" +
-				"WMSS Version: " + SystemSettings.getVersion() + "\n" +
+				"WMSS Version: " + SystemSettings.getServiceVersion() + "\n" +
 				"Port: " + SystemSettings.getPort() + "\n" +
 				"Application Startup: " + SystemSettings.getStartup() + "\n" +
 				"Default Melody Encoding: " + SystemSettings.getDefaultMelodyEncoding() + "\n" +

@@ -50,7 +50,7 @@ public class ExceptionsTest {
 				System.out.println("Message: "+jsonObject.get("message").toString());
 				result = jsonObject.get("code").toString();
 			}
-
+ 
 		} catch (JSONException | IOException e) {
 			e.printStackTrace();
 		}

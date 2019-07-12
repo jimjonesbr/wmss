@@ -29,13 +29,9 @@ import de.wwu.wmss.exceptions.InvalidWMSSRequestException;
 import de.wwu.wmss.exceptions.ScoreExistsException;
 import de.wwu.wmss.factory.FactoryNeo4j;
 import de.wwu.wmss.factory.ServiceMessagingHandler;
-import de.wwu.wmss.settings.Util;
 
 public class ServletImport extends HttpServlet {
 
-	/**
-	 * @author Jim Jones
-	 */
 	private static final long serialVersionUID = 1L;
 	private static Logger logger = Logger.getLogger("ServletImport");
 
@@ -48,7 +44,6 @@ public class ServletImport extends HttpServlet {
 		if (!uploadDiretory.exists()) {
 			uploadDiretory.mkdirs();
 		}
-
 		
 		try {
 
@@ -72,7 +67,6 @@ public class ServletImport extends HttpServlet {
 				
 				isFileValid(file,importRequest);
 				
-				System.out.println("file.getAbsolutePath() > "+file.getAbsolutePath());
 				logger.debug("Checking file integrity of "+item.getName()+" [" + FileUtils.byteCountToDisplaySize(item.getSize())  + "] ...");
 		
 				WMSSImportRecord record = new WMSSImportRecord();

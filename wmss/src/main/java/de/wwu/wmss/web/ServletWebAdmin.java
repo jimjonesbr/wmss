@@ -11,14 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ServletWebAdmin extends HttpServlet {
 
-	/**
-	 * @author Jim Jones
-	 */
 	private static final long serialVersionUID = 1L;
-	
-//	protected void doPost(HttpServletRequest httpRequest, HttpServletResponse response) throws ServletException, IOException{
-//
-//	}
 	
 	protected void doGet(HttpServletRequest httpRequest, HttpServletResponse response) throws ServletException, IOException {
 	
@@ -43,8 +36,6 @@ public class ServletWebAdmin extends HttpServlet {
 		response.setStatus(HttpServletResponse.SC_OK);
 		response.getWriter().println(content);
 
-//        RequestDispatcher view = httpRequest.getRequestDispatcher("/web/index.html");
-//        view.forward(httpRequest, response);    
 	}
 
 	

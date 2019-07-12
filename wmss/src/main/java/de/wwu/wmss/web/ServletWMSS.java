@@ -16,9 +16,6 @@ import de.wwu.wmss.settings.Util;
 public class ServletWMSS extends HttpServlet
 {
 
-	/**
-	 * @author Jim Jones
-	 */
 	private static final long serialVersionUID = 1L;
 	private static Logger logger = Logger.getLogger("ServletWMSS");
 
@@ -28,7 +25,6 @@ public class ServletWMSS extends HttpServlet
 		try {
 
 			logger.info("GET Request String -> " + httpRequest.getQueryString());
-			//httpRequest.setCharacterEncoding("UTF-8");
 			WMSSRequest wmssRequest = new WMSSRequest(httpRequest);
 
 			response.addHeader("Access-Control-Allow-Origin","*");

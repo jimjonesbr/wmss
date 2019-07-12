@@ -38,12 +38,7 @@ public class ServletFileAccess extends HttpServlet {
 		} else {		
 			StringBuilder contentBuilder = new StringBuilder();
 			try {
-				
-//				File myFile = new File("upload/"+file);
-//				FileInputStream fIn = new FileInputStream(myFile);
-//				BufferedReader in = new BufferedReader(new InputStreamReader(fIn));
-//				BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream("upload/"+file), "UTF8"));
-				
+								
 				BufferedReader in = new BufferedReader(new FileReader("upload/"+file));
 			    String str;
 			    while ((str = in.readLine()) != null) {

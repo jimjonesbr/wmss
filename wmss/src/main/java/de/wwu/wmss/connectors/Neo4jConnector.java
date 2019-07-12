@@ -13,9 +13,8 @@ import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.StatementResult;
 
 public class Neo4jConnector {
-	
+		
 	private static Logger logger = Logger.getLogger("Neo4j-Connector");
-	//private static Driver driver;
 	private static Neo4jConnector instance;
 	
 	public static Neo4jConnector getInstance() {
@@ -43,9 +42,6 @@ public class Neo4jConnector {
 				}
 			}
 		}
-		
-		//driver = GraphDatabase.driver(ds.getHost(),AuthTokens.basic(ds.getUser(),ds.getPassword()));
-		//driver = (Driver) ds.getConnectionDriver();
 		
 		StatementResult result;
 

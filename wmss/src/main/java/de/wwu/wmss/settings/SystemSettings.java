@@ -1,15 +1,19 @@
 package de.wwu.wmss.settings;
 
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import de.wwu.wmss.core.DataSource;
-import de.wwu.wmss.core.RequestParameter;
 
 public class SystemSettings {
 
@@ -19,7 +23,7 @@ public class SystemSettings {
 	private static String title;
 	private static int timeout;
 	private static String contact;
-	private static String defaultProtocol;
+	private static String defaultProtocol = "";
 	private static String startup;
 	private static String serviceVersion;
 	private static int logPreview;
@@ -50,8 +54,22 @@ public class SystemSettings {
 
 			protocolVersions.add("1.0");
 			protocolVersions.add("1.1");
+			SystemSettings settings = new SystemSettings();
 			//TODO Create versioning system
-			serviceVersion = "Dev-Unstable-0.0.1";
+			
+			
+			try (InputStream is = settings.getClass().getClassLoader().getResourceAsStream("pom.xml")) {
+	            
+				MavenXpp3Reader reader = new MavenXpp3Reader();
+	            org.apache.maven.model.Model model = reader.read(is);
+	            serviceVersion = model.getVersion();			
+
+	        }
+	        catch (IOException e) {
+	        } catch (XmlPullParserException e) {
+				e.printStackTrace();
+			}
+			
 
 			port = Integer.parseInt(jsonObject.get("port").toString());
 			pageSize = Integer.parseInt(jsonObject.get("pageSize").toString());
@@ -139,18 +157,9 @@ public class SystemSettings {
 
 		}
 	}
-
-	public static boolean isParameterValid(RequestParameter parameter) {
-		
-		boolean result = false;
-		
-		
-		return result;
-		
-	}
+	
 	public SystemSettings() {
 		super();
-
 	}
 
 	public static int getPort() {
@@ -215,6 +224,10 @@ public class SystemSettings {
 
 	public static String getDefaultRDFFormat() {
 		return defaultRDFFormat;
+	}
+
+	public static String getDefaultProtocol() {
+		return defaultProtocol;
 	}
 	
 		
