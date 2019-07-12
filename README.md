@@ -1,6 +1,8 @@
 # Web Music Score Service 
 
 [![Build Status](https://travis-ci.com/jimjonesbr/wmss.svg?branch=master)](https://travis-ci.com/jimjonesbr/wmss)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
 
 The Web Music Score Service (WMSS) provides an interface allowing requests for music scores on the web using platform-independent clients. It serves as an intermediate layer between data sets and application clients, providing standard access to MEI and MusicXML files.
 
