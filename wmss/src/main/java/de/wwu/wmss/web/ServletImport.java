@@ -43,6 +43,13 @@ public class ServletImport extends HttpServlet {
 
 		ServletFileUpload sf = new ServletFileUpload(new DiskFileItemFactory());
 
+		File uploadDiretory = new File("upload/");
+		
+		if (!uploadDiretory.exists()) {
+			uploadDiretory.mkdirs();
+		}
+
+		
 		try {
 
 			WMSSImportRequest importRequest = new WMSSImportRequest(httpRequest);
@@ -55,20 +62,17 @@ public class ServletImport extends HttpServlet {
 
 			List<FileItem> multifiles = sf.parseRequest(httpRequest);			
 			ArrayList<WMSSImportRecord> fileList = new ArrayList<WMSSImportRecord>();
-
 			FactoryNeo4j.prepareDatabase(importRequest);
 			
 			for(FileItem item : multifiles) {
-				
-				isFileValid(new File("upload/"+item.getName()),importRequest);
-					
-			}
-			
-			for(FileItem item : multifiles) {
 
-				File file = new File("upload/"+item.getName());
-				logger.info("Uploaded: " + "upload/"+item.getName() );
+				File file = new File(uploadDiretory.getAbsolutePath()+"/"+item.getName());
+				logger.info("Uploaded: " + uploadDiretory.getAbsolutePath()+"/"+item.getName() );
 				item.write(file);	
+				
+				isFileValid(file,importRequest);
+				
+				System.out.println("file.getAbsolutePath() > "+file.getAbsolutePath());
 				logger.debug("Checking file integrity of "+item.getName()+" [" + FileUtils.byteCountToDisplaySize(item.getSize())  + "] ...");
 		
 				WMSSImportRecord record = new WMSSImportRecord();
@@ -122,7 +126,7 @@ public class ServletImport extends HttpServlet {
 		String sparql = "PREFIX mo: <http://purl.org/ontology/mo/> \n"
 				+ "PREFIX dc: <http://purl.org/dc/elements/1.1/> \n"
 				+ "SELECT ?uri ?title {?uri a mo:Score . ?uri dc:title ?title . }";
-
+ 
 		QueryExecution qexec = QueryExecutionFactory.create(sparql, model); 
 		ResultSet results = qexec.execSelect() ;
 		

@@ -2,6 +2,10 @@ package de.wwu.wmss.junit;
 
 import static org.junit.Assert.assertEquals;
 import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
@@ -20,7 +24,6 @@ public class ImportScores {
 	private static String server = "http://localhost";
 	private static String port = "8888";
 	private static String source = "neo4j_local";
-	private static String rdfDirectory = "data/rdf/";
 	private boolean post(File file, String format, int commitSize) {
 
 		boolean result = false;
@@ -48,7 +51,6 @@ public class ImportScores {
 			String fileSize = importedFile.get("size").toString();
 			String records = importedFile.get("records").toString();
 			
- 
 			System.out.println("\nFile   : "+fileName+
 							   "\nSize   : "+fileSize+
 							   "\nRecords: "+records+
@@ -71,8 +73,16 @@ public class ImportScores {
 	@Test
 	public void importFiles() {
 			
-		boolean result = true;		
-		File folder = new File(rdfDirectory);
+		boolean result = true;				
+		URL url = this.getClass().getResource("/rdf");		
+		File folder = null;
+		
+		try {
+			folder = new File(Paths.get(url.toURI()).toString());
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		
 		File[] rdfFiles = folder.listFiles();
 		
 		for (int i = 0; i < rdfFiles.length; i++) {
@@ -80,7 +90,10 @@ public class ImportScores {
 			boolean loaded = false;
 			
 			if(FilenameUtils.getExtension(rdfFiles[i].getName()).equals("ttl")) {
+				
+				System.out.println(rdfFiles[i]);
 				loaded = this.post(rdfFiles[i].getAbsoluteFile(), "turtle",10000);
+				
 			} else if(FilenameUtils.getExtension(rdfFiles[i].getName()).equals("nt")) {
 				loaded = this.post(rdfFiles[i].getAbsoluteFile(), "n-triples",10000);
 			} else if(FilenameUtils.getExtension(rdfFiles[i].getName()).equals("json")) {
