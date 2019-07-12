@@ -6,7 +6,7 @@
 
 The Web Music Score Service (WMSS) provides an interface allowing requests for music scores on the web using platform-independent clients. It serves as an intermediate layer between data sets and application clients, providing standard access to MEI and MusicXML files.
 
-![wmss](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/wmss.png)
+![wmss](https://github.com/jimjonesbr/wmss/blob/master/wmss/web/img/wmss.png)
 
 The application relies on datasets encoded using the [MusicOWL ontology](http://linkeddata.uni-muenster.de/ontology/musicscore/mso.owl). For more information on creating MusicOWL datasets see [MusicXML to RDF converter](https://github.com/jimjonesbr/musicowl).  
 
@@ -364,7 +364,7 @@ Parameter: `melody`
 
 Selects records containing a specific a sequence of notes or phrases (not limited to *incipt*) throughout the database, encoded using the [Plaine & Easie musical notation](https://www.iaml.info/plaine-easie-code#toc-4) (PEA).  For instance, the value `,8AB'CDxDE` - which is going to be used throughout this section - corresponds to ..
 
-![melody_sample](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/melody_sample.jpg)
+![melody_sample](https://github.com/jimjonesbr/wmss/blob/master/wmss/web/img/melody_sample.jpg)
 
 Notes: `A` 3rd octave, `B` 3rd octave, `C` 4th octave, `D` 4th octave, `D#` 4th octave and `E` 4th octave. 
 
@@ -398,7 +398,7 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,8AB'CD
 
 To extend the note duration add either a `.` (dot), `..` (double dot) or `...` (triple dot) right after the note duration, as described at [Plaine & Easie rhythmic values](https://www.iaml.info/plaine-easie-code#toc-7). For instance `4.G4.xF4.G4.xF`
 
-![embedded_sequence](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/dotted.jpg)
+![embedded_sequence](https://github.com/jimjonesbr/wmss/blob/master/wmss/web/img/dotted.jpg)
 
 ```http
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=4.G4.xF4.G4.xF
@@ -425,7 +425,7 @@ Read this carefully. In case a sequence of notes in the database contains a grac
 In other words, a search for `,8AGxFgAG2C` or `,8AGxFG2C` will return the following match:
 
 
-![embedded_sequence](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/grace.jpg)
+![embedded_sequence](https://github.com/jimjonesbr/wmss/blob/master/wmss/web/img/grace.jpg)
 
 Grace notes in melody searches are to be encoded using either `g` (acciaccatura) or `q` (appoggiatura), according to the [Plaine & Easie notation](https://www.iaml.info/plaine-easie-code#toc-11). 
 
@@ -436,11 +436,11 @@ It is also possible to look for sequences whose notes are inside of chords. To a
 
 Consider the following chords ..
 
-![three_chords](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/3_chords.jpg)
+![three_chords](https://github.com/jimjonesbr/wmss/blob/master/wmss/web/img/3_chords.jpg)
 
 .. and the following search criteria `,,2GB8G`, which are notes embedded in the chords above:
 
-![embedded_sequence](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/embedded_sequence.jpg)
+![embedded_sequence](https://github.com/jimjonesbr/wmss/blob/master/wmss/web/img/embedded_sequence.jpg)
 
 To be able to find such an *embedded sequence*, set the parameter `ignoreChords` to `false`:
 
@@ -457,7 +457,7 @@ Melodies containing chords can be searched by means of using the [PEA chords not
 
 Searching for the following chord `,,2E^B^,G^'E` .. 
 
-![embedded_sequence](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/1_chord.jpg)
+![embedded_sequence](https://github.com/jimjonesbr/wmss/blob/master/wmss/web/img/1_chord.jpg)
 
 .. can be done like this:
 
@@ -474,13 +474,13 @@ Examples
 
 Common signature: `@c 8ABCDxDE`
 
-![common_timesignature](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/common_time.jpg)
+![common_timesignature](https://github.com/jimjonesbr/wmss/blob/master/wmss/web/img/common_time.jpg)
 ```http
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=@c 8ABCDxDE
 ```
 Waltz time: `@3/4 8ABCDxDE`
 
-![waltz_timesignature](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/waltz_time.jpg)
+![waltz_timesignature](https://github.com/jimjonesbr/wmss/blob/master/wmss/web/img/waltz_time.jpg)
 ```http
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=@3/4 8ABCDxDE
 ```
@@ -505,7 +505,7 @@ Clef examples: `G-2` (trebble clef), `F-4` (bass clef), `C-3` (alto clef), `C-4`
 
 Request example `%C-4 ,8AB'CDxD`:
 
-![tenor_clef](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/tenor_clef.jpg)
+![tenor_clef](https://github.com/jimjonesbr/wmss/blob/master/wmss/web/img/tenor_clef.jpg)
 ```http
 http://localhost:8295/wmss/?source=neo4j_local&request=listscores&melody=%C-4 ,8AB'CDxD
 ```
@@ -522,7 +522,7 @@ Parameters: `melody`
 
 If necessary, it is also possible to look for melodies contained in fixed measures. For instance, the melody `'4xF8G4xF8A4B8A4G8E4D8E4C,8B` will be searched no matter how the notes are distributed:
 
-![no_measure](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/melody_no-measure.jpg)
+![no_measure](https://github.com/jimjonesbr/wmss/blob/master/wmss/web/img/melody_no-measure.jpg)
 
 ```http
 http://localhost:8295/wmss/?source=neo4j_local&request=listscores&melody='4xF8G4xF8A4B8A4G8E4D8E4C,8B
@@ -530,7 +530,7 @@ http://localhost:8295/wmss/?source=neo4j_local&request=listscores&melody='4xF8G4
 
 By splitting the melodies with the character `/`, the system will look for exact matches with the given measure/notes distribution. This example will look for the given melody contained in exactly two measures `'4xF8G4xF8A4B8A4/G8E4D8E4C,8B`:
 
-![measures](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/melody_measure.png)
+![measures](https://github.com/jimjonesbr/wmss/blob/master/wmss/web/img/melody_measure.png)
 
 ```http
 http://localhost:8295/wmss/?source=neo4j_local&request=listscores&melody='4xF8G4xF8A4B8A4/G8E4D8E4C,8B
@@ -541,7 +541,7 @@ Parameters: `melody`
 
 Melody containing [rests](https://www.iaml.info/plaine-easie-code#toc-12) can be encoded by replacing the pitch with a `-`, e.g. `,,2E-/-4.-6,,B,xC`
 
-![rests](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/rest.jpg)
+![rests](https://github.com/jimjonesbr/wmss/blob/master/wmss/web/img/rest.jpg)
 
 
 #### [Key signatures](https://github.com/jimjonesbr/wmss/blob/master/README.md#key-signatures)
@@ -594,7 +594,7 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&key=xFCGDA
 
 The following example deals with a melody of 36 notes in containing several durations and octaves:
 
-![elgar_theme](https://github.com/jimjonesbr/wmss/blob/master/wmss/config/img/elgar_theme.jpg)
+![elgar_theme](https://github.com/jimjonesbr/wmss/blob/master/wmss/web/img/elgar_theme.jpg)
 
 ```http
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody='4xF8G4xF8A4B8A4G8E4D8E4C,8B4A8B4A'8C4D8C,4B8G4xF8G4E8D4xC8D4xC8E4xF8E4D,,8B4xA8B4G8xF2B&ignoreOctave=false
