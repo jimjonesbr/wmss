@@ -114,8 +114,11 @@ public class ServletImport extends HttpServlet {
 		
 	private static void isFileValid(File file, WMSSImportRequest importRequest) throws Exception {
 
+		System.out.println("Checking file: " + file.getAbsolutePath());
+		
 		Model model = ModelFactory.createDefaultModel() ;		
 		model.read(file.getAbsolutePath()) ;
+		
 
 		String sparql = "PREFIX mo: <http://purl.org/ontology/mo/> \n"
 				+ "PREFIX dc: <http://purl.org/dc/elements/1.1/> \n"

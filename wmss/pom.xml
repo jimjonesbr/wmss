@@ -17,7 +17,6 @@
 			<artifactId>json-simple</artifactId>
 			<version>1.1.1</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.jena/jena -->
 
 		<!-- https://mvnrepository.com/artifact/org.json/json -->
 		<dependency>
@@ -26,12 +25,7 @@
 			<version>20180813</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.apache.jena</groupId>
-			<artifactId>jena</artifactId>
-			<version>3.4.0</version>
-			<type>pom</type>
-		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-servlet -->
 		<dependency>
@@ -60,13 +54,20 @@
 			<version>9.4-1200-jdbc41</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.apache.jena/apache-jena-libs -->
+		<!-- https://mvnrepository.com/artifact/org.apache.jena/jena-arq -->
 		<dependency>
 			<groupId>org.apache.jena</groupId>
-			<artifactId>apache-jena-libs</artifactId>
-			<version>3.5.0</version>
-			<type>pom</type>
+			<artifactId>jena-arq</artifactId>
+			<version>3.12.0</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.maven/maven-model -->
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-model</artifactId>
+			<version>3.6.1</version>
+		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/org.neo4j.driver/neo4j-java-driver -->
 		<dependency>
@@ -102,12 +103,8 @@
 			<artifactId>httpmime</artifactId>
 			<version>4.5.9</version>
 		</dependency>
-		
-		<dependency>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-model</artifactId>
-			<version>3.6.1</version>
-		</dependency>
+
+
 
 		<dependency>
 			<groupId>junit</groupId>
@@ -121,6 +118,7 @@
 	<build>
 		<defaultGoal>install</defaultGoal>
 		<plugins>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

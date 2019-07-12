@@ -18,7 +18,6 @@ import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.StatementResult;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import de.wwu.wmss.connector.Neo4jConnector;
 import de.wwu.wmss.core.Collection;
 import de.wwu.wmss.core.DataSource;
@@ -195,7 +194,7 @@ public class Neo4jEngine {
 				"          mediumDescription: medium.mediumDescription\n" + 
 				"         })}} AS performanceMediumList";
 		
-		logger.info("getPerformanceMedium:\n"+cypher);
+		logger.debug("getPerformanceMedium:\n"+cypher);
 		
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);
 		

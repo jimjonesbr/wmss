@@ -25,7 +25,7 @@ public class SystemSettings {
 	private static String contact;
 	private static String defaultProtocol = "";
 	private static String startup;
-	private static String serviceVersion;
+	private static String serviceVersion = "";
 	private static int logPreview;
 	private static int pageSize;
 	private static String defaultRequestMode;
