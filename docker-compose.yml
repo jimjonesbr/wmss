@@ -7,7 +7,6 @@ services:
     volumes:
       - ./neo4j_plugins:/plugins
     environment:
-      -d
       - NEO4J_dbms_security_procedures_unrestricted=apoc.*
       - NEO4J_dbms_connectors_default_listen_address=0.0.0.0     
       - NEO4J_dbms_unmanaged_extension_classes=semantics.extension=/rdf
