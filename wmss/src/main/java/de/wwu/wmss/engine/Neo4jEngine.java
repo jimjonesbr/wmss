@@ -43,7 +43,7 @@ import de.wwu.wmss.settings.Util;
 
 public class Neo4jEngine {
 
-	private static Logger logger = Logger.getLogger("Neo4j-Factory");
+	private static Logger logger = Logger.getLogger("Neo4j-Engine");
 
 	
 	public static ArrayList<MusicScore> scoreExists(String scoreIdentifier, WMSSImportRequest importRequest) {
@@ -185,17 +185,17 @@ public class Neo4jEngine {
 		
 		ArrayList<PerformanceMediumType> result = new ArrayList<PerformanceMediumType>();
 		
-		String cypher = "\n\nMATCH (instrument:Part)-[:skos__broader]->(type)\n" + 
-						"RETURN DISTINCT\n" + 
-						"     {performanceMediumList: {mediumTypeId: type.uri,\n" + 
-						"      mediumTypeDescription: type.skos__prefLabel,\n" + 
-						"      instruments: COLLECT(DISTINCT\n" + 
-						"         {\n" + 
-						"          mediumCode: instrument.label,\n" + 
-						"          mediumDescription: instrument.prefLabel\n" + 
-						"         })}} AS performanceMediumList\n";
+		String cypher = "\n\nMATCH (type:mediumType)-[:MEDIUM]->(medium:Medium)\n" + 
+				"RETURN DISTINCT \n" + 
+				"     {performanceMediumList: {mediumTypeId: type.mediumTypeId,\n" + 
+				"      mediumTypeDescription: type.mediumTypeDescription,\n" + 
+				"      instruments: COLLECT(DISTINCT\n" + 
+				"         {\n" + 
+				"          mediumCode: medium.mediumCode,\n" + 
+				"          mediumDescription: medium.mediumDescription\n" + 
+				"         })}} AS performanceMediumList";
 		
-		logger.debug("getPerformanceMedium:\n"+cypher);
+		logger.info("getPerformanceMedium:\n"+cypher);
 		
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);
 		

@@ -16,7 +16,7 @@ import de.wwu.wmss.core.DataSource;
 
 
 public class SystemSettings {
-	private static Logger logger = Logger.getLogger("Neo4j-Factory");
+	private static Logger logger = Logger.getLogger("System-Settings");
 	private static int port;
 	private static String service;
 	private static String defaultMelodyEncoding;
