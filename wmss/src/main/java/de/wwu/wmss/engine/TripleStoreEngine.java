@@ -1,16 +1,17 @@
-package de.wwu.wmss.factory;
+package de.wwu.wmss.engine;
 
 import java.util.ArrayList;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.log4j.Logger;
-import de.wwu.wmss.connectors.SPARQLConnector;
+
+import de.wwu.wmss.connector.SPARQLConnector;
 import de.wwu.wmss.core.DataSource;
 import de.wwu.wmss.core.PerformanceMediumType;
 import de.wwu.wmss.core.RequestParameter;
 import de.wwu.wmss.settings.Util;
 
-public class FactoryTripleStore {
+public class TripleStoreEngine {
 
 	private static Logger logger = Logger.getLogger("Factory-TripleStore");
 	

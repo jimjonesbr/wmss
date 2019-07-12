@@ -1,4 +1,4 @@
-package de.wwu.wmss.connectors;
+package de.wwu.wmss.connector;
 
 import de.wwu.wmss.core.DataSource;
 import de.wwu.wmss.settings.SystemSettings;

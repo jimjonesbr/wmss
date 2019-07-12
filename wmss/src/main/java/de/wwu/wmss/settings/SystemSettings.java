@@ -1,13 +1,12 @@
 package de.wwu.wmss.settings;
 
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
+import org.apache.log4j.Logger;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.json.simple.JSONArray;
@@ -15,8 +14,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import de.wwu.wmss.core.DataSource;
 
-public class SystemSettings {
 
+public class SystemSettings {
+	private static Logger logger = Logger.getLogger("Neo4j-Factory");
 	private static int port;
 	private static String service;
 	private static String defaultMelodyEncoding;
@@ -48,26 +48,20 @@ public class SystemSettings {
 
 		try {
 
-			Object obj = parser.parse(new FileReader("config/settings.wmss"));
+			protocolVersions.add("1.0");
+			Object obj = parser.parse(new FileReader("conf/settings.json"));
 
 			JSONObject jsonObject = (JSONObject) obj;
-
-			protocolVersions.add("1.0");
-			protocolVersions.add("1.1");
 			SystemSettings settings = new SystemSettings();
-			//TODO Create versioning system
-			
 			
 			try (InputStream is = settings.getClass().getClassLoader().getResourceAsStream("pom.xml")) {
 	            
 				MavenXpp3Reader reader = new MavenXpp3Reader();
 	            org.apache.maven.model.Model model = reader.read(is);
 	            serviceVersion = model.getVersion();			
-
-	        }
-	        catch (IOException e) {
+	            
 	        } catch (XmlPullParserException e) {
-				e.printStackTrace();
+	        	logger.error("Problem reading pom.xml.");
 			}
 			
 
@@ -90,7 +84,8 @@ public class SystemSettings {
 
 		} catch (Exception e) {
 
-			e.printStackTrace();
+			logger.fatal("Configuration file not found. Shutting system down ..");
+			System.exit(1);
 
 		}
 
@@ -102,7 +97,7 @@ public class SystemSettings {
 
 		try {
 
-			Object obj = parser.parse(new FileReader("config/sources.wmss"));
+			Object obj = parser.parse(new FileReader("conf/sources.json"));
 			JSONObject jsonObject = (JSONObject) obj;
 			JSONArray sourcesArray = (JSONArray) jsonObject.get("datasource");
 

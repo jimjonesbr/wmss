@@ -1,4 +1,4 @@
-package de.wwu.wmss.factory;
+package de.wwu.wmss.engine;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,7 +18,8 @@ import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.StatementResult;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import de.wwu.wmss.connectors.Neo4jConnector;
+
+import de.wwu.wmss.connector.Neo4jConnector;
 import de.wwu.wmss.core.Collection;
 import de.wwu.wmss.core.DataSource;
 import de.wwu.wmss.core.ErrorCodes;
@@ -40,7 +41,7 @@ import de.wwu.wmss.core.WMSSImportRequest;
 import de.wwu.wmss.settings.SystemSettings;
 import de.wwu.wmss.settings.Util;
 
-public class FactoryNeo4j {
+public class Neo4jEngine {
 
 	private static Logger logger = Logger.getLogger("Neo4j-Factory");
 
@@ -66,7 +67,7 @@ public class FactoryNeo4j {
 
     	InputStream is;
 		try { 
-			is = new FileInputStream("config/neo4j/prepareDatabase.cql");
+			is = new FileInputStream("conf/neo4j/prepareDatabase.cql");
 
 	    	@SuppressWarnings("resource")
 			BufferedReader buf = new BufferedReader(new InputStreamReader(is));        
@@ -99,7 +100,7 @@ public class FactoryNeo4j {
 				
     	InputStream is;
 		try {
-			is = new FileInputStream("config/neo4j/formatGraph.cql");
+			is = new FileInputStream("conf/neo4j/formatGraph.cql");
 
 	    	@SuppressWarnings("resource")
 			BufferedReader buf = new BufferedReader(new InputStreamReader(is));        
@@ -804,7 +805,7 @@ public class FactoryNeo4j {
 		
 	  	InputStream is;
 			try {
-				is = new FileInputStream("config/neo4j/deleteScore.cql");
+				is = new FileInputStream("conf/neo4j/deleteScore.cql");
 
 		    	@SuppressWarnings("resource")
 				BufferedReader buf = new BufferedReader(new InputStreamReader(is));        

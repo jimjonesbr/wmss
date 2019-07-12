@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import de.wwu.wmss.core.ErrorCodes;
 import de.wwu.wmss.core.WMSSRequest;
+import de.wwu.wmss.engine.DocumentBuilder;
 import de.wwu.wmss.exceptions.InvalidWMSSRequestException;
-import de.wwu.wmss.factory.ServiceMessagingHandler;
 import de.wwu.wmss.settings.Util;
 
 public class ServletWMSS extends HttpServlet
@@ -42,39 +42,39 @@ public class ServletWMSS extends HttpServlet
 
 				response.setContentType("text/javascript");
 				response.setStatus(HttpServletResponse.SC_OK);
-				response.getWriter().println(ServiceMessagingHandler.getServiceDescription());
+				response.getWriter().println(DocumentBuilder.getServiceDescription());
 
 			} else if (wmssRequest.getRequestType().equals("getscore")) { 
 
 				response.setHeader("Content-disposition", "attachment; filename=score.xml");
 				response.setContentType("text/xml");
 				response.setStatus(HttpServletResponse.SC_OK);
-				response.getWriter().println(ServiceMessagingHandler.getScore(wmssRequest));
+				response.getWriter().println(DocumentBuilder.getScore(wmssRequest));
 
 			} else if (wmssRequest.getRequestType().equals("listscores")) {
 
 				response.setContentType("text/javascript");
 				response.setStatus(HttpServletResponse.SC_OK);
-				response.getWriter().println(ServiceMessagingHandler.getScoreList(wmssRequest));
+				response.getWriter().println(DocumentBuilder.getScoreList(wmssRequest));
 
 			} else if (wmssRequest.getRequestType().equals("deletescore")) {
 
 				response.setContentType("text/javascript");
 				response.setStatus(HttpServletResponse.SC_OK);
-				response.getWriter().println(ServiceMessagingHandler.deleteScore(wmssRequest)); 
+				response.getWriter().println(DocumentBuilder.deleteScore(wmssRequest)); 
 
 			} else if (wmssRequest.getRequestType().equals("insertscore")) {
 
 				response.setContentType("text/javascript");
 				response.setStatus(HttpServletResponse.SC_OK);
-				response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport(ErrorCodes.NONSUPPORTED_REQUEST_DESCRIPTION +" [GET/"+wmssRequest.getRequestType()+"]", ErrorCodes.NONSUPPORTED_REQUEST_CODE, ErrorCodes.NONSUPPORTED_REQUEST_DATE_HINT));
+				response.getWriter().println(DocumentBuilder.getServiceExceptionReport(ErrorCodes.NONSUPPORTED_REQUEST_DESCRIPTION +" [GET/"+wmssRequest.getRequestType()+"]", ErrorCodes.NONSUPPORTED_REQUEST_CODE, ErrorCodes.NONSUPPORTED_REQUEST_DATE_HINT));
 			}
 
 		} catch (InvalidWMSSRequestException e) {
 			
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport(e.getCode(), e.getMessage(), e.getHint()));
+			response.getWriter().println(DocumentBuilder.getServiceExceptionReport(e.getCode(), e.getMessage(), e.getHint()));
 			e.printStackTrace();
 		}
 

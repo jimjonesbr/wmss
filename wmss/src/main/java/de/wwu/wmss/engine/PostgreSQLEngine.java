@@ -1,4 +1,4 @@
-package de.wwu.wmss.factory;
+package de.wwu.wmss.engine;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -6,7 +6,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
-import de.wwu.wmss.connectors.PostgreSQLConnector;
+
+import de.wwu.wmss.connector.PostgreSQLConnector;
 import de.wwu.wmss.core.Collection;
 import de.wwu.wmss.core.DataSource;
 import de.wwu.wmss.core.Format;
@@ -22,7 +23,7 @@ import de.wwu.wmss.core.RequestParameter;
 import de.wwu.wmss.core.Tonality;
 import de.wwu.wmss.settings.SystemSettings;
 
-public class FactoryPostgreSQL {
+public class PostgreSQLEngine {
 
 	private static Logger logger = Logger.getLogger("Factory-PostgreSQL");
 

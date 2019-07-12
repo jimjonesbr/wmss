@@ -35,7 +35,7 @@ public class ImportScores {
 		post.setEntity(requestEntity);
 		
 		HttpResponse response=null;
-		try {
+		try { 
 			response = httpClient.execute(post);
 
 			HttpEntity entity = response.getEntity();

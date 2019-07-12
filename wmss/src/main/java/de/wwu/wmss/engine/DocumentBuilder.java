@@ -1,4 +1,4 @@
-package de.wwu.wmss.factory;
+package de.wwu.wmss.engine;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,7 +16,8 @@ import de.wwu.wmss.core.WMSSRequest;
 import de.wwu.wmss.settings.SystemSettings;
 import de.wwu.wmss.settings.Util;
 
-public class ServiceMessagingHandler {
+@SuppressWarnings("deprecation")
+public class DocumentBuilder {
 
 	private static Logger logger = Logger.getLogger("ServiceExceptionHandler");
 
@@ -61,7 +62,7 @@ public class ServiceMessagingHandler {
 		DataSource ds = loadDataSource(request);
 		
 		deletedScore.put("type", "DeleteScoresReport");
-		deletedScore.put("score", FactoryNeo4j.deleteScore(request, ds));
+		deletedScore.put("score", Neo4jEngine.deleteScore(request, ds));
 
 		return StringEscapeUtils.unescapeJson(gson.toJson(deletedScore));
 	
@@ -127,26 +128,26 @@ public class ServiceMessagingHandler {
 				
 				if(SystemSettings.sourceList.get(i).getStorage().equals("postgresql")) {
 				
-					ds.put("collections", FactoryPostgreSQL.getCollections(SystemSettings.sourceList.get(i)));
-					ds.put("performanceMediums", FactoryPostgreSQL.getPerformanceMediumList(SystemSettings.sourceList.get(i)));
-					ds.put("tempoMarkings", FactoryPostgreSQL.getTempoMarkings(SystemSettings.sourceList.get(i)));
-					ds.put("formats", FactoryPostgreSQL.getFormats(SystemSettings.sourceList.get(i)));
-					ds.put("tonalities", FactoryPostgreSQL.getTonalities(SystemSettings.sourceList.get(i)));
-					ds.put("creationRange", FactoryPostgreSQL.getCreationInterval(SystemSettings.sourceList.get(i)));
-					ds.put("roles", FactoryPostgreSQL.getRoles(SystemSettings.sourceList.get(i)));
+					ds.put("collections", PostgreSQLEngine.getCollections(SystemSettings.sourceList.get(i)));
+					ds.put("performanceMediums", PostgreSQLEngine.getPerformanceMediumList(SystemSettings.sourceList.get(i)));
+					ds.put("tempoMarkings", PostgreSQLEngine.getTempoMarkings(SystemSettings.sourceList.get(i)));
+					ds.put("formats", PostgreSQLEngine.getFormats(SystemSettings.sourceList.get(i)));
+					ds.put("tonalities", PostgreSQLEngine.getTonalities(SystemSettings.sourceList.get(i)));
+					ds.put("creationRange", PostgreSQLEngine.getCreationInterval(SystemSettings.sourceList.get(i)));
+					ds.put("roles", PostgreSQLEngine.getRoles(SystemSettings.sourceList.get(i)));
 				
 				}
 				
 				if(SystemSettings.sourceList.get(i).getStorage().equals("neo4j")) {
 					
-					ds.put("totalScores", FactoryNeo4j.getScoresCount(SystemSettings.sourceList.get(i)));
-					ds.put("collections", FactoryNeo4j.getCollections(SystemSettings.sourceList.get(i)));					
-					ds.put("performanceMediums", FactoryNeo4j.getPerformanceMedium(SystemSettings.sourceList.get(i)));
+					ds.put("totalScores", Neo4jEngine.getScoresCount(SystemSettings.sourceList.get(i)));
+					ds.put("collections", Neo4jEngine.getCollections(SystemSettings.sourceList.get(i)));					
+					ds.put("performanceMediums", Neo4jEngine.getPerformanceMedium(SystemSettings.sourceList.get(i)));
 					ds.put("tempoMarkings", null);
-					ds.put("formats", FactoryNeo4j.getFormats(SystemSettings.sourceList.get(i)));
-					ds.put("tonalities", FactoryNeo4j.getTonalities(SystemSettings.sourceList.get(i)));
+					ds.put("formats", Neo4jEngine.getFormats(SystemSettings.sourceList.get(i)));
+					ds.put("tonalities", Neo4jEngine.getTonalities(SystemSettings.sourceList.get(i)));
 					ds.put("creationRange", null);					
-					ds.put("persons", FactoryNeo4j.getRoles(SystemSettings.sourceList.get(i)));
+					ds.put("persons", Neo4jEngine.getRoles(SystemSettings.sourceList.get(i)));
 					
 				}
 								
@@ -191,7 +192,7 @@ public class ServiceMessagingHandler {
 
 						if(SystemSettings.sourceList.get(i).getStorage().equals("neo4j")){
 
-							listScores = FactoryNeo4j.getScoreList(request, SystemSettings.sourceList.get(i));
+							listScores = Neo4jEngine.getScoreList(request, SystemSettings.sourceList.get(i));
 
 						}
 
@@ -207,7 +208,7 @@ public class ServiceMessagingHandler {
 					int totalSize;
 					
 					if(request.getOffset()==0 && listScores.size() == request.getPageSize()) {						
-						totalSize = FactoryNeo4j.getResultsetSize(request, SystemSettings.sourceList.get(i));
+						totalSize = Neo4jEngine.getResultsetSize(request, SystemSettings.sourceList.get(i));
 						repo.put("requestSize",totalSize);	
 					} else {
 						
@@ -322,22 +323,18 @@ public class ServiceMessagingHandler {
 		DataSource ds = Util.getDataSource(request.getSource());
 
 		if(ds.getType().equals("triplestore")) {
-
 			//TODO tbw
-
 		} else
 
 			if(ds.getType().equals("postgresql")) {
-
 				//TODO tbw
-
 			} else 
 
 				if(ds.getType().equals("lpg")) {
 
 					if(ds.getStorage().equals("neo4j")) {
 						
-						result = FactoryNeo4j.getMusicXML(request);
+						result = Neo4jEngine.getMusicXML(request);
 						
 					}
 

@@ -1,4 +1,4 @@
-package de.wwu.wmss.connectors;
+package de.wwu.wmss.connector;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

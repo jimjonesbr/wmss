@@ -1,4 +1,4 @@
-package de.wwu.wmss.connectors;
+package de.wwu.wmss.connector;
 
 import org.apache.log4j.Logger;
 import de.wwu.wmss.core.DataSource;

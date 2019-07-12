@@ -25,10 +25,10 @@ import de.wwu.wmss.core.ErrorCodes;
 import de.wwu.wmss.core.MusicScore;
 import de.wwu.wmss.core.WMSSImportRecord;
 import de.wwu.wmss.core.WMSSImportRequest;
+import de.wwu.wmss.engine.DocumentBuilder;
+import de.wwu.wmss.engine.Neo4jEngine;
 import de.wwu.wmss.exceptions.InvalidWMSSRequestException;
 import de.wwu.wmss.exceptions.ScoreExistsException;
-import de.wwu.wmss.factory.FactoryNeo4j;
-import de.wwu.wmss.factory.ServiceMessagingHandler;
 
 public class ServletImport extends HttpServlet {
 
@@ -57,7 +57,7 @@ public class ServletImport extends HttpServlet {
 
 			List<FileItem> multifiles = sf.parseRequest(httpRequest);			
 			ArrayList<WMSSImportRecord> fileList = new ArrayList<WMSSImportRecord>();
-			FactoryNeo4j.prepareDatabase(importRequest);
+			Neo4jEngine.prepareDatabase(importRequest);
 			
 			for(FileItem item : multifiles) {
 
@@ -72,36 +72,36 @@ public class ServletImport extends HttpServlet {
 				WMSSImportRecord record = new WMSSImportRecord();
 				record.setFile(file.getName());
 				record.setSize(FileUtils.byteCountToDisplaySize(item.getSize()));
-				record.setRecords(FactoryNeo4j.insertScore(file, importRequest));
+				record.setRecords(Neo4jEngine.insertScore(file, importRequest));
 				fileList.add(record);				
 							
 			}
 			
-			FactoryNeo4j.formatGraph(importRequest);
+			Neo4jEngine.formatGraph(importRequest);
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getImportReport(fileList, importRequest));
+			response.getWriter().println(DocumentBuilder.getImportReport(fileList, importRequest));
 
 		} catch (InvalidWMSSRequestException e) {
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport(e.getCode(), e.getMessage(), e.getHint()));
+			response.getWriter().println(DocumentBuilder.getServiceExceptionReport(e.getCode(), e.getMessage(), e.getHint()));
 			e.printStackTrace();
 
 		} catch (ScoreExistsException e) {
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport(ErrorCodes.SCORE_EXISTS_CODE, ErrorCodes.SCORE_EXISTS_DESCRIPTION + ". Import aborted!", e.getMessage()));
+			response.getWriter().println(DocumentBuilder.getServiceExceptionReport(ErrorCodes.SCORE_EXISTS_CODE, ErrorCodes.SCORE_EXISTS_DESCRIPTION + ". Import aborted!", e.getMessage()));
 			e.printStackTrace();
 		
 		} catch (RiotException e) {
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(ServiceMessagingHandler.getServiceExceptionReport(ErrorCodes.INVALID_RDFFILE_CODE, ErrorCodes.INVALID_RDFFILE_DESCRIPTION + ": " +e.getMessage(), ErrorCodes.INVALID_RDFFILE_HINT));
+			response.getWriter().println(DocumentBuilder.getServiceExceptionReport(ErrorCodes.INVALID_RDFFILE_CODE, ErrorCodes.INVALID_RDFFILE_DESCRIPTION + ": " +e.getMessage(), ErrorCodes.INVALID_RDFFILE_HINT));
 			e.printStackTrace();
 				
 		} catch (FileUploadException e) {
@@ -133,7 +133,7 @@ public class ServletImport extends HttpServlet {
 			uriFile = soln.get("?uri").toString();
 			titleFile = soln.get("?title").toString();
 
-			ArrayList<MusicScore> scores = FactoryNeo4j.scoreExists(uriFile, importRequest);
+			ArrayList<MusicScore> scores = Neo4jEngine.scoreExists(uriFile, importRequest);
 			
 			for (int i = 0; i < scores.size(); i++) {
 
