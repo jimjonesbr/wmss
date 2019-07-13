@@ -54,7 +54,7 @@ The application relies on datasets encoded using the [MusicOWL ontology](http://
 
 #### [Server Settings](https://github.com/jimjonesbr/wmss/blob/master/README.md#server-settings)
 
-File: `config/settings.conf`
+File: `conf/settings.json`
 
 `port`&nbsp;   Listening port for the WMSS server.
 
@@ -81,7 +81,7 @@ File: `config/settings.conf`
 #### [Data Source Settings](https://github.com/jimjonesbr/wmss/blob/master/README.md#data-source-settings)
 (multiple data sources supported)
 
-File: `config/sources.conf` 
+File: `conf/sources.json` 
 
 `id`&nbsp;   Data source identifier.
 
@@ -101,6 +101,8 @@ File: `config/sources.conf`
 
 `user`/`password`&nbsp;   Credentials for accessing the data source.
 
+
+
 #### [Configuring Neo4j](https://github.com/jimjonesbr/wmss/blob/master/README.md#configuring-neo4j)
 
 In order to be able to import RDF data into Neo4j, WMSS requires the plugins [neosemantics](https://github.com/jbarrasa/neosemantics/) and [APOC](https://github.com/neo4j-contrib/neo4j-apoc-procedures/). Neo4j and its plugins are constantly being updated, which makes the compatibility among them quite hard sometimes. To make things a little easier, you may use this compatibility matrix for Neo4j 3.5.5 - in case you're installing Neo4j from scratch.
@@ -109,13 +111,130 @@ In order to be able to import RDF data into Neo4j, WMSS requires the plugins [ne
 |-------|-----------------------|------------------|
 | [3.5.5](https://neo4j.com/download-center/) | [neosemantics-3.5.0.1](https://github.com/jbarrasa/neosemantics/releases/download/3.5.0.1/neosemantics-3.5.0.1.jar) | [apoc-3.5.0.3-all](https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/3.5.0.1/apoc-3.5.0.1-all.jar) |
 
-Depding on the amount of RDF data you want to import, consider increasing the memory settings in the `neo4j.conf` file. 
+Depending on the amount of RDF data you want to import, consider increasing the memory settings in the `<NEO_HOME>/conf/neo4j.conf` file. 
 Example:
 ```
 dbms.memory.heap.initial_size=12G
 dbms.memory.heap.max_size=12G
 ```
+
 Click [here](https://neo4j.com/developer/guide-performance-tuning/) for more information on the Neo4j memory guidelines.
+
+Also add the following lines to enable the usage of APOC and neosemantics plugins:
+
+```
+dbms.unmanaged_extension_classes=semantics.extension=/rdf
+dbms.security.procedures.unrestricted=apoc.*
+```
+
+Check their respectively repositories for more information.
+
+
+##### Running Neo4j using Docker
+
+The Neo4j official docker image does not include the plugins WMSS needs. So before we deploy our [docker container](https://www.docker.com/resources/what-container), let's first create a volume where Neo4j can find these plugins:
+
+```shell
+$ mkdir neo4j_plugins
+$ wget https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/3.5.0.1/apoc-3.5.0.1-all.jar -P neo4j_plugins/
+$ wget https://github.com/jbarrasa/neosemantics/releases/download/3.5.0.1/neosemantics-3.5.0.1.jar -P neo4j_plugins/
+```
+
+Optionally, we can also create a volume for managing Neo4j internal data, so that we have directly access to it via an external folder.
+
+```shell
+$ mkdir neo4j_data
+```
+
+Once our plugins and data volumes are properly configured, we can finally deploy our Neo4j instance. Using `docker-compose` we can add all our settings in single file, so that our container starts just the way we want it to, the `docker-compose.yml`:
+
+```yml
+version: '2'
+services:
+  neo4j:
+    container_name: neo4j-wmss
+    network_mode: host  
+    image: neo4j:3.5.5
+    volumes:
+      - ./neo4j_plugins:/plugins
+      - ./neo4j_data:/data      
+    environment:
+      - NEO4J_dbms_security_procedures_unrestricted=apoc.*
+      - NEO4J_dbms_connectors_default_listen_address=0.0.0.0     
+      - NEO4J_dbms_unmanaged_extension_classes=semantics.extension=/rdf
+      - NEO4J_AUTH=none   
+      - NEO4J_dbms_memory_heap_maxSize=4G
+      - NEO4J_dbms_memory_heap.initial_size=4G
+      - NEO4J_dbms_memory_heap.max_size=1G
+    ports:
+      - 7474:7474
+      - 7687:7687
+volumes:
+  neo4j_plugins:
+  neo4j_data:    
+```
+
+ A few comments to this file:
+ 
+ `network_mode: host` 
+ 
+ This parameter allows connections from inside the container to the host. 
+ 
+ `image: neo4j:3.5.5` 
+ 
+Downloads the Neo4j 3.5.5 image. Changing it to `neo4j:latest` downloads the most recent Neo4j version, but before doing something that will give you a lot of headache, check if the previously downloaded plugins are compatible with the latest Neo4j version.
+ 
+ ```yml
+ volumes:
+      - ./neo4j_plugins:/plugins
+      - ./neo4j_data:/data
+ ```
+
+Links container and host directories, which we previously configured.
+
+
+Here you can tune your Neo4j instace just the way you'd have done in the `neo4j.conf` file.
+
+`- NEO4J_dbms_security_procedures_unrestricted=apoc.*` 
+
+Allows APOC to use internal API procedure
+
+`- NEO4J_dbms_connectors_default_listen_address=0.0.0.0`
+
+Default network interface to listen for incoming connections. To listen for connections on all interfaces, use "0.0.0.0".
+
+`- NEO4J_dbms_unmanaged_extension_classes=semantics.extension=/rdf`
+
+Enables the usage of `neosemantics`
+
+`- NEO4J_AUTH=none`
+
+In this variabe you can set the initial credentials to access Neo4j, e.g. `NEO4J_AUTH=neo4j/secret` says that the user `neo4j` has the initial password `secret`. Setting it to `none` grants access without any credentials.
+
+```yml
+- NEO4J_dbms_memory_heap_maxSize=4G
+- NEO4J_dbms_memory_heap.initial_size=4G
+- NEO4J_dbms_memory_heap.max_size=1G
+```
+
+Tunes the [memory and cache](https://neo4j.com/developer/guide-performance-tuning/) usage for Neo4j. 
+
+
+Once you have your plugin environment and your `docker-compose.yml` ready, just run the container with the following command:
+
+`$ docker-compose up`
+
+If you want it to run in the backgoud, just add the parameter `-d` to it:
+
+`$ docker-compose up -d`
+
+To shut it down:
+
+`$ docker-compose down`
+
+
+
+
 
 #### [Starting the Server](https://github.com/jimjonesbr/wmss/blob/master/README.md#starting-the-server)
 
@@ -132,7 +251,7 @@ After successfully starting the server you will see a message like this:
 Web Music Score Service - University of Münster
 Service Name: wmss
 Default Protocol: 1.0
-WMSS Version: Dev-Unstable-0.0.1
+WMSS Version: 1.0.0
 Port: 8295
 Application Startup: 2018/11/19 14:46:14
 Default Melody Encoding: pea
