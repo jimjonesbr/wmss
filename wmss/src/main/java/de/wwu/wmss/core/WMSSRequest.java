@@ -198,8 +198,7 @@ public class WMSSRequest {
 				this.logPreview = Integer.parseInt(httpRequest.getParameter(parameter));
 				
 			} else if (parameter.toLowerCase().equals("key")) {
-				
-				//this.key = httpRequest.getParameter(parameter);				
+	
 				try {
 					this.key = Util.formatPEAkey(httpRequest.getParameter(parameter));
 				} catch (InvalidKeyException e) {
