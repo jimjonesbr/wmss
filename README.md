@@ -22,6 +22,7 @@ The application relies on datasets encoded using the [MusicOWL ontology](http://
     - [Service Description Report](#service-description-report)
   - [ListScores](#listscores)
     - [Data Source](#data-source)  
+    - [Title](#title)      
     - [Collections](#collections)  
     - [Persons](#persons)  
     - [Performance Medium (Instrument)](#performance-medium-instrument)  
@@ -370,6 +371,15 @@ An example of a Service Description Report can be found [here](https://github.co
  http://localhost:8295/wmss?request=ListScores&source=neo4j_local
  ```
 
+ #### [Title](https://github.com/jimjonesbr/wmss/blob/master/README.md#title)
+Parameter: `title` 
+ 
+ Searches for scores containing a certain string in the title (case insensitive).
+ 
+ ```http
+ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&title=cellokonzert
+```
+ 
  #### [Collections](https://github.com/jimjonesbr/wmss/blob/master/README.md#collections)
 Parameter: `collection`
 
