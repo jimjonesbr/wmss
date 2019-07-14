@@ -679,6 +679,11 @@ public class Neo4jEngine {
 		}
 		
 				
+		if(!wmssRequest.getTitle().equals("")){
+		
+			where = where + "AND scr.title =~ '(?i).*"+wmssRequest.getTitle()+".*'\n";
+			
+		}
 		
 		if(!wmssRequest.getPerformanceMedium().equals("") || 
 		   !wmssRequest.getPerformanceMediumType().equals("") &&

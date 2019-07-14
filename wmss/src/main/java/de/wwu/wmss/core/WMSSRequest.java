@@ -23,7 +23,8 @@ public class WMSSRequest {
 	private String performanceMedium = "";
 	private String performanceMediumType = "";
 	private boolean solo = false;
-
+	private String title = "";
+	
 	private String tonalityTonic = "";
 	private String tonalityMode = "";
 
@@ -139,6 +140,10 @@ public class WMSSRequest {
 			} else if (parameter.toLowerCase().equals("identifier")) {
 				
 				this.identifier = httpRequest.getParameter(parameter);
+			
+			} else if (parameter.toLowerCase().equals("title")) {
+				
+				this.title = httpRequest.getParameter(parameter);
 				
 			} else if (parameter.toLowerCase().equals("version")) {
 				
@@ -473,8 +478,11 @@ public class WMSSRequest {
 	public String getClef() {
 		return clef;
 	}
-	
-	
 
+	public String getTitle() {
+		return title;
+	}
+
+	
 		
 }

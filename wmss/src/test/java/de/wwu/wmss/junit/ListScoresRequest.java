@@ -185,6 +185,33 @@ public class ListScoresRequest {
 				
 		assertEquals(true, this.listScoresRequest(score, location, parameters));
 	}
+	
+	
+	@Test
+	public void elgarCelloConcerto_6Notes_Full_Title() {
+		
+		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
+		parameters.add(new RequestParameter("ignoreOctave", "false"));
+		parameters.add(new RequestParameter("ignorePitch", "false"));
+		parameters.add(new RequestParameter("ignoreDuration", "false"));
+		parameters.add(new RequestParameter("melody", ",8AB'CDxDExE"));
+		parameters.add(new RequestParameter("title", "op. 85"));
+		parameters.add(new RequestParameter("source", source));
+		
+		MusicScore score = new MusicScore();
+		score.setTitle("Cellokonzert e-Moll op. 85");
+		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setDateIssued("1919");		
+		MelodyLocation location = new MelodyLocation();
+		location.setStartingMeasure("8");
+		location.setVoice("1");
+		location.setStaff("1");
+		location.setInstrumentName("Violoncello");
+		location.setMovementName("Adagio");
+		location.setMelody(",8AB'CDxDExE");
+				
+		assertEquals(true, this.listScoresRequest(score, location, parameters));
+	}
 
 	@Test
 	public void elgarCelloConcerto_36Notes_Full() {

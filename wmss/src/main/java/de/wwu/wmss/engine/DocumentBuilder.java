@@ -16,7 +16,6 @@ import de.wwu.wmss.core.WMSSRequest;
 import de.wwu.wmss.settings.SystemSettings;
 import de.wwu.wmss.settings.Util;
 
-@SuppressWarnings("deprecation")
 public class DocumentBuilder {
 
 	private static Logger logger = Logger.getLogger("ServiceExceptionHandler");
