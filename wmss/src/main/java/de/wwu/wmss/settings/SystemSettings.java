@@ -64,7 +64,6 @@ public class SystemSettings {
 	        	logger.error("Problem reading pom.xml.");
 			}
 			
-
 			port = Integer.parseInt(jsonObject.get("port").toString());
 			pageSize = Integer.parseInt(jsonObject.get("pageSize").toString());
 			timeout = Integer.parseInt(jsonObject.get("timeout").toString());
@@ -84,9 +83,8 @@ public class SystemSettings {
 
 		} catch (Exception e) {
 
-			logger.fatal("Configuration file not found. Shutting system down ..");
-			System.exit(1);
-
+			logger.fatal("Configuration file not found!");
+			
 		}
 
 	}
@@ -227,4 +225,3 @@ public class SystemSettings {
 	
 		
 }
-

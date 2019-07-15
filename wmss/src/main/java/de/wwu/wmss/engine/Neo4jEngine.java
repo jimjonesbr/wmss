@@ -290,28 +290,31 @@ public class Neo4jEngine {
 		logger.debug("getFormats:\n" + cypher);
 
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);
-		Record record = rs.next();
-
-		if(record.get("musicxml").asBoolean()) {
-			Format musicxml = new Format();
-			musicxml.setFormatId("musicxml");
-			musicxml.setFormatDescription("MusicXML");
-			result.add(musicxml);
+		
+		if(rs.hasNext()) {
+				
+			Record record = rs.next();
+	
+			if(record.get("musicxml").asBoolean()) {
+				Format musicxml = new Format();
+				musicxml.setFormatId("musicxml");
+				musicxml.setFormatDescription("MusicXML");
+				result.add(musicxml);
+			}
+	
+			cypher = "\n\nMATCH (scr:Score)\n" + 
+					 "RETURN DISTINCT CASE WHEN scr.asMEI IS NULL THEN FALSE ELSE TRUE END AS mei\n";
+	
+			rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);
+			record = rs.next();
+	
+			if(record.get("mei").asBoolean()) {
+				Format musicxml = new Format();
+				musicxml.setFormatId("mei");
+				musicxml.setFormatDescription("MEI");
+				result.add(musicxml);
+			}
 		}
-
-		cypher = "\n\nMATCH (scr:Score)\n" + 
-				 "RETURN DISTINCT CASE WHEN scr.asMEI IS NULL THEN FALSE ELSE TRUE END AS mei\n";
-
-		rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);
-		record = rs.next();
-
-		if(record.get("mei").asBoolean()) {
-			Format musicxml = new Format();
-			musicxml.setFormatId("mei");
-			musicxml.setFormatDescription("MEI");
-			result.add(musicxml);
-		}
-
 		return result;
 	}
 		
@@ -877,7 +880,7 @@ public class Neo4jEngine {
 				"    {persons: COLLECT(DISTINCT\n" + 
 				"       {name: creator.name, \n" + 
 				"     	 identifier: creator.uri, \n" +
-				"	     role: labels(creator)[2]} \n" + 
+				"	     role: labels(creator)[1]} \n" + 
 				"    )} AS persons,";
 		
 		if(!request.getMelody().equals("")) {
