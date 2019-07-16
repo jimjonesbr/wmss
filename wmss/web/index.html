@@ -1,9 +1,158 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>	
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>	
+</head>
+
 <body>
-	<h2>WMSS File Upload (RDF/Turtle)</h2>
-	<form action="http://localhost:8295/wmss/import?source=neo4j_local&format=turtle&commitsize=10000" method="post" enctype="multipart/form-data">
-		<input type="file" name="file" multiple/>
-		<input type="submit">
+	<h2>WMSS File Upload</h2>
+	<h2 id="title"></h2><br>
+	<b>Started at:</b> <span id="started"></span><br>
+	<b>Contact:</b> <span id="contact"></span><br>
+	<b>Port:</b> <span id="port"></span><br>
+	<b>Service:</b> <span id="service"></span><br>
+	<br/>
+	Data Source: 
+		<select id="ds"></select><br/>
+		<b>Storage:</b> <span id="ds_storage"></span><br>
+		<b>Type:</b> <span id="ds_type"></span><br>
+		<b>Version:</b> <span id="ds_version"></span><br>
+		<b>Host:</b> <span id="ds_host"></span><br>
+		<b>Port:</b> <span id="ds_port"></span><br>		
+		<b>Description:</b> <span id="ds_description"></span><br>
+		<b>Total Scores:</b> <span id="ds_totalscores"></span>
+	<br><br>
+	RDF Format: 
+		<select id="format"> 
+			<option value="n-triples">N-Triples</option>
+			<option value="turtle" selected="selected">Turtle</option>
+			<option value="rdf/xml">RDF/XML</option>
+			<option value="json-ld">JSON-LD</option>
+		</select>
+	Batch size: <input id="bacth_size" value="10000"></input>
+
+	<form id="formImport" method="post" enctype="multipart/form-data">
+		<input id="input_files" type="file" name="file" multiple/>
 	</form>
+	<br>
+	<button id="btnImport">Import RDF</button>
+	<br><br>
+	<span id="working"></span><br>		
+	<table id="tbRedsult"></table>
+<script type="text/javascript">
+
+	var sources;
+
+	$( document ).ready(function() {
+
+		$("#ds option").remove();
+
+	    $.getJSON("http://"+window.location.host+"/"+window.location.pathname.split('/')[1]+"?request=DescribeService", function(data){
+
+	        sources=data["datasources"];
+
+	        $('#title').text(data["title"]);
+	        $('#started').text(data["startup"]);
+	        $('#contact').text(data["contact"]);
+	        $('#service').text(data["service"]);
+	        $('#port').text(data["port"]);
+
+	        for (var i = sources.length - 1; i >= 0; i--) {
+	        	 var src = sources[i];
+	        	 var o = new Option(src["id"], src["id"]);	
+	        	 $('#ds_description').text(src["info"]);
+	        	 $('#ds_host').text(src["host"]);
+	        	 $('#ds_port').text(src["port"]);
+	        	 $('#ds_type').text(src["type"]);
+	        	 $('#ds_storage').text(src["storage"]);
+	        	 $('#ds_version').text(src["version"]);
+	        	 $('#ds_totalscores').text(src["totalScores"]);
+	        	 $('#ds').append(o);           
+	    	}
+
+	  	});
+
+	});	
+
+	$("#btnImport").click(function(){
+
+		$("#btnImport").prop('disabled',true);
+
+	    var url= 'http://' + 
+	             window.location.hostname + ':' +
+	             $('#port').text() + '/'+$('#service').text()+'/import?source='+$('#ds').find(':selected').val() +
+	             '&format='+$('#format').find(':selected').val() + 
+	             '&commitsize='+$('#bacth_size').val();                 
+
+	    console.log(">>>>"+url);  
+	    $('#tbRedsult').attr('border', '1');
+	    $("#tbRedsult tr").remove();
+	       		
+	    $.each($('#input_files')[0].files, function(i, file) {
+	      
+	        var data = new FormData();
+	        data.append('file-'+i, file);
+	       
+
+	        $.ajax({  
+	             type: "POST",  
+	             url: url,  
+	             data: data,
+	             async: false,
+	             cache: false,
+	             contentType: false,
+	             processData: false,
+	             success: function(data) {
+	                 
+	                console.log(data);
+
+	                var report = JSON.parse(data);
+	                var type = report["type"];
+	                
+	                if(type == "ExceptionReport"){
+	                	$('#tbRedsult').append('<tr style="color: red"><td>'+file.name + '</td>' + 
+	                		'<td>'+ report["code"] + ' - ' + report["message"] +
+	             			'<td >Fail</td>' + '</td></tr>'
+	                						   );
+	                } 	                 
+
+	                if(type == "ImportReport"){
+
+	                	var importedFile = report["files"][0];
+	                	console.log(importedFile);
+	                	$('#tbRedsult').append('<tr><td>'+file.name + '</td>' +               
+	                						   '<td>'+importedFile["records"]+' records ('+ importedFile["size"]+ ')</td>'
+	                						   		 + '<td>Success</td></tr>');
+	                }
+
+	             }
+	        });       
+
+	    });
+
+	$("#btnImport").prop('disabled',false);
+	});
+
+	$('#ds').on('click', function() {
+
+		for (var i = sources.length - 1; i >= 0; i--) {
+        	 var src = sources[i];
+
+        	 if(src["id"]==this.value){
+	        	 $('#ds_description').text(src["info"]);
+	        	 $('#ds_host').text(src["host"]);
+	        	 $('#ds_port').text(src["port"]);
+	        	 $('#ds_type').text(src["type"]);
+	        	 $('#ds_storage').text(src["storage"]);
+	        	 $('#ds_version').text(src["version"]);
+	        	 $('#ds_totalscores').text(src["totalScores"]);
+        	}
+      
+    	}
+
+	});
+
+</script>
+
 </body>	
 </html>

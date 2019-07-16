@@ -25,6 +25,8 @@ public class ServletWMSS extends HttpServlet
 		try {
 
 			logger.info("GET Request String -> " + httpRequest.getQueryString());
+			logger.info("GET RequestURL -> " + httpRequest.getRequestURL());
+			
 			WMSSRequest wmssRequest = new WMSSRequest(httpRequest);
 
 			response.addHeader("Access-Control-Allow-Origin","*");
