@@ -5,11 +5,67 @@
 	</head>
 
 	<body>			
-		<h2>WMSS Scores Management</h2>
+		<h2>WMSS Score Management</h2>
 
+		Data Source: 
+		<select id="ds">
+			<option>neo4j_local</option>
+
+		</select> <button id="btnLoad">Load</button> <br/><br>
+		<table id="tbRedsult"></table>
 		<script type="text/javascript">
 
-			console.log("x");
+			$("#btnLoad").click(function(){
+
+				$('#tbRedsult').attr('border', '1');
+	    		$("#tbRedsult tr").remove();
+
+	    		var url = "http://"+window.location.host+"/"+window.location.pathname.split('/')[1];
+
+				$.getJSON(url+"?source=neo4j_local&request=ListScores", function(data){
+
+					var sources = data["datasources"];
+
+					for (i = 0; i < sources.length; i++) { 
+        	 			
+        	 			var src = sources[i];
+        	 			
+        	 			if(src["identifier"]=='neo4j_local'){
+
+        	 				var scores = src["scores"];
+
+							for (j = 0; j < scores.length; j++) { 
+        	 				
+        	 					var sc = scores[j];
+        	 					var movements = sc["movements"];
+        	 					var movements_string = "";
+
+        	 					console.log(sc["title"]);
+
+        	 					for (k = 0; k < movements.length; k++) { 
+
+        	 						var mov = movements[k];
+
+        	 						movements_string = movements_string + mov["movementName"] + "<br>";
+
+        	 					}
+
+        	 					$('#tbRedsult').append('<tr>' +
+        	 					'<td><img style="max-width: 125px" src="'+ sc["thumbnail"] + '"/></td>' +
+        	 					'<td>'+sc["scoreIdentifier"] + '</td>' + 
+	                			'<td>'+ sc["title"] + '</td>' +
+	                			'<td>'+ sc["dateIssued"] + '</td>' +	                			
+	                			'<td>'+ movements_string + '</td>' +	 
+	             				'<td><a href="">Delete</></td></tr>');
+
+
+        	 				}
+
+        	 			}
+        	 		}
+				});
+
+			});
 
 		</script>
 	</body>	

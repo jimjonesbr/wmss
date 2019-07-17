@@ -8,11 +8,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import de.wwu.wmss.settings.SystemSettings;
 
 
 public class ServletWebAdmin extends HttpServlet {
 
+	private static Logger logger = Logger.getLogger("ServletImport");
 	private static final long serialVersionUID = 1L;
 	
 	protected void doGet(HttpServletRequest httpRequest, HttpServletResponse response) throws ServletException, IOException {
@@ -21,7 +24,7 @@ public class ServletWebAdmin extends HttpServlet {
 		response.addHeader("Access-Control-Allow-Methods","GET,POST");
 		response.addHeader("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");
 
-		System.out.println("SERVLET WEBADMIN - getRequestURL() >>> "+httpRequest.getRequestURI());
+		logger.info("GET RequestURL -> " + httpRequest.getRequestURL());
 		
 		StringBuilder contentBuilder = new StringBuilder();
 		try {

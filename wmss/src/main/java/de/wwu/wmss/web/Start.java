@@ -2,7 +2,6 @@ package de.wwu.wmss.web;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import de.wwu.wmss.settings.SystemSettings;
@@ -57,7 +56,6 @@ public class Start implements Runnable {
 				"Port: " + SystemSettings.getPort() + "\n" +
 				"Application Startup: " + SystemSettings.getStartup() + "\n" +
 				"Default Melody Encoding: " + SystemSettings.getDefaultMelodyEncoding() + "\n" +
-
 				"Time-out: " + SystemSettings.getTimeout()+ "ms" + "\n" +
 				"Page Size: " + SystemSettings.getPageSize() + " records " + "\n" +
 				"System Administrator: " + SystemSettings.getContact()  + "\n");

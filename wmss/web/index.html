@@ -5,7 +5,7 @@
 </head>
 
 <body>
-	<a href="scores.html">Manage Scores</a>
+	<a href="admin/scores.html">Manage Scores</a>
 	<h2>WMSS File Upload</h2>
 	<span id="title"></span><br>
 	<b>Started at:</b> <span id="started"></span><br>
@@ -113,8 +113,7 @@
 	                if(type == "ExceptionReport"){
 	                	$('#tbRedsult').append('<tr style="color: red"><td>'+file.name + '</td>' + 
 	                		'<td>'+ report["code"] + ' - ' + report["message"] +
-	             			'<td >Fail</td>' + '</td></tr>'
-	                						   );
+	             			'<td >Fail</td>' + '</td></tr>');
 	                } 	                 
 
 	                if(type == "ImportReport"){

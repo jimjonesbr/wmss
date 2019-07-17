@@ -396,7 +396,7 @@ public class Neo4jEngine {
 				"   beatsPerMinute: beatsPerMinute,\n" + 
 				"   mediumsList: COLLECT(mediumsListResultset)} AS movementsResultset \n";
 
-		logger.debug("getMovementData:\n"+cypher);
+		logger.info("getMovementData:\n"+cypher);
 		
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, dataSource);
 
@@ -450,8 +450,10 @@ public class Neo4jEngine {
 					}
 					
 					movement.getPerformanceMediumList().add(mediumType);
-					result.add(movement);
+					
 				}
+				
+				result.add(movement);
 				
 			}  catch (org.json.simple.parser.ParseException e) {
 				e.printStackTrace();
