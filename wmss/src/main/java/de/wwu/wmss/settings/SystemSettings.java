@@ -21,6 +21,7 @@ public class SystemSettings {
 	private static String service;
 	private static String defaultMelodyEncoding;
 	private static String title;
+	private static String importdDirectory = "";
 	private static int timeout;
 	private static String contact;
 	private static String defaultProtocol = "";
@@ -76,7 +77,7 @@ public class SystemSettings {
 			defaultRDFFormat= jsonObject.get("defaultRDFFormat").toString();
 			defaultCommitSize= jsonObject.get("defaultCommitSize").toString();
 			logPreview = Integer.parseInt(jsonObject.get("logpreview").toString());
-
+			importdDirectory= jsonObject.get("importDicretory").toString();
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			Date date = new Date();
 			startup = dateFormat.format(date); 
@@ -221,6 +222,10 @@ public class SystemSettings {
 
 	public static String getDefaultProtocol() {
 		return defaultProtocol;
+	}
+
+	public static String getImportdDirectory() {
+		return importdDirectory;
 	}
 	
 		

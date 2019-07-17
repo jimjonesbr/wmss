@@ -29,6 +29,7 @@ import de.wwu.wmss.engine.DocumentBuilder;
 import de.wwu.wmss.engine.Neo4jEngine;
 import de.wwu.wmss.exceptions.InvalidWMSSRequestException;
 import de.wwu.wmss.exceptions.ScoreExistsException;
+import de.wwu.wmss.settings.SystemSettings;
 
 public class ServletImport extends HttpServlet {
 
@@ -39,10 +40,12 @@ public class ServletImport extends HttpServlet {
 
 		ServletFileUpload sf = new ServletFileUpload(new DiskFileItemFactory());
 
-		File uploadDiretory = new File("upload/");
+		File uploadDiretory = new File(SystemSettings.getImportdDirectory());
 		
+		System.out.println(SystemSettings.getImportdDirectory());
 		if (!uploadDiretory.exists()) {
 			uploadDiretory.mkdirs();
+			
 		}
 		
 		try {
@@ -62,7 +65,7 @@ public class ServletImport extends HttpServlet {
 			for(FileItem item : multifiles) {
 
 				File file = new File(uploadDiretory.getAbsolutePath()+"/"+item.getName());
-				logger.info("Uploaded: " + uploadDiretory.getAbsolutePath()+"/"+item.getName() );
+				logger.debug("Uploaded: " + uploadDiretory.getAbsolutePath()+"/"+item.getName() );
 				item.write(file);	
 				
 				isFileValid(file,importRequest);

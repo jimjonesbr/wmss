@@ -106,9 +106,5 @@ public class DataSource {
 	public void setNeo4jConnectionDriver(Driver connectionDriver) {
 		this.neo4jConnectionDriver = connectionDriver;
 	}
-
-
-
-
 	
 }
