@@ -2,6 +2,7 @@ package de.wwu.wmss.web;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import de.wwu.wmss.settings.SystemSettings;
@@ -30,6 +31,8 @@ public class Start implements Runnable {
 
 		org.eclipse.jetty.util.log.Log.setLog(null);		
 
+		
+		
 		SystemSettings.loadSystemSettings();
 		SystemSettings.loadDataSources();
 
@@ -37,8 +40,11 @@ public class Start implements Runnable {
 		contextAPI.setContextPath("/"+SystemSettings.getService());
 		contextAPI.addServlet(new ServletHolder(new ServletWMSS()),"/*");
 		contextAPI.addServlet(new ServletHolder(new ServletImport()),"/import");
-		contextAPI.addServlet(new ServletHolder(new ServletWebAdmin()),"/admin");
+		contextAPI.addServlet(new ServletHolder(new ServletWebAdmin()),"/admin/*");
 		contextAPI.addServlet(new ServletHolder(new ServletFileAccess()),"/file");
+		
+		ServletContextHandler contextWebAdmin = new ServletContextHandler(ServletContextHandler.SESSIONS);
+		contextWebAdmin.setContextPath("/admin");
 		
 		if(port!=0) {
 			SystemSettings.setPort(port);
@@ -58,7 +64,7 @@ public class Start implements Runnable {
 		
 		Server server = new Server(SystemSettings.getPort());	
 		server.setHandler(contextAPI);
-
+		
 		try {
 
 			server.start();

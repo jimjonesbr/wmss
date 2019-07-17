@@ -38,7 +38,7 @@ public class ServletWMSS extends HttpServlet
 
 				response.setContentType("text/plain");
 				response.setStatus(HttpServletResponse.SC_OK);
-				response.getWriter().println(Util.loadFileTail(new File("logs/system.log"), wmssRequest.getLogPreview()));
+				response.getWriter().println(Util.loadFileTail(new File("log/wmss.log"), wmssRequest.getLogPreview()));
 
 			} else if (wmssRequest.getRequestType().equals("describeservice")) {
 
