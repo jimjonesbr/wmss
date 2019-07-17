@@ -563,7 +563,7 @@ public class ListScoresRequest {
 		parameters.add(new RequestParameter("source", source));
 		
 		MusicScore score = new MusicScore();
-		score.setTitle("Sieges Märsche für's Piano-Forte");
+		score.setTitle("Sieges Mærsche für's Piano-Forte : gewidmet den Witwen und Waisen der Landwehr-mäner des k.k. Hoch und Deutschmeister Regiments");
 		score.setScoreId("https://sammlungen.ulb.uni-muenster.de/id/5393365");
 		score.setDateIssued("1850");		
 		MelodyLocation location = new MelodyLocation();

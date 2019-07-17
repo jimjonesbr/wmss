@@ -19,5 +19,6 @@ CREATE (:NamespacePrefixDefinition {
   `http://www.w3.org/2004/02/skos/core#`: 'skos',
   `http://purl.org/ontology/mo/mit#`: 'mit',
   `http://dbpedia.org/ontology/`: 'dbont',
+  `http://dbpedia.org/property/`: 'dbo',
   `http://dbpedia.org/resource/`: 'dbpedia'
 });

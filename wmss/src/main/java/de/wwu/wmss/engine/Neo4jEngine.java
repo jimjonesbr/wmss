@@ -892,7 +892,7 @@ public class Neo4jEngine {
 				"    COLLECT(DISTINCT{ \n" + 
 				"      movementIdentifier: mov.uri,\n" + 
 				"      movementName: mov.title,\n" + 
-				"      startingMeasure: measure1.label, \n" + 
+				"      startingMeasure: measure1.order, \n" + 
 				"      staff: ns0.staff, \n" + 
 				"      voice: ns0.voice, \n" + 
 				"      instrumentName: part.description \n" + 

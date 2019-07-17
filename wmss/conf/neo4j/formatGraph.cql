@@ -130,8 +130,9 @@ WITH mov,CASE unit WHEN NULL THEN "unknown"
          ELSE LOWER(SUBSTRING(unit.uri,54))
 		 END AS b
 WHERE mov.beatUnit IS NULL
-SET mov.beatUnit = b
-RETURN COUNT(mov) AS movements_beatunit;
+SET mov.beatUnit = b, 
+    mov.order = mov.dbo__order
+REMOVE mov.dbo__order;
 
 
 MATCH (score:mo__Score)
@@ -183,8 +184,8 @@ RETURN COUNT(score.asMEI) AS asMEI;
 
 MATCH (part:mso__ScorePart)-[r3:mso__hasMeasure]->(measure:mso__Measure)-[r0:mso__hasKey]-(key)-[r1:ton__tonic]->(tonicNode)
 MATCH (measure:mso__Measure)-[r0:mso__hasKey]-(key)-[r2:ton__mode]->(modeNode)
-SET measure.label = measure.rdfs__label
-REMOVE measure.rdfs__label
+SET measure.order = measure.dbo__order
+REMOVE measure.dbo__order
 CREATE (part)-[:MEASURE]->(measure)
 DETACH DELETE r3;
 
@@ -194,7 +195,7 @@ CREATE (measure)-[:NOTESET]->(noteset)
 DELETE r1;
 
 MATCH (score:mo__Score)-[r1:dc__creator]->(person:foaf__Person)
-MATCH (person)-[r2:dbont__occupation]->(occupation)
+MATCH (person)-[r2:dbo__occupation]->(occupation)
 MATCH (person)-[r3:gndo__professionOrOccupation]->(role:prov__Role) 	
 MATCH (person)-[r4:prov__hadRole]->(role:prov__Role)
 WITH score,person,occupation,role,r1,r2,r3,r4,
@@ -223,7 +224,7 @@ MATCH (person)-[r3:gndo__professionOrOccupation]->(role:prov__Role)
 MATCH (person)-[r4:prov__hadRole]->(role:prov__Role)
 MATCH (person)-[r5:dbont__occupation]->(occupation)
 SET person:Encoder,	
-	person.roleUri = 'http://dbpedia.org/resource/EncoderXX',
+	person.roleUri = 'http://dbpedia.org/resource/Encoder',
 	person.name = person.foaf__name
 CREATE (score)-[:CREATOR]->(person)
 CREATE (activity)-[:ASSOCIATEDWITH]->(person)
