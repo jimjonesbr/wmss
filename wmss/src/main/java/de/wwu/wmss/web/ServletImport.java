@@ -39,13 +39,10 @@ public class ServletImport extends HttpServlet {
 	protected void doPost(HttpServletRequest httpRequest, HttpServletResponse response) throws ServletException, IOException{
 
 		ServletFileUpload sf = new ServletFileUpload(new DiskFileItemFactory());
-
 		File uploadDiretory = new File(SystemSettings.getImportdDirectory());
-		
-		System.out.println(SystemSettings.getImportdDirectory());
+
 		if (!uploadDiretory.exists()) {
-			uploadDiretory.mkdirs();
-			
+			uploadDiretory.mkdirs();			
 		}
 		
 		try {

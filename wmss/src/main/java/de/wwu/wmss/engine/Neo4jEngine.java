@@ -379,6 +379,7 @@ public class Neo4jEngine {
 				"  mov.uri AS movementIdentifier,\n" + 
 				"  mov.title AS  movementName,\n" + 
 				"  mov.beatUnit AS beatUnit,\n" + 
+				"  mov.order AS movOrder,\n" +				
 				"  mov.beatsPerMinute AS beatsPerMinute,    \n" + 
 				"    {type: mediumType.mediumTypeDescription,\n" + 
 				"     typeIdentifier: mediumType.mediumTypeId,\n" + 
@@ -394,7 +395,8 @@ public class Neo4jEngine {
 				"   movementName: movementName, \n" + 
 				"   beatUnit: beatUnit,\n" + 
 				"   beatsPerMinute: beatsPerMinute,\n" + 
-				"   mediumsList: COLLECT(mediumsListResultset)} AS movementsResultset \n";
+				"   mediumsList: COLLECT(mediumsListResultset)} AS movementsResultset,movOrder \n"+
+				"ORDER BY movOrder \n";
 
 		logger.info("getMovementData:\n"+cypher);
 		
