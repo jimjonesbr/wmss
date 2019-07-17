@@ -15,14 +15,14 @@
 		<table id="tbRedsult"></table>
 		<script type="text/javascript">
 
+			var url = "http://"+window.location.host+"/"+window.location.pathname.split('/')[1];
+
 			$("#btnLoad").click(function(){
 
 				$('#tbRedsult').attr('border', '1');
 	    		$("#tbRedsult tr").remove();
 
-	    		var url = "http://"+window.location.host+"/"+window.location.pathname.split('/')[1];
-
-				$.getJSON(url+"?source=neo4j_local&request=ListScores", function(data){
+				$.getJSON(url+"?source="+$('#ds').val()+"&request=ListScores", function(data){
 
 					var sources = data["datasources"];
 
@@ -30,7 +30,7 @@
         	 			
         	 			var src = sources[i];
         	 			
-        	 			if(src["identifier"]=='neo4j_local'){
+        	 			if(src["identifier"]==$('#ds').val()){
 
         	 				var scores = src["scores"];
 
@@ -50,14 +50,13 @@
 
         	 					}
 
-        	 					$('#tbRedsult').append('<tr>' +
+        	 					$('#tbRedsult').append('<tr id="'+sc["scoreIdentifier"]+'">' +
         	 					'<td><img style="max-width: 125px" src="'+ sc["thumbnail"] + '"/></td>' +
         	 					'<td>'+sc["scoreIdentifier"] + '</td>' + 
 	                			'<td>'+ sc["title"] + '</td>' +
 	                			'<td>'+ sc["dateIssued"] + '</td>' +	                			
 	                			'<td>'+ movements_string + '</td>' +	 
-	             				'<td><a href="">Delete</></td></tr>');
-
+	             				'<td><a href="javascript:deleteScore(\''+sc["scoreIdentifier"]+'\')">Delete</a></td></tr>');
 
         	 				}
 
@@ -66,6 +65,24 @@
 				});
 
 			});
+
+
+			function deleteScore(identifier){
+
+				var row = document.getElementById(identifier);
+				row.getElementsByTagName('td')[5].innerHTML="Working ..";
+
+				$.getJSON(url+'?source='+$('#ds').val()+'&request=DeleteScore&identifier='+identifier, function(data){
+
+					if(data["type"]=='DeleteScoresReport'){						
+						row.parentNode.removeChild(row);
+					} else {
+						alert("Record could not be deleted");
+						row.getElementsByTagName('td')[5].innerHTML='<a href="javascript:deleteScore(\''+identifier+'\')">Delete</a>';
+
+					}
+				});
+			}
 
 		</script>
 	</body>	

@@ -94,7 +94,7 @@ public class ServletImport extends HttpServlet {
 
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().println(DocumentBuilder.getServiceExceptionReport(ErrorCodes.SCORE_EXISTS_CODE, ErrorCodes.SCORE_EXISTS_DESCRIPTION + ". Import aborted!", e.getMessage()));
+			response.getWriter().println(DocumentBuilder.getServiceExceptionReport(ErrorCodes.SCORE_EXISTS_CODE, ErrorCodes.SCORE_EXISTS_DESCRIPTION, e.getMessage()));
 			e.printStackTrace();
 		
 		} catch (RiotException e) {
