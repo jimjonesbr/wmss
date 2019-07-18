@@ -85,7 +85,6 @@
 	             '&format='+$('#format').find(':selected').val() + 
 	             '&commitsize='+$('#bacth_size').val();                 
 
-	    console.log(">>>>"+url);  
 	    $('#tbRedsult').attr('border', '1');
 	    $("#tbRedsult tr").remove();
 	       		
@@ -112,7 +111,7 @@
 	                
 	                if(type == "ExceptionReport"){
 	                	$('#tbRedsult').append('<tr style="color: red"><td>'+file.name + '</td>' + 
-	                		'<td>'+ report["code"] + ' - ' + report["message"] +
+	                		'<td>'+ report["code"] + ' - ' + report["message"] + 
 	             			'<td >Fail</td>' + '</td></tr>');
 	                } 	                 
 
@@ -121,7 +120,7 @@
 	                	var importedFile = report["files"][0];
 	                	console.log(importedFile);
 	                	$('#tbRedsult').append('<tr><td>'+file.name + '</td>' +               
-	                						   '<td>'+importedFile["records"]+' records ('+ importedFile["size"]+ ')</td>'
+	                						   '<td>'+importedFile["records"]+' records ('+ importedFile["size"]+ ') <br>' + report["timeElapsed"] +' </td>'
 	                						   		 + '<td>Success</td></tr>');
 	                }
 

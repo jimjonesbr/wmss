@@ -414,7 +414,11 @@ public class Neo4jEngine {
 				
 				JSONObject movementsObject = (JSONObject) parser.parse(gson.toJson(record.get("movementsResultset").asMap()));
 				movement.setMovementIdentifier(movementsObject.get("movementIdentifier").toString().trim());
-				movement.setMovementName(movementsObject.get("movementName").toString());
+				if(movementsObject.get("movementName")!=null) {
+					movement.setMovementName(movementsObject.get("movementName").toString());
+				} else {
+					movement.setMovementName("");
+				}
 				movement.setBeatUnit(movementsObject.get("beatUnit").toString());
 				movement.setBeatsPerMinute(Integer.parseInt(movementsObject.get("beatsPerMinute").toString()));
 				
@@ -1003,7 +1007,13 @@ public class Neo4jEngine {
 
 					JSONObject locationJsonObject = (JSONObject) melodyJsonArray.get(i);	    			
 					MelodyLocation location = new MelodyLocation();
-					location.setInstrumentName(locationJsonObject.get("instrumentName").toString());
+					if(locationJsonObject.get("instrumentName")!=null) {
+						location.setInstrumentName(locationJsonObject.get("instrumentName").toString());	
+					} else {
+						location.setInstrumentName("(no title)");
+					}
+						
+					
 					location.setVoice(locationJsonObject.get("voice").toString());
 					location.setStaff(locationJsonObject.get("staff").toString());
 					location.setStartingMeasure(locationJsonObject.get("startingMeasure").toString());
@@ -1021,7 +1031,12 @@ public class Neo4jEngine {
 					if(!movementAdded) {    					
 						MelodyLocationGroup loc = new MelodyLocationGroup();    					
 						loc.setMovementId(locationJsonObject.get("movementIdentifier").toString());
-						loc.setMovementName(locationJsonObject.get("movementName").toString().trim());
+						if(locationJsonObject.get("movementName")!=null) {
+							loc.setMovementName(locationJsonObject.get("movementName").toString().trim());	
+						} else {
+							loc.setMovementName("(no title)");
+						}
+						
 						loc.getMelodyLocation().add(location);
 						result.add(loc);
 					}    					    			

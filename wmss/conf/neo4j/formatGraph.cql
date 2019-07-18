@@ -32,7 +32,7 @@ RETURN COUNT(node) AS durations;
 
 MATCH (scr:mo__Score)-[:mo__movement]->(mov:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:mso__hasStaff]->(staff:mso__Staff)-[:mso__hasVoice]->(voice:mso__Voice)-[:mso__hasNoteSet]->(noteset)
 OPTIONAL MATCH (collection:prov__Collection)-[:prov__hadMember]->(scr:mo__Score)
-OPTIONAL MATCH (scr:mo__Score)-[:dc__creator]->(creator:foaf__Person)-[:gndo__professionOrOccupation]->(role:prov__Role)
+OPTIONAL MATCH (scr:mo__Score)-[:dc__creator]->(creator:foaf__Person)-[:dbo__occupation]->(role)
 OPTIONAL MATCH (scr:mo__Score)-[:foaf__thumbnail]->(thumbnail)
 SET scr.thumbnail = thumbnail.uri,
     noteset.voice = voice.rdfs__label, 
@@ -40,7 +40,7 @@ SET scr.thumbnail = thumbnail.uri,
     scr.collectionUri =  collection.uri, 
     scr.collectionLabel = collection.rdfs__label,
     creator.roleUri = role.uri, 
-    creator.roleName = role.gndo__preferredNameForTheSubjectHeading
+    creator.roleName = role.rdfs_label
 RETURN COUNT(noteset) AS voice_staff_collection_role_dateissued;
 
 
@@ -196,9 +196,8 @@ DELETE r1;
 
 MATCH (score:mo__Score)-[r1:dc__creator]->(person:foaf__Person)
 MATCH (person)-[r2:dbo__occupation]->(occupation)
-MATCH (person)-[r3:gndo__professionOrOccupation]->(role:prov__Role) 	
 MATCH (person)-[r4:prov__hadRole]->(role:prov__Role)
-WITH score,person,occupation,role,r1,r2,r3,r4,
+WITH score,person,occupation,role,r1,r2,r4,
   CASE occupation.uri
       WHEN 'http://dbpedia.org/resource/Composer' THEN 'Composer'
       WHEN 'http://dbpedia.org/resource/Lyricist' THEN 'Lyricist'
@@ -214,21 +213,20 @@ WITH score,person,occupation,role,r1,r2,r3,r4,
 CALL apoc.create.addLabels(id(person),[occupationType]) YIELD node
 CREATE (score)-[:CREATOR]->(person)
 SET person.name = person.foaf__name
-DELETE r1,r2,r3,r4
+DELETE r1,r2,r4
 RETURN COUNT(person);
 
 
 MATCH (person:foaf__Person)<-[r1:prov__wasAssociatedWith]-(activity:prov__Activity)
 MATCH (activity:prov__Activity)-[r2:prov__generated]->(score:mo__Score)
-MATCH (person)-[r3:gndo__professionOrOccupation]->(role:prov__Role)
 MATCH (person)-[r4:prov__hadRole]->(role:prov__Role)
-MATCH (person)-[r5:dbont__occupation]->(occupation)
+MATCH (person)-[r5:dbo__occupation]->(occupation)
 SET person:Encoder,	
 	person.roleUri = 'http://dbpedia.org/resource/Encoder',
 	person.name = person.foaf__name
 CREATE (score)-[:CREATOR]->(person)
 CREATE (activity)-[:ASSOCIATEDWITH]->(person)
-DELETE r1,r3,r4,r5;
+DELETE r1,r4,r5;
 
 
 MATCH (score:mo__Score)-[r:mo__movement]->(movement:mo__Movement) 
@@ -316,12 +314,12 @@ DELETE r;
 
 
 
-MATCH (person)-[r2:dbont__occupation]->(occupation)
+MATCH (person)-[r2:dbo__occupation]->(occupation)
 MATCH (person)-[r3:gndo__professionOrOccupation]->(role:prov__Role) 
 DETACH DELETE role,occupation; 
 
 MATCH (person)-[r4:prov__hadRole]->(role:prov__Role)
-MATCH (person)-[r5:dbont__occupation]->(occupation)
+MATCH (person)-[r5:dbo__occupation]->(occupation)
 DETACH DELETE role,occupation;
 
 MATCH (measure:mso__Measure)-[r:mso__hasTime]->(time)
