@@ -211,7 +211,7 @@ WITH score,person,occupation,role,r1,r2,r4,
       WHEN 'http://dbpedia.org/resource/Unknown' THEN 'Unknown'
   END AS occupationType
 CALL apoc.create.addLabels(id(person),[occupationType]) YIELD node
-CREATE (score)-[:CREATOR]->(person)
+CREATE (score)-[:CREATOR {role: occupationType}]->(person)
 SET person.name = person.foaf__name
 DELETE r1,r2,r4
 RETURN COUNT(person);
@@ -224,7 +224,7 @@ MATCH (person)-[r5:dbo__occupation]->(occupation)
 SET person:Encoder,	
 	person.roleUri = 'http://dbpedia.org/resource/Encoder',
 	person.name = person.foaf__name
-CREATE (score)-[:CREATOR]->(person)
+CREATE (score)-[:CREATOR  {role: "Encoder"}]->(person)
 CREATE (activity)-[:ASSOCIATEDWITH]->(person)
 DELETE r1,r4,r5;
 

@@ -257,8 +257,8 @@ public class Neo4jEngine {
 	
 		ArrayList<PersonDescription> result = new ArrayList<PersonDescription>();
 				
-		String cypher = "\n\nMATCH (creator:Person)<-[:CREATOR]-(scr:Score)\n" + 
-				"RETURN DISTINCT creator.uri AS identifier, creator.name AS name, labels(creator)[2] AS role, COUNT(scr) AS total\n" + 
+		String cypher = "\n\nMATCH (creator:Person)<-[rel_role:CREATOR]-(scr:Score)\n" + 
+				"RETURN DISTINCT creator.uri AS identifier, creator.name AS name, rel_role.role AS role, COUNT(scr) AS total\n" + 
 				"ORDER BY total DESC\n";
 
 		logger.debug("getRoles:\n" + cypher);
@@ -744,7 +744,7 @@ public class Neo4jEngine {
 
 		} else {
 			
-			match = match + "MATCH (scr:Score)-[:CREATOR]->(creator:Person)\n";
+			match = match + "MATCH (scr:Score)-[rel_role:CREATOR]->(creator:Person)\n";
 		}
 				
 		if(!wmssRequest.getFormat().equals("")) {
@@ -889,7 +889,7 @@ public class Neo4jEngine {
 				"    {persons: COLLECT(DISTINCT\n" + 
 				"       {name: creator.name, \n" + 
 				"     	 identifier: creator.uri, \n" +
-				"	     role: labels(creator)[1]} \n" + 
+				"	     role: rel_role.role} \n" + 
 				"    )} AS persons,";
 		
 		if(!request.getMelody().equals("")) {
