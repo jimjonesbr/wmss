@@ -740,7 +740,7 @@ public class Neo4jEngine {
 
 		if(!wmssRequest.getPersonRole().equals("")) {
 
-			match = match + "MATCH (scr:Score)-[:CREATOR]->(creator:"+wmssRequest.getPersonRole()+")\n";
+			match = match + "MATCH (scr:Score)-[rel_role:CREATOR {role:'"+wmssRequest.getPersonRole()+"' }]->(creator:Person)\n";
 
 		} else {
 			
