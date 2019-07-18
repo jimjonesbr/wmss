@@ -2,18 +2,45 @@
 <html lang="en">
 	<head>	
 		<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>	
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<style>
+			.container {
+			    width:100%;
+			    border:1px solid #d3d3d3;
+			}
+			.container div {
+			    width:100%;
+			}
+			.container .header {
+			    background-color:#d3d3d3;
+			    padding: 2px;
+			    cursor: pointer;
+			    font-weight: bold;
+			}
+			.container .content {
+			    display: none;
+			    padding : 5px;
+			}
+		</style>
 	</head>
 
 	<body>			
 		<h2>WMSS Score Management</h2>
-
 		Data Source: 
 		<select id="ds">
 			<option>neo4j_local</option>
-
-		</select> <button id="btnLoad">Load</button> <br/><br>
+		</select> 
+		Page size: <input id="page_size" value="3"></input>
+		<button id="btnLoad">Load</button> <br/><br>
 		<table id="tbRedsult"></table>
 		<script type="text/javascript">
+
+			$(document).on('click', ".header", function() {   				
+			    $header = $(this);
+			    $content = $header.next();
+			    $content.slideToggle(200, function () {			        
+			    });
+			});
 
 			var url = "http://"+window.location.host+"/"+window.location.pathname.split('/')[1];
 
@@ -22,7 +49,7 @@
 				$('#tbRedsult').attr('border', '1');
 	    		$("#tbRedsult tr").remove();
 
-				$.getJSON(url+"?source="+$('#ds').val()+"&request=ListScores", function(data){
+				$.getJSON(url+"?source="+$('#ds').val()+"&request=ListScores&pageSize=" + $('#page_size').val(), function(data){
 
 					var sources = data["datasources"];
 
@@ -35,28 +62,71 @@
         	 				var scores = src["scores"];
 
 							for (j = 0; j < scores.length; j++) { 
-        	 				
-        	 					var sc = scores[j];
+
+								var sc = scores[j];
+
+								var persons = sc["persons"];
+								var persons_string = "";
+
+								for (k = 0; k < persons.length; k++) { 
+
+        	 						var per = persons[k];
+        	 						persons_string = persons_string + per["name"] + ' ('+per["role"]+')<br>';
+
+        	 					}
+        	 				        	 					
         	 					var movements = sc["movements"];
         	 					var movements_string = "";
-
-        	 					console.log(sc["title"]);
 
         	 					for (k = 0; k < movements.length; k++) { 
 
         	 						var mov = movements[k];
-
         	 						movements_string = movements_string + mov["movementName"] + "<br>";
+        	 						var div = document.createElement("div");
+        	 						div.innerHTML = "Replace with description.";
 
         	 					}
 
         	 					$('#tbRedsult').append('<tr id="'+sc["scoreIdentifier"]+'">' +
         	 					'<td><img style="max-width: 125px" src="'+ sc["thumbnail"] + '"/></td>' +
-        	 					'<td>'+sc["scoreIdentifier"] + '</td>' + 
-	                			'<td>'+ sc["title"] + '</td>' +
-	                			'<td>'+ sc["dateIssued"] + '</td>' +	                			
-	                			'<td>'+ movements_string + '</td>' +	 
+        	 					'<td><b>Identifier</b>: '+sc["scoreIdentifier"] + 
+	        	 					'<br><b>Title</b>: '+ sc["title"] +
+	        	 					'<br><b>Issued</b>: '+ sc["dateIssued"] +
+	        	 					'<br><b>Online Resource</b>: <a href="'+ sc["onlineResource"] + '">'+sc["onlineResource"]+'</a>'+
+        	 					'</td>' + 
+	                			'<td>'+ persons_string + '</td>' +               		
+	                			'<td id="mov_'+j+'"></td>' +
 	             				'<td><a href="javascript:deleteScore(\''+sc["scoreIdentifier"]+'\')">Delete</a></td></tr>');
+
+
+	             				for (k = 0; k < movements.length; k++) { 
+
+        	 						var mov = movements[k];
+
+        	 						$('<div class="container">'+
+        	 						 	'<div class="header"><span>'+ mov["movementName"]+'</span></div>'+
+        	 						   	'<div class="content">' +
+        	 								'<ul id="perf_'+j+k+'">' +
+        	 								'</ul>'+
+        	 							'</div>'+
+        	 						'</div>').appendTo('#mov_'+j);
+
+        	 						var perf_type = mov["performanceMediumList"];
+
+        	 						for (l = 0; l < perf_type.length; l++) { 
+									
+        	 							var perf = perf_type[l];
+        	 							var medium = perf["mediums"];
+       	 							
+        	 							for (m = 0; m < medium.length; m++) { 
+
+        	 								var med = medium[m];
+        	 								$('<li>'+med["mediumScoreDescription"]+' ('+med["mediumDescription"]+')</li>').appendTo('#perf_'+j+k);
+        	 								
+        	 							}
+
+        	 						}
+        	 					}
 
         	 				}
 
@@ -70,7 +140,7 @@
 			function deleteScore(identifier){
 
 				var row = document.getElementById(identifier);
-				row.getElementsByTagName('td')[5].innerHTML="Working ..";
+				row.getElementsByTagName('td')[4].innerHTML="Working ..";
 
 				$.getJSON(url+'?source='+$('#ds').val()+'&request=DeleteScore&identifier='+identifier, function(data){
 
@@ -79,7 +149,6 @@
 					} else {
 						alert("Record could not be deleted");
 						row.getElementsByTagName('td')[5].innerHTML='<a href="javascript:deleteScore(\''+identifier+'\')">Delete</a>';
-
 					}
 				});
 			}

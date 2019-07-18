@@ -398,7 +398,7 @@ public class Neo4jEngine {
 				"   mediumsList: COLLECT(mediumsListResultset)} AS movementsResultset,movOrder \n"+
 				"ORDER BY movOrder \n";
 
-		logger.info("getMovementData:\n"+cypher);
+		logger.debug("getMovementData:\n"+cypher);
 		
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, dataSource);
 
