@@ -26,9 +26,8 @@ public class DeleteScoreRequest {
 		System.out.println("\nRequest: " + url + "\n");
 		try {
 
-			JSONObject jsonObject = Util.readJsonFromUrl(url);
-			
-			JSONArray scoreObject = jsonObject.getJSONArray("score");//1
+			JSONObject jsonObject = Util.readJsonFromUrl(url);			
+			JSONArray scoreObject = jsonObject.getJSONArray("score");
 
 			for (int i = 0; i < scoreObject.length(); i++) {
 				
