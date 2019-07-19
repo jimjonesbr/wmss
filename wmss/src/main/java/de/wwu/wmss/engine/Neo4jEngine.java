@@ -160,15 +160,16 @@ public class Neo4jEngine {
 	public static String getMusicXML(WMSSRequest request){
 		
 		String result = "";
-		String cypher = "\n\nMATCH (score:Score {uri:\""+request.getIdentifier()+"\"})\n";
-
-		if(request.getFormat().equals("musicxml")||request.getFormat().equals("")) {
-			cypher = cypher +"RETURN score.asMusicXML AS xml\n"; 
-		} else if (request.getFormat().equals("mei")) {
-			cypher = cypher +"RETURN score.asMEI AS xml\n";
+		String format = request.getFormat();
+		
+		if(format.equals("")) {
+			format = "musicxml";
 		}
+		
+		String cypher = "\n\nMATCH (score:Score {uri:'"+request.getIdentifier()+"'})-[:DOCUMENT {type:'"+format+"'}]->(document:Document) "
+				+ "RETURN document.content AS xml";
 
-		logger.debug("getMusicXML:\n"+cypher);
+		logger.info("getMusicXML:\n"+cypher);
 		
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, Util.getDataSource(request.getSource()));
 
