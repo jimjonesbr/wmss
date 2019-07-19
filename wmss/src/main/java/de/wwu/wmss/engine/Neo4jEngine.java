@@ -169,7 +169,7 @@ public class Neo4jEngine {
 		String cypher = "\n\nMATCH (score:Score {uri:'"+request.getIdentifier()+"'})-[:DOCUMENT {type:'"+format+"'}]->(document:Document) "
 				+ "RETURN document.content AS xml";
 
-		logger.info("getMusicXML:\n"+cypher);
+		logger.debug("getMusicXML:\n"+cypher);
 		
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, Util.getDataSource(request.getSource()));
 
@@ -286,38 +286,20 @@ public class Neo4jEngine {
 	public static ArrayList<Format> getFormats(DataSource ds){
 
 		ArrayList<Format> result = new ArrayList<Format>();
-
-		String cypher = "MATCH (scr:Score) RETURN DISTINCT CASE WHEN scr.asMusicXML IS NULL THEN FALSE ELSE TRUE END AS musicxml; \n";
-
+		String cypher = "MATCH (score:Score)-[rel_doc:DOCUMENT]->() RETURN DISTINCT rel_doc.type AS type, rel_doc.description AS description \n";
 		logger.debug("getFormats:\n" + cypher);
 
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);
 		
 		if(rs.hasNext()) {
-				
-			Record record = rs.next();
-	
-			if(record.get("musicxml").asBoolean()) {
-				Format musicxml = new Format();
-				musicxml.setFormatId("musicxml");
-				musicxml.setFormatDescription("MusicXML");
-				result.add(musicxml);
-			}
-	
-			cypher = "\n\nMATCH (scr:Score)\n" + 
-					 "RETURN DISTINCT CASE WHEN scr.asMEI IS NULL THEN FALSE ELSE TRUE END AS mei\n";
-	
-			rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);
-			record = rs.next();
-	
-			if(record.get("mei").asBoolean()) {
-				Format musicxml = new Format();
-				musicxml.setFormatId("mei");
-				musicxml.setFormatDescription("MEI");
-				result.add(musicxml);
-			}
+			
+			Format musicxml = new Format();
+			musicxml.setFormatId("type");
+			musicxml.setFormatDescription("description");
+			result.add(musicxml);
+			
 		}
-		
+			
 		return result;
 	}
 		
@@ -350,8 +332,8 @@ public class Neo4jEngine {
 		
 		ArrayList<Collection> result = new ArrayList<Collection>();
 		
-		String cypher = "\n\nMATCH (score:Score)\n" + 
-					    "RETURN DISTINCT score.collectionUri AS identifier, score.collectionLabel AS label \n";
+		String cypher = "\n\nMATCH (score:Score)-[:COLLECTION]->(collection:Collection)\n" + 
+				"RETURN DISTINCT collection.uri AS identifier, collection.label AS label\n";
 		
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);		
 		
@@ -970,21 +952,7 @@ public class Neo4jEngine {
 
 				e.printStackTrace();
 			}
-			
-						
-//			if(record.get("musicxml").asBoolean()) {
-//				Format format = new Format();
-//				format.setFormatId("musicxml");
-//				format.setFormatDescription("MusicXML 3.0"); //TODO: create triples for describing MusicXML version
-//				score.getFormats().add(format);	
-//			} else if(record.get("mei").asBoolean()) {
-//				Format format = new Format();
-//				format.setFormatId("mei");
-//				format.setFormatDescription("Music Encoding Initiative 3.0"); //TODO: create triples for describing MusicXML version
-//				score.getFormats().add(format);	
-//				
-//			}
-			
+		
 			result.add(score);
 		}
 

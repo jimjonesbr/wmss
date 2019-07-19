@@ -90,11 +90,10 @@ public class ImportScores {
 			
 			boolean loaded = false;
 			
+			System.out.println("Posting '"+ rdfFiles[i]+"' .. ");
+			
 			if(FilenameUtils.getExtension(rdfFiles[i].getName()).equals("ttl")) {
-				
-				System.out.println(rdfFiles[i]);
-				loaded = this.post(rdfFiles[i].getAbsoluteFile(), "turtle",10000);
-				
+				loaded = this.post(rdfFiles[i].getAbsoluteFile(), "turtle",10000);				
 			} else if(FilenameUtils.getExtension(rdfFiles[i].getName()).equals("nt")) {
 				loaded = this.post(rdfFiles[i].getAbsoluteFile(), "n-triples",10000);
 			} else if(FilenameUtils.getExtension(rdfFiles[i].getName()).equals("json")) {
