@@ -21,9 +21,10 @@ import org.junit.Test;
 
 public class ImportScores {
 
-	private static String server = "http://localhost";
+	private static String server = StartWMSS.server;
 	private static int port = StartWMSS.port;
-	private static String source = "neo4j_local";
+	private static String source = StartWMSS.source;
+	
 	private boolean post(File file, String format, int commitSize) {
 
 		boolean result = false;

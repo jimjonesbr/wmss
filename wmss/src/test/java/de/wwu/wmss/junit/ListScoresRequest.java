@@ -15,9 +15,9 @@ import de.wwu.wmss.settings.Util;
 
 public class ListScoresRequest {
 
-	private static String server = "http://localhost";
+	private static String server = StartWMSS.server;
 	private static int port = StartWMSS.port;
-	private static String source = "neo4j_local";
+	private static String source = StartWMSS.source;
 		
 
 	private boolean listScoresRequest(MusicScore score, MelodyLocation location, ArrayList<RequestParameter> parameters) {

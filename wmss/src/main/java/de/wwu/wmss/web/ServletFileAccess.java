@@ -8,11 +8,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import de.wwu.wmss.settings.SystemSettings;
+
 public class ServletFileAccess extends HttpServlet {
 
-	/**
-	 * @author Jim Jones
-	 */
 	private static final long serialVersionUID = 1L;
 	protected void doGet(HttpServletRequest httpRequest, HttpServletResponse response) throws ServletException, IOException {
 	
@@ -39,7 +38,7 @@ public class ServletFileAccess extends HttpServlet {
 			StringBuilder contentBuilder = new StringBuilder();
 			try {
 								
-				BufferedReader in = new BufferedReader(new FileReader("upload/"+file));
+				BufferedReader in = new BufferedReader(new FileReader(SystemSettings.getImportdDirectory()+file));
 			    String str;
 			    while ((str = in.readLine()) != null) {
 			        contentBuilder.append(str +System.getProperty("line.separator"));
