@@ -16,7 +16,7 @@ import de.wwu.wmss.settings.Util;
 public class ListScoresRequest {
 
 	private static String server = "http://localhost";
-	private static String port = "8888";
+	private static int port = StartWMSS.port;
 	private static String source = "neo4j_local";
 		
 
@@ -95,7 +95,6 @@ public class ListScoresRequest {
 		return result;
 
 	}
-
 	
 	@Test
 	public void elgarCelloConcerto_6Notes_Full_Collection_Composer_PerformanceMedium_nonSolo_nonEmsemble_tempo_dateInverval_time_clef() {
@@ -114,7 +113,6 @@ public class ListScoresRequest {
 		parameters.add(new RequestParameter("tempoBeatsPerMinute", "120-125"));
 		parameters.add(new RequestParameter("dateIssued", "1910-1920"));		
 		parameters.add(new RequestParameter("melody", "%C-4 ,8AB'CDxDE"));
-		//parameters.add(new RequestParameter("melody", ",8AB'CDxDE"));
 		parameters.add(new RequestParameter("format", "musicxml"));
 		parameters.add(new RequestParameter("time", "4/4"));
 		

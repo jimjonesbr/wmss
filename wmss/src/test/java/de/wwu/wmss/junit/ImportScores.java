@@ -22,7 +22,7 @@ import org.junit.Test;
 public class ImportScores {
 
 	private static String server = "http://localhost";
-	private static String port = "8888";
+	private static int port = StartWMSS.port;
 	private static String source = "neo4j_local";
 	private boolean post(File file, String format, int commitSize) {
 

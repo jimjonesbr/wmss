@@ -1,5 +1,5 @@
 {
-  "port": "8295",
+  "port": "8283",
   "service": "wmss",
   "timeout": "5000",
   "pageSize": "10",

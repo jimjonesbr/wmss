@@ -116,7 +116,7 @@ RETURN COUNT(node) AS instrument;
 
 MATCH (score:mo__Score)-[:mo__movement]->(movement:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:skos__broader]->(type) 
 MERGE (movement)-[:MEDIUMTYPE]-(t:mediumType {mediumTypeId:type.uri, mediumTypeDescription: type.skos__prefLabel})
-MERGE (t)-[:MEDIUM]->(i:Medium {mediumId: part.uri,mediumDescription: part.skos__prefLabel, mediumScoreDescription: part.dc__description, mediumCode: part.rdfs__label, ensemble: part.mso__isEnsemble, solo:part.mso__isSolo});
+MERGE (t)-[:MEDIUM]->(i:Medium {mediumId: part.uri,mediumDescription: part.skos__prefLabel, mediumScoreDescription: part.dc__description, mediumCode: part.skos__altLabel, ensemble: part.mso__isEnsemble, solo:part.mso__isSolo});
 
 MATCH (mov:mo__Movement)
 OPTIONAL MATCH (mov:mo__Movement)-[:mso__hasBeatUnit]-(unit)
@@ -128,15 +128,6 @@ SET mov.beatUnit = b,
     mov.order = mov.dbo__order
 REMOVE mov.dbo__order;
 
-
-MATCH (score:mo__Score)
-WITH  score, 
-  CASE 
-    WHEN NOT score.mso__asMusicXML = '' THEN 'musicxml'
-    WHEN NOT score.mso__asMEI = '' THEN 'mei'
-  END AS docFormat
-WHERE score.format IS NULL  
-SET score.format = docFormat;
 
 MATCH (mov:mo__Movement)
 WITH mov, CASE mov.mso__hasBeatsPerMinute 
@@ -161,18 +152,19 @@ MATCH (noteset:mso__NoteSet)-[:mso__hasClef]->(clef)-[:mso__sign]->(sign)
 MATCH (noteset)-[r:mso__nextNoteSet]->(nextNoteset:mso__NoteSet)
 CALL apoc.create.addLabels(id(noteset),['Clef_'+SUBSTRING(sign.uri,36)+clef.mso__line]) YIELD node
 CREATE (noteset)-[:NEXT]->(nextNoteset)
-DELETE r
-RETURN COUNT(clef) AS noteset_clef_sign;
+DELETE r;
 
 MATCH (score:mo__Score)
-SET score.asMusicXML = score.mso__asMusicXML
-REMOVE score.mso__asMusicXML
-RETURN COUNT(score.asMusicXML) AS asMusicXML;
+WHERE EXISTS(score.mso__asMusicXML)
+CREATE (score)-[:DOCUMENT {type:"musicxml", description: "MusicXML 3.0"}]->(document:Document:MusicXML {content: score.mso__asMusicXML, description: "MusicXML 3.0"})
+REMOVE score.mso__asMusicXML;
 
 MATCH (score:mo__Score)
-SET score.asMEI = score.mso__asMEI
-REMOVE score.mso__asMEI
-RETURN COUNT(score.asMEI) AS asMEI;
+WHERE EXISTS(score.mso__asMEI)
+CREATE (score)-[:DOCUMENT {type:"mei",description: "Music Encoding Initiative 3.0"}]->(document:Document:MEI {content: score.mso__asMEI, description: "Music Encoding Initiative 3.0"})
+REMOVE score.mso__asMEI;
+
+
 
 MATCH (part:mso__ScorePart)-[r3:mso__hasMeasure]->(measure:mso__Measure)-[r0:mso__hasKey]-(key)-[r1:ton__tonic]->(tonicNode)
 MATCH (measure:mso__Measure)-[r0:mso__hasKey]-(key)-[r2:ton__mode]->(modeNode)
@@ -262,6 +254,8 @@ MATCH (score:mo__Score)-[r7:prov__wasGeneratedBy]->(software:prov__SoftwareAgent
 MATCH (score:mo__Score)-[r8:foaf__thumbnail]->(thumbnail)
 MATCH (collection:prov__Collection)-[r9:prov__hadMember]->(score:mo__Score)
 SET	software.label = software.rdfs__label,
+	software.version = software.dbo__version,
+	software :Software,
     activity :Activity, 
 	activity.startedAtTime = activity.prov__startedAtTime,
 	activity.endedAtTime = activity.prov__endedAtTime,
@@ -282,6 +276,7 @@ REMOVE
 	software:prov__SoftwareAgent,
 	software.rdfs__label,
 	software.foaf__name,
+	software.dbo__version,
 	collection.rdfs__label,
 	collection:prov__Collection,
 	activity.prov__endedAtTime,
@@ -361,12 +356,12 @@ CREATE INDEX ON :Movement(beatUnit);
 CREATE INDEX ON :Score(collectionUri);
 CREATE INDEX ON :NoteSet(size);		
 CREATE INDEX ON :NoteSet(clefShape,clefLine);
+CREATE INDEX ON :NoteSet(clefSign);
+CREATE INDEX ON :NoteSet(clefLine);		
 CREATE INDEX ON :Score(format);
 CREATE INDEX ON :Measure(key);
 CREATE INDEX ON :Measure(beats);
 CREATE INDEX ON :Measure(beatType);
-CREATE INDEX ON :NoteSet(clefSign);
-CREATE INDEX ON :NoteSet(clefLine);		
 CREATE INDEX ON :D_longa(size);
 CREATE INDEX ON :D_whole(size);
 CREATE INDEX ON :D_half(size);

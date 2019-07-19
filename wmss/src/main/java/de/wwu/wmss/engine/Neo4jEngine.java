@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.StatementResult;
 import com.google.gson.Gson;
@@ -194,7 +195,7 @@ public class Neo4jEngine {
 				"          mediumDescription: medium.mediumDescription\n" + 
 				"         })}} AS performanceMediumList";
 		
-		logger.debug("getPerformanceMedium:\n"+cypher);
+		logger.info("getPerformanceMedium:\n"+cypher);
 		
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);
 		
@@ -505,7 +506,8 @@ public class Neo4jEngine {
 	
 		
 		String where = "\nWHERE TRUE \n";														
-		String match = "MATCH (scr:Score)-[:MOVEMENT]->(movements:Movement)\n";
+		String match = "MATCH (scr:Score)-[:MOVEMENT]->(movements:Movement)\n" +
+					   "MATCH (scr:Score)-[rel_doc:DOCUMENT ]->(document:Document)\n";
 		
 		if(!wmssRequest.getMelody().equals("")) {
 
@@ -749,7 +751,7 @@ public class Neo4jEngine {
 				
 		if(!wmssRequest.getFormat().equals("")) {
 			
-			where = where + "AND scr.format=\""+wmssRequest.getFormat()+"\"\n";
+			where = where + "AND rel_doc.type=\""+wmssRequest.getFormat()+"\"\n";
 		} 
 		
 		if(!wmssRequest.getTempoBeatUnit().equals("")) {
@@ -850,13 +852,15 @@ public class Neo4jEngine {
 			    				score.setScoreIdentifier(record.get("uri").asString());
 			    				score.setCollection(record.get("collection").asString());
 			    				result.add(score);
+			    				
+			    				logger.info("Music score deleted: " + record.get("title").asString() + " ("+record.get("uri").asString()+")");
 		    				}
 		    				
 		    			}
 		    		}	    		
 				}
 		    	
-		    	logger.info("Music score deleted.");
+		    	
 		    	
 
 			} catch (FileNotFoundException e) {
@@ -890,7 +894,7 @@ public class Neo4jEngine {
 				"       {name: creator.name, \n" + 
 				"     	 identifier: creator.uri, \n" +
 				"	     role: rel_role.role} \n" + 
-				"    )} AS persons,";
+				"    )} AS persons,\n";
 		
 		if(!request.getMelody().equals("")) {
 			
@@ -905,8 +909,9 @@ public class Neo4jEngine {
 				"    })} AS locations, \n";				
 		}		
 				
-		returnClause = returnClause +	"   CASE WHEN scr.asMusicXML IS NULL THEN FALSE ELSE TRUE END AS musicxml,\n" + 
-									    "   CASE WHEN scr.asMEI IS NULL THEN FALSE ELSE TRUE END AS mei \n" + 
+		returnClause = returnClause +	//"    CASE WHEN scr.asMusicXML IS NULL THEN FALSE ELSE TRUE END AS musicxml,\n" +
+										"    {formats: COLLECT (DISTINCT {format: rel_doc.type, description: rel_doc.description })} AS formats " +
+									    //"    CASE WHEN scr.asMEI IS NULL THEN FALSE ELSE TRUE END AS mei \n" + 
 									    "ORDER BY scr.title \n" +
 									    "SKIP " + request.getOffset() + "\n" + 
 									    "LIMIT " + request.getPageSize();
@@ -943,19 +948,41 @@ public class Neo4jEngine {
 			score.setProvenance(prov);
 			score.getMovements().addAll(getMovementData(score.getScoreId(), dataSource));
 	
+			
+			JSONParser parser = new JSONParser();
+			try {
 
-			if(record.get("musicxml").asBoolean()) {
-				Format format = new Format();
-				format.setFormatId("musicxml");
-				format.setFormatDescription("MusicXML 3.0"); //TODO: create triples for describing MusicXML version
-				score.getFormats().add(format);	
-			} else if(record.get("mei").asBoolean()) {
-				Format format = new Format();
-				format.setFormatId("mei");
-				format.setFormatDescription("Music Encoding Initiative 3.0"); //TODO: create triples for describing MusicXML version
-				score.getFormats().add(format);	
-				
+				JSONObject formatsObject = (JSONObject) parser.parse(gson.toJson(record.get("formats").asMap()));
+			
+				JSONArray formatArray = (JSONArray) formatsObject.get("formats");
+
+				for (int i = 0; i < formatArray.size(); i++) {
+					
+					JSONObject formatJsonObject = (JSONObject) formatArray.get(i);
+					Format format = new Format();
+					format.setFormatId(formatJsonObject.get("format").toString());
+					format.setFormatDescription(formatJsonObject.get("description").toString());
+					score.getFormats().add(format);					
+				}
+
+			} catch (ParseException e) {
+
+				e.printStackTrace();
 			}
+			
+						
+//			if(record.get("musicxml").asBoolean()) {
+//				Format format = new Format();
+//				format.setFormatId("musicxml");
+//				format.setFormatDescription("MusicXML 3.0"); //TODO: create triples for describing MusicXML version
+//				score.getFormats().add(format);	
+//			} else if(record.get("mei").asBoolean()) {
+//				Format format = new Format();
+//				format.setFormatId("mei");
+//				format.setFormatDescription("Music Encoding Initiative 3.0"); //TODO: create triples for describing MusicXML version
+//				score.getFormats().add(format);	
+//				
+//			}
 			
 			result.add(score);
 		}
