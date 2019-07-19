@@ -21,8 +21,7 @@ RETURN COUNT(node) AS noteset_signature_label;
 
 MATCH (noteset:mso__NoteSet)-[r:mso__hasNote]-()
 WITH noteset,COUNT(r) AS size
-SET noteset.size = size
-RETURN COUNT(noteset) AS noteset_size;
+SET noteset.size = size;
 
 MATCH (noteset:mso__NoteSet)-[r1:mso__hasDuration]->(duration)
 REMOVE duration:Resource
@@ -40,15 +39,13 @@ SET scr.thumbnail = thumbnail.uri,
     scr.collectionUri =  collection.uri, 
     scr.collectionLabel = collection.rdfs__label,
     creator.roleUri = role.uri, 
-    creator.roleName = role.rdfs_label
-RETURN COUNT(noteset) AS voice_staff_collection_role_dateissued;
-
+    creator.roleName = role.rdfs_label;
 
 MATCH (scr:mo__Score)-[:prov__wasGeneratedBy]->(activity:prov__Activity)-[:prov__wasAssociatedWith]->(encoder:foaf__Person)
 WHERE scr.encoderUri IS NULL 
 SET scr.provGeneratedAtTime = activity.prov__startedAtTime,
     scr.provComments = activity.rdfs__comment
-RETURN COUNT(scr) AS encoder;
+REMOVE activity.rdfs__comment;
 
 MATCH (noteset:mso__NoteSet)-[:mso__hasDuration]->(duration)-[:mso__hasDurationAttribute]->(attribute:mso__Dot)
 SET noteset :Dot;
@@ -59,8 +56,7 @@ SET noteset :TripleDot;
 
 MATCH (measure:mso__Measure)-[r:mso__hasTime]->(time)
 WHERE measure.beats IS NULL
-SET measure.beats = time.mso__hasBeats, measure.beatType = time.mso__hasBeatType
-RETURN COUNT(measure) AS MeasureTimeSignature;
+SET measure.beats = time.mso__hasBeats, measure.beatType = time.mso__hasBeatType;
 
 
 MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
@@ -109,8 +105,7 @@ MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__mode]->(m
 WITH measure, tonicNode,modeNode, 
      LOWER(SUBSTRING(modeNode.uri,39)) AS mode, 
      SUBSTRING(tonicNode.uri,36) AS tonic
-SET measure.tonic = tonic, measure.mode = mode
-RETURN COUNT(measure) AS MeasureKey;
+SET measure.tonic = tonic, measure.mode = mode;
 
 MATCH (part:mso__ScorePart)
 CALL apoc.create.addLabels(id(part),[REPLACE(part.skos__altLabel,'.','_')]) YIELD node
@@ -121,8 +116,7 @@ RETURN COUNT(node) AS instrument;
 
 MATCH (score:mo__Score)-[:mo__movement]->(movement:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:skos__broader]->(type) 
 MERGE (movement)-[:MEDIUMTYPE]-(t:mediumType {mediumTypeId:type.uri, mediumTypeDescription: type.skos__prefLabel})
-MERGE (t)-[:MEDIUM]->(i:Medium {mediumId: part.uri,mediumDescription: part.skos__prefLabel, mediumScoreDescription: part.dc__description, mediumCode: part.rdfs__label, ensemble: part.mso__isEnsemble, solo:part.mso__isSolo})
-RETURN COUNT(i) AS mediums;
+MERGE (t)-[:MEDIUM]->(i:Medium {mediumId: part.uri,mediumDescription: part.skos__prefLabel, mediumScoreDescription: part.dc__description, mediumCode: part.rdfs__label, ensemble: part.mso__isEnsemble, solo:part.mso__isSolo});
 
 MATCH (mov:mo__Movement)
 OPTIONAL MATCH (mov:mo__Movement)-[:mso__hasBeatUnit]-(unit)
@@ -142,16 +136,14 @@ WITH  score,
     WHEN NOT score.mso__asMEI = '' THEN 'mei'
   END AS docFormat
 WHERE score.format IS NULL  
-SET score.format = docFormat
-RETURN COUNT(docFormat) AS format;
+SET score.format = docFormat;
 
 MATCH (mov:mo__Movement)
 WITH mov, CASE mov.mso__hasBeatsPerMinute 
             WHEN NULL THEN 0
             ELSE toInt(mov.mso__hasBeatsPerMinute) 
           END AS bpm
-SET mov.beatsPerMinute = bpm
-RETURN COUNT(mov) AS BPM;
+SET mov.beatsPerMinute = bpm;
 
 
 
@@ -213,8 +205,8 @@ WITH score,person,occupation,role,r1,r2,r4,
 CALL apoc.create.addLabels(id(person),[occupationType]) YIELD node
 CREATE (score)-[:CREATOR {role: occupationType}]->(person)
 SET person.name = person.foaf__name
-DELETE r1,r2,r4
-RETURN COUNT(person);
+REMOVE person.foaf__name
+DELETE r1,r2,r4;
 
 
 MATCH (person:foaf__Person)<-[r1:prov__wasAssociatedWith]-(activity:prov__Activity)
@@ -224,6 +216,7 @@ MATCH (person)-[r5:dbo__occupation]->(occupation)
 SET person:Encoder,	
 	person.roleUri = 'http://dbpedia.org/resource/Encoder',
 	person.name = person.foaf__name
+REMOVE person.foaf__name	
 CREATE (score)-[:CREATOR  {role: "Encoder"}]->(person)
 CREATE (activity)-[:ASSOCIATEDWITH]->(person)
 DELETE r1,r4,r5;
@@ -283,13 +276,16 @@ SET	software.label = software.rdfs__label,
 REMOVE 
 	score.dc__title, 
 	score.dcterms__issued,
+	score.foaf__name,
 	score.provComments,
 	score.provGeneratedAtTime,
 	software:prov__SoftwareAgent,
 	software.rdfs__label,
 	software.foaf__name,
 	collection.rdfs__label,
-	collection:prov__Collection	
+	collection:prov__Collection,
+	activity.prov__endedAtTime,
+	activity.prov__startedAtTime
 CREATE (activity)-[:ASSOCIATEDWITH]->(software)
 CREATE (activity)-[:GENERATED]->(score)
 CREATE (score)-[:COLLECTION]->(collection)
@@ -308,19 +304,11 @@ DELETE r;
 MATCH (n1)-[r:mso__hasStaff]->(staff:mso__Staff)
 DELETE r;
 
+MATCH (person)-[r:dbo__occupation]->(occupation)
+DELETE r;
 
-
-
-
-
-
-MATCH (person)-[r2:dbo__occupation]->(occupation)
-MATCH (person)-[r3:gndo__professionOrOccupation]->(role:prov__Role) 
-DETACH DELETE role,occupation; 
-
-MATCH (person)-[r4:prov__hadRole]->(role:prov__Role)
-MATCH (person)-[r5:dbo__occupation]->(occupation)
-DETACH DELETE role,occupation;
+MATCH (person)-[r:gndo__professionOrOccupation]->(role:prov__Role) 
+DELETE r; 
 
 MATCH (measure:mso__Measure)-[r:mso__hasTime]->(time)
 DETACH DELETE time;
@@ -370,7 +358,6 @@ MATCH (n:prov__SoftwareAgent) SET n :Software REMOVE n:prov__SoftwareAgent;
 MATCH (n:prov__Collection) SET n :Collection REMOVE n:prov__Collection;
 
 CREATE INDEX ON :Movement(beatUnit);
-CREATE INDEX ON :Score(encoderUri);
 CREATE INDEX ON :Score(collectionUri);
 CREATE INDEX ON :NoteSet(size);		
 CREATE INDEX ON :NoteSet(clefShape,clefLine);
