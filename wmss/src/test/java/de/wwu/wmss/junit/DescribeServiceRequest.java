@@ -24,8 +24,8 @@ public class DescribeServiceRequest {
 
 		try {
 
-			//String url = server+":"+port+"/wmss/?request=DescribeService";
-			String url = "http://localhost:8283/wmss/?request=DescribeService";			
+			String url = server+":"+port+"/wmss/?request=DescribeService";
+						
 			jsonObject = Util.readJsonFromUrl(url);		
 			System.out.println("\nRequest: " + url + "\n");
 			System.out.println("Report Type	: "+jsonObject.get("type"));
@@ -142,6 +142,44 @@ public class DescribeServiceRequest {
 						System.err.println("Unknown score format: '" + formats.getJSONObject(j).get("formatId").toString() + "' (" + formats.getJSONObject(j).get("formatDescription").toString() +")");
 					}
 				}
+				
+				JSONArray tonalities =  datasources.getJSONObject(i).getJSONArray("tonalities");
+				
+				if(tonalities.length()!=4) {
+					result = false;
+				}
+				
+				System.out.println("  |__Tonalities");				
+				for (int j = 0; j < tonalities.length(); j++) {
+					
+					System.out.println("    |__Mode: "+tonalities.getJSONObject(j).get("mode").toString());
+					System.out.println("    |__Tonic: "+tonalities.getJSONObject(j).get("tonic").toString());
+				
+					if((!tonalities.getJSONObject(j).get("tonic").toString().equals("G") && !tonalities.getJSONObject(j).get("mode").toString().equals("major")) &&
+					   (!tonalities.getJSONObject(j).get("tonic").toString().equals("F") && !tonalities.getJSONObject(j).get("mode").toString().equals("major")) &&
+					   (!tonalities.getJSONObject(j).get("tonic").toString().equals("E") && !tonalities.getJSONObject(j).get("mode").toString().equals("major")) && 
+					   (!tonalities.getJSONObject(j).get("tonic").toString().equals("Eb") && !tonalities.getJSONObject(j).get("mode").toString().equals("major"))) {
+						
+						result = false;
+						
+						System.err.println("Unexpected tonality: '" + tonalities.getJSONObject(j).get("tonic").toString() + "' (" + tonalities.getJSONObject(j).get("mode").toString() +")");
+						
+					}
+				}
+
+				
+				JSONArray instrumentType =  datasources.getJSONObject(i).getJSONArray("performanceMediums");
+				
+				if(instrumentType.length()!=3) {
+					result = false;
+				}
+				
+				for (int j = 0; j < instrumentType.length(); j++) {
+					
+					System.out.println("  |__Instrument Type: " + instrumentType.getJSONObject(j).get("mediumTypeDescription").toString());
+					
+				}
+
 
 				
 			}
