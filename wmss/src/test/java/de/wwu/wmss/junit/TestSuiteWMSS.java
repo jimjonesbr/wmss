@@ -6,7 +6,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 	StartWMSS.class,
-	ImportScores.class, 
+	ImportScores.class,
+	DescribeServiceRequest.class,
 	ListScoresRequest.class,
 	ExceptionsTest.class,
 	DeleteScoreRequest.class

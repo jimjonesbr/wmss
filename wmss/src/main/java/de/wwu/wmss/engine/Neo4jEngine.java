@@ -163,7 +163,7 @@ public class Neo4jEngine {
 		String format = request.getFormat();
 		
 		if(format.equals("")) {
-			format = "musicxml";
+			format = SystemSettings.getDefaultScoreFormat();
 		}
 		
 		String cypher = "\n\nMATCH (score:Score {uri:'"+request.getIdentifier()+"'})-[:DOCUMENT {type:'"+format+"'}]->(document:Document) "
@@ -196,7 +196,7 @@ public class Neo4jEngine {
 				"          mediumDescription: medium.mediumDescription\n" + 
 				"         })}} AS performanceMediumList";
 		
-		logger.info("getPerformanceMedium:\n"+cypher);
+		logger.debug("getPerformanceMedium:\n"+cypher);
 		
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);
 		
@@ -293,9 +293,10 @@ public class Neo4jEngine {
 		
 		if(rs.hasNext()) {
 			
+			Record record = rs.next();
 			Format musicxml = new Format();
-			musicxml.setFormatId("type");
-			musicxml.setFormatDescription("description");
+			musicxml.setFormatId(record.get("type").asString().trim());
+			musicxml.setFormatDescription(record.get("description").asString().trim());
 			result.add(musicxml);
 			
 		}

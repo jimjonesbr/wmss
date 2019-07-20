@@ -32,6 +32,7 @@ public class SystemSettings {
 	private static String defaultRequestMode;
 	private static String defaultCommitSize;
 	private static String defaultRDFFormat;
+	private static String defaultScoreFormat = "";
 	public static ArrayList<DataSource> sourceList = new ArrayList<DataSource>();
 	public static ArrayList<String> protocolVersions = new ArrayList<String>();
 	public static String REQUEST_MODE_FULL = "full";
@@ -71,6 +72,7 @@ public class SystemSettings {
 			service = jsonObject.get("service").toString();
 			contact = jsonObject.get("contact").toString();
 			defaultMelodyEncoding = jsonObject.get("defaultMelodyEncoding").toString();
+			defaultScoreFormat = jsonObject.get("defaultScoreFormat").toString();
 			title = jsonObject.get("title").toString();
 			defaultRequestMode = jsonObject.get("defaultRequestMode").toString();
 			defaultProtocol= jsonObject.get("defaultProtocol").toString();
@@ -226,6 +228,10 @@ public class SystemSettings {
 
 	public static String getImportdDirectory() {
 		return importdDirectory;
+	}
+
+	public static String getDefaultScoreFormat() {
+		return defaultScoreFormat;
 	}
 	
 		

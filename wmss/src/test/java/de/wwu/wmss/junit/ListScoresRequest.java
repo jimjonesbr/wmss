@@ -37,7 +37,7 @@ public class ListScoresRequest {
 			System.out.println("\nRequest: " + url + "\n");
 			jsonObject = Util.readJsonFromUrl(url);
 			
-			JSONArray datasources = jsonObject.getJSONArray("datasources");//1
+			JSONArray datasources = jsonObject.getJSONArray("datasources");
 
 			for (int i = 0; i < datasources.length(); i++) {
 
