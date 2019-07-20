@@ -2,6 +2,11 @@
 <html lang="en">
 <head>	
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>	
+
+
+	<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
 </head>
 
 <body>
@@ -39,7 +44,13 @@
 	<button id="btnImport">Import RDF</button>
 	<br><br>
 	<span id="working"></span><br>		
-	<table id="tbRedsult"></table>
+	<table id="mytable" class="table table-bordred table-striped">
+		               <thead>
+                   
+                   </thead>
+		 <tbody>
+		 </tbody>
+	</table>
 <script type="text/javascript">
 
 	var sources;
@@ -73,6 +84,9 @@
 
 	  	});
 
+	    
+	    $("[data-toggle=tooltip]").tooltip();
+
 	});	
 
 	$("#btnImport").click(function(){
@@ -85,8 +99,8 @@
 	             '&format='+$('#format').find(':selected').val() + 
 	             '&commitsize='+$('#bacth_size').val();                 
 
-	    $('#tbRedsult').attr('border', '1');
-	    $("#tbRedsult tr").remove();
+	    $('#mytable').attr('border', '1');
+	    $("#mytable tr").remove();
 	       		
 	    $.each($('#input_files')[0].files, function(i, file) {
 	      
@@ -110,7 +124,7 @@
 	                var type = report["type"];
 	                
 	                if(type == "ExceptionReport"){
-	                	$('#tbRedsult').append('<tr style="color: red"><td>'+file.name + '</td>' + 
+	                	$('#mytable').append('<tr style="color: red"><td>'+file.name + '</td>' + 
 	                		'<td>'+ report["code"] + ' - ' + report["message"] + 
 	             			'<td >Fail</td>' + '</td></tr>');
 	                } 	                 
@@ -119,7 +133,7 @@
 
 	                	var importedFile = report["files"][0];
 	                	console.log(importedFile);
-	                	$('#tbRedsult').append('<tr><td>'+file.name + '</td>' +               
+	                	$('#mytable').append('<tr><td>'+file.name + '</td>' +               
 	                						   '<td>'+importedFile["records"]+' records ('+ importedFile["size"]+ ') <br>' + report["timeElapsed"] +' </td>'
 	                						   		 + '<td>Success</td></tr>');
 	                }
