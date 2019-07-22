@@ -49,7 +49,7 @@
 				$('#table-resultset').attr('border', '1');
 	    		$("#table-resultset tr").remove();
 	    		$("#table-resultset thead").empty();
-	    		$("#table-resultset thead").append("<th width='1%'></th><th width='5%'></th><th width='40%'>Music Score</th><th width='15%'>Persons</th><th width='15%'>Movements</th><th width='1%'></th>");
+	    		$("#table-resultset thead").append("<th width='1%'></th><th width='5%'></th><th width='40%'>Music Score</th><th width='15%'>Related Persons</th><th width='15%'>Movements</th><th width='1%'></th>");
 
 				$.getJSON(url+"?source="+$('#ds').val()+"&request=ListScores&pageSize=" + $('#page_size').val(), function(data){
 
@@ -66,6 +66,25 @@
 							for (j = 0; j < scores.length; j++) { 
 
 								var sc = scores[j];
+
+
+								var formats = sc["formats"];
+								var formats_string = "";
+
+								for (k = 0; k < formats.length; k++) { 
+
+									var fr = formats[k];
+									var badge_color = "";
+									if (fr["formatId"]=="musicxml"){
+										badge_color="#468847";
+									} else if (fr["formatId"]=="mei"){
+										badge_color="#f89406";
+									} else {
+										badge_color="#999999";
+									}
+									formats_string = formats_string + '<span class="badge" style="background-color: '+badge_color+' ">'+fr["formatDescription"]+'</span>';
+
+								}							
 
 								var persons = sc["persons"];
 								var persons_string = "";
@@ -108,6 +127,10 @@
 								'	    <div class="col-sm-10"><p class="form-control-static">'+sc["title"] +'</p></div>'+
 								'		<label class="control-label col-sm-2" for="email">Issued:</label>'+
 								'	    <div class="col-sm-10"><p class="form-control-static">'+sc["dateIssued"] +'</p></div>'+
+
+								'		<label class="control-label col-sm-2" for="email">Formats:</label>'+
+								'	    <div class="col-sm-10"><p class="form-control-static">'+formats_string +'</p></div>'+
+
 								'		<label class="control-label col-sm-2" for="email">Online Resource:</label>'+
 								'	    <div class="col-sm-10"><p class="form-control-static"><a href="'+ sc["onlineResource"] + '">'+sc["onlineResource"]+'</a></p></div>'+
 								'	  </div>'+
