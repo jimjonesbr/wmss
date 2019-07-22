@@ -191,7 +191,6 @@ WITH score,person,occupation,role,r1,r2,r4,
       WHEN 'http://dbpedia.org/resource/Performer' THEN 'Performer'
       WHEN 'http://dbpedia.org/resource/Translator' THEN 'Translator'
       WHEN 'http://dbpedia.org/resource/Dedicatee' THEN 'Dedicatee'
-      WHEN 'http://dbpedia.org/resource/Composer' THEN 'Composer'
       WHEN 'http://dbpedia.org/resource/Unknown' THEN 'Unknown'
   END AS occupationType
 CALL apoc.create.addLabels(id(person),[occupationType]) YIELD node
@@ -201,8 +200,8 @@ REMOVE person.foaf__name
 DELETE r1,r2,r4;
 
 
-MATCH (person:foaf__Person)<-[r1:prov__wasAssociatedWith]-(activity:prov__Activity)
 MATCH (activity:prov__Activity)-[r2:prov__generated]->(score:mo__Score)
+MATCH (activity)-[r1:prov__wasAssociatedWith]->(person:foaf__Person)
 MATCH (person)-[r4:prov__hadRole]->(role:prov__Role)
 MATCH (person)-[r5:dbo__occupation]->(occupation)
 SET person:Encoder,	

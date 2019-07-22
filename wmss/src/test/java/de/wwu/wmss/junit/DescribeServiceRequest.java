@@ -100,7 +100,7 @@ public class DescribeServiceRequest {
 						
 					}
 					
-					if(personUrl.equals("http://wmss.unknown.composer") && personRole.equals("Composer") ) {
+					if(personUrl.equals("http://dbpedia.org/resource/Eppinger") && personRole.equals("Composer") ) {
 						
 						if(!personScores.equals("1")) {
 							result = false;
