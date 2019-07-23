@@ -24,11 +24,23 @@
 		</select> 
 		Page size: <input id="page_size" value="15"></input>
 		<button id="btn-load">Load</button> <br/><br>
-		<div>			
-			<input id='check-all' type='checkbox' class='checkthis'/>
-			<button class="btn btn-danger" data-title="Delete" data-toggle="modal" data-target="#delete" >Delete all</button>
-		</div>
+
+
 		<div class="table-responsive">
+
+			<table class="table">
+				<thead>
+					<th width='2%'></th>
+					<th></th>
+				</thead>
+				<tbody>
+					<tr>
+						<td style="text-align: center;"><input id='check-all' type='checkbox'/></td>
+						<td><button id="btn-delete-all" class="btn btn-danger" data-title="Delete" data-toggle="modal" data-target="#delete"><span class="glyphicon glyphicon-trash"></span>    Delete</button></td>
+					</tr>
+				</tbody>
+			</table>
+
 			<table id="table-resultset" class="table table-bordred table-striped">
 				<thead></thead>
 				<tbody></tbody>
@@ -37,12 +49,57 @@
 		
 		<script type="text/javascript">
 
+
+			$("#btn-delete-all").hide();
+
 			$(document).on('click', ".header", function() {   				
 			    $header = $(this);
 			    $content = $header.next();
 			    $content.slideToggle(200, function () {			        
 			    });
 			});
+	
+		
+			$('#check-all').change(function () {
+
+				if($('#check-all').is(':checked')) {
+				    $("#btn-delete-all").show();
+				    $('.check-score').prop('checked', true);
+				} else {
+				    $("#btn-delete-all").hide();
+				    $('.check-score').prop('checked', false);
+				}
+
+			});
+
+
+			$("#btn-delete-all").click(function(){
+
+				deleteAll();			
+
+			});
+
+
+			function showDeleteAllButton(){
+
+				var chk = document.getElementsByClassName("check-score");
+				var checked_items = 0;
+
+				for (i = 0; i < chk.length; i++) { 
+
+					if(chk[i].checked){
+						checked_items++;
+					}
+
+				}
+
+				if(checked_items>0){
+					$("#btn-delete-all").show();
+				} else {
+					$("#btn-delete-all").hide();
+				}
+
+			}
 
 			var url = "http://"+window.location.host+"/"+window.location.pathname.split('/')[1];
 
@@ -102,7 +159,7 @@
         	 							badge_color = '#999999';
         	 						} 
 
-        	 						persons_string = persons_string +'<p><a href="'+per["url"]+'">' + per["name"] + ' <span style="background-color: '+badge_color+'" class="badge">'+per["role"]+'</span></a></p>';
+        	 						persons_string = persons_string +'<p><a href="'+per["url"]+'">' + per["name"] + '</a> <span style="background-color: '+badge_color+'" class="badge">'+per["role"]+'</span></p>';
 
         	 					}
         	 				        	 					
@@ -118,13 +175,13 @@
 
         	 					}
 					
-        	 					$('#table-resultset').append('<tr id="'+j+'">' +
-        	 					'<td style="text-align: center;"><input id="check-'+j+'" type="checkbox" class="checkthis" /></td>'+
+        	 					$('#table-resultset').append('<tr id="'+j+'" class="row-score">' +
+        	 					'<td style="text-align: center;"><input id="check-'+j+'" type="checkbox" class="check-score" onclick="showDeleteAllButton();"/></td>'+
         	 					'<td style="text-align: center;"><img style="max-width: 125px" src="'+ sc["thumbnail"] + '"/></td>' +        	 					
         	 					'<td><form class="form-horizontal">'+
 								'	  <div class="form-group">'+
 								'	    <label class="control-label col-sm-2" for="email">Identifier:</label>'+
-								'	    <div class="col-sm-10"><p id="score_id_'+j+'" class="form-control-static">'+sc["scoreIdentifier"] +'</p></div>'+
+								'	    <div id ="score_id_container" class="col-sm-10"><p id="score_id_'+j+'" class="form-control-static">'+sc["scoreIdentifier"] +'</p></div>'+
 								'		<label class="control-label col-sm-2" for="email">Title:</label>'+
 								'	    <div class="col-sm-10"><p id="score_title_'+j+'" class="form-control-static">'+sc["title"] +'</p></div>'+
 								'		<label class="control-label col-sm-2" for="email">Issued:</label>'+
@@ -181,13 +238,60 @@
 				});
 			});
 
+
+			function deleteAll(){
+
+
+				$.confirm({
+				    title: 'Multiple Delete: ' + $('#table-resultset tr').filter(':has(:checkbox:checked)').length + ' Scores',
+				    content: 'Are you sure you want to delete the selected scores? Think twice: this operation <b>cannot<b> be undone.',
+				    buttons: {
+				        cancel: function () {
+				            
+				        },
+				        somethingElse: {
+				            text: 'Delete',
+				            btnClass: 'btn-red',
+				            keys: ['enter', 'shift'],
+				            action: function(){
+
+								$('#table-resultset tr').filter(':has(:checkbox:checked)').each(function() {
+
+									var row = this;
+									$('#del_'+row.id).empty();
+									$('#del_'+row.id).append('<div class="spinner-border text-danger"></div>');
+
+									$.getJSON(url+'?source='+$('#ds').val()+'&request=DeleteScore&identifier='+$('#score_id_'+row.id).text(), function(data){
+
+										if(data["type"]=='DeleteScoresReport'){						
+											row.parentNode.removeChild(row);
+											$("#btn-delete-all").hide();
+											$('.check-score').prop('checked', false);
+										} else {
+												
+											$('#del_'+row.id).append('<button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete">'+
+																'	<span class="glyphicon glyphicon-trash"></span>'+
+																'</button>');
+											$("#btn-delete-all").show();
+											$('.check-score').prop('checked', true);
+										}
+									});
+								});		
+				            }
+				        }
+				    }
+				});
+			}
+
+
+			
 			function deleteScore(row_number){
 
 				var row = document.getElementById(row_number);
 
 				$.confirm({
-				    title: 'Are you sure you want to delete this music score? This operation <b>cannot</b> be undone!',
-				    content: $('#score_title_'+row_number).text(),
+				    title: 'Delete Score',
+				    content: 'Are you sure you want to delete this music score? This operation <b>cannot</b> be undone!<br><br>' + $('#score_title_'+row_number).text(),
 				    buttons: {
 				        delete: {
 				        	btnClass: 'btn-red',
