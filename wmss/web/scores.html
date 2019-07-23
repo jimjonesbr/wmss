@@ -108,7 +108,7 @@
 				$('#table-resultset').attr('border', '1');
 	    		$("#table-resultset tr").remove();
 	    		$("#table-resultset thead").empty();
-	    		$("#table-resultset thead").append("<th width='1%'></th><th width='5%'></th><th width='40%'>Music Score</th><th width='15%'>Related Persons</th><th width='15%'>Movements</th><th width='1%'></th>");
+	    		$("#table-resultset thead").append("<th width='1%'></th><th width='5%'></th><th width='40%'>Music Score</th><th width='15%'>Related Persons</th><th width='15%'>Movements</th><th width='1%'></th><th width='1%'></th>");
 
 				$.getJSON(url+"?source="+$('#ds').val()+"&request=ListScores&pageSize=" + $('#page_size').val(), function(data){
 
@@ -164,16 +164,6 @@
         	 					}
         	 				        	 					
         	 					var movements = sc["movements"];
-        	 					var movements_string = "";
-
-        	 					for (k = 0; k < movements.length; k++) { 
-
-        	 						var mov = movements[k];
-        	 						movements_string = movements_string + mov["movementName"] + "<br>";
-        	 						var div = document.createElement("div");
-        	 						div.innerHTML = "Replace with description.";
-
-        	 					}
 					
         	 					$('#table-resultset').append('<tr id="'+j+'" class="row-score">' +
         	 					'<td style="text-align: center;"><input id="check-'+j+'" type="checkbox" class="check-score" onclick="showDeleteAllButton();"/></td>'+
@@ -197,6 +187,8 @@
 								'</td> ' + 
 	                			'<td>'+ persons_string + '</td>' +
 	                			'<td id="mov_'+j+'"></td>'+
+	                			'<td style="text-align: center;"><a href="javascript:getScore(\''+j+'\')"><p id="get-score-'+j+'" data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-info btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-save"></span></button></p></a>' +
+	             				'</td>'+
 	             				'<td style="text-align: center;"><a href="javascript:deleteScore(\''+j+'\')"><p id="del_'+j+'" data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-trash"></span></button></p></a></td>' +
 	             				'</tr>');
 
@@ -208,9 +200,9 @@
 		                				'<div class="panel-group">'+
 	    									'<div class="panel panel-default">'+
 				                				'<div class="panel-heading">'+
-			        	 							'<h5 class="panel-title">'+
+			        	 							'<span>'+
 			        	 								'<a data-toggle="collapse" href="#perf_'+j+k+'">'+mov["movementName"]+'</a>'+
-			        	 						  	'</h5>'+
+			        	 						  	'</span>'+
 												  	'<div id="perf_'+j+k+'" class="panel-collapse collapse"></div>'+
 												'</div>'+
 										    '</div>'+
@@ -239,12 +231,41 @@
 			});
 
 
+			function getScore(row_number) {
+
+
+				$('#get-score-'+row_number).empty();
+				$('#get-score-'+row_number).append('<div class="spinner-border text-info"></div>');
+
+				var dataUrl = url+'?source='+$('#ds').val()+'&request=GetScore&identifier='+$('#score_id_'+row_number).text();
+				var filename = $('#score_title_'+row_number);
+
+			    var link = document.createElement("a");
+			    link.download = filename;
+			    link.target = "_blank";
+
+
+			    link.href = dataUrl;
+			    document.body.appendChild(link);
+			    link.click();
+
+			    document.body.removeChild(link);
+			    delete link;
+
+			    $('#get-score-'+row_number).empty();
+				$('#get-score-'+row_number).append('<button class="btn btn-info btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete">'+
+										 '	<span class="glyphicon glyphicon-save"></span>'+
+										 '</button>');
+
+			}
+
+
 			function deleteAll(){
 
 
 				$.confirm({
 				    title: 'Multiple Delete: ' + $('#table-resultset tr').filter(':has(:checkbox:checked)').length + ' Scores',
-				    content: 'Are you sure you want to delete the selected scores? Think twice: this operation <b>cannot<b> be undone.',
+				    content: 'Are you sure you want to delete the selected scores? Think twice: this operation <b>cannot</b> be undone.',
 				    buttons: {
 				        cancel: function () {
 				            
@@ -283,7 +304,6 @@
 				});
 			}
 
-
 			
 			function deleteScore(row_number){
 
@@ -303,7 +323,9 @@
 							$.getJSON(url+'?source='+$('#ds').val()+'&request=DeleteScore&identifier='+$('#score_id_'+row_number).text(), function(data){
 
 								if(data["type"]=='DeleteScoresReport'){						
+
 									row.parentNode.removeChild(row);
+									showDeleteAllButton();
 								} else {
 									$.alert('Music score could not be deleted.');									
 									$('#del_'+row_number).append('<button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete">'+
@@ -319,8 +341,6 @@
 				        }
 				    }
 				});
-
-
 			}
 
 		</script>
