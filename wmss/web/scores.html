@@ -3,10 +3,12 @@
 	<head>	
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+		<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">-->
+		<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">-->
 
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+		<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>-->
+		<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>-->
+		
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 			
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
@@ -16,19 +18,8 @@
 
 	<body>			
 
-		<h2>WMSS Score Management</h2>
-
-		Data Source: 
-		<select id="ds">
-			<option>neo4j_local</option>
-		</select> 
-		Page size: <input id="page_size" value="15"></input>
-		<button id="btn-load">Load</button> <br/><br>
-
-
 		<div class="table-responsive">
-
-			<table class="table">
+			<table class="table table-borderless">
 				<thead>
 					<th width='2%'></th>
 					<th></th>
@@ -36,12 +27,12 @@
 				<tbody>
 					<tr>
 						<td style="text-align: center;"><input id='check-all' type='checkbox'/></td>
-						<td><button id="btn-delete-all" class="btn btn-danger" data-title="Delete" data-toggle="modal" data-target="#delete"><span class="glyphicon glyphicon-trash"></span>    Delete</button></td>
+						<td><button id="btn-delete-all" class="btn btn-danger" data-title="Delete" data-toggle="modal" data-target="#delete"><i class="fa fa-trash" aria-hidden="true"></i>    Delete</button></td>
 					</tr>
 				</tbody>
 			</table>
 
-			<table id="table-resultset" class="table table-bordred table-striped">
+			<table id="table-resultset" class="table table-striped" >
 				<thead></thead>
 				<tbody></tbody>
 			</table>
@@ -103,14 +94,14 @@
 
 			var url = "http://"+window.location.host+"/"+window.location.pathname.split('/')[1];
 
-			$("#btn-load").click(function(){
+			$( document ).ready(function() {
 
 				$('#table-resultset').attr('border', '1');
 	    		$("#table-resultset tr").remove();
 	    		$("#table-resultset thead").empty();
-	    		$("#table-resultset thead").append("<th width='1%'></th><th width='5%'></th><th width='40%'>Music Score</th><th width='15%'>Related Persons</th><th width='15%'>Movements</th><th width='1%'></th><th width='1%'></th>");
+	    		$("#table-resultset thead").append("<th width='1%'></th><th width='5%'></th><th>Music Score</th><th>Related Persons</th><th>Movements</th><th></th>");
 
-				$.getJSON(url+"?source="+$('#ds').val()+"&request=ListScores&pageSize=" + $('#page_size').val(), function(data){
+				$.getJSON(url+"?source="+$('#selected-source').text()+"&request=ListScores&pageSize=50", function(data){
 
 					var sources = data["datasources"];
 
@@ -118,7 +109,7 @@
         	 			
         	 			var src = sources[i];
         	 			
-        	 			if(src["identifier"]==$('#ds').val()){
+        	 			if(src["identifier"]==$('#selected-source').text()){
 
         	 				var scores = src["scores"];
 
@@ -133,15 +124,15 @@
 								for (k = 0; k < formats.length; k++) { 
 
 									var fr = formats[k];
-									var badge_color = "";
+									var badge_class = "";
 									if (fr["formatId"]=="musicxml"){
-										badge_color="#468847";
+										badge_class="badge badge-pill badge-success";
 									} else if (fr["formatId"]=="mei"){
-										badge_color="#f89406";
+										badge_class="badge badge-pill badge-secondary";
 									} else {
-										badge_color="#999999";
+										badge_class="badge badge-pill badge-dark";
 									}
-									formats_string = formats_string + '<span class="badge" style="background-color: '+badge_color+' ">'+fr["formatDescription"]+'</span>';
+									formats_string = formats_string + '<a href="javascript:getScore(\''+j+'\',\''+fr["formatId"]+'\')"><span style="display: block;" class="'+badge_class+'">'+fr["formatDescription"]+'</span></a>';
 
 								}							
 
@@ -151,15 +142,15 @@
 								for (k = 0; k < persons.length; k++) { 
 
         	 						var per = persons[k];
-        	 						var badge_color;
+        	 						var badge_class;
 
         	 						if(per["role"]=='Composer'){
-        	 							badge_color = '#3a87ad';
+        	 							badge_class = 'badge badge-pill badge-info';
         	 						} else {
-        	 							badge_color = '#999999';
+        	 							badge_class = 'badge badge-pill badge-secondary';
         	 						} 
 
-        	 						persons_string = persons_string +'<p><a href="'+per["url"]+'">' + per["name"] + '</a> <span style="background-color: '+badge_color+'" class="badge">'+per["role"]+'</span></p>';
+        	 						persons_string = persons_string +'<p><a href="'+per["url"]+'">' + per["name"] + '</a> <span class="'+badge_class+'">'+per["role"]+'</span></p>';
 
         	 					}
         	 				        	 					
@@ -168,46 +159,53 @@
         	 					$('#table-resultset').append('<tr id="'+j+'" class="row-score">' +
         	 					'<td style="text-align: center;"><input id="check-'+j+'" type="checkbox" class="check-score" onclick="showDeleteAllButton();"/></td>'+
         	 					'<td style="text-align: center;"><img style="max-width: 125px" src="'+ sc["thumbnail"] + '"/></td>' +        	 					
-        	 					'<td><form class="form-horizontal">'+
-								'	  <div class="form-group">'+
-								'	    <label class="control-label col-sm-2" for="email">Identifier:</label>'+
+        	 					'<td><form class="col-12">'+
+								'	  <div class="form-row">'+
+								'	    <label class="col-sm-2 col-form-label" for="identifier">Identifier:</label>'+
 								'	    <div id ="score_id_container" class="col-sm-10"><p id="score_id_'+j+'" class="form-control-static">'+sc["scoreIdentifier"] +'</p></div>'+
-								'		<label class="control-label col-sm-2" for="email">Title:</label>'+
+								'	  </div>'+
+								'	  <div class="form-row">'+
+								'		<label class="col-sm-2 col-form-label" for="title">Title:</label>'+
 								'	    <div class="col-sm-10"><p id="score_title_'+j+'" class="form-control-static">'+sc["title"] +'</p></div>'+
-								'		<label class="control-label col-sm-2" for="email">Issued:</label>'+
+								'	  </div>'+
+								'	  <div class="form-row">'+
+								'		<label class="col-sm-2 col-form-label" for="issued">Issued:</label>'+
 								'	    <div class="col-sm-10"><p class="form-control-static">'+sc["dateIssued"] +'</p></div>'+
-
-								'		<label class="control-label col-sm-2" for="email">Formats:</label>'+
-								'	    <div class="col-sm-10"><p class="form-control-static">'+formats_string +'</p></div>'+
-
-								'		<label class="control-label col-sm-2" for="email">Online Resource:</label>'+
+								'	  </div>'+
+								'	  <div class="form-row">'+
+								'		<label class="col-sm-2 col-form-label" for="online-resource">Resource:</label>'+
 								'	    <div class="col-sm-10"><p class="form-control-static"><a href="'+ sc["onlineResource"] + '">'+sc["onlineResource"]+'</a></p></div>'+
 								'	  </div>'+
-								'	</form>'+
-								'</td> ' + 
-	                			'<td>'+ persons_string + '</td>' +
-	                			'<td id="mov_'+j+'"></td>'+
-	                			'<td style="text-align: center;"><a href="javascript:getScore(\''+j+'\')"><p id="get-score-'+j+'" data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-info btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-save"></span></button></p></a>' +
-	             				'</td>'+
-	             				'<td style="text-align: center;"><a href="javascript:deleteScore(\''+j+'\')"><p id="del_'+j+'" data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-trash"></span></button></p></a></td>' +
+
+								'	  <div class="form-row">'+
+								'		<div class="col-sm-100"><p class="form-control-static" style="style: none;">'+ formats_string+'</p></div>'+								
+								'	  </div>'+
+								'	</form> '+							
+								'</td>' + 
+	                			'<td>'+ persons_string + '</td>' +	                			
+	                			'<td><div id="movements-'+j+'" class="accordion"></div></td>'+
+	             				'<td style="text-align: center;"><a href="javascript:deleteScore(\''+j+'\')"><p id="del_'+j+'" data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-sm" data-title="Delete" data-toggle="modal" data-target="#delete" ><i class="fa fa-trash"/></button></p></a></td>' +
 	             				'</tr>');
 
 	             				for (k = 0; k < movements.length; k++) { 
 
         	 						var mov = movements[k];
 
-        	 						$('<div>'+
-		                				'<div class="panel-group">'+
-	    									'<div class="panel panel-default">'+
-				                				'<div class="panel-heading">'+
-			        	 							'<span>'+
-			        	 								'<a data-toggle="collapse" href="#perf_'+j+k+'">'+mov["movementName"]+'</a>'+
-			        	 						  	'</span>'+
-												  	'<div id="perf_'+j+k+'" class="panel-collapse collapse"></div>'+
-												'</div>'+
-										    '</div>'+
-										'</div>'+
-									'</div>').appendTo('#mov_'+j);
+        	 						
+
+									$('#movements-'+j).append('<div class="card">'+
+															  '  <div class="card-header" id="heading-'+j+k+'">'+
+															  '    <h5 class="mb-0">'+
+															  '      <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse-'+j+k+'" aria-expanded="false" aria-controls="collapse-'+j+k+'">'+
+															  '        '+mov["movementName"]+
+															  '      </button>'+
+															  '    </h5>'+
+															  '  </div>'+
+															  '  <div id="collapse-'+j+k+'" class="collapse hide" aria-labelledby="heading-'+j+k+'" data-parent="#movements-'+j+'">'+
+															  '    <div id="medium-'+j+k+'" class="card-body">'+
+															  '    </div>'+
+															  '  </div>'+
+															  '</div>');        	 						
 
         	 						var perf_type = mov["performanceMediumList"];
 
@@ -218,12 +216,14 @@
        	 							
         	 							for (m = 0; m < medium.length; m++) { 
 
-        	 								var med = medium[m];
-        	 								$('<div class="panel-body">'+med["mediumScoreDescription"]+' ('+med["mediumDescription"]+')</div>').appendTo('#perf_'+j+k);
+        	 								var med = medium[m];        	 								
+        	 								$('#medium-'+j+k).append(med["mediumScoreDescription"]+' ('+med["mediumDescription"]+')<br>');
+        	 								
         	 								
         	 							}
         	 						}
         	 					}
+
         	 				}
         	 			}
         	 		}
@@ -231,13 +231,13 @@
 			});
 
 
-			function getScore(row_number) {
+			function getScore(row_number,format) {
 
 
 				$('#get-score-'+row_number).empty();
 				$('#get-score-'+row_number).append('<div class="spinner-border text-info"></div>');
 
-				var dataUrl = url+'?source='+$('#ds').val()+'&request=GetScore&identifier='+$('#score_id_'+row_number).text();
+				var dataUrl = url+'?source='+$('#ds').val()+'&request=GetScore&identifier='+$('#score_id_'+row_number).text()+'&format='+format;
 				var filename = $('#score_title_'+row_number);
 
 			    var link = document.createElement("a");
@@ -253,8 +253,8 @@
 			    delete link;
 
 			    $('#get-score-'+row_number).empty();
-				$('#get-score-'+row_number).append('<button class="btn btn-info btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete">'+
-										 '	<span class="glyphicon glyphicon-save"></span>'+
+				$('#get-score-'+row_number).append('<button class="btn btn-info btn-sm" data-title="Delete" data-toggle="modal" data-target="#delete">'+
+										 '	<i class="fa fa-download"/>'+
 										 '</button>');
 
 			}
@@ -282,7 +282,7 @@
 									$('#del_'+row.id).empty();
 									$('#del_'+row.id).append('<div class="spinner-border text-danger"></div>');
 
-									$.getJSON(url+'?source='+$('#ds').val()+'&request=DeleteScore&identifier='+$('#score_id_'+row.id).text(), function(data){
+									$.getJSON(url+'?source='+$('#selected-source').text()+'&request=DeleteScore&identifier='+$('#score_id_'+row.id).text(), function(data){
 
 										if(data["type"]=='DeleteScoresReport'){						
 											row.parentNode.removeChild(row);
@@ -290,8 +290,8 @@
 											$('.check-score').prop('checked', false);
 										} else {
 												
-											$('#del_'+row.id).append('<button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete">'+
-																'	<span class="glyphicon glyphicon-trash"></span>'+
+											$('#del_'+row.id).append('<button class="btn btn-danger btn-sm" data-title="Delete" data-toggle="modal" data-target="#delete">'+
+																'	<i class="fa fa-trash"/>'+
 																'</button>');
 											$("#btn-delete-all").show();
 											$('.check-score').prop('checked', true);
@@ -320,16 +320,18 @@
 							$('#del_'+row_number).empty();
 							$('#del_'+row_number).append('<div class="spinner-border text-danger"></div>');
 
-							$.getJSON(url+'?source='+$('#ds').val()+'&request=DeleteScore&identifier='+$('#score_id_'+row_number).text(), function(data){
+							$.getJSON(url+'?source='+$('#selected-source').text()+'&request=DeleteScore&identifier='+$('#score_id_'+row_number).text(), function(data){
 
 								if(data["type"]=='DeleteScoresReport'){						
 
 									row.parentNode.removeChild(row);
 									showDeleteAllButton();
 								} else {
-									$.alert('Music score could not be deleted.');									
-									$('#del_'+row_number).append('<button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete">'+
-																	'<span class="glyphicon glyphicon-trash"></span>'+
+									$.alert('Music score could not be deleted.<br>'+
+										'<br><b>Code</b>: '+data["code"]+
+										'<br><b>Message</b>: '+data["message"]);									
+									$('#del_'+row_number).html('<button class="btn btn-danger btn-sm" data-title="Delete" data-toggle="modal" data-target="#delete">'+
+																	'<i class="fa fa-trash"/>'+
 																 '</button>');
 								}
 							});

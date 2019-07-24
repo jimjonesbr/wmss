@@ -1,171 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>	
-	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>	
 
+<head>
 
-	<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
 
+  <title>Web Music Score Service</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+  <!-- Custom styles for this template -->
+  <link href="css/simple-sidebar.css" rel="stylesheet">
+
+    <!-- Bootstrap core JavaScript -->
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 </head>
 
 <body>
-	<a href="admin/scores.html">Manage Scores</a>
-	<h2>WMSS File Upload</h2>
-	<span id="title"></span><br>
-	<b>Started at:</b> <span id="started"></span><br>
-	<b>Contact:</b> <span id="contact"></span><br>
-	<b>Port:</b> <span id="port"></span><br>
-	<b>Service:</b> <span id="service"></span><br>
-	<br/>
-	Data Source: 
-		<select id="ds"></select><br/>
-		<b>Storage:</b> <span id="ds_storage"></span><br>
-		<b>Type:</b> <span id="ds_type"></span><br>
-		<b>Version:</b> <span id="ds_version"></span><br>
-		<b>Host:</b> <span id="ds_host"></span><br>
-		<b>Port:</b> <span id="ds_port"></span><br>		
-		<b>Description:</b> <span id="ds_description"></span><br>
-		<b>Total Scores:</b> <span id="ds_totalscores"></span>
-	<br><br>
-	RDF Format: 
-		<select id="format"> 
-			<option value="n-triples">N-Triples</option>
-			<option value="turtle" selected="selected">Turtle</option>
-			<option value="rdf/xml">RDF/XML</option>
-			<option value="json-ld">JSON-LD</option>
-		</select>
-	Batch size: <input id="bacth_size" value="10000"></input>
 
-	<form id="formImport" method="post" enctype="multipart/form-data">
-		<input id="input_files" type="file" name="file" multiple/>
-	</form>
-	<br>
-	<button id="btnImport">Import RDF</button>
-	<br><br>
-	<span id="working"></span><br>		
-	<table id="mytable" class="table table-bordred table-striped">
-		               <thead>
-                   
-                   </thead>
-		 <tbody>
-		 </tbody>
-	</table>
-<script type="text/javascript">
+  <div class="d-flex" id="wrapper">
 
-	var sources;
+    <!-- Sidebar -->
+    <div class="bg-light border-right" id="sidebar-wrapper">
+      <div class="sidebar-heading">WMSS</div>
+      <div class="list-group list-group-flush">
+        <a id="menu-import" href="#" class="list-group-item list-group-item-action bg-light"><i class="fa fa-upload" style="font-size:20px" aria-hidden="false" ></i>  Import Files</a>
+        <a id="menu-management" href="#" class="list-group-item list-group-item-action bg-light"><i class="fa fa-music" style="font-size:20px" aria-hidden="false"></i>  Score Management</a>
+        <a id="menu-settings"href="#" class="list-group-item list-group-item-action bg-light"><i class="fa fa-gear" style="font-size:20px" aria-hidden="false"></i>  Settings</a>
+      </div>
+    </div>
+    <!-- /#sidebar-wrapper -->
 
-	$( document ).ready(function() {
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
 
-		$("#ds option").remove();
+      <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+        <button class="btn btn-primary" id="menu-toggle">Toggle Menu</button>
 
-	    $.getJSON("http://"+window.location.host+"/"+window.location.pathname.split('/')[1]+"?request=DescribeService", function(data){
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-	        sources=data["datasources"];
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="http://github.com/jimjonesbr/wmss"><i class="fa fa-github" style="font-size:21px" aria-hidden="false"></i>   Source Code</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="selected-source" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Dropdown
+              </a>
+              <div id="source-list" class="dropdown-menu dropdown-menu-right" aria-labelledby="selected-source"></div>
+            </li>
+          </ul>
+        </div>
+      </nav>
 
-	        $('#title').text(data["title"]);
-	        $('#started').text(data["startup"]);
-	        $('#contact').text(data["contact"]);
-	        $('#service').text(data["service"]);
-	        $('#port').text(data["port"]);
+      <div id="main-container" class="container-fluid">
 
-	        for (var i = sources.length - 1; i >= 0; i--) {
-	        	 var src = sources[i];
-	        	 var o = new Option(src["id"], src["id"]);	
-	        	 $('#ds_description').text(src["info"]);
-	        	 $('#ds_host').text(src["host"]);
-	        	 $('#ds_port').text(src["port"]);
-	        	 $('#ds_type').text(src["type"]);
-	        	 $('#ds_storage').text(src["storage"]);
-	        	 $('#ds_version').text(src["version"]);
-	        	 $('#ds_totalscores').text(src["totalScores"]);
-	        	 $('#ds').append(o);           
-	    	}
+        <h1 class="mt-4">Web Music Score Service</h1>
 
-	  	});
+      </div>
+    </div>
+    <!-- /#page-content-wrapper -->
 
-	    
-	    $("[data-toggle=tooltip]").tooltip();
+  </div>
+  <!-- /#wrapper -->
 
-	});	
+  <!-- Menu Toggle Script -->
+  <script>
+    $("#menu-toggle").click(function(e) {
+      e.preventDefault();
+      $("#wrapper").toggleClass("toggled");
+    });
 
-	$("#btnImport").click(function(){
+        $("#menu-import").click(function(e) {
+      $("#main-container").load("import.html");
+    });
+   
+    $("#menu-management").click(function(e) {
+      $("#main-container").load("scores.html");
+    });
 
-		$("#btnImport").prop('disabled',true);
 
-	    var url= 'http://' + 
-	             window.location.hostname + ':' +
-	             $('#port').text() + '/'+$('#service').text()+'/import?source='+$('#ds').find(':selected').val() +
-	             '&format='+$('#format').find(':selected').val() + 
-	             '&commitsize='+$('#bacth_size').val();                 
 
-	    $('#mytable').attr('border', '1');
-	    $("#mytable tr").remove();
-	       		
-	    $.each($('#input_files')[0].files, function(i, file) {
-	      
-	        var data = new FormData();
-	        data.append('file-'+i, file);
-	       
+    $( document ).ready(function() {
 
-	        $.ajax({  
-	             type: "POST",  
-	             url: url,  
-	             data: data,
-	             async: false,
-	             cache: false,
-	             contentType: false,
-	             processData: false,
-	             success: function(data) {
-	                 
-	                console.log(data);
+      $("#selected-source a").remove();
 
-	                var report = JSON.parse(data);
-	                var type = report["type"];
-	                
-	                if(type == "ExceptionReport"){
-	                	$('#mytable').append('<tr style="color: red"><td>'+file.name + '</td>' + 
-	                		'<td>'+ report["code"] + ' - ' + report["message"] + 
-	             			'<td >Fail</td>' + '</td></tr>');
-	                } 	                 
+        $.getJSON("http://"+window.location.host+"/"+window.location.pathname.split('/')[1]+"?request=DescribeService", function(data){
 
-	                if(type == "ImportReport"){
+            var sources=data["datasources"];
 
-	                	var importedFile = report["files"][0];
-	                	console.log(importedFile);
-	                	$('#mytable').append('<tr><td>'+file.name + '</td>' +               
-	                						   '<td>'+importedFile["records"]+' records ('+ importedFile["size"]+ ') <br>' + report["timeElapsed"] +' </td>'
-	                						   		 + '<td>Success</td></tr>');
-	                }
+            for (var i = sources.length - 1; i >= 0; i--) {
+              
+              var src = sources[i];
+              $("#source-list").append('<a class="dropdown-item" href="#">'+src["id"]+'</a>');
+              $("#selected-source").text(src["id"]);
 
-	             }
-	        });       
+          }
 
-	    });
+        });
 
-	$("#btnImport").prop('disabled',false);
-	});
+    });
 
-	$('#ds').on('click', function() {
 
-		for (var i = sources.length - 1; i >= 0; i--) {
-        	 var src = sources[i];
+    $(".dropdown-item").click(function(e){
+      alert("x");
+    });
+  </script>
 
-        	 if(src["id"]==this.value){
-	        	 $('#ds_description').text(src["info"]);
-	        	 $('#ds_host').text(src["host"]);
-	        	 $('#ds_port').text(src["port"]);
-	        	 $('#ds_type').text(src["type"]);
-	        	 $('#ds_storage').text(src["storage"]);
-	        	 $('#ds_version').text(src["version"]);
-	        	 $('#ds_totalscores').text(src["totalScores"]);
-        	}
-      
-    	}
+</body>
 
-	});
-
-</script>
-
-</body>	
 </html>

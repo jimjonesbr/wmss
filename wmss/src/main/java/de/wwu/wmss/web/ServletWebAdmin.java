@@ -15,7 +15,7 @@ import de.wwu.wmss.settings.SystemSettings;
 
 public class ServletWebAdmin extends HttpServlet {
 
-	private static Logger logger = Logger.getLogger("ServletImport");
+	private static Logger logger = Logger.getLogger("Servlet-Admin");
 	private static final long serialVersionUID = 1L;
 	
 	protected void doGet(HttpServletRequest httpRequest, HttpServletResponse response) throws ServletException, IOException {
@@ -53,7 +53,7 @@ public class ServletWebAdmin extends HttpServlet {
 		
 		String content = contentBuilder.toString();
 				
-		response.setContentType("text/html");
+		//response.setContentType("text/html");
 		response.setStatus(HttpServletResponse.SC_OK);
 		response.getWriter().println(content);
 
