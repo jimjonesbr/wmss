@@ -101,7 +101,7 @@
 	    		$("#table-resultset thead").empty();
 	    		$("#table-resultset thead").append("<th width='1%'></th><th width='5%'></th><th>Music Score</th><th>Related Persons</th><th>Movements</th><th></th>");
 
-				$.getJSON(url+"?source="+$('#selected-source').text()+"&request=ListScores&pageSize=50", function(data){
+				$.getJSON(url+"?source="+current_source+"&request=ListScores&pageSize=50", function(data){
 
 					var sources = data["datasources"];
 
@@ -109,7 +109,7 @@
         	 			
         	 			var src = sources[i];
         	 			
-        	 			if(src["identifier"]==$('#selected-source').text()){
+        	 			if(src["identifier"]==current_source){
 
         	 				var scores = src["scores"];
 
@@ -126,13 +126,13 @@
 									var fr = formats[k];
 									var badge_class = "";
 									if (fr["formatId"]=="musicxml"){
-										badge_class="badge badge-pill badge-success";
+										badge_class="badge badge-pill badge-info";
 									} else if (fr["formatId"]=="mei"){
 										badge_class="badge badge-pill badge-secondary";
 									} else {
 										badge_class="badge badge-pill badge-dark";
 									}
-									formats_string = formats_string + '<a href="javascript:getScore(\''+j+'\',\''+fr["formatId"]+'\')"><span style="display: block;" class="'+badge_class+'">'+fr["formatDescription"]+'</span></a>';
+									formats_string = formats_string + '<a style="font-size:18px" href="javascript:getScore(\''+j+'\',\''+fr["formatId"]+'\')"><span style="display: block;" class="'+badge_class+'"><i class="fa fa-download"/> '+fr["formatDescription"]+'</span></a>';
 
 								}							
 
@@ -282,7 +282,7 @@
 									$('#del_'+row.id).empty();
 									$('#del_'+row.id).append('<div class="spinner-border text-danger"></div>');
 
-									$.getJSON(url+'?source='+$('#selected-source').text()+'&request=DeleteScore&identifier='+$('#score_id_'+row.id).text(), function(data){
+									$.getJSON(url+'?source='+current_source+'&request=DeleteScore&identifier='+$('#score_id_'+row.id).text(), function(data){
 
 										if(data["type"]=='DeleteScoresReport'){						
 											row.parentNode.removeChild(row);
@@ -320,7 +320,7 @@
 							$('#del_'+row_number).empty();
 							$('#del_'+row_number).append('<div class="spinner-border text-danger"></div>');
 
-							$.getJSON(url+'?source='+$('#selected-source').text()+'&request=DeleteScore&identifier='+$('#score_id_'+row_number).text(), function(data){
+							$.getJSON(url+'?source='+current_source+'&request=DeleteScore&identifier='+$('#score_id_'+row_number).text(), function(data){
 
 								if(data["type"]=='DeleteScoresReport'){						
 
