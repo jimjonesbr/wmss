@@ -23,6 +23,7 @@ public class MusicScore {
 	private ArrayList<Person> persons;
 	private ArrayList<MelodyLocationGroup> melodyLocations;
 	private Collection collection;
+	private String document;
 	
 	public MusicScore() {
 		super();
@@ -199,6 +200,15 @@ public class MusicScore {
 		this.dateIssued = dateIssued;
 	}
 
+
+	public String getDocument() {
+		return document;
+	}
+
+
+	public void setDocument(String document) {
+		this.document = document;
+	}
 	
 	
 }

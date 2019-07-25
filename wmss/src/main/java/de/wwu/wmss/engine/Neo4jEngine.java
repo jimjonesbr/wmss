@@ -157,9 +157,9 @@ public class Neo4jEngine {
 		return result;
 	}
 		
-	public static String getMusicXML(WMSSRequest request){
+	public static MusicScore getScore(WMSSRequest request){
 		
-		String result = "";
+		MusicScore score = new MusicScore();
 		String format = request.getFormat();
 		
 		if(format.equals("")) {
@@ -167,7 +167,7 @@ public class Neo4jEngine {
 		}
 		
 		String cypher = "\n\nMATCH (score:Score {uri:'"+request.getIdentifier()+"'})-[:DOCUMENT {type:'"+format+"'}]->(document:Document) "
-				+ "RETURN document.content AS xml";
+				+ "RETURN score.title AS title, document.content AS xml";
 
 		logger.debug("getMusicXML:\n"+cypher);
 		
@@ -175,11 +175,11 @@ public class Neo4jEngine {
 
 		while ( rs.hasNext() ){
 			Record record = rs.next();
-
-			result = record.get("xml").asString();
+			score.setDocument(record.get("xml").asString());
+			score.setTitle(record.get("title").asString());			
 		}
 
-		return result;
+		return score;
 	}
 
 	public static ArrayList<PerformanceMediumType> getPerformanceMedium(DataSource ds){

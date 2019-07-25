@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import de.wwu.wmss.core.ErrorCodes;
+import de.wwu.wmss.core.MusicScore;
 import de.wwu.wmss.core.WMSSRequest;
 import de.wwu.wmss.engine.DocumentBuilder;
 import de.wwu.wmss.exceptions.InvalidWMSSRequestException;
@@ -48,10 +49,12 @@ public class ServletWMSS extends HttpServlet
 
 			} else if (wmssRequest.getRequestType().equals("getscore")) { 
 
-				response.setHeader("Content-disposition", "attachment; filename=score.xml");
+				MusicScore score = DocumentBuilder.getScore(wmssRequest);
+				
+				response.setHeader("Content-disposition", "attachment; filename="+score.getTitle().replaceAll("[^a-zA-Z0-9\\.\\-]", "_")+".xml");
 				response.setContentType("text/xml");
 				response.setStatus(HttpServletResponse.SC_OK);
-				response.getWriter().println(DocumentBuilder.getScore(wmssRequest));
+				response.getWriter().println(score.getDocument());
 
 			} else if (wmssRequest.getRequestType().equals("listscores")) {
 

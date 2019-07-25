@@ -316,9 +316,10 @@ public class DocumentBuilder {
 		return result;
 	}
 			
-	public static String getScore(WMSSRequest request){
+	public static MusicScore getScore(WMSSRequest request){
 
-		String result = "";
+		MusicScore score = new MusicScore();
+		
 		DataSource ds = Util.getDataSource(request.getSource());
 
 		if(ds.getType().equals("triplestore")) {
@@ -333,13 +334,13 @@ public class DocumentBuilder {
 
 					if(ds.getStorage().equals("neo4j")) {
 						
-						result = Neo4jEngine.getMusicXML(request);
+						score = Neo4jEngine.getScore(request);
 						
 					}
 
 				}
 
-		return result;
+		return score;
 
 	}
 		
