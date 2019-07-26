@@ -12,7 +12,7 @@
 		<div class="table-responsive">
 			<table class="table table-borderless">
 				<thead>
-					<th width='2%'></th>
+					<th width='1%'></th>
 					<th></th>
 				</thead>
 				<tbody>
@@ -24,68 +24,69 @@
 			</table>
 
 			<table id="table-resultset" class="table table-striped table-bordered" style="width:100%">
-				<thead><th width='1%'></th><th width='5%'></th><th>Music Score</th><th>Related Persons</th><th>Movements</th><th></th></thead>
+				<thead><th></th><th></th><th>Music Score</th><th>Related Persons</th><th>Movements</th><th></th></thead>
 				<tbody></tbody>
 			</table>
 		</div>
 		
-		<script type="text/javascript">
-
-
-			$("#btn-delete-all").hide();
-
-			$(document).on('click', ".header", function() {   				
-			    $header = $(this);
-			    $content = $header.next();
-			    $content.slideToggle(200, function () {			        
-			    });
-			});
 	
-		
-			$('#check-all').change(function () {
-
-				if($('#check-all').is(':checked')) {
-				    $("#btn-delete-all").show();
-				    $('.check-score').prop('checked', true);
-				} else {
-				    $("#btn-delete-all").hide();
-				    $('.check-score').prop('checked', false);
-				}
-
-			});
+	<script type="text/javascript">
 
 
-			$("#btn-delete-all").click(function(){
+	$("#btn-delete-all").hide();
 
-				deleteAll();			
+	$(document).on('click', ".header", function() {   				
+	    $header = $(this);
+	    $content = $header.next();
+	    $content.slideToggle(200, function () {			        
+	    });
+	});
 
-			});
 
-			$( document ).ready(function() {
+	$('#check-all').change(function () {
 
-				loadData();
-			});
+		if($('#check-all').is(':checked')) {
+		    $("#btn-delete-all").show();
+		    $('.check-score').prop('checked', true);
+		} else {
+		    $("#btn-delete-all").hide();
+		    $('.check-score').prop('checked', false);
+		}
 
-			function showDeleteAllButton(){
+	});
 
-				var chk = document.getElementsByClassName("check-score");
-				var checked_items = 0;
 
-				for (i = 0; i < chk.length; i++) { 
+	$("#btn-delete-all").click(function(){
 
-					if(chk[i].checked){
-						checked_items++;
-					}
+		deleteAll();			
 
-				}
+	});
 
-				if(checked_items>0){
-					$("#btn-delete-all").show();
-				} else {
-					$("#btn-delete-all").hide();
-				}
+	$( document ).ready(function() {
 
+		loadData();
+	});
+
+	function showDeleteAllButton(){
+
+		var chk = document.getElementsByClassName("check-score");
+		var checked_items = 0;
+
+		for (i = 0; i < chk.length; i++) { 
+
+			if(chk[i].checked){
+				checked_items++;
 			}
+
+		}
+
+		if(checked_items>0){
+			$("#btn-delete-all").show();
+		} else {
+			$("#btn-delete-all").hide();
+		}
+
+	}
 
 			
 
@@ -100,6 +101,7 @@
 	var current_page = 1;
 	var page_size = 10;
 	var datatable;
+
 
 	$(document).on('mouseup', 'a.page-link:not(.next):not(.previous)', function() {   						
    		current_page = parseInt($(this).attr('data-dt-idx'));
@@ -207,21 +209,22 @@
 		 						var mov = movements[k];
 		 						var perf_type = mov["performanceMediumList"];
 
-		 						var mediums_string = "";
+		 						var mediums_string = "<ul>";
 
 		 						for (l = 0; l < perf_type.length; l++) { 
 								
 		 							var perf = perf_type[l];
 		 							var medium = perf["mediums"];
-		 							
+			 						
 		 							for (m = 0; m < medium.length; m++) { 
 
 		 								var med = medium[m];        	 								
-		 								mediums_string = mediums_string + med["mediumScoreDescription"]+' ('+med["mediumDescription"]+')<br>';
+		 								mediums_string = mediums_string + '<li>' +med["mediumScoreDescription"]+' ('+med["mediumDescription"]+')</li>';
 		 								
 		 							}
 		 						}
 
+		 						mediums_string = mediums_string + "</ul>";
 
 		 						movements_string = movements_string + 		 							
 									'<div class="card">'+
@@ -304,127 +307,121 @@
 	}
 
 
-			function getScore(row_number,format) {
+	function getScore(row_number,format) {
 
 
+		$('#get-score-'+row_number).empty();
+		$('#get-score-'+row_number).append('<div class="spinner-border text-info"></div>');
+
+		var dataUrl = url+'?source='+current_source+'&request=GetScore&identifier='+$('#score_id_'+row_number).text()+'&format='+format;
+		var filename = $('#score_title_'+row_number);
+
+	    var link = document.createElement("a");
+	    link.download = filename;
+	    link.target = "_blank";
 
 
-				$('#get-score-'+row_number).empty();
-				$('#get-score-'+row_number).append('<div class="spinner-border text-info"></div>');
+	    link.href = dataUrl;
+	    document.body.appendChild(link);
+	    link.click();
 
-				var dataUrl = url+'?source='+current_source+'&request=GetScore&identifier='+$('#score_id_'+row_number).text()+'&format='+format;
-				var filename = $('#score_title_'+row_number);
+	    document.body.removeChild(link);
+	    delete link;
 
-			    var link = document.createElement("a");
-			    link.download = filename;
-			    link.target = "_blank";
+	    $('#get-score-'+row_number).empty();
+		$('#get-score-'+row_number).append('<button class="btn btn-info btn-sm" data-title="Delete" data-toggle="modal" data-target="#delete">'+
+								 '	<i class="fa fa-download"/>'+
+								 '</button>');
 
-
-			    link.href = dataUrl;
-			    document.body.appendChild(link);
-			    link.click();
-
-			    document.body.removeChild(link);
-			    delete link;
-
-			    $('#get-score-'+row_number).empty();
-				$('#get-score-'+row_number).append('<button class="btn btn-info btn-sm" data-title="Delete" data-toggle="modal" data-target="#delete">'+
-										 '	<i class="fa fa-download"/>'+
-										 '</button>');
-
-			}
+	}
 
 
-			function deleteAll(){
+	function deleteAll(){
 
 
-				$.confirm({
-				    title: 'Multiple Delete: ' + $('#table-resultset tr').filter(':has(:checkbox:checked)').length + ' Scores',
-				    content: 'Are you sure you want to delete the selected scores? Think twice: this operation <b>cannot</b> be undone.',
-				    buttons: {
-				        cancel: function () {
-				            
-				        },
-				        somethingElse: {
-				            text: 'Delete',
-				            btnClass: 'btn-red',
-				            keys: ['enter', 'shift'],
-				            action: function(){
+		$.confirm({
+		    title: 'Multiple Delete: ' + $('#table-resultset tr').filter(':has(:checkbox:checked)').length + ' Scores',
+		    content: 'Are you sure you want to delete the selected scores? Think twice: this operation <b>cannot</b> be undone.',
+		    buttons: {
+		        cancel: function () {
+		            
+		        },
+		        somethingElse: {
+		            text: 'Delete',
+		            btnClass: 'btn-red',
+		            keys: ['enter', 'shift'],
+		            action: function(){
 
-								$('#table-resultset tr').filter(':has(:checkbox:checked)').each(function() {
+						$('#table-resultset tr').filter(':has(:checkbox:checked)').each(function() {
 
-									var row = this;
-									$('#del_'+row.id).empty();
-									$('#del_'+row.id).append('<div class="spinner-border text-danger"></div>');
+							var row = this;
+							$('#del_'+row.id).empty();
+							$('#del_'+row.id).append('<div class="spinner-border text-danger"></div>');
 
-									$.getJSON(url+'?source='+current_source+'&request=DeleteScore&identifier='+$('#score_id_'+row.id).text(), function(data){
-
-										if(data["type"]=='DeleteScoresReport'){						
-											row.parentNode.removeChild(row);
-											$("#btn-delete-all").hide();
-											$('.check-score').prop('checked', false);
-										} else {
-												
-											$('#del_'+row.id).append('<button class="btn btn-danger btn-sm" data-title="Delete" data-toggle="modal" data-target="#delete">'+
-																'	<i class="fa fa-trash"/>'+
-																'</button>');
-											$("#btn-delete-all").show();
-											$('.check-score').prop('checked', true);
-										}
-									});
-								});		
-				            }
-				        }
-				    }
-				});
-			}
-
-			
-			function deleteScore(row_number){
-
-				var row = document.getElementById(row_number);
-
-				$.confirm({
-				    title: 'Delete Score',
-				    content: 'Are you sure you want to delete this music score? This operation <b>cannot</b> be undone!<br><br>' + $('#score_title_'+row_number).text(),
-				    buttons: {
-				        delete: {
-				        	btnClass: 'btn-red',
-				        	action: function () {
-				
-							$('#del_'+row_number).empty();
-							$('#del_'+row_number).append('<div class="spinner-border text-danger"></div>');
-
-							$.getJSON(url+'?source='+current_source+'&request=DeleteScore&identifier='+$('#score_id_'+row_number).text(), function(data){
+							$.getJSON(url+'?source='+current_source+'&request=DeleteScore&identifier='+$('#score_id_'+row.id).text(), function(data){
 
 								if(data["type"]=='DeleteScoresReport'){						
-
 									row.parentNode.removeChild(row);
-									showDeleteAllButton();
+									$("#btn-delete-all").hide();
+									$('.check-score').prop('checked', false);
 								} else {
-									$.alert('Music score could not be deleted.<br>'+
-										'<br><b>Code</b>: '+data["code"]+
-										'<br><b>Message</b>: '+data["message"]);									
-									$('#del_'+row_number).html('<button class="btn btn-danger btn-sm" data-title="Delete" data-toggle="modal" data-target="#delete">'+
-																	'<i class="fa fa-trash"/>'+
-																 '</button>');
+										
+									$('#del_'+row.id).append('<button class="btn btn-danger btn-sm" data-title="Delete" data-toggle="modal" data-target="#delete">'+
+														'	<i class="fa fa-trash"/>'+
+														'</button>');
+									$("#btn-delete-all").show();
+									$('.check-score').prop('checked', true);
 								}
 							});
+						});		
+		            }
+		        }
+		    }
+		});
+	}
 
-				        }},
+			
+	function deleteScore(row_number){
 
-				        cancel: function () {
+		var row = document.getElementById(row_number);
 
-				        }
-				    }
-				});
-			}
+		$.confirm({
+		    title: 'Delete Score',
+		    content: 'Are you sure you want to delete this music score? This operation <b>cannot</b> be undone!<br><br>' + $('#score_title_'+row_number).text(),
+		    buttons: {
+		        delete: {
+		        	btnClass: 'btn-red',
+		        	action: function () {
+		
+					$('#del_'+row_number).empty();
+					$('#del_'+row_number).append('<div class="spinner-border text-danger"></div>');
 
-		</script>
+					$.getJSON(url+'?source='+current_source+'&request=DeleteScore&identifier='+$('#score_id_'+row_number).text(), function(data){
 
+						if(data["type"]=='DeleteScoresReport'){						
 
+							row.parentNode.removeChild(row);
+							showDeleteAllButton();
+						} else {
+							$.alert('Music score could not be deleted.<br>'+
+								'<br><b>Code</b>: '+data["code"]+
+								'<br><b>Message</b>: '+data["message"]);									
+							$('#del_'+row_number).html('<button class="btn btn-danger btn-sm" data-title="Delete" data-toggle="modal" data-target="#delete">'+
+															'<i class="fa fa-trash"/>'+
+														 '</button>');
+						}
+					});
 
-	</body>	
+		        }},
 
+		        cancel: function () {
 
+		        }
+		    }
+		});
+	}
+
+	</script>
+
+</body>	
 </html>
