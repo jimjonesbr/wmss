@@ -11,7 +11,7 @@
   <title>Web Music Score Service</title>
 
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script> 
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
 
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.css">
@@ -44,7 +44,7 @@
       <div class="list-group list-group-flush">
         <a id="menu-import" href="#" class="list-group-item list-group-item-action bg-light"><i class="fa fa-upload" style="font-size:20px" aria-hidden="false" ></i>  Import Files</a>
         <a id="menu-management" href="#" class="list-group-item list-group-item-action bg-light"><i class="fa fa-music" style="font-size:20px" aria-hidden="false"></i>  Score Management</a>
-        <a id="menu-settings"href="#" class="list-group-item list-group-item-action bg-light"><i class="fa fa-gear" style="font-size:20px" aria-hidden="false"></i>  Settings</a>
+        <a id="menu-settings"href="#" class="list-group-item list-group-item-action bg-light"><i class="fa fa-gear" style="font-size:20px" aria-hidden="false"></i>  System Information</a>
       </div>
     </div>
     <!-- /#sidebar-wrapper -->
@@ -92,6 +92,7 @@
   <script>
 
     var current_source ="";
+    var base_url = "http://"+window.location.host+"/"+window.location.pathname.split('/')[1];
 
     $("#menu-toggle").click(function(e) {
       e.preventDefault();
@@ -106,7 +107,9 @@
       $("#main-container").load("scores.html");
     });
 
-
+    $("#menu-settings").click(function(e) {
+      $("#main-container").load("settings.html");
+    });
 
     $( document ).ready(function() {
 

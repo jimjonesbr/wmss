@@ -5,12 +5,6 @@
 </head>
 
 <body>
-	<span id="title"></span><br>
-	<b>Started at:</b> <span id="started"></span><br>
-	<b>Contact:</b> <span id="contact"></span><br>
-	<b>Port:</b> <span id="port"></span><br>
-	<b>Service:</b> <span id="service"></span><br>
-	<br/>
 	Data Source: 
 		<select id="ds"></select><br/>
 		<b>Storage:</b> <span id="ds_storage"></span><br>
@@ -37,6 +31,7 @@
 	<button id="btnImport">Import RDF</button>
 	<br><br>
 	<span id="working"></span><br>		
+
 	<table id="mytable" class="table table-bordred table-striped">
 		               <thead>
                    
@@ -44,10 +39,228 @@
 		 <tbody>
 		 </tbody>
 	</table>
+
+	<ul id="list-files" class="list-group list-group-striped"></ul>
+	
+	<div class="table-responsive">
+		<table class="table table-borderless">
+			<thead>
+				<th width='1%'></th><th></th>
+			</thead>
+			<tbody>
+				<tr>
+					<td style="text-align: center;">
+						<div class="custom-control custom-checkbox">
+							<input id="check-all" type="checkbox" class="custom-control-input check-file" enabled/>
+							<label class="custom-control-label" for="check-all"></label>
+						</div>
+					</td>
+					<td><button id="btn-import-selected" class="btn btn-primary" data-title="Import"><i class="fa fa-upload" aria-hidden="true"></i>    Import</button></td>
+					</tr>
+			</tbody>
+		</table>
+		<table id="table-files" class="table table-striped"></table>
+	</div>
+
 <script type="text/javascript">
+
+	
+
+
 
 	var sources;
 
+
+
+	$("#btn-import-selected").hide();
+	$( '#input_files' ).change(function() {
+
+
+		 $("#table-files").find("tr").remove();
+  
+		$.each($('#input_files')[0].files, function(i, file) {
+
+			console.log(file.type);
+			var file_type = resolveFileType(file.type);			
+			var badge_class;
+			var enable_import;
+
+			if (typeof file_type == 'undefined' && (file_type != 'turtle' && 
+													file_type != 'rdf/xml' && 
+													file_type != 'json-ld') &&
+													file_type != 'n-triples'){
+				badge_class = 'badge badge-pill badge-danger';
+				enable_import = 'disabled';
+			} else {
+				badge_class = 'badge badge-pill badge-secondary';
+				enable_import = 'enabled';
+			}
+
+			$('#table-files').append(
+				'<tr>'+
+				'	<td><div class="custom-control custom-checkbox">'+
+      			'	   		<input type="checkbox" class="custom-control-input check-file" id="check-file-'+i+'" onclick="showImportSelectedButton();"'+enable_import+'/>'+
+      			'			<label class="custom-control-label" for="check-file-'+i+'">'+file.name+ ' ('+humanFileSize(file.size,1024)+')</label>  '+
+      			'			<span class="'+badge_class+'">'+file_type+'</span>'+
+      			'		</div>'+
+      			'		<p id="upload-status-'+i+'" class="text-success"><small></small></p>'+
+      			'	</td>'+
+      			'	<td>'+
+    			'		<p id="import-container-'+i+'"><button id="btn-import-'+i+'" class="btn btn-sm btn-primary" data-toggle="modal" onclick="importRDF(\''+i+'\');" '+enable_import+'>'+
+      			'		<i class="fa fa-upload" aria-hidden="true"></i></button></p>'+
+      			'	</td>'+
+      			'	<td>'+
+    			'		<button id="btn-delete-'+i+'" class="btn btn-sm btn-danger" data-toggle="modal">'+
+      			'		<i class="fa fa-trash"></i></button>'+
+      			'	</td>'+
+      			'</tr>');
+
+				
+
+		});
+
+	});
+
+
+
+
+	$('#check-all').change(function () {
+
+		if($('#check-all').is(':checked')) {
+		    $("#btn-import-selected").show();
+		    $('.check-file').prop('checked', true);
+		} else {
+		    $("#btn-import-selected").hide();
+		    $('.check-file').prop('checked', false);
+		}
+
+	});
+
+
+	function showImportSelectedButton(){
+
+		var chk = document.getElementsByClassName("check-file");
+		var checked_items = 0;
+
+		for (i = 0; i < chk.length; i++) { 
+			if(chk[i].checked){
+				checked_items++;
+			}
+		}
+
+		if(checked_items>0){
+			$("#btn-import-selected").show();
+		} else {
+			$("#btn-import-selected").hide();
+		}
+
+	}
+
+	$("#btn-import-selected").click(function(){
+		
+		$.each($('#input_files')[0].files, function(i, file) {
+			
+			if($('#check-file-'+i).prop('checked')){
+				importRDF(i);
+			}
+			
+
+		});
+
+	});
+
+	function importSelected(){
+
+	
+	}
+
+	function resolveFileType(type) {
+			
+			var result;
+			if(type =='text/turtle'){
+				result = 'turtle';
+			} else if(type == 'application/rdf+xml'){
+				result = 'rdf/xml';
+			} else if(type == 'application/ld+json'){
+				result = 'json-ld';
+			} else if (type == 'application/n-triples'){
+				result = 'n-triples';
+			}
+			return result;
+	}
+
+	function importRDF(file_index){
+		console.log(file_index);
+		$.each($('#input_files')[0].files, function(i, file) {
+
+			if(file_index==i){
+			
+				var data = new FormData();
+	        	data.append('file-'+i, file);	
+
+	        	$('#import-container-'+i).empty();
+	        	$('#import-container-'+i).append('<div class="spinner-border text-primary"></div>');
+	        	$('#upload-status-'+i).html('<p id="upload-status-'+i+'" class="text-info"><small> Processing ... </small></p>');
+	        	$("#check-file-"+i).attr("disabled", true);
+	        	$(".btn-primary").attr("disabled", true);
+
+				$.ajax({  
+	            	type: "POST",  
+	             	url: base_url + '/import?source=' + current_source + '&format=' +resolveFileType(file.type) +  '&commitsize=10000',  
+		            data: data,
+		            async: false,
+		            cache: false,
+		            contentType: false,
+		            processData: false,
+		            success: function(data) {
+		                 
+		            	console.log(data);
+		                var report = JSON.parse(data);
+		                var type = report["type"];
+		                
+		                if(type == "ExceptionReport"){
+
+		                	$('#upload-status-'+i).html('<p id="upload-status-'+i+'" class="text-danger"><small>'+ report["code"] + ' - ' + report["message"] + '</small></p>');
+		                	$('#import-container-'+i).html('<p id="import-container-'+i+'"><button id="btn-import-'+i+'" class="btn btn-sm btn-primary" data-toggle="modal" onclick="importRDF(\''+i+'\');"><i class="fas fa-upload"></i></button></p>');
+		                	$("#check-file-"+i).attr("disabled", false);
+		                	$(".btn-primary").attr("disabled", false);
+		                } 	                 
+
+		                if(type == "ImportReport"){
+
+		                	var importedFile = report["files"][0];
+		                	console.log(importedFile);
+		                	$('#upload-status-'+i).html('<p id="upload-status-'+i+'" class="text-success"><small>'+ importedFile["records"] + ' statements imported in ' + report["timeElapsed"] + '</small></p>');
+		                	$('#import-container-'+i).html('<p id="import-container-'+i+'"><button id="btn-import-'+i+'" class="btn btn-sm btn-success" disabled><i class="fas fa-check"></i></button></p>');
+		                	$(".btn-primary").attr("disabled", false);
+		                	$("#check-file-"+i).attr("disabled", true);
+
+		                }
+
+		             }
+		        });      
+
+			}
+
+		});
+	}
+
+
+	function humanFileSize(bytes, si) {
+	    var thresh = si ? 1000 : 1024;
+	    if(Math.abs(bytes) < thresh) {
+	        return bytes + ' B';
+	    }
+	    var units = si
+	        ? ['kB','MB','GB','TB','PB','EB','ZB','YB']
+	        : ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
+	    var u = -1;
+	    do {
+	        bytes /= thresh;
+	        ++u;
+	    } while(Math.abs(bytes) >= thresh && u < units.length - 1);
+	    return bytes.toFixed(1)+' '+units[u];
+	}
 	$( document ).ready(function() {
 
 		$("#ds option").remove();
@@ -55,12 +268,6 @@
 	    $.getJSON("http://"+window.location.host+"/"+window.location.pathname.split('/')[1]+"?request=DescribeService", function(data){
 
 	        sources=data["datasources"];
-
-	        $('#title').text(data["title"]);
-	        $('#started').text(data["startup"]);
-	        $('#contact').text(data["contact"]);
-	        $('#service').text(data["service"]);
-	        $('#port').text(data["port"]);
 
 	        for (var i = sources.length - 1; i >= 0; i--) {
 	        	 var src = sources[i];
@@ -81,6 +288,9 @@
 	    $("[data-toggle=tooltip]").tooltip();
 
 	});	
+
+
+
 
 	$("#btnImport").click(function(){
 

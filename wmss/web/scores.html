@@ -1,12 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>	
-			
-
-
-
 	</head>
-
 	<body>			
 
 		<div class="table-responsive">
@@ -132,6 +127,9 @@
 		  	'serverSide': true,
 		  	'filter': true,
 		  	"processing": true,
+		  	"language": {
+   				 "search": "Score Title:"
+  			},
 		  	'ajax': {
 		  	'data': function (data) {
             	data.offset = (page_size*current_page)-page_size;
