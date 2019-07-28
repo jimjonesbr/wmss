@@ -5,12 +5,15 @@
 </head>
 
 <body>
-	<span id="title"></span><br>
-	<b>Started at:</b> <span id="started"></span><br>
-	<b>Contact:</b> <span id="contact"></span><br>
-	<b>Port:</b> <span id="port"></span><br>
-	<b>Service:</b> <span id="service"></span><br>
-	<br/>
+	<br>
+	<div class="table-responsive">
+		<span><h3>System Settings</h3></span>
+		<table id="table-settings" class="table table-striped" style="width:100%">
+		</table>
+	</div>
+	
+	<br>
+	<span><h3>Data Sources</h3></span>
 	Data Source: 
 		<select id="ds"></select><br/>
 		<b>Storage:</b> <span id="ds_storage"></span><br>
@@ -32,6 +35,17 @@
 	    $.getJSON("http://"+window.location.host+"/"+window.location.pathname.split('/')[1]+"?request=DescribeService", function(data){
 
 	        sources=data["datasources"];
+
+	        $('#table-settings').append('<tr><td width="15%">Title</td><td><code>'+data["title"]+'</code></td></tr>');
+	        $('#table-settings').append('<tr><td>Started at</td><td><code>'+data["startup"]+'</code></td></tr>');
+	        $('#table-settings').append('<tr><td>Port</td><td><code>'+data["port"]+'</code></td></tr>');
+	        $('#table-settings').append('<tr><td>Contact</td><td><code>'+data["contact"]+'</code></td></tr>');
+			$('#table-settings').append('<tr><td>Service</td><td><code>'+data["service"]+'</code></td></tr>');
+			$('#table-settings').append('<tr><td>Port</td><td><code>'+data["port"]+'</code></td></tr>');
+
+			var environment = data["environment"];
+			$('#table-settings').append('<tr><td>Operating System</td><td><code>'+environment["os"]+'</code></td></tr>');			
+			$('#table-settings').append('<tr><td>Java</td><td><code>'+environment["java"]+'</code></td></tr>');			
 
 	        $('#title').text(data["title"]);
 	        $('#started').text(data["startup"]);

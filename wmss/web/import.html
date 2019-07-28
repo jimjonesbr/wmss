@@ -6,7 +6,11 @@
 
 <body>
 
-		
+	<br>
+	<div>
+		<span>Supported file formats: <code>rdf/xml</code>, <code>turtle</code>, <code>n-triples</code> and <code>json-ld</code></span>
+	</div>
+
 	<div class="table-responsive">
 		<br/>
 
@@ -14,7 +18,7 @@
 				<input id="input_files" type="file" name="file" multiple/>			
 		</form>
 		
-		<table class="table table-borderless">
+		<table class="table table-borderless" style="width:100%">
 			<thead>
 				<th width='1%'></th><th></th>
 			</thead>
@@ -30,7 +34,10 @@
 					</tr>
 			</tbody>
 		</table>
-		<table id="table-files" class="table table-striped"></table>
+
+		<table id="table-files" class="table table-striped" style="width:100%">
+
+		</table>
 	</div>
 
 <script type="text/javascript">
@@ -40,8 +47,10 @@
 
 	$( '#input_files' ).change(function() {
 
+
 		 $("#table-files").find("tr").remove();
 		 $('#container-check-all').show();
+		 $("#btn-import-selected").hide();
   
 		$.each($('#input_files')[0].files, function(i, file) {
 
@@ -62,7 +71,7 @@
 			}
 
 			$('#table-files').append(
-				'<tr>'+
+				'<tr id="row-'+i+'">'+
 				'	<td><div class="custom-control custom-checkbox">'+
       			'	   		<input type="checkbox" class="custom-control-input check-file" id="check-file-'+i+'" onclick="showImportSelectedButton();"'+enable_import+'/>'+
       			'			<label class="custom-control-label" for="check-file-'+i+'">'+file.name+ ' ('+humanFileSize(file.size,1024)+')</label>  '+
@@ -70,13 +79,13 @@
       			'		</div>'+
       			'		<p id="upload-status-'+i+'" class="text-success"><small></small></p>'+
       			'	</td>'+
-      			'	<td>'+
+      			'	<td width="1%">'+
     			'		<p id="import-container-'+i+'"><button id="btn-import-'+i+'" class="btn btn-sm btn-primary" data-toggle="modal" onclick="importRDF(\''+i+'\');" '+enable_import+'>'+
       			'		<i class="fa fa-upload" aria-hidden="true"></i></button></p>'+
       			'	</td>'+
-      			'	<td>'+
-    			'		<button id="btn-delete-'+i+'" class="btn btn-sm btn-danger" data-toggle="modal">'+
-      			'		<i class="fa fa-trash"></i></button>'+
+      			'	<td width="1%">'+
+    			'		<button id="btn-delete-'+i+'" class="btn btn-sm btn-danger" data-toggle="modal" onclick="deleteItem(\''+i+'\')">'+
+      			'		<i class="fa fa-remove"></i></button>'+
       			'	</td>'+
       			'</tr>');
 
@@ -85,8 +94,6 @@
 		});
 
 	});
-
-
 
 
 	$('#check-all').change(function () {
@@ -101,6 +108,12 @@
 
 	});
 
+
+	function deleteItem(row_number){
+
+		var row = document.getElementById('row-'+row_number);
+		row.parentNode.removeChild(row);
+	}
 
 	function showImportSelectedButton(){
 
@@ -203,7 +216,11 @@
 
 			             }
 			        });
-				}, 200);
+				}, 500);
+
+				setTimeout(function () {
+        			console.log("xupa");
+    			}, 1000);
 
 			}
 
