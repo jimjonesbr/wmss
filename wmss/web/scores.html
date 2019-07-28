@@ -12,7 +12,12 @@
 				</thead>
 				<tbody>
 					<tr>
-						<td style="text-align: center;"><input id='check-all' type='checkbox'/></td>
+						<td style="text-align: center;">
+							<div id="container-check-all" class="custom-control custom-checkbox">
+								<input class="custom-control-input check-file" id='check-all' type='checkbox'/>
+								<label class="custom-control-label" for="check-all"></label>
+							</div>
+						</td>
 						<td><button id="btn-delete-all" class="btn btn-danger" data-title="Delete" data-toggle="modal" data-target="#delete"><i class="fa fa-trash" aria-hidden="true"></i>    Delete</button></td>
 					</tr>
 				</tbody>
@@ -251,7 +256,10 @@
 		 					}
     	 												
 					        return_data.push({
-					          'check': '<input id="check-'+j+'" type="checkbox" class="check-score" onclick="showDeleteAllButton();"/>',
+					          'check': '<div id="container-check-all" class="custom-control custom-checkbox">'+
+					          				'<input id="check-'+j+'" type="checkbox" class="check-score custom-control-input check-file" onclick="showDeleteAllButton();"/>'+
+					          				'<label class="custom-control-label" for="check-'+j+'"></label>'+
+					          			'</div>',
 					          'thumbnail'  : '<img style="max-width: 125px" src="'+ sc["thumbnail"] + '"/>',
 					          'score'  : '<form class="col-12">'+
 								'	  <div class="form-row">'+

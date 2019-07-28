@@ -5,44 +5,15 @@
 </head>
 
 <body>
-	Data Source: 
-		<select id="ds"></select><br/>
-		<b>Storage:</b> <span id="ds_storage"></span><br>
-		<b>Type:</b> <span id="ds_type"></span><br>
-		<b>Version:</b> <span id="ds_version"></span><br>
-		<b>Host:</b> <span id="ds_host"></span><br>
-		<b>Port:</b> <span id="ds_port"></span><br>		
-		<b>Description:</b> <span id="ds_description"></span><br>
-		<b>Total Scores:</b> <span id="ds_totalscores"></span>
-	<br><br>
-	RDF Format: 
-		<select id="format"> 
-			<option value="n-triples">N-Triples</option>
-			<option value="turtle" selected="selected">Turtle</option>
-			<option value="rdf/xml">RDF/XML</option>
-			<option value="json-ld">JSON-LD</option>
-		</select>
-	Batch size: <input id="bacth_size" value="10000"></input>
 
-	<form id="formImport" method="post" enctype="multipart/form-data">
-		<input id="input_files" type="file" name="file" multiple/>
-	</form>
-	<br>
-	<button id="btnImport">Import RDF</button>
-	<br><br>
-	<span id="working"></span><br>		
-
-	<table id="mytable" class="table table-bordred table-striped">
-		               <thead>
-                   
-                   </thead>
-		 <tbody>
-		 </tbody>
-	</table>
-
-	<ul id="list-files" class="list-group list-group-striped"></ul>
-	
+		
 	<div class="table-responsive">
+		<br/>
+
+		<form class="md-form" id="formImport" class="md-form" method="post" enctype="multipart/form-data">
+				<input id="input_files" type="file" name="file" multiple/>			
+		</form>
+		
 		<table class="table table-borderless">
 			<thead>
 				<th width='1%'></th><th></th>
@@ -50,7 +21,7 @@
 			<tbody>
 				<tr>
 					<td style="text-align: center;">
-						<div class="custom-control custom-checkbox">
+						<div id="container-check-all" class="custom-control custom-checkbox">
 							<input id="check-all" type="checkbox" class="custom-control-input check-file" enabled/>
 							<label class="custom-control-label" for="check-all"></label>
 						</div>
@@ -64,19 +35,13 @@
 
 <script type="text/javascript">
 
-	
-
-
-
-	var sources;
-
-
-
 	$("#btn-import-selected").hide();
+	$('#container-check-all').hide();
+
 	$( '#input_files' ).change(function() {
 
-
 		 $("#table-files").find("tr").remove();
+		 $('#container-check-all').show();
   
 		$.each($('#input_files')[0].files, function(i, file) {
 
@@ -101,7 +66,7 @@
 				'	<td><div class="custom-control custom-checkbox">'+
       			'	   		<input type="checkbox" class="custom-control-input check-file" id="check-file-'+i+'" onclick="showImportSelectedButton();"'+enable_import+'/>'+
       			'			<label class="custom-control-label" for="check-file-'+i+'">'+file.name+ ' ('+humanFileSize(file.size,1024)+')</label>  '+
-      			'			<span class="'+badge_class+'">'+file_type+'</span>'+
+      			'			<span id="badge-file-type-'+i+'" class="'+badge_class+'">'+file_type+'</span>'+
       			'		</div>'+
       			'		<p id="upload-status-'+i+'" class="text-success"><small></small></p>'+
       			'	</td>'+
@@ -161,18 +126,14 @@
 		$.each($('#input_files')[0].files, function(i, file) {
 			
 			if($('#check-file-'+i).prop('checked')){
-				importRDF(i);
+				if($('#badge-file-type-'+i).text()!='undefined'){
+					importRDF(i);	
+				}				
 			}
-			
-
 		});
 
 	});
 
-	function importSelected(){
-
-	
-	}
 
 	function resolveFileType(type) {
 			
@@ -189,8 +150,10 @@
 			return result;
 	}
 
+
 	function importRDF(file_index){
 		console.log(file_index);
+
 		$.each($('#input_files')[0].files, function(i, file) {
 
 			if(file_index==i){
@@ -204,45 +167,48 @@
 	        	$("#check-file-"+i).attr("disabled", true);
 	        	$(".btn-primary").attr("disabled", true);
 
-				$.ajax({  
-	            	type: "POST",  
-	             	url: base_url + '/import?source=' + current_source + '&format=' +resolveFileType(file.type) +  '&commitsize=10000',  
-		            data: data,
-		            async: false,
-		            cache: false,
-		            contentType: false,
-		            processData: false,
-		            success: function(data) {
-		                 
-		            	console.log(data);
-		                var report = JSON.parse(data);
-		                var type = report["type"];
-		                
-		                if(type == "ExceptionReport"){
+	        	setTimeout(function () {
+					$.ajax({  
+		            	type: "POST",  
+		             	url: base_url + '/import?source=' + current_source + '&format=' +resolveFileType(file.type) +  '&commitsize=10000',  
+			            data: data,
+			            async: false,
+			            cache: false,
+			            contentType: false,
+			            processData: false,
+			            success: function(data) {
+			              
+			            	console.log(data);
+			                var report = JSON.parse(data);
+			                var type = report["type"];
+			                
+			                if(type == "ExceptionReport"){
 
-		                	$('#upload-status-'+i).html('<p id="upload-status-'+i+'" class="text-danger"><small>'+ report["code"] + ' - ' + report["message"] + '</small></p>');
-		                	$('#import-container-'+i).html('<p id="import-container-'+i+'"><button id="btn-import-'+i+'" class="btn btn-sm btn-primary" data-toggle="modal" onclick="importRDF(\''+i+'\');"><i class="fas fa-upload"></i></button></p>');
-		                	$("#check-file-"+i).attr("disabled", false);
-		                	$(".btn-primary").attr("disabled", false);
-		                } 	                 
+			                	$('#upload-status-'+i).html('<p id="upload-status-'+i+'" class="text-danger"><small>'+ report["code"] + ' - ' + report["message"] + '</small></p>');
+			                	$('#import-container-'+i).html('<p id="import-container-'+i+'"><button id="btn-import-'+i+'" class="btn btn-sm btn-primary" data-toggle="modal" onclick="importRDF(\''+i+'\');"><i class="fas fa-upload"></i></button></p>');
+			                	$("#check-file-"+i).attr("disabled", false);
+			                	$(".btn-primary").attr("disabled", false);
+			                } 	                 
 
-		                if(type == "ImportReport"){
+			                if(type == "ImportReport"){
 
-		                	var importedFile = report["files"][0];
-		                	console.log(importedFile);
-		                	$('#upload-status-'+i).html('<p id="upload-status-'+i+'" class="text-success"><small>'+ importedFile["records"] + ' statements imported in ' + report["timeElapsed"] + '</small></p>');
-		                	$('#import-container-'+i).html('<p id="import-container-'+i+'"><button id="btn-import-'+i+'" class="btn btn-sm btn-success" disabled><i class="fas fa-check"></i></button></p>');
-		                	$(".btn-primary").attr("disabled", false);
-		                	$("#check-file-"+i).attr("disabled", true);
+			                	var importedFile = report["files"][0];
+			                	console.log(importedFile);
+			                	$('#upload-status-'+i).html('<p id="upload-status-'+i+'" class="text-success"><small>'+ importedFile["records"] + ' statements imported in ' + report["timeElapsed"] + '</small></p>');
+			                	$('#import-container-'+i).html('<p id="import-container-'+i+'"><button id="btn-import-'+i+'" class="btn btn-sm btn-success" disabled><i class="fas fa-check"></i></button></p>');
+			                	$(".btn-primary").attr("disabled", false);
+			                	$("#check-file-"+i).attr("disabled", true);
 
-		                }
+			                }
 
-		             }
-		        });      
+			             }
+			        });
+				}, 200);
 
 			}
 
 		});
+	
 	}
 
 
@@ -261,112 +227,6 @@
 	    } while(Math.abs(bytes) >= thresh && u < units.length - 1);
 	    return bytes.toFixed(1)+' '+units[u];
 	}
-	$( document ).ready(function() {
-
-		$("#ds option").remove();
-
-	    $.getJSON("http://"+window.location.host+"/"+window.location.pathname.split('/')[1]+"?request=DescribeService", function(data){
-
-	        sources=data["datasources"];
-
-	        for (var i = sources.length - 1; i >= 0; i--) {
-	        	 var src = sources[i];
-	        	 var o = new Option(src["id"], src["id"]);	
-	        	 $('#ds_description').text(src["info"]);
-	        	 $('#ds_host').text(src["host"]);
-	        	 $('#ds_port').text(src["port"]);
-	        	 $('#ds_type').text(src["type"]);
-	        	 $('#ds_storage').text(src["storage"]);
-	        	 $('#ds_version').text(src["version"]);
-	        	 $('#ds_totalscores').text(src["totalScores"]);
-	        	 $('#ds').append(o);           
-	    	}
-
-	  	});
-
-	    
-	    $("[data-toggle=tooltip]").tooltip();
-
-	});	
-
-
-
-
-	$("#btnImport").click(function(){
-
-		$("#btnImport").prop('disabled',true);
-
-	    var url= 'http://' + 
-	             window.location.hostname + ':' +
-	             $('#port').text() + '/'+$('#service').text()+'/import?source='+$('#ds').find(':selected').val() +
-	             '&format='+$('#format').find(':selected').val() + 
-	             '&commitsize='+$('#bacth_size').val();                 
-
-	    $('#mytable').attr('border', '1');
-	    $("#mytable tr").remove();
-	       		
-	    $.each($('#input_files')[0].files, function(i, file) {
-	      
-	        var data = new FormData();
-	        data.append('file-'+i, file);
-	       
-
-	        $.ajax({  
-	             type: "POST",  
-	             url: url,  
-	             data: data,
-	             async: false,
-	             cache: false,
-	             contentType: false,
-	             processData: false,
-	             success: function(data) {
-	                 
-	                console.log(data);
-
-	                var report = JSON.parse(data);
-	                var type = report["type"];
-	                
-	                if(type == "ExceptionReport"){
-	                	$('#mytable').append('<tr style="color: red"><td>'+file.name + '</td>' + 
-	                		'<td>'+ report["code"] + ' - ' + report["message"] + 
-	             			'<td >Fail</td>' + '</td></tr>');
-	                } 	                 
-
-	                if(type == "ImportReport"){
-
-	                	var importedFile = report["files"][0];
-	                	console.log(importedFile);
-	                	$('#mytable').append('<tr><td>'+file.name + '</td>' +               
-	                						   '<td>'+importedFile["records"]+' records ('+ importedFile["size"]+ ') <br>' + report["timeElapsed"] +' </td>'
-	                						   		 + '<td>Success</td></tr>');
-	                }
-
-	             }
-	        });       
-
-	    });
-
-	$("#btnImport").prop('disabled',false);
-	});
-
-	$('#ds').on('click', function() {
-
-		for (var i = sources.length - 1; i >= 0; i--) {
-        	 var src = sources[i];
-
-        	 if(src["id"]==this.value){
-	        	 $('#ds_description').text(src["info"]);
-	        	 $('#ds_host').text(src["host"]);
-	        	 $('#ds_port').text(src["port"]);
-	        	 $('#ds_type').text(src["type"]);
-	        	 $('#ds_storage').text(src["storage"]);
-	        	 $('#ds_version').text(src["version"]);
-	        	 $('#ds_totalscores').text(src["totalScores"]);
-        	}
-      
-    	}
-
-	});
 
 </script>
 
