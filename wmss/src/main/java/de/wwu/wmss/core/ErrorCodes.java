@@ -80,6 +80,9 @@ public class ErrorCodes {
 	public static String SCORE_EXISTS_DESCRIPTION  = "Score already exists";
 	public static String SCORE_EXISTS_HINT = "Either the score already exists or there is another score with the same identifier. ";
 
+	public static String DATA_IMPORT_CODE = "E0019";
+	public static String DATA_IMPORT_DESCRIPTION  = "An error occurred while importing an RDF file ";
+	public static String DATA_IMPORT_HINT = "";
 
 	
 	

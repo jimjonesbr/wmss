@@ -17,6 +17,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.StatementResult;
+import org.neo4j.driver.v1.exceptions.ClientException;
 import org.neo4j.driver.v1.exceptions.TransientException;
 
 import com.google.gson.Gson;
@@ -38,6 +39,8 @@ import de.wwu.wmss.core.Person;
 import de.wwu.wmss.core.PersonDescription;
 import de.wwu.wmss.core.Provenance;
 import de.wwu.wmss.core.WMSSRequest;
+import de.wwu.wmss.exceptions.DatabaseImportException;
+import de.wwu.wmss.exceptions.InvalidWMSSRequestException;
 import de.wwu.wmss.core.Tonality;
 import de.wwu.wmss.core.WMSSImportRequest;
 import de.wwu.wmss.settings.SystemSettings;
@@ -132,7 +135,7 @@ public class Neo4jEngine {
 		
 	}
 	
-	public static int insertScore(File file, WMSSImportRequest importRequest) {
+	public static int insertScore(File file, WMSSImportRequest importRequest) throws DatabaseImportException {
 					
 		int result = 0;
 		
@@ -154,6 +157,11 @@ public class Neo4jEngine {
 									
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (ClientException e) {
+			e.printStackTrace();
+			logger.error("Internal error: " + e.getMessage());
+			throw new DatabaseImportException(e.getMessage(),ErrorCodes.DATA_IMPORT_CODE, "");
+			
 		}
 		
 		return result;

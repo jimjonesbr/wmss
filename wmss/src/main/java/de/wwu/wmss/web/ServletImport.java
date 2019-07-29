@@ -21,12 +21,15 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.RiotException;
 import org.apache.log4j.Logger;
+import org.neo4j.driver.v1.exceptions.ClientException;
+
 import de.wwu.wmss.core.ErrorCodes;
 import de.wwu.wmss.core.MusicScore;
 import de.wwu.wmss.core.WMSSImportRecord;
 import de.wwu.wmss.core.WMSSImportRequest;
 import de.wwu.wmss.engine.DocumentBuilder;
 import de.wwu.wmss.engine.Neo4jEngine;
+import de.wwu.wmss.exceptions.DatabaseImportException;
 import de.wwu.wmss.exceptions.InvalidWMSSRequestException;
 import de.wwu.wmss.exceptions.ScoreExistsException;
 import de.wwu.wmss.settings.SystemSettings;
@@ -103,12 +106,19 @@ public class ServletImport extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.getWriter().println(DocumentBuilder.getServiceExceptionReport(ErrorCodes.INVALID_RDFFILE_CODE, ErrorCodes.INVALID_RDFFILE_DESCRIPTION + ": " +e.getMessage(), ErrorCodes.INVALID_RDFFILE_HINT));
 			e.printStackTrace();
+			
+		} catch (DatabaseImportException e) {
+
+			response.setContentType("text/javascript");
+			response.setStatus(HttpServletResponse.SC_OK);
+			response.getWriter().println(DocumentBuilder.getServiceExceptionReport(e.getCode(), e.getMessage(), e.getHint()));
+			e.printStackTrace();
 				
 		} catch (FileUploadException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
-			e.printStackTrace();
-		}
+			e.printStackTrace() ;
+		} 
 
 	}
 		
