@@ -169,9 +169,9 @@
 				result = 'rdf/xml';
 			} else if(type == 'application/ld+json'){
 				result = 'json-ld';
-			} else if (type == 'application/n-triples'){
+			} else if (type == 'application/n-triples' || type == ''){
 				result = 'n-triples';
-			}
+			} 
 			return result;
 	}
 
