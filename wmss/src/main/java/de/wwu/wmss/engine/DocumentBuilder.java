@@ -102,7 +102,10 @@ public class DocumentBuilder {
 		environment.put("java", System.getProperty("java.version"));
 		environment.put("os", System.getProperty("os.name").toString() + " " + 
 				System.getProperty("os.version").toString() + " (" + 
-				System.getProperty("os.arch").toString()+")");		
+				System.getProperty("os.arch").toString()+")");
+		environment.put("heap_size", Util.readableFileSize(Runtime.getRuntime().totalMemory()));
+		environment.put("heap_max_size", Util.readableFileSize(Runtime.getRuntime().maxMemory()));
+		environment.put("heap_free_size", Util.readableFileSize(Runtime.getRuntime().freeMemory()));
 		serviceDescription.put("environment", environment);
 
 		JSONArray dsArray = new JSONArray();
