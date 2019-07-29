@@ -204,11 +204,23 @@ MATCH (activity:prov__Activity)-[r2:prov__generated]->(score:mo__Score)
 MATCH (activity)-[r1:prov__wasAssociatedWith]->(person:foaf__Person)
 MATCH (person)-[r4:prov__hadRole]->(role:prov__Role)
 MATCH (person)-[r5:dbo__occupation]->(occupation)
+WITH activity, person, score, role, occupation, r1, r2, r4, r5,
+  CASE occupation.uri
+      WHEN 'http://dbpedia.org/resource/Composer' THEN 'Composer'
+      WHEN 'http://dbpedia.org/resource/Lyricist' THEN 'Lyricist'
+      WHEN 'http://dbpedia.org/resource/Arranger' THEN 'Arranger'
+      WHEN 'http://dbpedia.org/resource/Librettist' THEN 'Librettist'
+      WHEN 'http://dbpedia.org/resource/Editor' THEN 'Editor'
+      WHEN 'http://dbpedia.org/resource/Performer' THEN 'Performer'
+      WHEN 'http://dbpedia.org/resource/Translator' THEN 'Translator'
+      WHEN 'http://dbpedia.org/resource/Dedicatee' THEN 'Dedicatee'
+      WHEN 'http://dbpedia.org/resource/Encoder' THEN 'Encoder'
+      WHEN 'http://dbpedia.org/resource/Unknown' THEN 'Unknown'
+  END AS occupationType
 SET person:Encoder,	
-	person.roleUri = 'http://dbpedia.org/resource/Encoder',
 	person.name = person.foaf__name
 REMOVE person.foaf__name	
-CREATE (score)-[:CREATOR  {role: "Encoder"}]->(person)
+CREATE (score)-[:CREATOR  {role: occupationType}]->(person)
 CREATE (activity)-[:ASSOCIATEDWITH]->(person)
 DELETE r1,r4,r5;
 
