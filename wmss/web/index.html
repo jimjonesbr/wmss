@@ -42,10 +42,10 @@
 
     <!-- Sidebar -->
     <div class="bg-light border-right" id="sidebar-wrapper">
-      <div class="sidebar-heading">WMSS</div>
-      <div class="list-group list-group-flush">
-        <a id="menu-import" href="#" class="list-group-item list-group-item-action bg-light"><i class="fa fa-upload" style="font-size:20px" aria-hidden="false" ></i>  Import Files</a>
+      <div class="sidebar-heading" style="text-align: center;">WMSS</div>
+      <div class="list-group list-group-flush">        
         <a id="menu-management" href="#" class="list-group-item list-group-item-action bg-light"><i class="fa fa-music" style="font-size:20px" aria-hidden="false"></i>  Score Management</a>
+        <a id="menu-import" href="#" class="list-group-item list-group-item-action bg-light"><i class="fa fa-upload" style="font-size:20px" aria-hidden="false" ></i>  Import Files</a>        
         <a id="menu-settings"href="#" class="list-group-item list-group-item-action bg-light"><i class="fa fa-gear" style="font-size:20px" aria-hidden="false"></i>  System Information</a>
       </div>
     </div>
@@ -55,7 +55,7 @@
     <div id="page-content-wrapper">
 
       <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-        <button class="btn btn-primary" id="menu-toggle">Toggle Menu</button>
+        <button class="btn btn-primary" id="menu-toggle"><i class="fa fa-arrow-left"></i></button>
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -63,9 +63,6 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-            <li class="nav-item active">
-              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-            </li>
             <li class="nav-item">
               <a class="nav-link" href="http://github.com/jimjonesbr/wmss"><i class="fa fa-github" style="font-size:21px" aria-hidden="false"></i>   Source Code</a>
             </li>
@@ -99,9 +96,16 @@
     $("#menu-toggle").click(function(e) {
       e.preventDefault();
       $("#wrapper").toggleClass("toggled");
+
+      if($("#menu-toggle i").attr("class") == 'fa fa-arrow-left'){
+        $("#menu-toggle").html('<i class="fa fa-arrow-right">');
+      } else {
+        $("#menu-toggle").html('<i class="fa fa-arrow-left">');
+      }
+
     });
 
-        $("#menu-import").click(function(e) {
+    $("#menu-import").click(function(e) {
       $("#main-container").load("import.html");
     });
    
@@ -113,20 +117,34 @@
       $("#main-container").load("settings.html");
     });
 
-    $( document ).ready(function() {
 
+
+
+    $( document ).ready(function() {
+      getDescriptionReport();
+    });
+
+    $(document).on("click", ".dropdown-item" , function() {
+        
+        $("#selected-source").html('<i class="fa fa-database" aria-hidden="false"></i>  ' + $(this).find('span').text());
+        current_source = $(this).find('span').text().trim();
+
+
+    });
+
+
+    function getDescriptionReport(){
 
       $("#selected-source a").remove();
 
-        $.getJSON("http://"+window.location.host+"/"+window.location.pathname.split('/')[1]+"?request=DescribeService", function(data){
+        $.getJSON(base_url+"?request=DescribeService", function(data){
 
             var sources=data["datasources"];
 
             for (var i = sources.length - 1; i >= 0; i--) {
               
               var src = sources[i];
-              $("#source-list").append('<a class="dropdown-item" href="#"><i class="fa fa-database" aria-hidden="false"></i>     '+src["id"]+
-                                                                                                '<br>   Scores: ' + src["totalScores"]+
+              $("#source-list").append('<a class="dropdown-item" href="#"><i class="fa fa-database" aria-hidden="false"></i>     <span id="source-identifier">'+src["id"]+'</span>'+
                                                                                                 '<br>   ' + src["info"]+'</a>');
               $("#selected-source").html('<i class="fa fa-database" aria-hidden="false"></i>  '+src["id"]);
               current_source = src["id"];
@@ -135,16 +153,8 @@
 
         });
 
-    });
 
-
-    $(document).on("click", ".dropdown-item" , function() {
-            
-        $("#selected-source").html('<i class="fa fa-database" aria-hidden="false"></i>  ' + this.text);
-        current_source = this.text.trim();
-
-    });
-
+    }
   </script>
 
 </body>

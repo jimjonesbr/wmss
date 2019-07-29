@@ -8,7 +8,9 @@
 
 	<br>
 	<div>
-		<span>Supported file formats: <code>rdf/xml</code>, <code>turtle</code>, <code>n-triples</code> and <code>json-ld</code></span>
+		<h3>RDF Import</h3>
+		<span>RDF files are expected to be encoded using the <a href="https://github.com/jimjonesbr/musicowl"> Music2RDF Converter</a> in one of the following formats: <code>rdf/xml</code>, <code>turtle</code>, <code>n-triples</code> and <code>json-ld</code></span>
+		
 	</div>
 
 	<div class="table-responsive">
@@ -34,7 +36,9 @@
 					</tr>
 			</tbody>
 		</table>
-
+		<div id="container-import-status">
+			<p id="import-status"/>
+		<div>
 		<table id="table-files" class="table table-striped" style="width:100%">
 
 		</table>
@@ -42,8 +46,9 @@
 
 <script type="text/javascript">
 
-	$("#btn-import-selected").hide();
+	$('#btn-import-selected').hide();
 	$('#container-check-all').hide();
+	$('#container-import-status').show();
 
 	$( '#input_files' ).change(function() {
 
@@ -140,10 +145,17 @@
 			
 			if($('#check-file-'+i).prop('checked')){
 				if($('#badge-file-type-'+i).text()!='undefined'){
-					importRDF(i);	
-				}				
+					
+					setTimeout(function(){ importRDF(i);}, 500);
+						
+				}
 			}
+
 		});
+
+		$("#btn-import-selected").hide();
+		$('#check-all').prop('checked', false);
+		
 
 	});
 
@@ -167,8 +179,12 @@
 	function importRDF(file_index){
 		console.log(file_index);
 
+		$("#btn-import-selected").attr("disabled", true);
+		$("#check-all").attr("disabled", true);
+
 		$.each($('#input_files')[0].files, function(i, file) {
 
+						
 			if(file_index==i){
 			
 				var data = new FormData();
@@ -209,8 +225,9 @@
 			                	console.log(importedFile);
 			                	$('#upload-status-'+i).html('<p id="upload-status-'+i+'" class="text-success"><small>'+ importedFile["records"] + ' statements imported in ' + report["timeElapsed"] + '</small></p>');
 			                	$('#import-container-'+i).html('<p id="import-container-'+i+'"><button id="btn-import-'+i+'" class="btn btn-sm btn-success" disabled><i class="fas fa-check"></i></button></p>');
-			                	$(".btn-primary").attr("disabled", false);
-			                	$("#check-file-"+i).attr("disabled", true);
+			                	$('.btn-primary').attr('disabled', false);
+			                	$('#check-file-'+i).attr('disabled', true);
+			                	$('#check-file-'+i).prop('checked', false);
 
 			                }
 
@@ -218,14 +235,12 @@
 			        });
 				}, 500);
 
-				setTimeout(function () {
-        			console.log("xupa");
-    			}, 1000);
-
 			}
 
 		});
 	
+		$("#btn-import-selected").attr("disabled", false);
+		$("#check-all").attr("disabled", false);
 	}
 
 

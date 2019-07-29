@@ -8,7 +8,6 @@ public class Format {
 	
 	public Format() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	public String getFormatId() {
 		return formatId;

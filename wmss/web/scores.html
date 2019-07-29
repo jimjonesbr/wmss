@@ -394,6 +394,8 @@
 									$('.check-score').prop('checked', true);
 								}
 							});
+
+							$('#check-all').prop('checked', false);
 						});		
 		            }
 		        }
@@ -417,7 +419,7 @@
 					$('#del_'+row_number).empty();
 					$('#del_'+row_number).append('<div class="spinner-border text-danger"></div>');
 
-					$.getJSON(url+'?source='+current_source+'&request=DeleteScore&identifier='+$('#score_id_'+row_number).text(), function(data){
+					$.getJSON(base_url+'?source='+current_source+'&request=DeleteScore&identifier='+$('#score_id_'+row_number).text(), function(data){
 
 						if(data["type"]=='DeleteScoresReport'){						
 
@@ -440,6 +442,7 @@
 		        }
 		    }
 		});
+		
 	}
 
 	</script>

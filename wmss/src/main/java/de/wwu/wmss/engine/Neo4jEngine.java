@@ -17,6 +17,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.StatementResult;
+import org.neo4j.driver.v1.exceptions.TransientException;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.wwu.wmss.connector.Neo4jConnector;
@@ -824,23 +826,32 @@ public class Neo4jEngine {
 		    	for (int i = 0; i < arrayCypher.length; i++) {
 		    		if(!arrayCypher[i].trim().equals("")) {
 		    			logger.debug(arrayCypher[i]);
-		    			StatementResult rs = Neo4jConnector.getInstance().executeQuery(arrayCypher[i].replaceAll("\n", " ").replace("SCORE_URI_PLACEHOLDER", request.getIdentifier()), dataSource);	
 		    			
-		    			while ( rs.hasNext() ) {
-		    				
-		    				Record record = rs.next();
-
-		    				if(record.containsKey("uri")) {
-		    					DeletedRecord score = new DeletedRecord();
-			    				score.setTitle(record.get("title").asString());
-			    				score.setScoreIdentifier(record.get("uri").asString());
-			    				score.setCollection(record.get("collection").asString());
-			    				result.add(score);
+		    			try {
+		    				StatementResult rs = Neo4jConnector.getInstance().executeQuery(arrayCypher[i].replaceAll("\n", " ").replace("SCORE_URI_PLACEHOLDER", request.getIdentifier()), dataSource);
+						
+		    			
+			    			while ( rs.hasNext() ) {
 			    				
-			    				logger.info("Music score deleted: " + record.get("title").asString() + " ("+record.get("uri").asString()+")");
-		    				}
+			    				Record record = rs.next();
+	
+			    				if(record.containsKey("uri")) {
+			    					DeletedRecord score = new DeletedRecord();
+				    				score.setTitle(record.get("title").asString());
+				    				score.setScoreIdentifier(record.get("uri").asString());
+				    				score.setCollection(record.get("collection").asString());
+				    				result.add(score);
+				    				
+				    				logger.info("Music score deleted: " + record.get("title").asString() + " ("+record.get("uri").asString()+")");
+			    				}
+			    				
+			    			}
+			    			
+		    			} catch (TransientException e) {
+
+							logger.error("TransientException: " + e.getMessage());
+						}
 		    				
-		    			}
 		    		}	    		
 				}
 		    	

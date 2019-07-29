@@ -14,15 +14,11 @@
 	
 	<br>
 	<span><h3>Data Sources</h3></span>
-	Data Source: 
-		<select id="ds"></select><br/>
-		<b>Storage:</b> <span id="ds_storage"></span><br>
-		<b>Type:</b> <span id="ds_type"></span><br>
-		<b>Version:</b> <span id="ds_version"></span><br>
-		<b>Host:</b> <span id="ds_host"></span><br>
-		<b>Port:</b> <span id="ds_port"></span><br>		
-		<b>Description:</b> <span id="ds_description"></span><br>
-		<b>Total Scores:</b> <span id="ds_totalscores"></span>
+
+	<div id="data-sources">
+		<br>
+	</div>
+
 
 <script type="text/javascript">
 
@@ -32,20 +28,23 @@
 
 		$("#ds option").remove();
 
-	    $.getJSON("http://"+window.location.host+"/"+window.location.pathname.split('/')[1]+"?request=DescribeService", function(data){
+	    $.getJSON(base_url+"?request=DescribeService", function(data){
 
 	        sources=data["datasources"];
 
 	        $('#table-settings').append('<tr><td width="15%">Title</td><td><code>'+data["title"]+'</code></td></tr>');
 	        $('#table-settings').append('<tr><td>Started at</td><td><code>'+data["startup"]+'</code></td></tr>');
 	        $('#table-settings').append('<tr><td>Port</td><td><code>'+data["port"]+'</code></td></tr>');
-	        $('#table-settings').append('<tr><td>Contact</td><td><code>'+data["contact"]+'</code></td></tr>');
+	        $('#table-settings').append('<tr><td>Administrator</td><td><code>'+data["contact"]+'</code></td></tr>');
 			$('#table-settings').append('<tr><td>Service</td><td><code>'+data["service"]+'</code></td></tr>');
 			$('#table-settings').append('<tr><td>Port</td><td><code>'+data["port"]+'</code></td></tr>');
 
 			var environment = data["environment"];
 			$('#table-settings').append('<tr><td>Operating System</td><td><code>'+environment["os"]+'</code></td></tr>');			
-			$('#table-settings').append('<tr><td>Java</td><td><code>'+environment["java"]+'</code></td></tr>');			
+			$('#table-settings').append('<tr><td>Java Version</td><td><code>'+environment["java"]+'</code></td></tr>');			
+			$('#table-settings').append('<tr><td>Heap Memory</td><td><code>'+environment["heap_size"]+'</code></td></tr>');			
+			$('#table-settings').append('<tr><td>Max Heap Memory</td><td><code>'+environment["heap_max_size"]+'</code></td></tr>');			
+			$('#table-settings').append('<tr><td>Free Heap Memory</td><td><code>'+environment["heap_free_size"]+'</code></td></tr>');			
 
 	        $('#title').text(data["title"]);
 	        $('#started').text(data["startup"]);
@@ -54,16 +53,29 @@
 	        $('#port').text(data["port"]);
 
 	        for (var i = sources.length - 1; i >= 0; i--) {
+
 	        	 var src = sources[i];
-	        	 var o = new Option(src["id"], src["id"]);	
-	        	 $('#ds_description').text(src["info"]);
-	        	 $('#ds_host').text(src["host"]);
-	        	 $('#ds_port').text(src["port"]);
-	        	 $('#ds_type').text(src["type"]);
-	        	 $('#ds_storage').text(src["storage"]);
-	        	 $('#ds_version').text(src["version"]);
-	        	 $('#ds_totalscores').text(src["totalScores"]);
-	        	 $('#ds').append(o);           
+	        	 var title;
+	        	 if(src["info"]=='' || src["info"]=='undefined'){
+	        	 	title = src["id"];
+	        	 } else {
+	        	 	title = src["info"];
+	        	 }
+
+	        	 $('#data-sources').append(
+	        	 	'<div class="card-header"><h5><i class="fa fa-database"></i>  '+title+'<h5></div>'+
+	        	 	'<table id="table-datasource-'+i+'" class="table table-striped" style="width:100%">'+
+	        	 		'<tr><td style="width:15%">Code</td><td><code>'+src["id"]+'</code></td></tr>'+
+	        	 		'<tr><td style="width:15%">Info</td><td><code>'+src["info"]+'</code></td></tr>'+
+						'<tr><td style="width:15%">Storage</td><td><code>'+src["storage"]+'</code></td></tr>'+
+						'<tr><td style="width:15%">Type</td><td><code>'+src["type"]+'</code></td></tr>'+
+						'<tr><td style="width:15%">Host</td><td><code>'+src["host"]+'</code></td></tr>'+
+						'<tr><td style="width:15%">Port</td><td><code>'+src["Port"]+'</code></td></tr>'+
+						'<tr><td style="width:15%">Version</td><td><code>'+src["version"]+'</code></td></tr>'+
+						'<tr><td style="width:15%">Total Scores</td><td><code>'+src["totalScores"]+'</code></td></tr>'+
+					'</table>');
+
+
 	    	}
 
 	  	});
