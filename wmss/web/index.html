@@ -14,7 +14,6 @@
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
@@ -29,10 +28,15 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 
-
   <!-- DataTable scripts -->
    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
    <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+
+  <!-- Verovio -->
+  <script src="https://www.verovio.org/javascript/develop/verovio-toolkit-light.js"></script>
+  
+  
+
 
 </head>
 
@@ -56,7 +60,6 @@
 
       <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
         <button class="btn btn-primary" id="menu-toggle"><i class="fa fa-arrow-left"></i></button>
-
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -75,10 +78,18 @@
           </ul>
         </div>
       </nav>
-
+      <br>
       <div id="main-container" class="container-fluid">
 
-        <h1 class="mt-4">Web Music Score Service</h1>
+          <div class="jumbotron">
+            <h1 class="display-4">Web Music Score Service</h1>
+            <p class="lead"></p>
+            <hr class="my-4">
+            <p>The Web Music Score Service (WMSS) is an API that provides access to music scores on the web. It aims to create a format- and platform-independent layer between music score repositories  and applications, so that music contents can be searched based on standard requests and response documents. </p>
+            <p class="lead">
+              <a class="btn btn-primary btn-m" href="http://github.com/jimjonesbr/wmss" role="button"><i class="fa fa-github" style="font-size:21px"></i> WMSS on GitHub</a>
+            </p>
+          </div>
 
       </div>
     </div>
@@ -88,7 +99,7 @@
   <!-- /#wrapper -->
 
   <!-- Menu Toggle Script -->
-  <script>
+  <script type="text/javascript">
 
     var current_source ="";
     var base_url = "http://"+window.location.host+"/"+window.location.pathname.split('/')[1];

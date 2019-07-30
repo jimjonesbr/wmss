@@ -19,7 +19,6 @@ import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.StatementResult;
 import org.neo4j.driver.v1.exceptions.ClientException;
 import org.neo4j.driver.v1.exceptions.TransientException;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.wwu.wmss.connector.Neo4jConnector;
@@ -40,7 +39,6 @@ import de.wwu.wmss.core.PersonDescription;
 import de.wwu.wmss.core.Provenance;
 import de.wwu.wmss.core.WMSSRequest;
 import de.wwu.wmss.exceptions.DatabaseImportException;
-import de.wwu.wmss.exceptions.InvalidWMSSRequestException;
 import de.wwu.wmss.core.Tonality;
 import de.wwu.wmss.core.WMSSImportRequest;
 import de.wwu.wmss.settings.SystemSettings;
@@ -912,9 +910,7 @@ public class Neo4jEngine {
 				"    })} AS locations, \n";				
 		}		
 				
-		returnClause = returnClause +	//"    CASE WHEN scr.asMusicXML IS NULL THEN FALSE ELSE TRUE END AS musicxml,\n" +
-										"    {formats: COLLECT (DISTINCT {format: rel_doc.type, description: rel_doc.description })} AS formats " +
-									    //"    CASE WHEN scr.asMEI IS NULL THEN FALSE ELSE TRUE END AS mei \n" + 
+		returnClause = returnClause +	"    {formats: COLLECT (DISTINCT {format: rel_doc.type, description: rel_doc.description })} AS formats " +
 									    "ORDER BY scr.title \n" +
 									    "SKIP " + request.getOffset() + "\n" + 
 									    "LIMIT " + request.getPageSize();

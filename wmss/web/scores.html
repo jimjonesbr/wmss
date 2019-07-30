@@ -3,7 +3,245 @@
 	<head>	
 	</head>
 	<body>			
+		<div>			
+		    
+		    <div class="form-group col-md-6">
+		      <label for="title">Title </label>
+		      <input type="text" class="form-control" id="title">
+		      <br>
+		      	<button class="btn btn-primary" type="button">
+					    <i class="fas fa-search"></i>  Search
+				</button>
+				<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+					    <i class="fas fa-filter"></i>  Advanced
+				</button>
+		    </div>
 
+			<div class="collapse" id="collapseExample">			
+			  <div class="card card-body">
+				<table class="table">
+					<tr>
+						<td>
+							<label for="collections">Collections
+								<select class="custom-select" id="collections"><option selected></option></select>
+							</label>
+						</td>
+						<td>
+							<label for="collections">Persons
+								<select class="custom-select" id="persons"><option selected></option></select>
+							</label>
+						</td>
+						<td>
+							<label for="collections">Tonalities
+								<select class="custom-select" id="tonalities"><option selected></option></select>
+							</label>							
+						</td>
+						<td>
+							<label for="collections">Instruments
+								<select class="custom-select" id="instruments"><option selected></option></select>
+							</label>
+						</td>
+						<td>
+							<label for="collections">Formats
+								<select class="custom-select" id="formats"><option selected></option></select>
+							</label>
+						</td>						
+					</tr>
+				</table>
+
+				<table class="table">
+					<tr>
+						<td class="keyboard" width="42%" style="text-align: center;">
+							
+							<div>	
+								<div class="btn-group">
+									<button type="button" class="btn btn-light btn-sm" onclick="javascript:onduration(9)">
+		                              <span class="glyphicon keyboard-00">0</span>
+		                            </button>
+		                            <button type="button" class="btn btn-light btn-sm" onclick="javascript:onduration(1)">
+		                              <span class="glyphicon keyboard-01">1</span>
+		                            </button>
+		                            <button type="button" class="btn btn-light btn-sm" onclick="javascript:onduration(2)">
+		                              <span class="glyphicon keyboard-02">2</span>
+		                            </button>
+		                            <button type="button" class="btn btn-light btn-sm" onclick="javascript:onduration(4)">
+		                              <span class="glyphicon keyboard-04">4</span>
+		                            </button>
+		                            <button type="button" class="btn btn-light btn-sm" onclick="javascript:onduration(8)">
+		                              <span class="glyphicon keyboard-08">8</span>
+		                            </button>
+		                            <button type="button" class="btn btn-light btn-sm" onclick="javascript:onduration(6)">
+		                              <span class="glyphicon keyboard-16">16</span>
+		                            </button>
+		                            <button type="button" class="btn btn-light btn-sm" onclick="javascript:onduration(3)">
+		                              <span class="glyphicon keyboard-32">32</span>
+		                            </button>
+		                            <button type="button" class="btn btn-light btn-sm" onclick="javascript:onduration(5)">
+		                              <span class="glyphicon keyboard-64">64</span>
+		                            </button>
+		                            <button type="button" class="btn btn-light btn-sm" onclick="javascript:onduration(5)">
+		                              <span class="glyphicon keyboard-128">128</span>
+		                            </button>
+		                        </div>
+		                        <div class="btn-group">
+		                            <button type="button" class="btn btn-light btn-sm" onclick="javascript:onrest()">
+		                              <span class="glyphicon keyboard-rest">-</span>
+		                            </button>
+			                    </div>
+		                        <div class="btn-group">
+		                            <button type="button" class="btn btn-light btn-sm" onclick="javascript:ondot()">
+		                              <span class="glyphicon keyboard-dot">.</span>
+		                            </button>
+		                        </div>
+		                        <div class="btn-group">
+		                            <button type="button" class="btn btn-light btn-sm" onclick="javascript:onbarline()">
+		                              <span class="glyphicon keyboard-barline">|</span>
+		                            </button>
+		                        </div>
+		                        <div class="btn-group">
+		                            <button type="button" class="btn btn-light btn-sm" onclick="javascript:onbarline()">
+		                              <span class="glyphicon keyboard-barline">^</span>
+		                            </button>
+		                        </div>
+		                    </div>
+								
+
+							<button type="button" class="btn btn-light btn-sm" onclick="setOctave('down')">
+								<i class="fas fa-chevron-down"></i>
+								<span id="down-octave">4</span>
+							</button>
+
+							<map id="piano_map" name="piano_map">
+			                    
+			                    <area shape="rect" coords="17,3,32,52" href="javascript:onpitch('C', 1, 1, 61);" />
+			                    <area shape="rect" coords="42,3,57,52" href="javascript:onpitch('D', 1, 1, 63)" />
+			                    <area shape="rect" coords="92,3,107,52" href="javascript:onpitch('F', 1, 1, 66)" />
+			                    <area shape="rect" coords="117,3,132,52" href="javascript:onpitch('G', 1, 1, 68)" />
+			                    <area shape="rect" coords="142,3,157,52" href="javascript:onpitch('A', 1, 1, 70)" />
+
+			                    <area shape="rect" coords="17,53,32,102" href="javascript:onpitch('D', 1, -1, 61)" />
+			                    <area shape="rect" coords="42,53,57,102" href="javascript:onpitch('E', 1, -1, 63)" />
+			                    <area shape="rect" coords="92,53,107,102" href="javascript:onpitch('G', 1, -1, 66)" />
+			                    <area shape="rect" coords="117,53,132,102" href="javascript:onpitch('A', 1, -1, 68)" />
+			                    <area shape="rect" coords="142,53,157,102" href="javascript:onpitch('B', 1, -1, 70)" />
+
+			                    <area shape="rect" coords="1,3,25,152" href="javascript:onpitch('C', 1, 0, 60)" />
+			                    <area shape="rect" coords="26,3,50,152" href="javascript:onpitch('D', 1, 0, 62)" />
+			                    <area shape="rect" coords="51,3,75,152" href="javascript:onpitch('E', 1, 0, 64)" />
+			                    <area shape="rect" coords="76,3,100,152" href="javascript:onpitch('F', 1, 0, 65)" />
+			                    <area shape="rect" coords="101,3,125,152" href="javascript:onpitch('G', 1, 0, 67)" />
+			                    <area shape="rect" coords="126,3,150,152" href="javascript:onpitch('A', 1, 0, 69)" />
+			                    <area shape="rect" coords="151,3,175,152" href="javascript:onpitch('B', 1, 0, 71)" />
+
+			                    <area shape="rect" coords="192,3,207,52" href="javascript:onpitch('C', 2, 1, 73)" />
+			                    <area shape="rect" coords="217,3,232,52" href="javascript:onpitch('D', 2, 1, 75)" />
+			                    <area shape="rect" coords="267,3,282,52" href="javascript:onpitch('F', 2, 1, 78)" />
+			                    <area shape="rect" coords="292,3,307,52" href="javascript:onpitch('G', 2, 1, 80)" />
+			                    <area shape="rect" coords="317,3,332,52" href="javascript:onpitch('A', 2, 1, 82)"  />
+
+			                    <area shape="rect" coords="192,53,207,102" href="javascript:onpitch('D', 2, -1, 73)" />
+			                    <area shape="rect" coords="217,53,232,102" href="javascript:onpitch('E', 2, -1, 75)" />
+			                    <area shape="rect" coords="267,53,282,102" href="javascript:onpitch('G', 2, -1, 78)" />
+			                    <area shape="rect" coords="292,53,307,102" href="javascript:onpitch('A', 2, -1, 80)" />
+			                    <area shape="rect" coords="317,53,332,102" href="javascript:onpitch('B', 2, -1, 82)" />
+
+			                    <area shape="rect" coords="176,3,200,152" href="javascript:onpitch('C', 2, 0, 72)" />
+			                    <area shape="rect" coords="201,3,225,152" href="javascript:onpitch('D', 2, 0, 74)" />
+			                    <area shape="rect" coords="226,3,250,152" href="javascript:onpitch('E', 2, 0, 76)" />
+			                    <area shape="rect" coords="251,3,275,152" href="javascript:onpitch('F', 2, 0, 77)" />
+			                    <area shape="rect" coords="276,3,300,152" href="javascript:onpitch('G', 2, 0, 79)" />
+			                    <area shape="rect" coords="301,3,325,152" href="javascript:onpitch('A', 2, 0, 81)" />
+			                    <area shape="rect" coords="326,3,350,152" href="javascript:onpitch('B', 2, 0, 83)" />
+
+			                    <area shape="rect" coords="367,3,382,52" href="javascript:onpitch('C', 3, 1, 85)" />
+			                    <area shape="rect" coords="392,3,407,52" href="javascript:onpitch('D', 3, 1, 87)" />
+			                    <area shape="rect" coords="442,3,457,52" href="javascript:onpitch('F', 3, 1, 90)" />
+			                    <area shape="rect" coords="467,3,482,52" href="javascript:onpitch('G', 3, 1, 92)" />
+			                    <area shape="rect" coords="492,3,507,52" href="javascript:onpitch('A', 3, 1, 94)" />
+
+			                    <area shape="rect" coords="367,53,382,102" href="javascript:onpitch('D', 3, -1, 85)" />
+			                    <area shape="rect" coords="392,53,407,102" href="javascript:onpitch('E', 3, -1, 87)" />
+			                    <area shape="rect" coords="442,53,457,102" href="javascript:onpitch('G', 3, -1, 90)" />
+			                    <area shape="rect" coords="467,53,482,102" href="javascript:onpitch('A', 3, -1, 92)" />
+			                    <area shape="rect" coords="492,53,507,102" href="javascript:onpitch('B', 3, -1, 94)" />
+
+			                    <area shape="rect" coords="351,3,375,152" href="javascript:onpitch('C', 3, 0, 84)" />
+			                    <area shape="rect" coords="376,3,400,152" href="javascript:onpitch('D', 3, 0, 86)" />
+			                    <area shape="rect" coords="401,3,425,152" href="javascript:onpitch('E', 3, 0, 88)" />
+			                    <area shape="rect" coords="426,3,450,152" href="javascript:onpitch('F', 3, 0, 89)" />
+			                    <area shape="rect" coords="451,3,475,152" href="javascript:onpitch('G', 3, 0, 91)" />
+			                    <area shape="rect" coords="476,3,500,152" href="javascript:onpitch('A', 3, 0, 93)" />
+			                    <area shape="rect" coords="501,3,525,152" href="javascript:onpitch('B', 3, 0, 95)" />
+
+		                	</map>
+		                	<img id="piano_img" src="https://www.verovio.org/images/piano.png" usemap="#piano_map"/>
+		                	<button type="button" class="btn btn-light btn-sm" onclick="setOctave('up')">
+								<i class="fas fa-chevron-up"></i>
+								<span id="up-octave">6</span>
+							</button>
+
+						</td>
+						<td>
+                    		<p>
+		                    	<select id="clef_01" name="clef_01" class="custom-select">
+		                            <option value="G-1">G-1</option>
+		                            <option value="G-2" selected="true">G-2 (treble)</option>
+		                            <option value="C-1">C-1</option>
+		                            <option value="C-2">C-2</option>
+		                            <option value="C-3">C-3</option>
+		                            <option value="C-4">C-4</option>
+		                            <option value="C-5">C-5</option>
+		                            <option value="F-4">F-4 (bass)</option>
+		                            <option value="F-3">F-3</option>
+		                        </select>
+                    		</p>
+                    		<p>
+                    			<select id="key_01" name="key_01" class="custom-select">
+		                            <option value="">Key signature ...</option>
+		                            <option value="xF">1 #</option>
+		                            <option value="xFC">2 #</option>
+		                            <option value="xFCG">3 #</option>
+		                            <option value="xFCGD">4 #</option>
+		                            <option value="xFCGDA">5 #</option>
+		                            <option value="xFCGDAE">6 #</option>
+		                            <option value="xFCGDAEB">7 #</option>
+		                            <option value="bB">1 ♭</option>
+		                            <option value="bBE">2 ♭</option>
+		                            <option value="bBEA">3 ♭</option>
+		                            <option value="bBEAD">4 ♭</option>
+		                            <option value="bBEADG">5 ♭</option>
+		                            <option value="bBEADGC">6 ♭</option>
+		                            <option value="bBEADGCF">7 ♭</option>
+		                        </select>
+                    		</p>
+							<p>
+                        		<input type="input" id="timesig_01" name="timesig_01" class="form-control" placeholder="Time signature (e.g. c c/ 3/4)"/>
+                    		</p>
+                    		<p>
+								<div><input type="input" id="incipit_01" name="incipit_01" class="form-control" placeholder="Plaine &amp; Easie code ..." /></div>
+							</p>							
+
+						</td>
+					</tr>
+					<tr>
+						<td class="keyboard" style="text-align: center;">							
+							<div style="text-align: center;  display:inline;" id="render_01"></div>							
+						</td>
+						<td></td>
+					</tr>
+				</table>
+
+				<div class="panel-body">
+                 	<pre class="prettyprint" id="mei_output"  style="overflow: auto; width: auto; word-wrap: normal; display: none;"></pre>
+            	</div>
+					
+			    <p>Request: <code>
+			    	<span id="request-url"></span></code>
+			    </p> 
+			  </div>
+			</div>
+		</div> 
+		
 		<div class="table-responsive">
 			<table class="table table-borderless">
 				<thead>
@@ -30,7 +268,14 @@
 		</div>
 		
 	
-	<script type="text/javascript">
+	<script>
+
+
+    var current_oct = -1;
+    var current_duration = 4;
+    var current_dot = 0;
+    var undos = new Array();
+
 
 
 	$("#btn-delete-all").hide();
@@ -64,7 +309,70 @@
 
 	$( document ).ready(function() {
 
+
+		$.getJSON(base_url+"?request=DescribeService", function(data){
+
+			sources = data["datasources"];
+			
+	        for (i = 0; i < sources.length; i++) { 
+
+	        	var src = sources[i];
+
+	        	if(src["id"]==current_source){
+
+		        	var collections = src["collections"];
+		        	for (j = 0; j < collections.length; j++) { 
+		        		var col = collections[j];
+		        	 	var o = new Option(col["description"],col["id"]);
+		        	 	$('#collections').append(o); 
+		        	}
+
+		        	var persons = src["persons"];
+		        	for (j = 0; j < persons.length; j++) { 
+		        		var col = persons[j];
+		        	 	var o = new Option(col["name"],col["url"]);
+		        	 	$('#persons').append(o); 
+		        	}
+		        	
+		        	var tonalities = src["tonalities"];
+		        	for (j = 0; j < tonalities.length; j++) { 
+		        		var col = tonalities[j];
+		        	 	var o = new Option(col["tonic"] + ' ' + col["mode"], '{"tonic":"'+col["tonic"]+'","mode":"'+col["mode"]+'"}');
+		        	 	$('#tonalities').append(o); 
+		        	}
+
+		        	var formats = src["formats"];
+		        	for (j = 0; j < formats.length; j++) { 
+		        		var frm = formats[j];
+		        	 	var o = new Option(frm["formatDescription"],frm["formatId"]);
+		        	 	$('#formats').append(o); 
+		        	}
+
+		        	var performance_mediums = src["performanceMediums"];
+
+		        	for (j = 0; j < performance_mediums.length; j++) {
+
+		        		var mediums = performance_mediums[j]["mediums"];	        									
+						
+						for (k = 0; k < mediums.length; k++) {
+
+			        		var med = mediums[k];
+			        	 	var o = new Option(med["mediumDescription"], med["mediumCode"]);
+			        	 	$('#instruments').append(o); 
+
+						} 		        		
+
+		        	}
+
+
+	        	}
+
+	        }
+
+		});
+
 		loadData();
+
 	});
 
 	function showDeleteAllButton(){
@@ -127,6 +435,10 @@
   			datatable.fnClearTable();
 		}
 
+		var request_url = url+"?source="+current_source+"&request=ListScores";
+
+		$('#request-url').text(request_url);
+
 		datatable = $('#table-resultset').dataTable( {
 		  	'destroy': true,
 		  	'serverSide': true,
@@ -151,7 +463,7 @@
     			  $(row).attr('id', 'someID');
   			},
 
-		    'url': url+"?source="+current_source+"&request=ListScores",
+		    'url': request_url,
 
 		    'dataSrc': function (json) {
      		    	        		      		
@@ -334,9 +646,13 @@
 		$('#get-score-'+row_number).empty();
 		$('#get-score-'+row_number).append('<div class="spinner-border text-info"></div>');
 
+
 		var dataUrl = url+'?source='+current_source+'&request=GetScore&identifier='+$('#score_id_'+row_number).text()+'&format='+format;
 		var filename = $('#score_title_'+row_number);
 
+		
+		$('#request-url').text(url+'?source='+current_source+'&request=GetScore&identifier='+$('#score_id_'+row_number).text()+'&format='+format);
+	    
 	    var link = document.createElement("a");
 	    link.download = filename;
 	    link.target = "_blank";
@@ -379,7 +695,10 @@
 							$('#del_'+row.id).empty();
 							$('#del_'+row.id).append('<div class="spinner-border text-danger"></div>');
 
-							$.getJSON(url+'?source='+current_source+'&request=DeleteScore&identifier='+$('#score_id_'+row.id).text(), function(data){
+							var delete_url = url+'?source='+current_source+'&request=DeleteScore&identifier='+$('#score_id_'+row.id).text();
+							$('#request-url').text(delete_url);
+
+							$.getJSON(delete_url, function(data){
 
 								if(data["type"]=='DeleteScoresReport'){						
 									row.parentNode.removeChild(row);
@@ -419,7 +738,10 @@
 					$('#del_'+row_number).empty();
 					$('#del_'+row_number).append('<div class="spinner-border text-danger"></div>');
 
-					$.getJSON(base_url+'?source='+current_source+'&request=DeleteScore&identifier='+$('#score_id_'+row_number).text(), function(data){
+					var delete_url = base_url+'?source='+current_source+'&request=DeleteScore&identifier='+$('#score_id_'+row_number).text();
+					$('#request-url').text(delete_url);
+
+					$.getJSON(delete_url, function(data){
 
 						if(data["type"]=='DeleteScoresReport'){						
 
@@ -442,8 +764,282 @@
 		        }
 		    }
 		});
+
+	}
+
+	function setOctave(direction){
+
+		var min = parseInt($('#down-octave').text());
+		var max = parseInt($('#up-octave').text());
+
+		if(direction=='up' && max < 9){
+			min = min +1;
+			max = max +1;	
+		} else if(direction=='down' && min > 1) {
+			min = min -1;
+			max = max -1;				
+		}
+		
+		$('#down-octave').text(min);
+		$('#up-octave').text(max);
 		
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function clear_incipit() {
+        $('#incipit_01').val('');
+        current_oct = -1;
+        reset_undos();
+        update_incipit();
+    }
+
+    
+    function onpitch(pitch, oct, alteration, midi)
+    {
+
+
+        pitch_str = '';
+        if (oct != current_oct) {
+          switch (oct) {
+             case 3:
+             pitch_str += '\'';
+             case 2:
+             pitch_str += '\'';
+             case 1:
+             pitch_str += '\'';
+          }
+        }
+        current_oct = oct;
+        switch (alteration) {
+
+             case 1:
+             pitch_str += 'x';
+             break;
+             case -1:
+             pitch_str += 'b';
+             break;
+        }
+
+            pitch_str += current_duration;
+            if (current_dot == 1) {
+                pitch_str += '.';
+            }
+
+        pitch_str += pitch;
+        undos.push( $('#incipit_01').val() );
+        $('#incipit_01').val($('#incipit_01').val() + pitch_str );
+        update_incipit();
+        activate_buttons();
+
+    }
+
+    function reset_undos( )
+    {
+        undos = [];
+    }
+
+    function activate_buttons( ) {
+        $('#kb_focus').focus();
+    }
+
+    function onduration( value )
+    {
+        current_duration = value;
+        update_buttons();
+    }
+
+    function ondot(  )
+    {
+        if (current_dot == 0) {    current_dot = 1; }
+        else { current_dot = 0; }
+        update_buttons();
+    }
+
+    function onrest( )
+    {
+        rest_str = current_duration;
+        rest_str += '-';
+        undos.push( $('#incipit_01').val() );
+        $('#incipit_01').val($('#incipit_01').val() + rest_str );
+        update_incipit();
+        activate_buttons();
+    }
+
+    function onbarline( )
+    {
+        undos.push( $('#incipit_01').val() );
+        $('#incipit_01').val($('#incipit_01').val() + '/' );
+        update_incipit();
+        activate_buttons();
+    }
+
+    function onundo( )
+    {
+        undo_str = undos.pop();
+        $('#incipit_01').val( undo_str );
+        update_incipit();
+        activate_buttons();
+
+    }
+
+    function update_incipit()
+    {
+
+        if ($('#incipit_01').val() == '') {
+            current_oct = -1;
+            $('#btn_clear_incipit').hide();
+        } else {
+            $('#btn_clear_incipit').show();
+        }
+
+        update_display();
+    }
+
+    function update_display()
+    {
+        pe_incipit('',
+                        "clef_01",
+                        "key_01",
+                        "timesig_01",
+                        "incipit_01",
+                        "render_01");
+    }
+
+    function update_buttons()
+    {
+        $(".kb").removeClass("ui-state-active");
+        $(".kb").addClass("ui-state-default");
+        if (current_duration == 9) { $('#kb-00').addClass("ui-state-active"); }
+        else if (current_duration == 1) { $('#kb-01').addClass("ui-state-active"); }
+        else if (current_duration == 2) { $('#kb-02').addClass("ui-state-active"); }
+        else if (current_duration == 4) { $('#kb-04').addClass("ui-state-active"); }
+        else if (current_duration == 8) { $('#kb-08').addClass("ui-state-active"); }
+        else if (current_duration == 6) { $('#kb-16').addClass("ui-state-active"); }
+        else if (current_duration == 3) { $('#kb-32').addClass("ui-state-active"); }
+        else if (current_duration == 5) { $('#kb-64').addClass("ui-state-active"); }
+        if (current_dot == 1) { $('#kb-dot').addClass("ui-state-active"); }
+    }
+
+    $('#incipit_01').keyup(function(event){
+        update_incipit();
+    });
+
+    $('#clef_01').change(function(event){
+        update_incipit();
+    });
+
+    $('#key_01').change(function(event){
+        update_incipit();
+    });
+
+    $('#timesig_01').keyup(function(event){
+        update_incipit();
+    });
+
+    $('#kb_focus').keypress(function(event) {
+        if (event.charCode == 57) { onduration(9); } 
+        else if (event.charCode == 49) { onduration(1); } 
+        else if (event.charCode == 50) { onduration(2); } 
+        else if (event.charCode == 52) { onduration(4); } 
+        else if (event.charCode == 56) { onduration(8); } 
+        else if (event.charCode == 54) { onduration(6); } 
+        else if (event.charCode == 51) { onduration(3); } 
+        else if (event.charCode == 53) { onduration(5); } 
+        else if ((event.charCode == 82) || (event.charCode == 114) || (event.charCode == 45)) { onrest(); }
+        else if ((event.charCode == 68) || (event.charCode == 100) || (event.charCode == 46)) { ondot(); }
+        else if ((event.charCode == 66) || (event.charCode == 98) || (event.charCode == 47)) { onbarline(); }
+        else if ((event.charCode == 85) || (event.charCode == 117)) { onundo(); }
+    });
+
+    if ($('#incipit_01').val() != "") {
+        update_incipit();
+    }
+
+    update_buttons();
+    activate_buttons();
+
+    var vrvToolkit = new verovio.toolkit();
+
+
+    function render_music( music, format )
+    {
+
+        var svg = vrvToolkit.renderData(music + "\n", {
+            inputFormat: 'pae', 
+            scale: 50, 
+            adjustPageHeight: 1, 
+            pageWidth: 1048, 
+            border: 0, 
+            spacingStaff: 2,
+            xmlIdSeed: 1
+        });
+        document.getElementById('render_01').innerHTML = svg;
+
+        var mei = vrvToolkit.getMEI( 1, true );
+        
+        $("#mei_output").text(mei);
+
+    };
+
+    function pe_incipit(destination_column, clef, keysig, timesig, incipit, target)
+    {
+        jquery_clef = clef.replace(/(\[|\])/g, '\\$1');
+        jquery_keysig = keysig.replace(/(\[|\])/g, '\\$1');
+        jquery_timesig = timesig.replace(/(\[|\])/g, '\\$1');
+        jquery_incipit = incipit.replace(/(\[|\])/g, '\\$1');
+
+        pae_clef = $('#' + jquery_clef).val();
+        pae_keysig =  $('#' + jquery_keysig).val();
+        pae_timesig = $('#' + jquery_timesig).val();
+        pae_incipit = $('#' + jquery_incipit).val();
+
+
+        pae = "@start:pae-file\n";
+        pae = pae + "@clef:" + pae_clef + "\n";
+        pae = pae + "@keysig:" + pae_keysig + "\n";
+        pae = pae + "@key:\n";
+        pae = pae + "@timesig:" + pae_timesig + "\n";
+        pae = pae + "@data: " + pae_incipit + "\n";
+        pae = pae + "@end:pae-file\n";
+        render_music(pae, 'pae');
+
+    }
+
+    function getParameterByName(name) {
+        var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+        return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+    }
+
+    $( document ).ready(function() {
+
+        var pae = getParameterByName("pae");
+
+        if (pae != "") {
+            $("#incipit_01").val(pae);
+            update_incipit();
+        }
+    });
+
 
 	</script>
 
