@@ -13,7 +13,7 @@
 					    <i class="fas fa-search"></i>
 				</button>
 				<button class="btn btn-primary btn-space" style="margin-left: 10px;" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-					    <i class="fas fa-filter"></i>
+					    <i class="fas fa-plus"></i>
 				</button>
 		    </div>
 
@@ -51,9 +51,12 @@
 
 				<table class="table">
 					<tr>
-						<td class="keyboard" width="45%" style="text-align: center;">
-							
-							<div>	
+						<td class="keyboard w-25" style="text-align: center;">							
+							<div style="padding-bottom: 10px">	
+								<button type="button" class="btn btn-light btn-sm" onclick="setOctave('down')">
+									<i class="fas fa-chevron-down"></i>
+									<span id="down-octave">4</span>
+								</button>
 								<div class="btn-group">
 									<button type="button" class="btn btn-light btn-sm" onclick="javascript:onduration(9)">
 		                              <span class="glyphicon keyboard-00">0</span>
@@ -103,102 +106,101 @@
 		                              <span class="glyphicon keyboard-barline">^</span>
 		                            </button>
 		                        </div>
+		                        <button type="button" class="btn btn-light btn-sm" onclick="setOctave('up')">
+									<i class="fas fa-chevron-up"></i>
+									<span id="up-octave">6</span>
+								</button>
 		                    </div>
 								
 
-							<button type="button" class="btn btn-light btn-sm" onclick="setOctave('down')">
-								<i class="fas fa-chevron-down"></i>
-								<span id="down-octave">4</span>
-							</button>
-
 							<map id="piano_map" name="piano_map">
 			                    
-			                    <area shape="rect" coords="17,3,32,52" href="javascript:onpitch('C', 1, 1, 61);" />
-			                    <area shape="rect" coords="42,3,57,52" href="javascript:onpitch('D', 1, 1, 63)"/>
-			                    <area shape="rect" coords="92,3,107,52" href="javascript:onpitch('F', 1, 1, 66)" />
-			                    <area shape="rect" coords="117,3,132,52" href="javascript:onpitch('G', 1, 1, 68)" />
-			                    <area shape="rect" coords="142,3,157,52" href="javascript:onpitch('A', 1, 1, 70)" />
+			                    <area shape="rect" coords="17,3,32,52" href="javascript:onpitch('C', 'min', 1, 61);" />
+			                    <area shape="rect" coords="42,3,57,52" href="javascript:onpitch('D', 'min', 1, 63)"/>
+			                    <area shape="rect" coords="92,3,107,52" href="javascript:onpitch('F', 'min', 1, 66)" />
+			                    <area shape="rect" coords="117,3,132,52" href="javascript:onpitch('G', 'min', 1, 68)" />
+			                    <area shape="rect" coords="142,3,157,52" href="javascript:onpitch('A', 'min', 1, 70)" />
 
-			                    <area shape="rect" coords="17,53,32,102" href="javascript:onpitch('D', 1, -1, 61)" />
-			                    <area shape="rect" coords="42,53,57,102" href="javascript:onpitch('E', 1, -1, 63)" />
-			                    <area shape="rect" coords="92,53,107,102" href="javascript:onpitch('G', 1, -1, 66)" />
-			                    <area shape="rect" coords="117,53,132,102" href="javascript:onpitch('A', 1, -1, 68)" />
-			                    <area shape="rect" coords="142,53,157,102" href="javascript:onpitch('B', 1, -1, 70)" />
+			                    <area shape="rect" coords="17,53,32,102" href="javascript:onpitch('D', 'min', -1, 61)" />
+			                    <area shape="rect" coords="42,53,57,102" href="javascript:onpitch('E', 'min', -1, 63)" />
+			                    <area shape="rect" coords="92,53,107,102" href="javascript:onpitch('G', 'min', -1, 66)" />
+			                    <area shape="rect" coords="117,53,132,102" href="javascript:onpitch('A', 'min', -1, 68)" />
+			                    <area shape="rect" coords="142,53,157,102" href="javascript:onpitch('B', 'min', -1, 70)" />
 
-			                    <area shape="rect" coords="1,3,25,152" href="javascript:onpitch('C', 1, 0, 60)" />
-			                    <area shape="rect" coords="26,3,50,152" href="javascript:onpitch('D', 1, 0, 62)" />
-			                    <area shape="rect" coords="51,3,75,152" href="javascript:onpitch('E', 1, 0, 64)" />
-			                    <area shape="rect" coords="76,3,100,152" href="javascript:onpitch('F', 1, 0, 65)" />
-			                    <area shape="rect" coords="101,3,125,152" href="javascript:onpitch('G', 1, 0, 67)" />
-			                    <area shape="rect" coords="126,3,150,152" href="javascript:onpitch('A', 1, 0, 69)" />
-			                    <area shape="rect" coords="151,3,175,152" href="javascript:onpitch('B', 1, 0, 71)" />
+			                    <area shape="rect" coords="1,3,25,152" href="javascript:onpitch('C', 'min', 0, 60)" />
+			                    <area shape="rect" coords="26,3,50,152" href="javascript:onpitch('D', 'min', 0, 62)" />
+			                    <area shape="rect" coords="51,3,75,152" href="javascript:onpitch('E', 'min', 0, 64)" />
+			                    <area shape="rect" coords="76,3,100,152" href="javascript:onpitch('F', 'min', 0, 65)" />
+			                    <area shape="rect" coords="101,3,125,152" href="javascript:onpitch('G', 'min', 0, 67)" />
+			                    <area shape="rect" coords="126,3,150,152" href="javascript:onpitch('A', 'min', 0, 69)" />
+			                    <area shape="rect" coords="151,3,175,152" href="javascript:onpitch('B', 'min', 0, 71)" />
 
-			                    <area shape="rect" coords="192,3,207,52" href="javascript:onpitch('C', 2, 1, 73)" />
-			                    <area shape="rect" coords="217,3,232,52" href="javascript:onpitch('D', 2, 1, 75)" />
-			                    <area shape="rect" coords="267,3,282,52" href="javascript:onpitch('F', 2, 1, 78)" />
-			                    <area shape="rect" coords="292,3,307,52" href="javascript:onpitch('G', 2, 1, 80)" />
-			                    <area shape="rect" coords="317,3,332,52" href="javascript:onpitch('A', 2, 1, 82)"  />
+			                    <area shape="rect" coords="192,3,207,52" href="javascript:onpitch('C', 'med', 1, 73)" />
+			                    <area shape="rect" coords="217,3,232,52" href="javascript:onpitch('D', 'med', 1, 75)" />
+			                    <area shape="rect" coords="267,3,282,52" href="javascript:onpitch('F', 'med', 1, 78)" />
+			                    <area shape="rect" coords="292,3,307,52" href="javascript:onpitch('G', 'med', 1, 80)" />
+			                    <area shape="rect" coords="317,3,332,52" href="javascript:onpitch('A', 'med', 1, 82)"  />
 
-			                    <area shape="rect" coords="192,53,207,102" href="javascript:onpitch('D', 2, -1, 73)" />
-			                    <area shape="rect" coords="217,53,232,102" href="javascript:onpitch('E', 2, -1, 75)" />
-			                    <area shape="rect" coords="267,53,282,102" href="javascript:onpitch('G', 2, -1, 78)" />
-			                    <area shape="rect" coords="292,53,307,102" href="javascript:onpitch('A', 2, -1, 80)" />
-			                    <area shape="rect" coords="317,53,332,102" href="javascript:onpitch('B', 2, -1, 82)" />
+			                    <area shape="rect" coords="192,53,207,102" href="javascript:onpitch('D', 'med', -1, 73)" />
+			                    <area shape="rect" coords="217,53,232,102" href="javascript:onpitch('E', 'med', -1, 75)" />
+			                    <area shape="rect" coords="267,53,282,102" href="javascript:onpitch('G', 'med', -1, 78)" />
+			                    <area shape="rect" coords="292,53,307,102" href="javascript:onpitch('A', 'med', -1, 80)" />
+			                    <area shape="rect" coords="317,53,332,102" href="javascript:onpitch('B', 'med', -1, 82)" />
 
-			                    <area shape="rect" coords="176,3,200,152" href="javascript:onpitch('C', 2, 0, 72)" />
-			                    <area shape="rect" coords="201,3,225,152" href="javascript:onpitch('D', 2, 0, 74)" />
-			                    <area shape="rect" coords="226,3,250,152" href="javascript:onpitch('E', 2, 0, 76)" />
-			                    <area shape="rect" coords="251,3,275,152" href="javascript:onpitch('F', 2, 0, 77)" />
-			                    <area shape="rect" coords="276,3,300,152" href="javascript:onpitch('G', 2, 0, 79)" />
-			                    <area shape="rect" coords="301,3,325,152" href="javascript:onpitch('A', 2, 0, 81)" />
-			                    <area shape="rect" coords="326,3,350,152" href="javascript:onpitch('B', 2, 0, 83)" />
+			                    <area shape="rect" coords="176,3,200,152" href="javascript:onpitch('C', 'med', 0, 72)" />
+			                    <area shape="rect" coords="201,3,225,152" href="javascript:onpitch('D', 'med', 0, 74)" />
+			                    <area shape="rect" coords="226,3,250,152" href="javascript:onpitch('E', 'med', 0, 76)" />
+			                    <area shape="rect" coords="251,3,275,152" href="javascript:onpitch('F', 'med', 0, 77)" />
+			                    <area shape="rect" coords="276,3,300,152" href="javascript:onpitch('G', 'med', 0, 79)" />
+			                    <area shape="rect" coords="301,3,325,152" href="javascript:onpitch('A', 'med', 0, 81)" />
+			                    <area shape="rect" coords="326,3,350,152" href="javascript:onpitch('B', 'med', 0, 83)" />
 
-			                    <area shape="rect" coords="367,3,382,52" href="javascript:onpitch('C', 3, 1, 85)" />
-			                    <area shape="rect" coords="392,3,407,52" href="javascript:onpitch('D', 3, 1, 87)" />
-			                    <area shape="rect" coords="442,3,457,52" href="javascript:onpitch('F', 3, 1, 90)" />
-			                    <area shape="rect" coords="467,3,482,52" href="javascript:onpitch('G', 3, 1, 92)" />
-			                    <area shape="rect" coords="492,3,507,52" href="javascript:onpitch('A', 3, 1, 94)" />
+			                    <area shape="rect" coords="367,3,382,52" href="javascript:onpitch('C', 'max', 1, 85)" />
+			                    <area shape="rect" coords="392,3,407,52" href="javascript:onpitch('D', 'max', 1, 87)" />
+			                    <area shape="rect" coords="442,3,457,52" href="javascript:onpitch('F', 'max', 1, 90)" />
+			                    <area shape="rect" coords="467,3,482,52" href="javascript:onpitch('G', 'max', 1, 92)" />
+			                    <area shape="rect" coords="492,3,507,52" href="javascript:onpitch('A', 'max', 1, 94)" />
 
-			                    <area shape="rect" coords="367,53,382,102" href="javascript:onpitch('D', 3, -1, 85)" />
-			                    <area shape="rect" coords="392,53,407,102" href="javascript:onpitch('E', 3, -1, 87)" />
-			                    <area shape="rect" coords="442,53,457,102" href="javascript:onpitch('G', 3, -1, 90)" />
-			                    <area shape="rect" coords="467,53,482,102" href="javascript:onpitch('A', 3, -1, 92)" />
-			                    <area shape="rect" coords="492,53,507,102" href="javascript:onpitch('B', 3, -1, 94)" />
+			                    <area shape="rect" coords="367,53,382,102" href="javascript:onpitch('D', 'max', -1, 85)" />
+			                    <area shape="rect" coords="392,53,407,102" href="javascript:onpitch('E', 'max', -1, 87)" />
+			                    <area shape="rect" coords="442,53,457,102" href="javascript:onpitch('G', 'max', -1, 90)" />
+			                    <area shape="rect" coords="467,53,482,102" href="javascript:onpitch('A', 'max', -1, 92)" />
+			                    <area shape="rect" coords="492,53,507,102" href="javascript:onpitch('B', 'max', -1, 94)" />
 
-			                    <area shape="rect" coords="351,3,375,152" href="javascript:onpitch('C', 3, 0, 84)" />
-			                    <area shape="rect" coords="376,3,400,152" href="javascript:onpitch('D', 3, 0, 86)" />
-			                    <area shape="rect" coords="401,3,425,152" href="javascript:onpitch('E', 3, 0, 88)" />
-			                    <area shape="rect" coords="426,3,450,152" href="javascript:onpitch('F', 3, 0, 89)" />
-			                    <area shape="rect" coords="451,3,475,152" href="javascript:onpitch('G', 3, 0, 91)" />
-			                    <area shape="rect" coords="476,3,500,152" href="javascript:onpitch('A', 3, 0, 93)" />
-			                    <area shape="rect" coords="501,3,525,152" href="javascript:onpitch('B', 3, 0, 95)" />
+			                    <area shape="rect" coords="351,3,375,152" href="javascript:onpitch('C', 'max', 0, 84)" />
+			                    <area shape="rect" coords="376,3,400,152" href="javascript:onpitch('D', 'max', 0, 86)" />
+			                    <area shape="rect" coords="401,3,425,152" href="javascript:onpitch('E', 'max', 0, 88)" />
+			                    <area shape="rect" coords="426,3,450,152" href="javascript:onpitch('F', 'max', 0, 89)" />
+			                    <area shape="rect" coords="451,3,475,152" href="javascript:onpitch('G', 'max', 0, 91)" />
+			                    <area shape="rect" coords="476,3,500,152" href="javascript:onpitch('A', 'max', 0, 93)" />
+			                    <area shape="rect" coords="501,3,525,152" href="javascript:onpitch('B', 'max', 0, 95)" />
 
 		                	</map>
 		                	<img id="piano_img" src="img/piano-notes.png" usemap="#piano_map"/>
-		                	<button type="button" class="btn btn-light btn-sm" onclick="setOctave('up')">
-								<i class="fas fa-chevron-up"></i>
-								<span id="up-octave">6</span>
-							</button>
+
 							<div class="w-100 mx-auto" style="margin-top: 15px;">
 
 								<div id="container-check-chords" style="padding-right: 5px; float: left" class="custom-control custom-checkbox">
-									<input id="check-ignore-chords" type="checkbox" class="custom-control-input check-file" enabled/>
+									<input id="check-ignore-chords" type="checkbox" class="custom-control-input" checked/>
 									<label class="custom-control-label" for="check-ignore-chords">Ignore Chords  </label>
 								</div>
-								<div id="container-check-duration" style="padding-right: 5px; float: left;" class="custom-control custom-checkbox">
-									<input id="check-ignore-duration" type="checkbox" class="custom-control-input check-file" enabled/>
-									<label class="custom-control-label" for="check-ignore-duration">Ignore Duration  </label>
-								</div>
-								<div id="container-check-pitch" style="padding-right: 5px; float: left;" class="custom-control custom-checkbox">
-									<input id="check-ignore-pitch" type="checkbox" class="custom-control-input check-file" enabled/>
-									<label class="custom-control-label" for="check-ignore-pitch">Ignore Pitch</label>
-								</div>
+								
 								<div id="container-check-octave" style="padding-right: 5px; float: left;" class="custom-control custom-checkbox">
-									<input id="check-ignore-octave" type="checkbox" class="custom-control-input check-file" enabled/>
+									<input id="check-ignore-octave" type="checkbox" class="custom-control-input" checked/>
 									<label class="custom-control-label" for="check-ignore-octave">Ignore Octave</label>
 								</div>
+								
+								<div id="container-check-duration" style="padding-right: 5px; float: left;" class="custom-control custom-checkbox">
+									<input id="check-ignore-duration" type="checkbox" class="custom-control-input"/>
+									<label class="custom-control-label" for="check-ignore-duration">Ignore Duration  </label>
+								</div>
+								
+								<div id="container-check-pitch" style="padding-right: 5px; float: left;" class="custom-control custom-checkbox">
+									<input id="check-ignore-pitch" type="checkbox" class="custom-control-input"/>
+									<label class="custom-control-label" for="check-ignore-pitch">Ignore Pitch</label>
+								</div>
 
-							</div>
+							</div>							
 						</td>
 						<td>
                     		<p>
@@ -267,7 +269,9 @@
     var current_dot = 0;
     var undos = new Array();
 
-
+	var min_octave = 4;
+	var med_octave = 5;
+	var max_octave = 6;
 
 	$("#btn-delete-all").hide();
 
@@ -444,7 +448,33 @@
 		var request_url = url+"?source="+current_source+"&request=ListScores";
 		
 		if($('#incipit_01').val()!=''){
+			
 			request_url = request_url +'&melody='+$('#incipit_01').val();
+
+			if($('#check-ignore-octave').prop('checked')) {
+				request_url = request_url +'&ignoreOctave=true';
+			} else {
+				request_url = request_url +'&ignoreOctave=false';
+			}
+
+			if($('#check-ignore-pitch').prop('checked')) {
+				request_url = request_url +'&ignorePitch=true';
+			} else {
+				request_url = request_url +'&ignorePitch=false';
+			}
+
+			if($('#check-ignore-duration').prop('checked')) {
+				request_url = request_url +'&ignoreDuration=true';
+			} else {
+				request_url = request_url +'&ignoreDuration=false';
+			}
+
+			if($('#check-ignore-chords').prop('checked')) {
+				request_url = request_url +'&ignoreChords=true';
+			} else {
+				request_url = request_url +'&ignoreChords=false';
+			}
+
 		}
 
 		if($('#tonalities').val()!=null){
@@ -494,19 +524,14 @@
             	data.offset = (page_size*current_page)-page_size;
             	data.pageSize = data.length;
             	data.totalSize = totalSize;
-
-
             	if($('.form-control').val() != ''){
             		data.title = $('#table-resultset_filter input').val();
             	}
-
             },
             'createdRow': function( row, data, dataIndex ) {
     			  $(row).attr('id', 'someID');
   			},
-
 		    'url': request_url,
-
 		    'dataSrc': function (json) {
      		    	        		      		
 		     	var return_data = new Array();
@@ -813,19 +838,18 @@
 
 	function setOctave(direction){
 
-		var min = parseInt($('#down-octave').text());
-		var max = parseInt($('#up-octave').text());
-
-		if(direction=='up' && max < 9){
-			min = min +1;
-			max = max +1;	
-		} else if(direction=='down' && min > 1) {
-			min = min -1;
-			max = max -1;				
+		if(direction=='up' && max_octave < 9){
+			min_octave = min_octave +1;
+			med_octave = med_octave +1;
+			max_octave = max_octave +1;				
+		} else if(direction=='down' && min_octave > 1) {
+			min_octave = min_octave -1;
+			med_octave = med_octave -1;
+			max_octave = max_octave -1;				
 		}
 		
-		$('#down-octave').text(min);
-		$('#up-octave').text(max);
+		$('#down-octave').text(min_octave);
+		$('#up-octave').text(max_octave);
 		
 	}
 
@@ -860,20 +884,51 @@
     
     function onpitch(pitch, oct, alteration, midi)
     {
+    
+    	var octave_1 = ',,,';
+    	var octave_2 = ',,';
+    	var octave_3 = ',';
+    	var octave_4 = "'";
+    	var octave_5 = "''";
+    	var octave_6 = "'''";
+    	var octave_7 = "''''";
+    	var octave_8 = "'''''";
+    	var octave_9 = "''''''";
 
+    	if(oct=='min'){
+    		oct = min_octave;
+    	} else if(oct=='med'){
+    		oct = med_octave;
+    	} else if(oct=='max'){
+    		oct = max_octave;
+    	}
 
         pitch_str = '';
-        if (oct != current_oct) {
-          switch (oct) {
-             case 3:
-             pitch_str += '\'';
-             case 2:
-             pitch_str += '\'';
-             case 1:
-             pitch_str += '\'';
-          }
-        }
+
+        if(oct!=current_oct){
+	        if(oct == 1){
+	        	pitch_str = octave_1;
+	        } else if(oct == 2){
+	        	pitch_str = octave_2;
+	        } else if(oct == 3){
+	        	pitch_str = octave_3;
+	        } else if(oct == 4){
+	        	pitch_str = octave_4;
+	        } else if(oct == 5){
+	        	pitch_str = octave_5;
+	        } else if(oct == 6){
+	        	pitch_str = octave_6;
+	        } else if(oct == 7){
+	        	pitch_str = octave_7;
+	        } else if(oct == 8){
+	        	pitch_str = octave_8;
+	        } else if(oct == 9){
+	        	pitch_str = octave_9;
+	        } 
+    	}
+
         current_oct = oct;
+        
         switch (alteration) {
 
              case 1:
@@ -882,16 +937,20 @@
              case -1:
              pitch_str += 'b';
              break;
+        
         }
 
-            pitch_str += current_duration;
-            if (current_dot == 1) {
-                pitch_str += '.';
-            }
+        pitch_str += current_duration;
+
+        if (current_dot == 1) {
+            pitch_str += '.';
+        }
 
         pitch_str += pitch;
         undos.push( $('#incipit_01').val() );
+
         $('#incipit_01').val($('#incipit_01').val() + pitch_str );
+        
         update_incipit();
         activate_buttons();
 
