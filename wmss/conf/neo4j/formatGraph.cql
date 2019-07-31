@@ -97,6 +97,8 @@ WITH measure,tonic,mode,
        WHEN 'cflat-major' THEN 'bBEADGCF'
        WHEN 'aflat-minor' THEN 'bBEADGCF'       
      END AS key
+SET measure.key_code = key
+WITH measure, key     
 CALL apoc.create.addLabels(id(measure),[key]) YIELD node
 RETURN COUNT(measure) AS MeasureKey;
 

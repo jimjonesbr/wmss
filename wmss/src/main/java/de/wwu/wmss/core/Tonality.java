@@ -4,10 +4,10 @@ public class Tonality {
 	
 	private String mode;
 	private String tonic;
+	private String code; 
 	
 	public Tonality() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	public String getMode() {
 		return mode;
@@ -20,6 +20,12 @@ public class Tonality {
 	}
 	public void setTonic(String tonic) {
 		this.tonic = tonic;
+	}
+	public String getCode() {
+		return code;
+	}
+	public void setCode(String code) {
+		this.code = code;
 	}
 	
 	

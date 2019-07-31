@@ -315,7 +315,7 @@ public class Neo4jEngine {
 	public static ArrayList<Tonality> getTonalities(DataSource ds){
 		
 		ArrayList<Tonality> result = new ArrayList<Tonality>();
-		String cypher = "MATCH (measure:Measure) RETURN DISTINCT measure.tonic AS tonic, measure.mode AS mode";
+		String cypher = "MATCH (measure:Measure) RETURN DISTINCT measure.tonic AS tonic, measure.mode AS mode, measure.key_code as code";
 		
 		logger.debug("getTonalities:\n" + cypher);
 		
@@ -328,7 +328,7 @@ public class Neo4jEngine {
 			
 			tonality.setMode(record.get("mode").asString().trim());
 			tonality.setTonic(record.get("tonic").asString().trim());
-			
+			tonality.setCode(record.get("code").asString().trim());
 			result.add(tonality);
 		}
 		

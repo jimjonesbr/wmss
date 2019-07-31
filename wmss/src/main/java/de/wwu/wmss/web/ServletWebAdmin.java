@@ -1,8 +1,11 @@
 package de.wwu.wmss.web;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,49 +20,38 @@ public class ServletWebAdmin extends HttpServlet {
 
 	private static Logger logger = Logger.getLogger("Servlet-Admin");
 	private static final long serialVersionUID = 1L;
-	
+
 	protected void doGet(HttpServletRequest httpRequest, HttpServletResponse response) throws ServletException, IOException {
-	
+
 		response.addHeader("Access-Control-Allow-Origin","*");
 		response.addHeader("Access-Control-Allow-Methods","GET,POST");
 		response.addHeader("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");
+				
+		ServletContext context = httpRequest.getServletContext();
+		String filename = httpRequest.getRequestURI().toString().replace("/"+SystemSettings.getService()+"/admin", "web/");
+		File file = new File(filename);
+		
+		response.setContentType(context.getMimeType(filename));
+		response.setContentLength((int)file.length());
 
+		logger.info("MIME Type -> "+context.getMimeType(filename));
 		logger.info("GET RequestURL -> " + httpRequest.getRequestURL());
 		
-		StringBuilder contentBuilder = new StringBuilder();
-		try {
-		    
-			BufferedReader in = null;
-			
-			if(httpRequest.getRequestURI().toString().equals("/"+SystemSettings.getService()+"/admin")) {
-
-				in = new BufferedReader(new FileReader("web/index.html"));
-
-			} else {
-				
-				in = new BufferedReader(new FileReader(httpRequest.getRequestURI().toString().replace("/"+SystemSettings.getService()+"/admin", "web/")));
-			}
-
-		    String str;
-		    while ((str = in.readLine()) != null) {
-		        contentBuilder.append(str);
-		    }
-
-		    in.close();
-		    
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		FileInputStream inputStream = new FileInputStream(file);
+		OutputStream out = response.getOutputStream();
 		
-		String content = contentBuilder.toString();
-				
-		//response.setContentType("text/html");
-		response.setStatus(HttpServletResponse.SC_OK);
-		response.getWriter().println(content);
+
+		byte[] buf = new byte[1024];
+		int count = 0;
+		while ((count = inputStream.read(buf)) >= 0) {
+			out.write(buf, 0, count);
+		}
+		out.close();
+		inputStream.close();	
 
 	}
 
-	
-	
+
+
 }
 

@@ -5,9 +5,10 @@
 </head>
 
 <body>
-	<br>
+	
 	<div class="table-responsive">
 		<span><h3>System Settings</h3></span>
+		<br>
 		<table id="table-settings" class="table table-striped" style="width:100%">
 		</table>
 	</div>
@@ -33,6 +34,7 @@
 	        sources=data["datasources"];
 
 	        $('#table-settings').append('<tr><td width="15%">Title</td><td><code>'+data["title"]+'</code></td></tr>');
+	        $('#table-settings').append('<tr><td>Version</td><td><code>'+data["appVersion"]+'</code></td></tr>');
 	        $('#table-settings').append('<tr><td>Started at</td><td><code>'+data["startup"]+'</code></td></tr>');
 	        $('#table-settings').append('<tr><td>Port</td><td><code>'+data["port"]+'</code></td></tr>');
 	        $('#table-settings').append('<tr><td>Administrator</td><td><code>'+data["contact"]+'</code></td></tr>');
