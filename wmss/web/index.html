@@ -35,7 +35,6 @@
   <!-- Verovio -->
   <script src="https://www.verovio.org/javascript/develop/verovio-toolkit-light.js"></script>
   
-
 </head>
 
 <body>
@@ -95,13 +94,16 @@
 
   </div>
   <!-- /#wrapper -->
-
+  <div class="loading">
+      <div class="loader"></div>
+  </div>
   <!-- Menu Toggle Script -->
   <script type="text/javascript">
 
+
     var current_source ="";
     var base_url = "http://"+window.location.host+"/"+window.location.pathname.split('/')[1];
-
+ 
     $("#menu-toggle").click(function(e) {
       e.preventDefault();
       $("#wrapper").toggleClass("toggled");
