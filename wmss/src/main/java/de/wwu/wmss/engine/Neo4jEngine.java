@@ -728,8 +728,9 @@ public class Neo4jEngine {
 		
 		if(!wmssRequest.getPerson().equals("")) {
 			
-			where = where + "AND creator.uri=\""+wmssRequest.getPerson()+"\"\n";
+			where = where + "AND creator2.uri=\""+wmssRequest.getPerson()+"\"\n";
 			
+			match = match + "MATCH (scr:Score)-[:CREATOR]->(creator2:Person)\n";
 		} 
 
 		if(!wmssRequest.getPersonRole().equals("")) {
