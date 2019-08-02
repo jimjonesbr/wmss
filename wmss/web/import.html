@@ -32,16 +32,19 @@
 							<label class="custom-control-label" for="check-all"></label>
 						</div>
 					</td>
-					<td><button id="btn-import-selected" class="btn btn-primary" data-title="Import"><i class="fa fa-upload" aria-hidden="true"></i>    Import</button></td>
+					<td>
+						<button id="btn-import-selected" class="btn btn-primary" data-title="Import"><i class="fa fa-upload" aria-hidden="true"></i>    Import</button>						
+					</td>
 					</tr>
 			</tbody>
+
+			<span id="loading" style="padding-left: 10px;"></span>
+
 		</table>
 		<div id="container-import-status">
 			<p id="import-status"/>
 		<div>
-		<table id="table-files" class="table table-striped" style="width:100%">
-
-		</table>
+		<table id="table-files" class="table table-striped" style="width:100%"></table>
 	</div>
 
 <script type="text/javascript">
@@ -52,14 +55,12 @@
 
 	$( '#input_files' ).change(function() {
 
+		$("#table-files").find("tr").remove();
+		$('#container-check-all').show();
+		$("#btn-import-selected").hide();
 
-		 $("#table-files").find("tr").remove();
-		 $('#container-check-all').show();
-		 $("#btn-import-selected").hide();
-  
 		$.each($('#input_files')[0].files, function(i, file) {
 
-			console.log(file.type);
 			var file_type = resolveFileType(file.type);			
 			var badge_class;
 			var enable_import;
@@ -92,9 +93,7 @@
     			'		<button id="btn-delete-'+i+'" class="btn btn-sm btn-danger" data-toggle="modal" onclick="deleteItem(\''+i+'\')">'+
       			'		<i class="fa fa-remove"></i></button>'+
       			'	</td>'+
-      			'</tr>');
-
-				
+      			'</tr>');				
 
 		});
 
@@ -140,22 +139,17 @@
 	}
 
 	$("#btn-import-selected").click(function(){
-		
-		$.each($('#input_files')[0].files, function(i, file) {
-			
+
+		$.each($('#input_files')[0].files, function(i, file) {			
 			if($('#check-file-'+i).prop('checked')){
-				if($('#badge-file-type-'+i).text()!='undefined'){
-					
-					setTimeout(function(){ importRDF(i);}, 500);
-						
+				if($('#badge-file-type-'+i).text()!='undefined'){					
+
+					importRDF(i);
+
 				}
 			}
-
 		});
-
-		$("#btn-import-selected").hide();
-		$('#check-all').prop('checked', false);
-		
+	
 
 	});
 
@@ -177,15 +171,16 @@
 
 
 	function importRDF(file_index){
-		console.log(file_index);
 
-		$("#btn-import-selected").attr("disabled", true);
+
+		$("#btn-import-selected").attr("disabled", true);				
 		$("#check-all").attr("disabled", true);
 
 		$.each($('#input_files')[0].files, function(i, file) {
-
 						
-			if(file_index==i){
+			if(file_index==i){				
+
+				$("#btn-import-selected").html('<i class="fas fa-spinner fa-spin"></i> Importing ..');	
 			
 				var data = new FormData();
 	        	data.append('file-'+i, file);	
@@ -194,7 +189,7 @@
 	        	$('#import-container-'+i).append('<div class="spinner-border text-primary"></div>');
 	        	$('#upload-status-'+i).html('<p id="upload-status-'+i+'" class="text-info"><small> Processing ... </small></p>');
 	        	$("#check-file-"+i).attr("disabled", true);
-	        	$(".btn-primary").attr("disabled", true);
+	        	$(".btn-primary").attr("disabled", true);        	
 
 	        	setTimeout(function () {
 					$.ajax({  
@@ -222,7 +217,7 @@
 			                if(type == "ImportReport"){
 
 			                	var importedFile = report["files"][0];
-			                	console.log(importedFile);
+
 			                	$('#upload-status-'+i).html('<p id="upload-status-'+i+'" class="text-success"><small>'+ importedFile["records"] + ' statements imported in ' + report["timeElapsed"] + '</small></p>');
 			                	$('#import-container-'+i).html('<p id="import-container-'+i+'"><button id="btn-import-'+i+'" class="btn btn-sm btn-success" disabled><i class="fas fa-check"></i></button></p>');
 			                	$('.btn-primary').attr('disabled', false);
@@ -232,15 +227,23 @@
 			                }
 
 			             }
+			        }).done(function (){
+			        	
+				    	
+				    	if(file_index+1>=$('#input_files[type=file]').get(0).files.length){
+				    		$("#btn-import-selected").html('<i class="fas fa-upload"></i> Import');	
+				    		$("#check-all").prop('checked', false);
+				    		$("#check-all").attr("disabled", false);
+				    	}
+
 			        });
-				}, 500);
+				}, 2000);
 
 			}
 
 		});
-	
-		$("#btn-import-selected").attr("disabled", false);
-		$("#check-all").attr("disabled", false);
+
+		
 	}
 
 

@@ -7,12 +7,12 @@
 <body>
 	
 	<div class="table-responsive">
+		<span style="text-align: right"></span>
 		<span><h3>System Settings</h3></span>
 		<br>
 		<table id="table-settings" class="table table-striped" style="width:100%">
 		</table>
-	</div>
-	
+	</div>	
 	<br>
 	<span><h3>Data Sources</h3></span>
 
@@ -20,10 +20,22 @@
 		<br>
 	</div>
 
-
 <script type="text/javascript">
 
 	var sources;
+	var service_description_report ="";
+
+	$(document).on("click", "#btn-report" , function() {
+
+    	var a = $.alert({
+    		title: '<i class="fas fa-file-code"></i>  Service Descripton Report',
+			content: '<pre>'+JSON.stringify(service_description_report, undefined, 2)+'</pre>',
+			columnClass: 'col-md-12'
+		});
+
+		a.close();
+
+	});
 
 	$( document ).ready(function() {
 
@@ -31,8 +43,10 @@
 
 	    $.getJSON(base_url+"?request=DescribeService", function(data){
 
+	    	service_description_report = data;
 	        sources=data["datasources"];
 
+	        $('#table-settings').append('<tr><td width="15%">Type</td><td><code>'+data["type"]+'</code> <button id="btn-report" class="btn btn-light btn-sm" style="text-align: center"><i class="fas fa-file-code"></i></button></td></tr>');
 	        $('#table-settings').append('<tr><td width="15%">Title</td><td><code>'+data["title"]+'</code></td></tr>');
 	        $('#table-settings').append('<tr><td>Version</td><td><code>'+data["appVersion"]+'</code></td></tr>');
 	        $('#table-settings').append('<tr><td>Started at</td><td><code>'+data["startup"]+'</code></td></tr>');
