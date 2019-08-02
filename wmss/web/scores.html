@@ -464,6 +464,12 @@
 		}
 	}); 
 
+	$("#incipit_01").on('change keydown paste input', function(){
+		if($("#incipit_01").val().includes('^')){
+			document.getElementById("check-ignore-octave").checked = false;
+		}
+	});
+
 	function loadData(){
 
 		var page_size = 10;
