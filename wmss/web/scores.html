@@ -4,7 +4,7 @@
 	</head>
 	<body>			
 					
-		    
+		    <div id="spinner"></div>
 		    <div class="input-group w-50 table">
 
 		      <input type="text" placeholder="Title" class="form-control" id="title" style="margin-left: none;">
@@ -474,6 +474,7 @@
 
 		var page_size = 10;
   		
+  		$("#btn-load").html('<i class="fas fa-spinner fa-spin"></i>');	 		
   		$('#container-check-all').show();
 
   		if ( $.fn.DataTable.isDataTable( '#table-resultset' ) ) {
@@ -782,6 +783,9 @@
 						}
 
 				     }
+
+				     $("#btn-load").html('<i class="fas fa-search"></i>');	
+				     $(document).scrollTop( $("#table-resultset").offset().top );  
 									      	
 			      	return return_data;
 
@@ -799,6 +803,9 @@
 			    {'data': 'delete'}]
 
 		});
+
+
+		
 
 	}
 
