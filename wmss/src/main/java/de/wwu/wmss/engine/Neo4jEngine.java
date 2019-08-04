@@ -892,6 +892,9 @@ public class Neo4jEngine {
 				"    scr.thumbnail AS thumbnail,\n " +
 			    "	 scr.collectionUri AS collectionIdentifier, \n"+
 			    "	 scr.collectionLabel AS collectionLabel, \n"+
+			    "	 scr.resourceURL AS resourceURL, \n"+
+			    "	 scr.resourceDescription AS resourceDescription, \n"+
+			    "	 scr.resourceType AS resourceType, \n"+
 				"    {persons: COLLECT(DISTINCT\n" + 
 				"       {name: creator.name, \n" + 
 				"     	 identifier: creator.uri, \n" +
@@ -932,7 +935,9 @@ public class Neo4jEngine {
 			score.setThumbnail(record.get("thumbnail").asString());					
 			score.getCollection().setId(record.get("collectionIdentifier").asString());
 			score.getCollection().setDescription(record.get("collectionLabel").asString());
-			score.setOnlineResource(record.get("identifier").asString());
+			score.getOnlineResource().setId(record.get("resourceURL").asString());
+			score.getOnlineResource().setDescription(record.get("resourceDescription").asString());
+			score.getOnlineResource().setType(record.get("resourceType").asString());
 			
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			

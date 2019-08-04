@@ -654,7 +654,7 @@ public class PostgreSQLEngine {
 					rec.setCollectionDescription(rs.getString("collection_description"));
 					rec.setThumbnail(rs.getString("score_thumbnail"));
 					rec.setPrintResource(rs.getString("score_print_resource"));
-					rec.setOnlineResource(rs.getString("score_online_resource"));
+					//rec.setOnlineResource(rs.getString("score_online_resource"));
 					
 					Movement mov = new Movement();					
 					mov.setMovementIdentifier(rs.getString("movement_id"));

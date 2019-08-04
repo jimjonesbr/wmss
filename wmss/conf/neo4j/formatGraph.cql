@@ -1,3 +1,14 @@
+MATCH (score:mo__Score)-[:dbo__document]->(document:dbpedia__Document)
+SET score.resourceURL = document.uri,
+    score.resourceDescription = document.rdfs__label,
+    score.resourceType = document.dbo__mime;
+
+OPTIONAL MATCH (score:mo__Score)
+WHERE NOT (score)-[:dbo__document]->() 
+SET score.resourceURL = score.uri,
+    score.resourceDescription = score.uri,
+    score.resourceType = "";
+    
 MATCH (note:chord__Note)-[:chord__natural]->(natural) 
 OPTIONAL MATCH (note:chord__Note)-[:chord__modifier]->(modifier)
 WITH note, CASE SUBSTRING(modifier.uri,31) 
@@ -350,6 +361,9 @@ DETACH DELETE key;
 
 MATCH (noteset:mso__NoteSet)-[:mso__hasDynamic]->(dynamic)
 DETACH DELETE dynamic;
+
+MATCH (score:mo__Score)-[:dbo__document]->(document:dbpedia__Document)
+DETACH DELETE document;
 
 MATCH (n) WHERE NOT (n)--() 
 DELETE n;
