@@ -261,6 +261,8 @@
 		</table>
 	
 		<br><br><br><br>	
+
+
 	
 	<script>
 
@@ -620,7 +622,8 @@
 									} else {
 										badge_class="badge badge-dark";
 									}
-									formats_string = formats_string + '<a style="font-size:18px" href="javascript:getScore(\''+j+'\',\''+fr["formatId"]+'\')"><span style="display: block;" class="'+badge_class+'"><i class="fa fa-download"/> '+fr["formatDescription"]+'</span></a>';
+
+									formats_string = formats_string + '<i class="fa fa-code" style="padding: 3px"/><a href="javascript:getScore(\''+j+'\',\''+fr["formatId"].trim()+'\')">'+fr["formatDescription"]+'</span></a>';
 
 								}							
 
@@ -644,9 +647,38 @@
 
 
 
+								var resources = sc["resources"];
+								var resources_string = "";
 
+								for (k = 0; k < resources.length; k++) { 
 
+	    	 						var res = resources[k];
+	    	 						var icon_resource;
 
+	    	 						if(res["type"].includes('application/pdf')){
+
+	    	 							icon_resource = '<i class="fa fa-file-pdf" style="padding: 5px"/><a href="'+ res["url"] + '">'+res["description"]+'</a>';
+
+	    	 						} else if(res["type"].includes('text/html')){
+
+										icon_resource = '<i class="fa fa-link" style="padding: 5px"/><a href="'+ res["url"] + '">'+res["description"]+'</a>';
+
+									} else if(res["type"].includes('audio')){
+
+										icon_resource = '<i class="fa fa-play" style="padding: 5px"/><a href="'+ res["url"] + '">'+res["description"]+'</a>';
+
+	    	 						} else {
+
+	    	 							icon_resource = '<i class="fa fa-file-alt" style="padding: 5px"/><a href="'+ res["url"] + '">'+res["description"]+'</a>';
+
+	    	 						}
+	    	 						
+
+	    	 						resources_string = resources_string + icon_resource + '<br>';
+
+	    	 					}
+
+    	 					
 	    	 					var locations = sc["melodyLocations"];
 	    	 					var melody_movement_string = "";
 
@@ -736,39 +768,45 @@
 										'  </div>'+
 										'</div>';
 
+
+
 			 					}
-	    	 												
+	    	 										
+
 						        return_data.push({
 						          'check': '<div id="container-check-all" class="custom-control custom-checkbox">'+
 						          				'<input id="check-'+j+'" type="checkbox" class="check-score custom-control-input check-file" onclick="showDeleteAllButton();"/>'+
 						          				'<label class="custom-control-label" for="check-'+j+'"></label>'+
 						          			'</div>',
 						          'thumbnail'  : '<img style="max-width: 125px" src="'+ sc["thumbnail"] + '"/>',
-						          'score'  : '<form class="col-12">'+
-									'	  <div class="form-row">'+
-									'	    <label class="col-sm-2 col-form-label" for="identifier">Identifier:</label>'+
-									'	    <div id ="score_id_container" class="col-sm-10"><p id="score_id_'+j+'" class="form-control-static">'+sc["scoreIdentifier"] +'</p></div>'+
-									'	  </div>'+
-									'	  <div class="form-row">'+
-									'		<label class="col-sm-2 col-form-label" for="title">Title:</label>'+
-									'	    <div class="col-sm-10"><p id="score_title_'+j+'" class="form-control-static">'+sc["title"] +'</p></div>'+
-									'	  </div>'+
-									'	  <div class="form-row">'+
-									'		<label class="col-sm-2 col-form-label" for="issued">Issued:</label>'+
-									'	    <div class="col-sm-10"><p class="form-control-static">'+sc["dateIssued"] +'</p></div>'+
-									'	  </div>'+
-									'	  <div class="form-row">'+
-									'		<label class="col-sm-2 col-form-label" for="online-resource">Resource:</label>'+
-									'	    <div class="col-sm-10"><p class="form-control-static"><a href="'+ sc["onlineResource"]["url"] + '">'+sc["onlineResource"]["description"]+'</a></p></div>'+
-									'	  </div>'+
-									'	  <div class="form-row">'+
-									'		<label class="col-sm-2 col-form-label" for="online-resource">Collection:</label>'+
-									'	    <div class="col-sm-10"><p class="form-control-static"><a href="'+ collection["id"] + '">'+collection["description"]+'</a></p></div>'+
-									'	  </div>'+
-									'	  <div class="form-row">'+
-									'		<div class="col-sm-100"><p class="form-control-static" style="style: none;">'+ formats_string+'</p></div>'+								
-									'	  </div>'+
-									'	</form> ',
+						          'score'  :''+
+
+						          			'<table class="table table-resposive">'+
+											'	  <tr>'+
+											'	    <td><strong>Identifier</strong></td>'+
+											'		<td><span id="score_id_'+j+'">'+sc["scoreIdentifier"] +'</span></td>'+											
+											'	  </tr>'+
+
+											'	  <tr>'+
+											'	    <td><strong>Title</strong></td>'+
+											'	    <td><span id="score_title_'+j+'">'+sc["title"] +'</span></td>'+
+											'	  </tr>'+
+
+											'	  <tr>'+
+											'		<td><strong>Issued</strong></td>'+
+											'	    <td><span id="issued">'+sc["dateIssued"] +'</span></td>'+
+											'	  </tr>'+
+
+											'	  <tr>'+
+											'		<td><strong>Collection</strong></td>'+
+											'		<td><a href="'+ collection["id"] + '">'+collection["description"]+'</a></td>'+
+											'	  </tr>'+
+
+											'	  <tr>'+
+											'		<td><strong>Resources</strong></td>'+
+											'	    <td>'+formats_string+'<br>'+resources_string+'</td>'+
+											'	  </tr>'+
+											'</form>',
 						          'persons'  : persons_string,
 						          'movements'  : melody_movement_string+'<p>Movements</p><div id="movements-'+j+'" class="accordion">'+movements_string+'</div>',
 						          'delete'  : '<a href="javascript:deleteScore(\''+j+'\')"><p id="del_'+j+'" data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-sm" data-title="Delete" data-toggle="modal" data-target="#delete" ><i class="fa fa-trash"/></button></p></a>',
@@ -776,10 +814,8 @@
 							      'DT_RowClass': 'row-score'
 						        });
 
-
-
-
 							}
+
 						}
 
 				     }

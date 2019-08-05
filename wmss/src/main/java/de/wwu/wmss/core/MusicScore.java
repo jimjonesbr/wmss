@@ -14,7 +14,6 @@ public class MusicScore {
 	private String tonalityMode;
 	private String thumbnail;
 	private String printResource;
-	//private String onlineResource;
 	private String dateIssued;
 	private String documentCreationDate;
 	private ArrayList<Movement> movements;
@@ -23,7 +22,7 @@ public class MusicScore {
 	private ArrayList<Person> persons;
 	private ArrayList<MelodyLocationGroup> melodyLocations;
 	private Collection collection;
-	private ScoreResource onlineResource;
+	private ArrayList<ScoreResource> resources;
 	
 	private String document;
 	
@@ -36,7 +35,7 @@ public class MusicScore {
 		this.melodyLocations = new ArrayList<MelodyLocationGroup>();
 		this.provenance = new Provenance();
 		this.collection = new Collection();
-		this.onlineResource= new ScoreResource();
+		this.resources= new ArrayList<ScoreResource>();
 		
 	}
 
@@ -158,27 +157,9 @@ public class MusicScore {
 		this.printResource = printResource;
 	}
 
-
-//	public String getOnlineResource() {
-//		return onlineResource;
-//	}
-//
-//
-//	public void setOnlineResource(String onlineResource) {
-//		this.onlineResource = onlineResource;
-//	}
-
-	
-
 	public String getDocumentCreationDate() {
 		return documentCreationDate;
 	}
-
-
-	public ScoreResource getOnlineResource() {
-		return onlineResource;
-	}
-
 
 	public void setDocumentCreationDate(String documentCreationDate) {
 		this.documentCreationDate = documentCreationDate;
@@ -218,7 +199,12 @@ public class MusicScore {
 	public void setDocument(String document) {
 		this.document = document;
 	}
-	
+
+
+	public ArrayList<ScoreResource> getResources() {
+		return resources;
+	}
+
 	
 }
 

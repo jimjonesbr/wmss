@@ -37,6 +37,7 @@ import de.wwu.wmss.core.PerformanceMediumType;
 import de.wwu.wmss.core.Person;
 import de.wwu.wmss.core.PersonDescription;
 import de.wwu.wmss.core.Provenance;
+import de.wwu.wmss.core.ScoreResource;
 import de.wwu.wmss.core.WMSSRequest;
 import de.wwu.wmss.exceptions.DatabaseImportException;
 import de.wwu.wmss.core.Tonality;
@@ -806,7 +807,9 @@ public class Neo4jEngine {
 			where = where  + "AND scr.collectionUri = '"+wmssRequest.getCollection()+"' \n";
 		}
 		
-		return match + where;		
+		String optionalMatch = "OPTIONAL MATCH (scr:Score)-[:RESOURCE]->(resource:ScoreResource)\n";
+		
+		return match + optionalMatch + where;		
 	}
 			
 	public static ArrayList<DeletedRecord> deleteScore(WMSSRequest request, DataSource dataSource) {
@@ -892,9 +895,11 @@ public class Neo4jEngine {
 				"    scr.thumbnail AS thumbnail,\n " +
 			    "	 scr.collectionUri AS collectionIdentifier, \n"+
 			    "	 scr.collectionLabel AS collectionLabel, \n"+
-			    "	 scr.resourceURL AS resourceURL, \n"+
-			    "	 scr.resourceDescription AS resourceDescription, \n"+
-			    "	 scr.resourceType AS resourceType, \n"+
+			    "	 {resources: COLLECT(DISTINCT\n" + 
+			    "       {url: resource.url, \n" + 
+			    "        type: resource.type, \n" + 
+			    "	     label: resource.label} \n" + 
+			    "    )} AS resources,"+
 				"    {persons: COLLECT(DISTINCT\n" + 
 				"       {name: creator.name, \n" + 
 				"     	 identifier: creator.uri, \n" +
@@ -935,9 +940,10 @@ public class Neo4jEngine {
 			score.setThumbnail(record.get("thumbnail").asString());					
 			score.getCollection().setId(record.get("collectionIdentifier").asString());
 			score.getCollection().setDescription(record.get("collectionLabel").asString());
-			score.getOnlineResource().setId(record.get("resourceURL").asString());
-			score.getOnlineResource().setDescription(record.get("resourceDescription").asString());
-			score.getOnlineResource().setType(record.get("resourceType").asString());
+			
+//			score.getOnlineResource().setId(record.get("resourceURL").asString());
+//			score.getOnlineResource().setDescription(record.get("resourceDescription").asString());
+//			score.getOnlineResource().setType(record.get("resourceType").asString());
 			
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			
@@ -945,7 +951,9 @@ public class Neo4jEngine {
 				score.getMelodyLocation().addAll(getMelodyLocations(gson.toJson(record.get("locations").asMap()),request.getMelody()));
 			}
 
-			score.getPersons().addAll(getPersons(gson.toJson(record.get("persons").asMap())));			
+			score.getPersons().addAll(getPersons(gson.toJson(record.get("persons").asMap())));
+			score.getResources().addAll(getResources(gson.toJson(record.get("resources").asMap())));
+			
 			Provenance prov = new Provenance();
 			prov.setGeneratedAtTime(record.get("generatedAtTime").asString());
 			prov.setComments(record.get("comments").asString());
@@ -980,6 +988,38 @@ public class Neo4jEngine {
 
 		return result;
 		
+	}
+
+	private static ArrayList<ScoreResource> getResources(String json){
+		
+		JSONParser parser = new JSONParser();
+		ArrayList<ScoreResource> result = new ArrayList<ScoreResource>();
+		
+		try {
+		
+			Object obj = parser.parse(json);
+			JSONObject jsonObject = (JSONObject) obj;
+			JSONArray resourcesJsonArray = (JSONArray) jsonObject.get("resources");
+			
+			if(resourcesJsonArray.size()>0) {
+								
+				for (int i = 0; i < resourcesJsonArray.size(); i++) {				
+					ScoreResource resource = new ScoreResource();
+					JSONObject resourcesJsonObject = (JSONObject) resourcesJsonArray.get(i);
+					if(resourcesJsonObject.get("url")!=null) {
+						resource.setId(resourcesJsonObject.get("url").toString());
+						resource.setType(resourcesJsonObject.get("type").toString());
+						resource.setDescription(resourcesJsonObject.get("label").toString()); 
+						result.add(resource);						
+					}
+				}
+				
+			}
+			
+		} catch (org.json.simple.parser.ParseException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 		
 	private static ArrayList<Person> getPersons(String json){

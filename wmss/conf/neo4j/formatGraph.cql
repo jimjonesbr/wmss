@@ -1,13 +1,11 @@
 MATCH (score:mo__Score)-[:dbo__document]->(document:dbpedia__Document)
-SET score.resourceURL = document.uri,
-    score.resourceDescription = document.rdfs__label,
-    score.resourceType = document.dbo__mime;
+CREATE (score)-[:RESOURCE]->(resource:ScoreResource {url: document.uri, type: document.dbo__mime, label: document.rdfs__label});
 
-OPTIONAL MATCH (score:mo__Score)
-WHERE NOT (score)-[:dbo__document]->() 
-SET score.resourceURL = score.uri,
-    score.resourceDescription = score.uri,
-    score.resourceType = "";
+
+MATCH (score:mo__Score)-[:dbo__document]->(document:dbpedia__Document)
+WHERE NOT (score)-[:dbo__document]->()
+CREATE (score)-[:RESOURCE]->(resource:ScoreResource {url: score.uri, type: score.uri, label: ""});
+
     
 MATCH (note:chord__Note)-[:chord__natural]->(natural) 
 OPTIONAL MATCH (note:chord__Note)-[:chord__modifier]->(modifier)
