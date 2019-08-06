@@ -807,7 +807,7 @@ public class Neo4jEngine {
 			where = where  + "AND scr.collectionUri = '"+wmssRequest.getCollection()+"' \n";
 		}
 		
-		String optionalMatch = "OPTIONAL MATCH (scr:Score)-[:RESOURCE]->(resource:ScoreResource)\n";
+		String optionalMatch = "MATCH (scr:Score)-[:RESOURCE]->(resource:ScoreResource)\n";
 		
 		return match + optionalMatch + where;		
 	}
