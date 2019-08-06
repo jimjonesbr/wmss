@@ -53,6 +53,11 @@ The application relies on datasets encoded using the [MusicOWL ontology](http://
 
 ## [Configuring WMSS](https://github.com/jimjonesbr/wmss/blob/master/README.md#configuring-wmss)
 
+Both neo4j and WMSS depends on Java, so make sure there is a JVM installed in your system. For isntance, to install the  `openjdk-8-jre` on Ubuntu run:
+```
+$ sudo apt-get install openjdk-8-jre
+```
+
 #### [Server Settings](https://github.com/jimjonesbr/wmss/blob/master/README.md#server-settings)
 
 File: `conf/settings.json`
