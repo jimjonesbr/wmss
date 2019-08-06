@@ -38,7 +38,7 @@ public class ImportScores {
 		try { 
 			response = httpClient.execute(post);
 
-			HttpEntity entity = response.getEntity();
+			HttpEntity entity = response.getEntity(); 
 			
 			JSONParser parser = new JSONParser();
 			JSONObject json = (JSONObject) parser.parse(IOUtils.toString(entity.getContent()));
@@ -95,7 +95,7 @@ public class ImportScores {
 				loaded = this.post(rdfFiles[i].getAbsoluteFile(), "turtle",10000);				
 			} else if(FilenameUtils.getExtension(rdfFiles[i].getName()).equals("nt")) {
 				loaded = this.post(rdfFiles[i].getAbsoluteFile(), "n-triples",10000);
-			} else if(FilenameUtils.getExtension(rdfFiles[i].getName()).equals("json")) {
+			} else if(FilenameUtils.getExtension(rdfFiles[i].getName()).equals("jsonld")) {
 				loaded = this.post(rdfFiles[i].getAbsoluteFile(), "json-ld",10000);
 			} else if(FilenameUtils.getExtension(rdfFiles[i].getName()).equals("trig")) {
 				loaded = this.post(rdfFiles[i].getAbsoluteFile(), "trig",10000);

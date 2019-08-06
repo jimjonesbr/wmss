@@ -103,7 +103,7 @@ public class ListScoresRequest {
 		parameters.add(new RequestParameter("ignoreOctave", "false"));
 		parameters.add(new RequestParameter("ignorePitch", "false"));
 		parameters.add(new RequestParameter("ignoreDuration", "false"));
-		parameters.add(new RequestParameter("collection", "https://url.collection.de"));
+		parameters.add(new RequestParameter("collection", "https://wwu.greatcomposers.de"));
 		parameters.add(new RequestParameter("person", "http://dbpedia.org/resource/Edward_Elgar"));
 		parameters.add(new RequestParameter("personRole", "composer"));
 		parameters.add(new RequestParameter("performanceMedium", "strings.cello"));

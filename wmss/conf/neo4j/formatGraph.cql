@@ -1,5 +1,5 @@
 MATCH (score:mo__Score)-[:dbo__document]->(document:dbpedia__Document)
-CREATE (score)-[:RESOURCE]->(resource:ScoreResource {url: document.uri, type: document.dbo__mime, label: document.rdfs__label});
+CREATE (score)-[:RESOURCE]->(resource:ScoreResource {url: document.dbo__url, type: document.dbo__mime, label: document.rdfs__label});
 
 
 MATCH (score:mo__Score)-[:dbo__document]->(document:dbpedia__Document)

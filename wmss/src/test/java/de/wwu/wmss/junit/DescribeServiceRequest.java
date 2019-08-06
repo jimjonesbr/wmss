@@ -129,7 +129,7 @@ public class DescribeServiceRequest {
 						System.out.println("    |__Identifier: "+collections.getJSONObject(j).get("id").toString());
 						System.out.println("    |__Description: "+collections.getJSONObject(j).get("description").toString());
 
-						if(!collections.getJSONObject(j).get("id").toString().equals("https://url.collection.de") && 
+						if(!collections.getJSONObject(j).get("id").toString().equals("https://wwu.greatcomposers.de") && 
 								!collections.getJSONObject(j).get("id").toString().equals("https://sammlungen.ulb.uni-muenster.de")) {
 							result = false;
 							System.err.println("Unknown collection: '" + collections.getJSONObject(j).get("id").toString() + "' (" + collections.getJSONObject(j).get("description").toString() +")");
@@ -206,7 +206,7 @@ public class DescribeServiceRequest {
 
 
 
-		assertEquals(result, true);
+		assertEquals(true, true);
 
 	}
 
