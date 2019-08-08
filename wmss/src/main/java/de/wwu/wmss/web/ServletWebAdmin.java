@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -29,8 +28,8 @@ public class ServletWebAdmin extends HttpServlet {
 				
 		ServletContext context = httpRequest.getServletContext();
 		String filename = httpRequest.getRequestURI().toString().replace("/"+SystemSettings.getService()+"/admin", "web/");
-		File file = new File(filename);
 		
+		File file = new File(filename);				
 		response.setContentType(context.getMimeType(filename));
 		response.setContentLength((int)file.length());
 

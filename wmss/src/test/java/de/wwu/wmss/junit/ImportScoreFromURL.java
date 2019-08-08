@@ -1,19 +1,11 @@
 package de.wwu.wmss.junit;
 
 import static org.junit.Assert.assertEquals;
-
-import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Paths;
-
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -30,12 +22,10 @@ public class ImportScoreFromURL {
 
 		boolean result = false;
 
-		HttpClient httpClient = HttpClientBuilder.create().build();
-
-		
-		HttpPost post = new HttpPost(server+":"+port+"/wmss/import?source="+source+"&format="+format+"&commitSize="+commitSize+"&url="+url);
-				
+		HttpClient httpClient = HttpClientBuilder.create().build();	
+		HttpPost post = new HttpPost(server+":"+port+"/wmss/import?source="+source+"&format="+format+"&commitSize="+commitSize+"&url="+url);				
 		HttpResponse response=null;
+		
 		try { 
 			response = httpClient.execute(post);
 
