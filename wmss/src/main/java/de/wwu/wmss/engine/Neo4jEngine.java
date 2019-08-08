@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import org.apache.commons.io.FileUtils;
@@ -161,6 +162,33 @@ public class Neo4jEngine {
 			logger.error("Internal error: " + e.getMessage());
 			throw new DatabaseImportException(e.getMessage(),ErrorCodes.DATA_IMPORT_CODE, "");
 			
+		}
+		
+		return result;
+	}
+	
+	public static int insertScoreURL(String url, WMSSImportRequest importRequest) throws DatabaseImportException {
+		
+		int result = 0;
+		
+		try {
+			
+			String importRDF = "CALL semantics.importRDF(\""+ url.replace(" ","%20") + "\",\""+importRequest.getFormat()+"\",{shortenUrls: true, commitSize: "+importRequest.getCommitSize()+"});";
+			logger.info(importRDF);
+			
+			StatementResult rs = Neo4jConnector.getInstance().executeQuery(importRDF, Util.getDataSource(importRequest.getSource()));
+
+			while ( rs.hasNext() ){
+				Record record = rs.next();
+				result = record.get("triplesLoaded").asInt();
+				logger.info(url +" - RDF Triples Loaded: " + result);
+			}
+									
+		} catch (ClientException e) {
+			e.printStackTrace();
+			logger.error("Internal error: " + e.getMessage());
+			throw new DatabaseImportException(e.getMessage(),ErrorCodes.DATA_IMPORT_CODE, "");
+
 		}
 		
 		return result;

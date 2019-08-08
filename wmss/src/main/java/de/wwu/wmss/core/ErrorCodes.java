@@ -83,7 +83,10 @@ public class ErrorCodes {
 	public static String DATA_IMPORT_CODE = "E0019";
 	public static String DATA_IMPORT_DESCRIPTION  = "An error occurred while importing an RDF file ";
 	public static String DATA_IMPORT_HINT = "";
-
+	
+	public static String INVALID_CONTENT_TYPE_CODE = "E0020";
+	public static String INVALID_CONTENT_TYPE_DESCRIPTION  = "An error occurred while importing an RDF file ";
+	public static String INVALID_CONTENT_TYPE_HINT = "Check the uploaded file and try again.";
 	
 	
 	public static String WARNING_CONFLICTING_CHORDS_PARAMETER_CODE = "W0001";

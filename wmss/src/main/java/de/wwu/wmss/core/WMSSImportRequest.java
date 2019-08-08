@@ -14,6 +14,7 @@ public class WMSSImportRequest {
 	private String source = "";
 	private Date startDate = new Date();
 	private String hostname = "";
+	private String urlDataset = "";
 	
 	public WMSSImportRequest(HttpServletRequest httpRequest) throws InvalidWMSSRequestException{
 		
@@ -48,6 +49,10 @@ public class WMSSImportRequest {
 			if (parameter.toLowerCase().equals("source")) {							
 				this.source = httpRequest.getParameter(parameter);				
 			}
+			
+			if (parameter.toLowerCase().equals("url")) {							
+				this.urlDataset = httpRequest.getParameter(parameter);				
+			}			
 													
 			this.hostname = httpRequest.getServerName();				
 			
@@ -74,6 +79,10 @@ public class WMSSImportRequest {
 
 	public String getHostname() {
 		return hostname;
+	}
+
+	public String getUrlDataset() {
+		return urlDataset;
 	}
 	
 	

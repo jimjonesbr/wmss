@@ -2,6 +2,7 @@ package de.wwu.wmss.web;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadBase.InvalidContentTypeException;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -21,8 +23,6 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.RiotException;
 import org.apache.log4j.Logger;
-import org.neo4j.driver.v1.exceptions.ClientException;
-
 import de.wwu.wmss.core.ErrorCodes;
 import de.wwu.wmss.core.MusicScore;
 import de.wwu.wmss.core.WMSSImportRecord;
@@ -51,33 +51,46 @@ public class ServletImport extends HttpServlet {
 		try {
 
 			WMSSImportRequest importRequest = new WMSSImportRequest(httpRequest);
-
+			Neo4jEngine.prepareDatabase(importRequest);
+			
 			logger.info("POST Request -> " + httpRequest.getQueryString());
 
 			response.addHeader("Access-Control-Allow-Origin","*");
 			response.addHeader("Access-Control-Allow-Methods","GET,POST");
 			response.addHeader("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");
-
-			List<FileItem> multifiles = sf.parseRequest(httpRequest);			
 			ArrayList<WMSSImportRecord> fileList = new ArrayList<WMSSImportRecord>();
-			Neo4jEngine.prepareDatabase(importRequest);
 			
-			for(FileItem item : multifiles) {
-
-				File file = new File(uploadDiretory.getAbsolutePath()+"/"+item.getName());
-				logger.debug("Uploaded: " + uploadDiretory.getAbsolutePath()+"/"+item.getName() );
-				item.write(file);	
+			if(httpRequest.getParameter("url")!=null) {
 				
-				isFileValid(file,importRequest);
+				isFileValid(new URL(httpRequest.getParameter("url")).toString(),importRequest);
 				
-				logger.debug("Checking file integrity of "+item.getName()+" [" + FileUtils.byteCountToDisplaySize(item.getSize())  + "] ...");
-		
 				WMSSImportRecord record = new WMSSImportRecord();
-				record.setFile(file.getName());
-				record.setSize(FileUtils.byteCountToDisplaySize(item.getSize()));
-				record.setRecords(Neo4jEngine.insertScore(file, importRequest));
-				fileList.add(record);				
-							
+				record.setFile(httpRequest.getParameter("url"));
+				record.setRecords(Neo4jEngine.insertScoreURL(httpRequest.getParameter("url"), importRequest));
+				fileList.add(record);
+				
+			} else {
+			
+				List<FileItem> multifiles = sf.parseRequest(httpRequest);			
+						
+				for(FileItem item : multifiles) {
+	
+					File file = new File(uploadDiretory.getAbsolutePath()+"/"+item.getName());
+					logger.debug("Uploaded: " + uploadDiretory.getAbsolutePath()+"/"+item.getName());
+					item.write(file);	
+					
+					isFileValid(uploadDiretory.getAbsolutePath()+"/"+item.getName(),importRequest);
+					
+					logger.debug("Checking file integrity of "+item.getName()+" [" + FileUtils.byteCountToDisplaySize(item.getSize())  + "] ...");
+			
+					WMSSImportRecord record = new WMSSImportRecord();
+					record.setFile(file.getName());
+					record.setSize(FileUtils.byteCountToDisplaySize(item.getSize()));
+					record.setRecords(Neo4jEngine.insertScore(file, importRequest));
+					fileList.add(record);				
+								
+				}
+				
 			}
 			
 			Neo4jEngine.formatGraph(importRequest);
@@ -113,7 +126,13 @@ public class ServletImport extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.getWriter().println(DocumentBuilder.getServiceExceptionReport(e.getCode(), e.getMessage(), e.getHint()));
 			e.printStackTrace();
-				
+		} catch (InvalidContentTypeException e) {
+			
+			response.setContentType("text/javascript");
+			response.setStatus(HttpServletResponse.SC_OK);
+			response.getWriter().println(DocumentBuilder.getServiceExceptionReport(ErrorCodes.INVALID_CONTENT_TYPE_CODE, ErrorCodes.INVALID_CONTENT_TYPE_DESCRIPTION+ ": " +e.getMessage(),ErrorCodes.INVALID_CONTENT_TYPE_HINT));
+			e.printStackTrace();
+			
 		} catch (FileUploadException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -122,12 +141,17 @@ public class ServletImport extends HttpServlet {
 
 	}
 		
-	private static void isFileValid(File file, WMSSImportRequest importRequest) throws Exception {
+	private static void isFileValid(String file, WMSSImportRequest importRequest) throws Exception {
 
-		logger.info(("Checking file: " + file.getAbsolutePath() + " .. "));
-		
 		Model model = ModelFactory.createDefaultModel() ;		
-		model.read(file.getAbsolutePath()) ;
+		
+		if(file.toLowerCase().contains("http://") || file.toLowerCase().contains("ftp://") || file.toLowerCase().contains("https://")) {
+			file = file.replace(" ", "%20");//Escaping spaces for URL
+		}
+		
+		logger.info(("Checking RDF resource: " + file + " .. "));
+		
+		model.read(file);  
 		
 		String sparql = "PREFIX mo: <http://purl.org/ontology/mo/> \n"
 				+ "PREFIX dc: <http://purl.org/dc/elements/1.1/> \n"
@@ -152,7 +176,7 @@ public class ServletImport extends HttpServlet {
 				logger.info("New Score: " + uriFile + " - " + scores.get(i).getTitle());
 
 				if(uriFile.equals(scores.get(i).getScoreId())) {
-					throw new ScoreExistsException("The provided RDF file '"+ file.getName() +", containing the music score [Identifier: '"+uriFile+"', Title: '"+ titleFile + "'], has a conflicting score in the database: [Identifier: '" + scores.get(i).getScoreId() + "', Title: '" + scores.get(i).getTitle()+"']. Either delete the existing score from the database or provide a different identifier for the new one.");
+					throw new ScoreExistsException("The provided RDF file '"+ file +", containing the music score [Identifier: '"+uriFile+"', Title: '"+ titleFile + "'], has a conflicting score in the database: [Identifier: '" + scores.get(i).getScoreId() + "', Title: '" + scores.get(i).getTitle()+"']. Either delete the existing score from the database or provide a different identifier for the new one.");
 				}
 			}
 
