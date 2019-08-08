@@ -76,5 +76,14 @@ public class DeleteScoreRequest {
 		assertEquals(true, this.delete(score));
 		
 	}
+	
+	@Test
+	public void deleteNachtOhneLicht() {
+		
+		MusicScore score = new MusicScore();
+		score.setScoreId("https://sammlungen.ulb.uni-muenster.de/id/3079355");		
+		assertEquals(true, this.delete(score));
+		
+	}
 
 }

@@ -51,7 +51,7 @@ public class ImportScores {
 			String fileSize = importedFile.get("size").toString();
 			String records = importedFile.get("records").toString();
 			
-			System.out.println("\nFile   : "+fileName+
+			System.out.println("\nFile   : "+fileName+ 
 							   "\nSize   : "+fileSize+
 							   "\nRecords: "+records+
 							   "\nTime   : "+time  +"\n");

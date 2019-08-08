@@ -11,6 +11,7 @@ import org.junit.runners.Suite;
 	ExceptionsTest.class,
 	DescribeServiceRequest.class,
 	GetScore.class,
+	ImportScoreFromURL.class,
 	DeleteScoreRequest.class
 })
 
