@@ -108,7 +108,7 @@ public class DescribeServiceRequest {
 
 						}
 
-						if(personUrl.equals("http://dbpedia.org/resource/Eppinger") && personRole.equals("Composer") ) {
+						if(personUrl.equals("http://wmss.unknown.composer") && personRole.equals("Composer") ) {
 
 							if(!personScores.equals("1")) {
 								result = false;
@@ -153,7 +153,7 @@ public class DescribeServiceRequest {
 
 					JSONArray tonalities =  datasources.getJSONObject(i).getJSONArray("tonalities");
 
-					if(tonalities.length()!=4) {
+					if(tonalities.length()!=7) {
 						result = false;
 					}
 
@@ -164,7 +164,10 @@ public class DescribeServiceRequest {
 						System.out.println("    |__Tonic: "+tonalities.getJSONObject(j).get("tonic").toString());
 
 						if((!tonalities.getJSONObject(j).get("tonic").toString().equals("G") && !tonalities.getJSONObject(j).get("mode").toString().equals("major")) &&
+								(!tonalities.getJSONObject(j).get("tonic").toString().equals("C") && !tonalities.getJSONObject(j).get("mode").toString().equals("major")) &&
 								(!tonalities.getJSONObject(j).get("tonic").toString().equals("F") && !tonalities.getJSONObject(j).get("mode").toString().equals("major")) &&
+								(!tonalities.getJSONObject(j).get("tonic").toString().equals("D") && !tonalities.getJSONObject(j).get("mode").toString().equals("major")) &&
+								(!tonalities.getJSONObject(j).get("tonic").toString().equals("Bb") && !tonalities.getJSONObject(j).get("mode").toString().equals("major")) &&								
 								(!tonalities.getJSONObject(j).get("tonic").toString().equals("E") && !tonalities.getJSONObject(j).get("mode").toString().equals("major")) && 
 								(!tonalities.getJSONObject(j).get("tonic").toString().equals("Eb") && !tonalities.getJSONObject(j).get("mode").toString().equals("major"))) {
 
@@ -206,7 +209,7 @@ public class DescribeServiceRequest {
 
 
 
-		assertEquals(true, true);
+		assertEquals(result, true);
 
 	}
 
