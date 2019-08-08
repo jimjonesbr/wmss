@@ -14,9 +14,14 @@
 	</div>
 	<br>
 	<p><i class="fa fa-link" aria-hidden="true"></i> Get data from URL</p>
-	<div class="input-group w-75 table">
-		
-		<input type="text" placeholder="URL of the RDF file" class="form-control" id="rdf-url" style="margin-left: none;">
+	<div class="input-group w-75 table">		
+		<input type="text" placeholder="URL" class="form-control" id="rdf-url" style="width: 60%">
+		<select class="form-control"id="select-format" style="margin-left: 10px;">
+			<option value="turtle" selected> Turtle</option>
+			<option value="n-triples"> N-Triples</option>
+			<option value="json-ld"> JSON-LD</option>
+			<option value="rdf/xml"> RDF/XML</option>
+		</select>
 	 	<button id="btn-load" class="btn btn-primary btn-space" type="button" style="margin-left: 10px;" onclick="importRDFURL()">
 		    <i class="fas fa-upload"></i> Load URL
 		</button>
@@ -24,7 +29,6 @@
 	<span><i class="fa fa-upload" aria-hidden="true"></i> Upload RDF files</span>
 	<div class="table-responsive">
 		<br/>
-
 		<form class="md-form" id="formImport" class="md-form" method="post" enctype="multipart/form-data">
 				<input id="input_files" type="file" name="file" multiple/>			
 		</form>
@@ -129,7 +133,7 @@
 		
 		$.ajax({  
             	type: "POST",  
-             	url: base_url + '/import?source=' + current_source + '&format=turtle&commitsize=10000&url='+$('#rdf-url').val(),  
+             	url: base_url + '/import?source=' + current_source + '&format='+$('#select-format').children("option:selected").val()+'&commitsize=10000&url='+$('#rdf-url').val(),  
 	            cache: false,
 	            contentType: false,
 	            processData: false,
@@ -144,9 +148,8 @@
 							icon: 'fa fa-times',
 							type: 'red',
 							title: 'Error',
-							content: '<b>Code</b>: '+report["code"]+
-							 		 '<br><b>Message</b>: '+report["message"],
-							columnClass: 'col-md-6'
+							columnClass: 'col-md-6',
+							content: '<b>Code</b>: '+report["code"]+'<br><b>Message</b>: '+report["message"]							
 						});							
 							
 	                } 	                 
@@ -154,20 +157,33 @@
 	                if(type == "ImportReport"){
 
 	                	var files = report["files"][0];
-	                	console.log(files);
 
-	                	$.alert({
-							icon: 'fa fa-check',
-							type: 'green',
-							title: 'RDF File Imported',
-							content: '<b>Triples</b>: '+files["records"]+
-							 		 '<br><b>Message</b>: '+report["timeElapsed"] 
-						});		
+	                	if(files["records"]=="0"){
+
+	                		$.alert({
+								icon: 'fa fa-times',
+								type: 'red',
+								title: 'Error',
+								columnClass: 'col-md-6',
+								content: 'The request returned 0 input triples. Check the RDF format and try again.'
+							});		
+
+	                	} else {
+
+		                	$.alert({
+								icon: 'fa fa-check',
+								type: 'green',
+								title: 'RDF Import',
+								content: '<b>Triples</b>: '+files["records"]+
+								 		 '<br><b>Message</b>: '+report["timeElapsed"] 
+							});		
+
+	                	}
 
 	                }
 
 	             }
-	             
+
         }).done(function (){
         	$("#btn-load").html('<i class="fas fa-upload"></i> Load URL');
         })
