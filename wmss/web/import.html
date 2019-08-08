@@ -12,7 +12,16 @@
 		<span>RDF files are expected to be encoded using the <a href="https://github.com/jimjonesbr/musicowl"> Music2RDF Converter</a> in one of the following formats: <code>rdf/xml</code>, <code>turtle</code>, <code>n-triples</code> and <code>json-ld</code></span>
 		
 	</div>
-
+	<br>
+	<p><i class="fa fa-link" aria-hidden="true"></i> Get data from URL</p>
+	<div class="input-group w-75 table">
+		
+		<input type="text" placeholder="URL of the RDF file" class="form-control" id="rdf-url" style="margin-left: none;">
+	 	<button id="btn-load" class="btn btn-primary btn-space" type="button" style="margin-left: 10px;" onclick="importRDFURL()">
+		    <i class="fas fa-upload"></i> Load URL
+		</button>
+	</div>
+	<span><i class="fa fa-upload" aria-hidden="true"></i> Upload RDF files</span>
 	<div class="table-responsive">
 		<br/>
 
@@ -111,6 +120,59 @@
 		}
 
 	});
+
+
+	function importRDFURL(){
+
+
+		$("#btn-load").html('<i class="fas fa-spinner fa-spin"></i> Importing ..');
+		
+		$.ajax({  
+            	type: "POST",  
+             	url: base_url + '/import?source=' + current_source + '&format=turtle&commitsize=10000&url='+$('#rdf-url').val(),  
+	            cache: false,
+	            contentType: false,
+	            processData: false,
+	            success: function(data) {
+	              
+	                var report = JSON.parse(data);
+	                var type = report["type"];
+
+	                if(type == "ExceptionReport"){
+
+						$.alert({
+							icon: 'fa fa-times',
+							type: 'red',
+							title: 'Error',
+							content: '<b>Code</b>: '+report["code"]+
+							 		 '<br><b>Message</b>: '+report["message"],
+							columnClass: 'col-md-6'
+						});							
+							
+	                } 	                 
+
+	                if(type == "ImportReport"){
+
+	                	var files = report["files"][0];
+	                	console.log(files);
+
+	                	$.alert({
+							icon: 'fa fa-check',
+							type: 'green',
+							title: 'RDF File Imported',
+							content: '<b>Triples</b>: '+files["records"]+
+							 		 '<br><b>Message</b>: '+report["timeElapsed"] 
+						});		
+
+	                }
+
+	             }
+	             
+        }).done(function (){
+        	$("#btn-load").html('<i class="fas fa-upload"></i> Load URL');
+        })
+
+	}
 
 
 	function deleteItem(row_number){
