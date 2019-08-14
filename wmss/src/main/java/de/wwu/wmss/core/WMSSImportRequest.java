@@ -36,6 +36,8 @@ public class WMSSImportRequest {
 					this.format = "Turtle";
 				} else if(httpRequest.getParameter(parameter).toLowerCase().equals("trig")) {
 					this.format = "TriG";
+				} else if(httpRequest.getParameter(parameter).toLowerCase().equals("musicxml")) {
+					this.format = "musicxml";					
 				} else {
 					throw new InvalidWMSSRequestException(ErrorCodes.INVALID_RDFFORMAT_DESCRIPTION+" ["+this.format+"]", ErrorCodes.INVALID_RDFFORMAT_CODE , ErrorCodes.INVALID_RDFFORMAT_HINT);		
 				}
@@ -83,6 +85,10 @@ public class WMSSImportRequest {
 
 	public String getUrlDataset() {
 		return urlDataset;
+	}
+
+	public void setFormat(String format) {
+		this.format = format;
 	}
 	
 	

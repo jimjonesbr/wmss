@@ -9,6 +9,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase.InvalidContentTypeException;
 import org.apache.commons.fileupload.FileUploadException;
@@ -23,6 +26,16 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.RiotException;
 import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import de.wwu.music2rdf.converter.MusicXML2RDF;
+import de.wwu.music2rdf.core.Collection;
+import de.wwu.music2rdf.core.Person;
+import de.wwu.music2rdf.core.ScoreResource;
 import de.wwu.wmss.core.ErrorCodes;
 import de.wwu.wmss.core.MusicScore;
 import de.wwu.wmss.core.WMSSImportRecord;
@@ -71,23 +84,58 @@ public class ServletImport extends HttpServlet {
 				
 			} else {
 			
-				List<FileItem> multifiles = sf.parseRequest(httpRequest);			
-						
+				List<FileItem> multifiles = sf.parseRequest(httpRequest);	
+				
+				MusicXML2RDF converter = new MusicXML2RDF();
+				File musicxml= null;
+				
 				for(FileItem item : multifiles) {
 	
 					File file = new File(uploadDiretory.getAbsolutePath()+"/"+item.getName());
 					logger.debug("Uploaded: " + uploadDiretory.getAbsolutePath()+"/"+item.getName());
-					item.write(file);	
+					item.write(file);
 					
-					isFileValid(uploadDiretory.getAbsolutePath()+"/"+item.getName(),importRequest);
 					
-					logger.debug("Checking file integrity of "+item.getName()+" [" + FileUtils.byteCountToDisplaySize(item.getSize())  + "] ...");
-			
-					WMSSImportRecord record = new WMSSImportRecord();
-					record.setFile(file.getName());
-					record.setSize(FileUtils.byteCountToDisplaySize(item.getSize()));
-					record.setRecords(Neo4jEngine.insertScore(file, importRequest));
-					fileList.add(record);				
+					if(importRequest.getFormat().equals("musicxml")) {
+						
+						if(item.getFieldName().toLowerCase().equals("metadata")) {
+							
+							converter = this.parseMetadata(file);	
+							converter.setInputFile(musicxml);
+							converter.setOutputFile(musicxml.getAbsolutePath()+"-musicxml2rdf");
+							converter.parseMusicXML();			
+							
+							this.isFileValid(musicxml.getAbsolutePath()+"-musicxml2rdf.ttl",importRequest);
+							
+							WMSSImportRecord record = new WMSSImportRecord();
+							record.setFile(file.getName());
+							record.setSize(FileUtils.byteCountToDisplaySize(item.getSize()));
+							importRequest.setFormat("Turtle");
+							record.setRecords(Neo4jEngine.insertScore(new File(musicxml.getAbsolutePath()+"-musicxml2rdf.ttl"), importRequest));
+							fileList.add(record);		
+							
+							
+						} else
+						
+						if(item.getFieldName().toLowerCase().equals("file")) {
+							musicxml = file;
+							System.out.println("getInputFile() > "+converter.getInputFile());
+						}
+												
+					} else {
+						
+						this.isFileValid(uploadDiretory.getAbsolutePath()+"/"+item.getName(),importRequest);
+						
+						logger.debug("Checking file integrity of "+item.getName()+" [" + FileUtils.byteCountToDisplaySize(item.getSize())  + "] ...");
+				
+						WMSSImportRecord record = new WMSSImportRecord();
+						record.setFile(file.getName());
+						record.setSize(FileUtils.byteCountToDisplaySize(item.getSize()));
+						record.setRecords(Neo4jEngine.insertScore(file, importRequest));
+						fileList.add(record);				
+
+						
+					}
 								
 				}
 				
@@ -140,8 +188,130 @@ public class ServletImport extends HttpServlet {
 		} 
 
 	}
+	
+	private MusicXML2RDF parseMetadata(File fXmlFile) {
 		
-	private static void isFileValid(String file, WMSSImportRequest importRequest) throws Exception {
+		MusicXML2RDF music2rdf = new MusicXML2RDF();
+		
+		try {
+						
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			javax.xml.parsers.DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(fXmlFile);
+			doc.getDocumentElement().normalize();
+			
+			NodeList nList = doc.getElementsByTagName("score");
+			
+			for (int j = 0; j < nList.getLength(); j++) {
+				
+				Node nNode = nList.item(j);
+				
+				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+					
+					Element scoreElement = (Element) nNode;
+					
+					System.out.println("Score URI       : " + scoreElement.getElementsByTagName("scoreIdentifier").item(0).getTextContent());
+					System.out.println("Title           : " + scoreElement.getElementsByTagName("title").item(0).getTextContent());
+					System.out.println("Date Issued     : " + scoreElement.getElementsByTagName("issued").item(0).getTextContent());
+					System.out.println("Thumbnail       : " + scoreElement.getElementsByTagName("thumbnail").item(0).getTextContent());
+					
+					music2rdf.setScoreURI(scoreElement.getElementsByTagName("scoreIdentifier").item(0).getTextContent());
+					music2rdf.setDocumentTitle(scoreElement.getElementsByTagName("title").item(0).getTextContent());
+					music2rdf.setDateIssued(scoreElement.getElementsByTagName("issued").item(0).getTextContent());
+					music2rdf.setThumbnail(scoreElement.getElementsByTagName("thumbnail").item(0).getTextContent());
+											
+					Element personsElement = (Element) scoreElement.getElementsByTagName("persons").item(0);
+					
+					NodeList personList = personsElement.getElementsByTagName("person");
+					
+					for (int k = 0; k < personList.getLength(); k++) {
+						
+						Node personNode = personList.item(k);
+						
+						if (personNode.getNodeType() == Node.ELEMENT_NODE) {
+							
+							Element personElement = (Element) personNode;
+							
+							System.out.println("Person URI      : " + personElement.getElementsByTagName("personIdentifier").item(0).getTextContent());
+							System.out.println("Person Name     : " + personElement.getElementsByTagName("personName").item(0).getTextContent());
+							System.out.println("Person Role     : " + personElement.getElementsByTagName("personRole").item(0).getTextContent());
+							
+							String personURI = personElement.getElementsByTagName("personIdentifier").item(0).getTextContent();
+							String personName = personElement.getElementsByTagName("personName").item(0).getTextContent();
+							String personRole = personElement.getElementsByTagName("personRole").item(0).getTextContent();
+							
+							music2rdf.addPerson(new Person(personURI,personName,personRole));
+							
+						}
+					}
+					
+					
+					Element resourcesElement = (Element) scoreElement.getElementsByTagName("resources").item(0);
+					
+					NodeList resourceList = resourcesElement.getElementsByTagName("resource");
+					
+					for (int k = 0; k < resourceList.getLength(); k++) {
+						
+						Node resourceNode = resourceList.item(k);
+						
+						if (resourceNode.getNodeType() == Node.ELEMENT_NODE) {
+							
+							Element personElement = (Element) resourceNode;
+							
+							System.out.println("Resource URI    : " + personElement.getElementsByTagName("resourceURL").item(0).getTextContent());
+							System.out.println("Resource Desc.  : " + personElement.getElementsByTagName("resourceDescription").item(0).getTextContent());
+							System.out.println("Resource Type   : " + personElement.getElementsByTagName("resourceType").item(0).getTextContent());
+							
+							String resourceURI = personElement.getElementsByTagName("resourceURL").item(0).getTextContent();
+							String resourceDescription = personElement.getElementsByTagName("resourceDescription").item(0).getTextContent();
+							String resourceType = personElement.getElementsByTagName("resourceType").item(0).getTextContent();
+							
+							music2rdf.addResource(new ScoreResource(resourceURI, resourceDescription,resourceType));
+						}
+					}
+					
+					
+					Element collectionsElement = (Element) scoreElement.getElementsByTagName("collections").item(0);
+					
+					NodeList collectionList = collectionsElement.getElementsByTagName("collection");
+					
+					for (int k = 0; k < collectionList.getLength(); k++) {
+						
+						Node collectionNode = collectionList.item(k);
+						
+						if (collectionNode.getNodeType() == Node.ELEMENT_NODE) {
+							
+							Element collectionElement = (Element) collectionNode;
+							
+							System.out.println("Collection URI  : " + collectionElement.getElementsByTagName("collectionURL").item(0).getTextContent());
+							System.out.println("Collection Name : " + collectionElement.getElementsByTagName("collectionName").item(0).getTextContent());
+							
+							
+							String collectionURL = collectionElement.getElementsByTagName("collectionURL").item(0).getTextContent();
+							String collectionName = collectionElement.getElementsByTagName("collectionName").item(0).getTextContent();
+																
+							music2rdf.addCollection(new Collection(collectionURL,collectionName));
+						}
+					}
+					
+				}
+								
+			}
+			
+			
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		
+		return music2rdf;
+	}
+	
+	private void isFileValid(String file, WMSSImportRequest importRequest) throws Exception {
 
 		Model model = ModelFactory.createDefaultModel() ;		
 		
