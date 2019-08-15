@@ -46,9 +46,11 @@
       <div class="sidebar-heading" style="text-align: center;">WMSS</div>
       <div class="list-group list-group-flush">        
         <a id="menu-management" href="#" class="list-group-item list-group-item-action bg-light"><i class="fa fa-music" style="font-size:20px" aria-hidden="false"></i>  Scores Management</a>
-        <a id="menu-import" href="#" class="list-group-item list-group-item-action bg-light"><i class="fa fa-upload" style="font-size:20px" aria-hidden="false" ></i>  Import Files</a>        
-        <a id="menu-settings"href="#" class="list-group-item list-group-item-action bg-light"><i class="fa fa-gear" style="font-size:20px" aria-hidden="false"></i>  System Information</a>
+        <a id="menu-import" href="#" class="list-group-item list-group-item-action bg-light"><i class="fa fa-sitemap" style="font-size:20px" aria-hidden="false" ></i>  Import RDF</a>        
+        <a id="menu-import-rdf" href="#" class="list-group-item list-group-item-action bg-light"><i class="fa fa-file-code" style="font-size:20px" aria-hidden="false" ></i>  Import MusicXML</a>        
+        <a id="menu-settings"href="#" class="list-group-item list-group-item-action bg-light"><i class="fa fa-gear" style="font-size:20px" aria-hidden="false"></i>  System Information</a>      
       </div>
+
     </div>
     <!-- /#sidebar-wrapper -->
 
@@ -126,6 +128,10 @@
 
     $("#menu-settings").click(function(e) {
       $("#main-container").load("settings.html");
+    });
+
+    $("#menu-import-rdf").click(function(e) {
+      $("#main-container").load("import-xml.html");
     });
 
 
