@@ -3,7 +3,6 @@ package de.wwu.wmss.core;
 import java.util.Date;
 import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
-
 import de.wwu.wmss.exceptions.InvalidWMSSRequestException;
 import de.wwu.wmss.settings.SystemSettings;
 
@@ -18,9 +17,9 @@ public class WMSSImportRequest {
 	private String metadata = "";
 	
 	public WMSSImportRequest(HttpServletRequest httpRequest) throws InvalidWMSSRequestException{
-		
+						
 		Enumeration<String> listParameters = httpRequest.getParameterNames();
-	
+		
 		while(listParameters.hasMoreElements() ) {
 
 			String parameter = (String) listParameters.nextElement();
@@ -64,10 +63,9 @@ public class WMSSImportRequest {
 			this.hostname = httpRequest.getServerName();				
 			
 		}
-
 		
 	}
-
+	
 	public String getFormat() {
 		return format;
 	}
@@ -99,8 +97,5 @@ public class WMSSImportRequest {
 	public String getMetadata() {
 		return metadata;
 	}
-	
-	
-	
 	
 }

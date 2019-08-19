@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -64,8 +65,8 @@ public class ServletImport extends HttpServlet {
 		}
 		
 		try {
-
-			WMSSImportRequest importRequest = new WMSSImportRequest(httpRequest);
+							
+			WMSSImportRequest importRequest = new WMSSImportRequest(httpRequest);		
 			Neo4jEngine.prepareDatabase(importRequest);
 			
 			logger.info("POST Request -> " + httpRequest.getQueryString());
@@ -96,8 +97,6 @@ public class ServletImport extends HttpServlet {
 					item.write(file);
 					
 					if(importRequest.getFormat().equals("musicxml")) {
-						
-						System.err.println(importRequest.getMetadata());
 						
 						converter = this.parseMetadata(importRequest.getMetadata());	
 						converter.setInputFile(file);
