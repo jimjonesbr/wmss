@@ -107,7 +107,7 @@
 		<dependency>
 		  <groupId>de.uni-muenster</groupId>
 		  <artifactId>music2rdf</artifactId>
-		  <version>1.3.0</version>
+		  <version>1.3.2</version>
 		</dependency>
 
 		<dependency>

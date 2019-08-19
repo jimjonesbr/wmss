@@ -110,59 +110,10 @@
 
 	function importMusicXML(){
 
-		$("#btn-load").html('<i class="fas fa-spinner fa-spin"></i> Importing ..');
-		
-			$.each($('#input_files')[0].files, function(i, file) {
-						
-				$("#btn-load").html('<i class="fas fa-spinner fa-spin"></i> Importing ..');	
-			
-				var data = new FormData();
-	        	data.append('file-'+i, file);	
-
-	        	setTimeout(function () {
-					$.ajax({  
-		            	type: "POST",  
-		             	url: base_url + '/import?source=' + current_source + '&format=musicxml&commitsize=10000',  
-			            data: {
-			            	'metadata': createMetadataXML, 
-			            },			            
-			            cache: false,
-			            contentType: false,
-			            processData: false,
-			            success: function(data) {
-			              
-			            	console.log(data);
-			                var report = JSON.parse(data);
-			                var type = report["type"];
-			                
-			                if(type == "ExceptionReport"){
-			                	$.alert('error');
-			                } 	                 
-
-			                if(type == "ImportReport"){
-
-			                	$.alert('success');
-			                }
-
-			             }
-			        }).done(function (){
-			        	
-				    	
-				    	$("#btn-load").html('<i class="fas fa-upload"></i> Import');
 
 
-			        });
-				}, 2000);
 
-			
-
-		});
-	}
-
-
-	function createMetadataXML(){
-
-		metadata =  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+
+			var metadataStr =  "<?xml version='1.0' encoding='UTF-8'?>"+
 					"<score>"+
 					"	<scoreIdentifier>http://dbpedia.org/resource/Cello_Concerto_(Elgar)</scoreIdentifier>"+
 					"	<title>Cellokonzert e-Moll op. 85</title>"+
@@ -200,9 +151,42 @@
 					"	</resources>"+
 					"</score>";
 
-		return metadata;
-	}
+					metadataStr = metadataStr.replace("\t","");
+					metadataStr = metadataStr.replace("\n","");
 
+
+		$("#btn-load").html('<i class="fas fa-spinner fa-spin"></i> Importing ..');
+		
+
+			var formData = new FormData();
+			formData.append('source', current_source);
+			formData.append('file', $('#input_files')[0].files[0]);
+			formData.append('commitsize', 10000);
+			formData.append('format', 'musicxml');
+			formData.append('metadata', metadataStr);
+
+	        console.log(formData);
+					
+			$("#btn-load").html('<i class="fas fa-spinner fa-spin"></i> Importing ..');	
+        
+			$.post({
+			   url: base_url + '/import',  
+			   type: 'POST',
+			   data: formData,
+			   cache: false,
+			   contentType: false,
+			   processData: false,
+			   success: function(data) {
+			    	console.log(data);
+			    }
+			}, 'json');
+		
+		
+	}
+	
+
+
+	
 	function addPerson(){
 
 		if(document.getElementById($('#persons-uri').val().trim()) == null) {

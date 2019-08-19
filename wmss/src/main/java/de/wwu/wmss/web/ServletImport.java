@@ -2,6 +2,7 @@ package de.wwu.wmss.web;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import de.wwu.music2rdf.converter.MusicXML2RDF;
@@ -84,10 +86,8 @@ public class ServletImport extends HttpServlet {
 				
 			} else {
 			
-				List<FileItem> multifiles = sf.parseRequest(httpRequest);	
-				
+				List<FileItem> multifiles = sf.parseRequest(httpRequest);					
 				MusicXML2RDF converter = new MusicXML2RDF();
-				File musicxml= null;
 				
 				for(FileItem item : multifiles) {
 	
@@ -95,32 +95,23 @@ public class ServletImport extends HttpServlet {
 					logger.debug("Uploaded: " + uploadDiretory.getAbsolutePath()+"/"+item.getName());
 					item.write(file);
 					
-					
 					if(importRequest.getFormat().equals("musicxml")) {
 						
-						if(item.getFieldName().toLowerCase().equals("metadata")) {
-							
-							converter = this.parseMetadata(file);	
-							converter.setInputFile(musicxml);
-							converter.setOutputFile(musicxml.getAbsolutePath()+"-musicxml2rdf");
-							converter.parseMusicXML();			
-							
-							this.isFileValid(musicxml.getAbsolutePath()+"-musicxml2rdf.ttl",importRequest);
-							
-							WMSSImportRecord record = new WMSSImportRecord();
-							record.setFile(file.getName());
-							record.setSize(FileUtils.byteCountToDisplaySize(item.getSize()));
-							importRequest.setFormat("Turtle");
-							record.setRecords(Neo4jEngine.insertScore(new File(musicxml.getAbsolutePath()+"-musicxml2rdf.ttl"), importRequest));
-							fileList.add(record);		
-							
-							
-						} else
+						System.err.println(importRequest.getMetadata());
 						
-						if(item.getFieldName().toLowerCase().equals("file")) {
-							musicxml = file;
-							System.out.println("getInputFile() > "+converter.getInputFile());
-						}
+						converter = this.parseMetadata(importRequest.getMetadata());	
+						converter.setInputFile(file);
+						converter.setOutputFile(uploadDiretory.getAbsolutePath()+"/"+item.getName()+"-musicxml2rdf");
+						converter.parseMusicXML();			
+						
+						this.isFileValid(uploadDiretory.getAbsolutePath()+"/"+item.getName()+"-musicxml2rdf.ttl",importRequest);
+						
+						WMSSImportRecord record = new WMSSImportRecord();
+						record.setFile(file.getName());
+						record.setSize(FileUtils.byteCountToDisplaySize(item.getSize()));
+						importRequest.setFormat("Turtle");
+						record.setRecords(Neo4jEngine.insertScore(new File(file.getAbsolutePath()+"-musicxml2rdf.ttl"), importRequest));
+						fileList.add(record);					
 												
 					} else {
 						
@@ -189,15 +180,16 @@ public class ServletImport extends HttpServlet {
 
 	}
 	
-	private MusicXML2RDF parseMetadata(File fXmlFile) {
+	private MusicXML2RDF parseMetadata(String fXmlFile) {
 		
 		MusicXML2RDF music2rdf = new MusicXML2RDF();
 		
 		try {
 						
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			javax.xml.parsers.DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(fXmlFile);
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			javax.xml.parsers.DocumentBuilder builder = factory.newDocumentBuilder();
+			InputSource is = new InputSource(new StringReader(fXmlFile));
+			Document doc = builder.parse(is);
 			doc.getDocumentElement().normalize();
 			
 			NodeList nList = doc.getElementsByTagName("score");
