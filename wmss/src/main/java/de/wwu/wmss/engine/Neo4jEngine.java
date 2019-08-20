@@ -1063,9 +1063,15 @@ public class Neo4jEngine {
 			for (int i = 0; i < personsJsonArray.size(); i++) {				
 				Person person = new Person();
 				JSONObject personsJsonObject = (JSONObject) personsJsonArray.get(i);
-				person.setName(personsJsonObject.get("name").toString());
-				person.setRole(personsJsonObject.get("role").toString());
-				person.setUrl(personsJsonObject.get("identifier").toString()); 
+				if(personsJsonObject.get("name")!=null) {
+					person.setName(personsJsonObject.get("name").toString());
+				}
+				if(personsJsonObject.get("role")!=null) {
+					person.setRole(personsJsonObject.get("role").toString());	
+				}
+				if(personsJsonObject.get("identifier")!=null) {
+					person.setUrl(personsJsonObject.get("identifier").toString());
+				}				 
 				result.add(person);
 			}
 					

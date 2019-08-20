@@ -5,13 +5,11 @@
 </head>
 <body>
 
-		<form class="md-form" id="formImport" class="md-form" method="post" enctype="multipart/form-data">
-				<input id="input_files" type="file" name="file" multiple/>
-		</form>
+	<form class="md-form" id="formImport" class="md-form" method="post" enctype="multipart/form-data">
+			<input id="input_files" type="file" name="file" multiple/>
+	</form>
+	<br><br>
 
-
-
-<br><br>
 <form>
 	<div class="form-row">
 	<div class="form-group col-md-3">
@@ -19,11 +17,11 @@
 	  <input type="url" class="form-control" id="input-uri" placeholder="URI" value="http://test.url.de">
 	</div>
 	<div class="form-group col-md-8">
-	  <label for="inputTitle">Title</label>
+	  <label for="input-title">Title</label>
 	  <input type="text" class="form-control" id="input-title" placeholder="Title" value="A test score">
 	</div>
 	<div class="form-group col-md-1">
-	  <label for="inputTitle">Date Issued</label>
+	  <label for="input-issued">Date Issued</label>
 	  <input type="text" class="form-control" id="input-issued" placeholder="Issued" value="1919">
 	</div>
 	</div>
@@ -110,139 +108,180 @@
 
 	function importMusicXML(){
 
-		var metadataStr =  
-			    "<?xml version='1.0' encoding='UTF-8'?>"+
-				"<score>"+
-				"	<scoreIdentifier>"+$('#input-uri').val()+"</scoreIdentifier>"+
-				"	<title>"+$('#input-title').val()+"</title>"+
-				"	<thumbnail>"+$('#input-thumbnail').val()+"</thumbnail>"+
-				"	<issued>"+$('#input-issued').val()+"</issued>"+		
-				"	<collections>"+
-				"		<collection>"+
-				"			<collectionName>"+$('#collection-description').val()+"</collectionName>"+
-				"			<collectionURL>"+$('#collection-url').val()+"</collectionURL>"+
-				"		</collection>"+
-				"	</collections>";
+		var errors = '';
 
-		var persons_elements = document.getElementsByClassName("person-row");
-		var persons_string='';
+		if(document.getElementById("input_files").files.length == 0){
+			errors = errors + 'No MusicXML file provided<br>';				
+		}
 
-		for(var i = 0; i < persons_elements.length; i++)
-		{
-		   persons_string = persons_string + '<person>';
-		   persons_string = persons_string + '<personIdentifier>'+persons_elements.item(i).getElementsByTagName("td")[0].innerText+'</personIdentifier>';
-		   persons_string = persons_string + '<personName>'+persons_elements.item(i).getElementsByTagName("td")[1].innerText+'</personName>';
-		   persons_string = persons_string + '<personRole>'+persons_elements.item(i).getElementsByTagName("td")[2].innerText+'</personRole>';
-		   persons_string = persons_string + '</person>';
+		if($('#input-title').val().trim() == ''){
+			errors = errors + 'No title provided<br>';			
+		}
 
-		}	
 
-		persons_string = '<persons>'+persons_string+'</persons>';
+		if($('#input-issued').val()==''){
+			errors = errors + 'No date issued provided<br>';			
+		}
 
-		var resource_elements = document.getElementsByClassName("resource-row");
-		var resource_string = '';
+		if(!isURLValid($('#input-uri').val())){
+			errors = errors + 'Invalid URI<br>';			
+		}
 
-		for(var i = 0; i < resource_elements.length; i++)
-		{
-		   resource_string = resource_string + '<resource>';
-		   resource_string = resource_string + '<resourceURL>'+resource_elements.item(i).getElementsByTagName("td")[1].innerText+'</resourceURL>';
-		   resource_string = resource_string + '<resourceDescription>'+resource_elements.item(i).getElementsByTagName("td")[0].innerText+'</resourceDescription>';
-		   resource_string = resource_string + '<resourceType>'+resource_elements.item(i).getElementsByTagName("td")[2].innerText+'</resourceType>';
-		   resource_string = resource_string + '</resource>';
-		}	
-		resource_string = '<resources>'+resource_string+'</resources>';
+		if(!isURLValid($('#collection-url').val().trim()) || $('#collection-description').val().trim() == ''){
+			errors = errors + 'Invalid Collection<br>';			
+		}
 
-		metadataStr = metadataStr + persons_string + resource_string + '</score>';
+		if(document.getElementsByClassName("person-row").length==0){
+			errors = errors + 'No related person provided. Add at least one person.<br>';				
+		}
 
-		console.log(metadataStr);
-		  
-		$("#btn-load").html('<i class="fas fa-spinner fa-spin"></i> Importing ..');
 		
-		var formData = new FormData();
-		formData.append('file', $('#input_files')[0].files[0]);
+		if(errors == '') {
 
-        console.log(formData);
-				
-		$("#btn-load").html('<i class="fas fa-spinner fa-spin"></i> Importing ..');	
-    
-		$.ajax({
-		   type: 'POST',
-		   url: base_url + '/import?source='+current_source+'&format=musicxml&commitSize=10000&metadata='+encodeURI(metadataStr),
-		   data: formData,
-		   cache: false,
-		   contentType: false,
-		   processData: false,
-		   error: function(a,b,c) {
-		   		console.log(a,b,c);
-		   },
-		   success: function(data) {
-		    	
-		    	console.log(data);
-	    		var report = JSON.parse(data);
-                var type = report["type"];
+			var metadataStr =  
+				    "<?xml version='1.0' encoding='UTF-8'?>"+
+					"<score>"+
+					"	<scoreIdentifier>"+$('#input-uri').val()+"</scoreIdentifier>"+
+					"	<title>"+$('#input-title').val()+"</title>"+
+					"	<thumbnail>"+$('#input-thumbnail').val()+"</thumbnail>"+
+					"	<issued>"+$('#input-issued').val()+"</issued>"+		
+					"	<collections>"+
+					"		<collection>"+
+					"			<collectionName>"+$('#collection-description').val()+"</collectionName>"+
+					"			<collectionURL>"+$('#collection-url').val()+"</collectionURL>"+
+					"		</collection>"+
+					"	</collections>";
 
-                if(type == "ExceptionReport"){
+			var persons_elements = document.getElementsByClassName("person-row");
+			var persons_string='';
 
-					$.alert({
-						icon: 'fa fa-times',
-						type: 'red',
-						title: 'Error',
-						columnClass: 'col-md-6',
-						content: '<b>Code</b>: '+report["code"]+'<br><b>Message</b>: '+report["message"]							
-					});							
-						
-                } 	                 
+			for(var i = 0; i < persons_elements.length; i++)
+			{
+			   persons_string = persons_string + '<person>';
+			   persons_string = persons_string + '<personIdentifier>'+persons_elements.item(i).getElementsByTagName("td")[0].innerText+'</personIdentifier>';
+			   persons_string = persons_string + '<personName>'+persons_elements.item(i).getElementsByTagName("td")[1].innerText+'</personName>';
+			   persons_string = persons_string + '<personRole>'+persons_elements.item(i).getElementsByTagName("td")[2].innerText+'</personRole>';
+			   persons_string = persons_string + '</person>';
 
-                if(type == "ImportReport"){
+			}	
 
-                	var files = report["files"][0];
+			persons_string = '<persons>'+persons_string+'</persons>';
 
-                	if(files["records"]=="0"){
+			var resource_elements = document.getElementsByClassName("resource-row");
+			var resource_string = '';
 
-                		$.alert({
+			for(var i = 0; i < resource_elements.length; i++)
+			{
+			   resource_string = resource_string + '<resource>';
+			   resource_string = resource_string + '<resourceURL>'+resource_elements.item(i).getElementsByTagName("td")[0].innerText+'</resourceURL>';
+			   resource_string = resource_string + '<resourceDescription>'+resource_elements.item(i).getElementsByTagName("td")[1].innerText+'</resourceDescription>';
+			   resource_string = resource_string + '<resourceType>'+resource_elements.item(i).getElementsByTagName("td")[2].innerText+'</resourceType>';
+			   resource_string = resource_string + '</resource>';
+			}	
+			resource_string = '<resources>'+resource_string+'</resources>';
+
+			metadataStr = metadataStr + persons_string + resource_string + '</score>';
+
+			console.log(metadataStr);
+			  
+			$("#btn-load").html('<i class="fas fa-spinner fa-spin"></i> Importing ..');
+			
+			var formData = new FormData();
+			formData.append('file', $('#input_files')[0].files[0]);
+
+	        console.log(formData);
+					
+			$("#btn-load").html('<i class="fas fa-spinner fa-spin"></i> Importing ..');	
+	    
+			$.ajax({
+			   type: 'POST',
+			   url: base_url + '/import?source='+current_source+'&format=musicxml&commitSize=10000&metadata='+encodeURI(metadataStr),
+			   data: formData,
+			   cache: false,
+			   contentType: false,
+			   processData: false,
+			   error: function(a,b,c) {
+			   		console.log(a,b,c);
+			   },
+			   success: function(data) {
+			    	
+			    	console.log(data);
+		    		var report = JSON.parse(data);
+	                var type = report["type"];
+
+	                if(type == "ExceptionReport"){
+
+						$.alert({
 							icon: 'fa fa-times',
 							type: 'red',
 							title: 'Error',
 							columnClass: 'col-md-6',
-							content: 'The request returned 0 input triples. Check the RDF format and try again.'
-						});		
+							content: '<b>Code</b>: '+report["code"]+'<br><b>Message</b>: '+report["message"]							
+						});							
+							
+	                } 	                 
 
-                	} else {
+	                if(type == "ImportReport"){
 
-	                	$.alert({
-							icon: 'fa fa-check',
-							type: 'green',
-							title: 'MusicXML Import',
-							content: 'MusicXML file inserted: \''+$('#input_files')[0].files[0].name +'\'<br>'+
-									 '<br><b>Titles</b>: '+$('#input-title').val()+
-									 '<br><b>Statements</b>: '+files["records"]+									 
-							 		 '<br><b>Time Elapsed</b>: '+report["timeElapsed"] 
-						});		
+	                	var files = report["files"][0];
 
-                	}
+	                	if(files["records"]=="0"){
 
-                }
+	                		$.alert({
+								icon: 'fa fa-times',
+								type: 'red',
+								title: 'Error',
+								columnClass: 'col-md-6',
+								content: 'The request returned 0 input triples. Check the RDF format and try again.'
+							});		
 
-		    }
-		}, 'json').done(function (){
-        	$("#btn-load").html('<i class="fas fa-upload"></i> Load URL');
-        });
+	                	} else {
+
+		                	$.alert({
+								icon: 'fa fa-check',
+								type: 'green',
+								title: 'MusicXML Import',
+								content: 'MusicXML file inserted: \''+$('#input_files')[0].files[0].name +'\'<br>'+
+										 '<br><b>Titles</b>: '+$('#input-title').val()+
+										 '<br><b>Statements</b>: '+files["records"]+									 
+								 		 '<br><b>Time Elapsed</b>: '+report["timeElapsed"] 
+							});		
+
+	                	}
+
+	                }
+
+			    }
+			}, 'json').done(function (){
+	        	$("#btn-load").html('<i class="fas fa-upload"></i> Load URL');
+	        });
 		
+		} else {
+
+    		$.alert({
+				icon: 'fa fa-times',
+				type: 'red',
+				title: 'Error',
+				columnClass: 'col-md-6',
+				content: 'The import request could not be processed.<br><br>'+errors
+			});	
+
+		}
 		
 	}
 
 	
 	function addPerson(){
 
-		if(document.getElementById($('#persons-uri').val().trim()) == null) {
+		if(document.getElementById('person-'+$('#persons-uri').val().trim()) == null) {
 		
 			if(isURLValid($('#persons-uri').val().trim()) && $('#persons-name').val() != ''){
 
-				$('#table-persons tr:last').after('<tr id="'+$('#persons-uri').val()+'" style="text-align: center" class="person-row">'+
+				$('#table-persons tr:last').after('<tr id="person-'+$('#persons-uri').val()+'" style="text-align: center" class="person-row">'+
 												  '	   <td style="width: 35%; padding: 8px;">'+$('#persons-uri').val()+'</td>'+
 												  '	   <td style="width: 35%; padding: 8px;">'+$('#persons-name').val()+'</td>'+
 												  '	   <td style="width: 25%; padding: 8px;">'+$('#person-role').val()+'</td>'+
-												  '	   <td style="padding: 4px;"><button type="submit" class="btn btn-danger" onclick="deleteRow(\''+$('#persons-uri').val().trim()+'\');"><i class="fas fa-remove"></i></button></td>'+										  
+												  '	   <td style="padding: 4px;"><button type="submit" class="btn btn-danger" onclick="deleteRow(\'person-'+$('#persons-uri').val().trim()+'\');"><i class="fas fa-remove"></i></button></td>'+										  
 												  '</tr>');
 
 				$('#persons-name').val('');
@@ -278,15 +317,15 @@
 
 	function addResource(){
 
-		if(document.getElementById($('#resource-url').val().trim()) == null) {
+		if(document.getElementById('resource-'+$('#resource-url').val().trim()) == null) {
 		
 			if(isURLValid($('#resource-url').val().trim()) && $('#resource-description').val() != ''){
 
-				$('#table-resources tr:last').after('<tr id="'+$('#resource-url').val().trim()+'" style="text-align: center" class="resource-row">'+
+				$('#table-resources tr:last').after('<tr id="resource-'+$('#resource-url').val().trim()+'" style="text-align: center" class="resource-row">'+
 												  '	   <td style="width: 35%; padding: 8px;">'+$('#resource-url').val()+'</td>'+
 												  '	   <td style="width: 35%; padding: 8px;">'+$('#resource-description').val()+'</td>'+
 												  '	   <td style="width: 25%; padding: 8px;">'+$('#resource-mime-type').val()+'</td>'+
-												  '	   <td style="padding: 4px;"><button type="submit" class="btn btn-danger" onclick="deleteRow(\''+$('#resource-url').val().trim()+'\');"><i class="fas fa-remove"></i></button></td>'+										  
+												  '	   <td style="padding: 4px;"><button type="submit" class="btn btn-danger" onclick="deleteRow(\'resource-'+$('#resource-url').val().trim()+'\');"><i class="fas fa-remove"></i></button></td>'+										  
 												  '</tr>');
 				$('#resource-url').val('');
 				$('#resource-description').val('');
@@ -389,14 +428,14 @@
 
 
 	function isURLValid(str) {
-  var pattern = new RegExp('^(https?:\\/\\/)?'+ 
-  '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ 
-  '((\\d{1,3}\\.){3}\\d{1,3}))'+ 
-  '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+
-  '(\\?[;&a-z\\d%_.~+=-]*)?'+ 
-  '(\\#[-a-z\\d_]*)?$','i'); 
-  return pattern.test(str);
-}
+		var pattern = new RegExp('^(https?:\\/\\/)?'+ 
+		  '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ 
+		  '((\\d{1,3}\\.){3}\\d{1,3}))'+ 
+		  '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+
+		  '(\\?[;&a-z\\d%_.~+=-]*)?'+ 
+		  '(\\#[-a-z\\d_]*)?$','i'); 
+  		return pattern.test(str.trim());
+	}
 
 </script>
 </body>

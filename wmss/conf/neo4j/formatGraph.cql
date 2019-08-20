@@ -1,11 +1,9 @@
 MATCH (score:mo__Score)-[:dbo__document]->(document:dbpedia__Document)
 CREATE (score)-[:RESOURCE]->(resource:ScoreResource {url: document.dbo__url, type: document.dbo__mime, label: document.rdfs__label});
 
-
 MATCH (score:mo__Score)-[:dbo__document]->(document:dbpedia__Document)
 WHERE NOT (score)-[:dbo__document]->()
 CREATE (score)-[:RESOURCE]->(resource:ScoreResource {url: score.uri, type: score.uri, label: ""});
-
     
 MATCH (note:chord__Note)-[:chord__natural]->(natural) 
 OPTIONAL MATCH (note:chord__Note)-[:chord__modifier]->(modifier)
@@ -365,6 +363,10 @@ DETACH DELETE document;
 
 MATCH (n) WHERE NOT (n)--() 
 DELETE n;
+
+MATCH (scr:mo__Score) 
+WHERE NOT (scr:mo__Score)-[:RESOURCE]->()
+CREATE (scr)-[:RESOURCE]->(resource:ScoreResource {url:scr.uri, type: "text/html", label:"Score Link"});
 
 MATCH (n:mo__Score) SET n :Score REMOVE n:mo__Score;
 MATCH (n:mo__Movement) SET n :Movement REMOVE n:mo__Movement;

@@ -102,7 +102,7 @@ public class ServletImport extends HttpServlet {
 						converter.setInputFile(file);
 						converter.setOutputFile(uploadDiretory.getAbsolutePath()+"/"+item.getName()+"-musicxml2rdf");
 						converter.parseMusicXML();			
-						
+						converter = null;
 						this.isFileValid(uploadDiretory.getAbsolutePath()+"/"+item.getName()+"-musicxml2rdf.ttl",importRequest);
 						
 						WMSSImportRecord record = new WMSSImportRecord();
