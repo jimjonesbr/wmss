@@ -12,7 +12,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Test;
 
-public class ImportScoreFromURL {
+public class ImportRDFScoreFromURL {
 
 	private static String server = StartWMSS.server;
 	private static int port = StartWMSS.port;
