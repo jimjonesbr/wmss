@@ -861,7 +861,7 @@ WMSS has an embedded Music2RDF Converter that enables direct MusicXML import. Ho
       <personName>Jim Jones</personName>
       <personRole>Encoder</personRole>
     </person>
-	</persons>
+  </persons>
   <resources>
     <resource>
       <resourceURL>https://musescore.com/score/152011/download/pdf</resourceURL>
@@ -877,7 +877,7 @@ WMSS has an embedded Music2RDF Converter that enables direct MusicXML import. Ho
 </score>
 ```
 
-For mor information on the metadata file see the [Music2RDF converter](https://github.com/jimjonesbr/musicowl) documentation.
+For more information on the metadata file see the [Music2RDF converter](https://github.com/jimjonesbr/musicowl) documentation.
 
 To send the MusicXML file and its metadata to the server using `curl` just add a second file parameter `-F`:
 
