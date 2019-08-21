@@ -1,7 +1,6 @@
 package de.wwu.wmss.web;
 
 import org.apache.log4j.Logger;
-import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -61,7 +60,7 @@ public class Start implements Runnable {
 		
 		Server server = new Server(SystemSettings.getPort());	
 		server.setHandler(contextAPI);
-			
+				
 		try {
 
 			server.start();

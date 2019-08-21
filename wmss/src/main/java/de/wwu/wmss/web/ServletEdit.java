@@ -43,10 +43,10 @@ import de.wwu.wmss.exceptions.InvalidWMSSRequestException;
 import de.wwu.wmss.exceptions.ScoreExistsException;
 import de.wwu.wmss.settings.SystemSettings;
 
-public class ServletImport extends HttpServlet {
+public class ServletEdit extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	private static Logger logger = Logger.getLogger("ServletImport");
+	private static Logger logger = Logger.getLogger("ServletEdit");
 
 	protected void doPost(HttpServletRequest httpRequest, HttpServletResponse response) throws ServletException, IOException{
 

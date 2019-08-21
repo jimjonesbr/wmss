@@ -5,7 +5,6 @@ import java.io.StringWriter;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -14,15 +13,12 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
-
-import de.wwu.music2rdf.converter.MusicXML2RDF;
 import de.wwu.wmss.exceptions.InvalidWMSSRequestException;
 import de.wwu.wmss.settings.SystemSettings;
 
