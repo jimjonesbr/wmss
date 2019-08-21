@@ -8,7 +8,7 @@ The Web Music Score Service (WMSS) provides an interface allowing requests for m
 
 ![wmss](https://github.com/jimjonesbr/wmss/blob/master/wmss/web/img/wmss.png)
 
-The application relies on datasets encoded using the [MusicOWL ontology](http://linkeddata.uni-muenster.de/ontology/musicscore/mso.owl). For more information on creating MusicOWL datasets see [MusicXML to RDF converter](https://github.com/jimjonesbr/musicowl).  
+The application relies on datasets encoded using the [MusicOWL ontology](http://linkeddata.uni-muenster.de/ontology/musicscore/mso.owl). For more information on creating MusicOWL datasets see [Music2RDF converter](https://github.com/jimjonesbr/musicowl).  
 
 ## Index
 
@@ -50,7 +50,8 @@ The application relies on datasets encoded using the [MusicOWL ontology](http://
 - [Exceptions](#exceptions)
   - [Service Exception Report](#service-exception-report)
 - [Importing Scores](#importing-scores)  
-
+  - [RDF](#rdf)
+  - [MusicXML](#musicxml)
 ## [Configuring WMSS](https://github.com/jimjonesbr/wmss/blob/master/README.md#configuring-wmss)
 
 Both neo4j and WMSS depends on Java, so make sure there is a JVM installed in your system. For isntance, to install the  `openjdk-8-jre` on Ubuntu run:
@@ -792,19 +793,27 @@ http://localhost:8295/wmss/?request=Checklog&logPreview=1000
 
 #### [Importing Scores](https://github.com/jimjonesbr/wmss/blob/master/README.md#importing-scores)
 
-New music scores can be inserted ther via POST requests, which requires the following parameters:
+New music scores can be inserted ther via POST requests. The import listener supports RDF files generated using the [Music2RDF converter](https://github.com/jimjonesbr/musicowl) or as plain MusicXML, and can be found in the `import` service:
 
+```bash
+http://localhost:8295/wmss/import
+```
+
+#### [RDF](https://github.com/jimjonesbr/wmss/blob/master/README.md#rdf)
+
+To insert music scores using RDF files use the following parameters:
 
 `source`&nbsp;  Data source where the file will be inserted. See Service Description Report for more details.
 
 `format`&nbsp; Indicates the file RDF format. Supported formats are: `JSON-LD`, `Turtle`, `RDF/XML` and `N-Triples`
 
-`commitSize`&nbsp; Commits a partial transaction every *n* triples. Useful for large RDF files.
+`commitSize`&nbsp; Commits a partial transaction every *n* triples. Useful for large RDF files (optional).
 
 Example using CURL:
 
-```shell
-curl -F file=@elgar_cello_concerto_op.85.nt "http://localhost:8295/wmss/import?source=neo4j_local&format=n-triples&commitsize=10000"
+```bash
+curl -F file=@elgar_cello_concerto_op.85.nt \
+        "http://localhost:8295/wmss/import?source=neo4j_local&format=n-triples&commitsize=10000"
 ```
 
 If everything goes well, you will recieve a `ImportReport`:
@@ -824,11 +833,61 @@ If everything goes well, you will recieve a `ImportReport`:
 }
 ```
 
-For inserting multiple files just add extra `-F` parameters to your command:
+#### [MusicXML](https://github.com/jimjonesbr/wmss/blob/master/README.md#musicxml)
+
+WMSS has an embedded Music2RDF Converter that enables direct MusicXML import. However, WMSS requests rely on metadata that aren't normally encoded in MusicXML files. This information can be provided using an XML document, which has to be sent to the server in an extra file using the parameter `metadata`. The metadata file has to be encoded like this:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<score>
+  <scoreIdentifier>http://dbpedia.org/resource/Cello_Concerto_(Elgar)</scoreIdentifier>
+  <title>Cellokonzert e-Moll op. 85</title>
+  <thumbnail>https://www.rcm.ac.uk/media/Elgar%20Cello%20Concerto%20maunscript%206x4.jpg</thumbnail>
+  <issued>1919</issued>
+  <collections>
+    <collection>
+      <collectionName>Great Composers</collectionName>
+      <collectionURL>https://wwu.greatcomposers.de</collectionURL>
+    </collection>
+  </collections>
+  <persons>
+    <person>
+      <personIdentifier>http://dbpedia.org/resource/Edward_Elgar</personIdentifier>
+      <personName>Sir Edward William Elgar</personName>
+      <personRole>Composer</personRole>
+    </person>
+    <person>
+      <personIdentifier>http://jimjones.de</personIdentifier>
+      <personName>Jim Jones</personName>
+      <personRole>Encoder</personRole>
+    </person>
+	</persons>
+  <resources>
+    <resource>
+      <resourceURL>https://musescore.com/score/152011/download/pdf</resourceURL>
+      <resourceDescription>Print</resourceDescription>
+      <resourceType>application/pdf</resourceType>
+    </resource>
+    <resource>
+      <resourceURL>https://en.wikipedia.org/wiki/Cello_Concerto_(Elgar)</resourceURL>
+      <resourceDescription>Wikipedia Article</resourceDescription>
+      <resourceType>text/html</resourceType>
+    </resource>
+  </resources>
+</score>
+```
+
+For mor information on the metadata file see the [Music2RDF converter](https://github.com/jimjonesbr/musicowl) documentation.
+
+To send the MusicXML file and its metadata to the server using `curl` just add a second file parameter `-F`:
 
 ```shell
-curl -F file=@file2.nt -F file=@file2.nt "http://localhost:8295/wmss/import?source=neo4j_local&format=n-triples&commitsize=10000"
+curl -F file=@elgar_cello_concerto_op.85.xml \
+     -F metadata=@metadata.xml \
+     "http://localhost:8285/wmss/import?source=neo4j_local&format=musicxml"
 ```
+
+
 #### [DeleteScore](https://github.com/jimjonesbr/wmss/blob/master/README.md#deletescore)
 
 Deletes a specific score based on its identifier:
