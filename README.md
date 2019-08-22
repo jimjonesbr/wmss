@@ -835,7 +835,7 @@ If everything goes well, you will recieve a `ImportReport`:
 
 #### [MusicXML](https://github.com/jimjonesbr/wmss/blob/master/README.md#musicxml)
 
-WMSS has an embedded Music2RDF Converter that enables direct MusicXML import. However, WMSS requests rely on metadata that aren't normally encoded in MusicXML files. This information can be provided using an XML document, which has to be sent to the server in an extra file using the parameter `metadata`. The metadata file has to be encoded like this:
+WMSS has an embedded Music2RDF Converter that enables direct MusicXML import. However, WMSS requests rely on metadata that aren't normally encoded in MusicXML files. This information can be provided using an XML document, which has to be sent to the server in an extra file using the parameter `metadata`. The metadata can be encoded as XML ..
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -877,6 +877,46 @@ WMSS has an embedded Music2RDF Converter that enables direct MusicXML import. Ho
 </score>
 ```
 
+.. or JSON
+
+```json
+{
+   "scoreIdentifier": "http://dbpedia.org/resource/Cello_Concerto_(Elgar)",
+   "title": "Cellokonzert e-Moll op. 85",
+   "thumbnail": "https://www.rcm.ac.uk/media/Elgar%20Cello%20Concerto%20maunscript%206x4.jpg",
+   "issued": "1919",
+   "collections": [       
+      {
+         "collectionName": "Great Composers",
+         "collectionURL": "https://wwu.greatcomposers.de"
+      }
+   ],
+   "persons": [
+      {
+         "personIdentifier": "http://dbpedia.org/resource/Edward_Elgar",
+         "personName": "Sir Edward William Elgar",
+         "personRole": "Composer"
+      },
+      {
+         "personIdentifier": "http://jimjones.de",
+         "personName": "Jim Jones",
+         "personRole": "Encoder"
+      }
+   ],
+   "resources": [
+      {
+         "resourceURL": "https://musescore.com/score/152011/download/pdf",
+         "resourceDescription": "Print",
+         "resourceType": "application/pdf"
+      },
+      {
+         "resourceURL": "https://en.wikipedia.org/wiki/Cello_Concerto_(Elgar)",
+         "resourceDescription": "Wikipedia Article",
+         "resourceType": "text/html"
+      }
+   ]
+}
+```
 For more information on the metadata file see the [Music2RDF converter](https://github.com/jimjonesbr/musicowl) documentation.
 
 To send the MusicXML file and its metadata to the server using `curl` just add a second file parameter `-F`:
