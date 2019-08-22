@@ -41,6 +41,7 @@ public class ImportRDFScores {
 			HttpEntity entity = response.getEntity(); 
 			
 			JSONParser parser = new JSONParser();
+			@SuppressWarnings("deprecation")
 			JSONObject json = (JSONObject) parser.parse(IOUtils.toString(entity.getContent()));
 			
 			String time = json.get("timeElapsed").toString();			

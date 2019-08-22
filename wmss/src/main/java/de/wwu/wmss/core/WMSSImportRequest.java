@@ -1,24 +1,19 @@
 package de.wwu.wmss.core;
 
 import java.io.File;
-import java.io.StringWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
 import de.wwu.wmss.exceptions.InvalidWMSSRequestException;
 import de.wwu.wmss.settings.SystemSettings;
 
@@ -32,6 +27,7 @@ public class WMSSImportRequest {
 	private String urlDataset = "";
 	private String metadata = "";
 	private File scoreFile;
+	private File metadataFile;
 	
 	private static Logger logger = Logger.getLogger("ImportRequestParser");
 	
@@ -56,21 +52,24 @@ public class WMSSImportRequest {
 				
 				if(item.getFieldName().equals("metadata")) {
 										
-					DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-					DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-					Document doc = dBuilder.parse(file);
-					doc.getDocumentElement().normalize();
-
-					TransformerFactory tf = TransformerFactory.newInstance();
-					Transformer transformer = tf.newTransformer();
-					transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-					StringWriter writer = new StringWriter();
-					transformer.transform(new DOMSource(doc), new StreamResult(writer));
-					this.metadata = writer.getBuffer().toString();
+//					DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+//					DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+//					Document doc = dBuilder.parse(file);
+//					doc.getDocumentElement().normalize();
+//
+//					TransformerFactory tf = TransformerFactory.newInstance();
+//					Transformer transformer = tf.newTransformer();
+//					transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+//					StringWriter writer = new StringWriter();
+//					transformer.transform(new DOMSource(doc), new StreamResult(writer));
+//					this.metadata = writer.getBuffer().toString();
 					
-					logger.debug("Metadata File Content:\n\n"+this.metadata);
+					this.metadataFile = file;
+					
+					logger.info("Metadata file:\n\n"+this.getMetadataFile().getAbsolutePath());
 					
 				} 
+				
 				if(item.getFieldName().equals("file")) {			
 					this.scoreFile = file;
 					logger.debug("Uploaded: " + uploadDiretory.getAbsolutePath()+"/"+this.scoreFile.getName());
@@ -122,8 +121,20 @@ public class WMSSImportRequest {
 				this.urlDataset = httpRequest.getParameter(parameter);				
 			}	
 			
-			if (parameter.toLowerCase().equals("metadata")) {							
-				this.metadata = httpRequest.getParameter(parameter);				
+			if (parameter.toLowerCase().equals("metadata")) {
+				
+				File metadataFile = new File(uploadDiretory.getAbsolutePath()+"/"+UUID.randomUUID());
+				
+				try (PrintStream out = new PrintStream(new FileOutputStream(metadataFile.getAbsolutePath()))) {
+
+					out.print(httpRequest.getParameter(parameter));
+					
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+				
+				this.metadataFile = metadataFile;
+				//this.metadata = httpRequest.getParameter(parameter);				
 			}	
 													
 			this.hostname = httpRequest.getServerName();				
@@ -166,6 +177,10 @@ public class WMSSImportRequest {
 
 	public File getScoreFile() {
 		return scoreFile;
+	}
+
+	public File getMetadataFile() {
+		return metadataFile;
 	}
 
 	
