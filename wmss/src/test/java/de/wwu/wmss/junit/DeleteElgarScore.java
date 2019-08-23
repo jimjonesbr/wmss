@@ -1,9 +1,7 @@
 package de.wwu.wmss.junit;
 
 import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,8 +9,7 @@ import org.junit.Test;
 import de.wwu.wmss.core.MusicScore;
 import de.wwu.wmss.settings.Util;
 
-
-public class DeleteScoreRequest {
+public class DeleteElgarScore {
 
 	private static String server = StartWMSS.server;
 	private static int port = StartWMSS.port;
@@ -57,33 +54,6 @@ public class DeleteScoreRequest {
 		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");		
 		assertEquals(true, this.delete(score));
 		
-	}
+	}	
 	
-	@Test
-	public void deleteAchillesGrandOpera() {
-		
-		MusicScore score = new MusicScore();
-		score.setScoreId("https://sammlungen.ulb.uni-muenster.de/id/5731633");		
-		assertEquals(true, this.delete(score));
-		
-	}
-
-	@Test
-	public void deleteSiegesMaersche() {
-		
-		MusicScore score = new MusicScore();
-		score.setScoreId("https://sammlungen.ulb.uni-muenster.de/id/5393365");		
-		assertEquals(true, this.delete(score));
-		
-	}
-	
-	@Test
-	public void deleteNachtOhneLicht() {
-		
-		MusicScore score = new MusicScore();
-		score.setScoreId("https://sammlungen.ulb.uni-muenster.de/id/3079355");		
-		assertEquals(true, this.delete(score));
-		
-	}
-
 }

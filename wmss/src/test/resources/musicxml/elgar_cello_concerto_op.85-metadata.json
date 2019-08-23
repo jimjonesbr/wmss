@@ -1,0 +1,36 @@
+{
+   "scoreIdentifier": "http://dbpedia.org/resource/Cello_Concerto_(Elgar)",
+   "title": "Cellokonzert e-Moll op. 85",
+   "thumbnail": "https://www.rcm.ac.uk/media/Elgar%20Cello%20Concerto%20maunscript%206x4.jpg",
+   "issued": "1919",
+   "collections": [       
+      {
+         "collectionName": "Great Composers",
+         "collectionURL": "https://wwu.greatcomposers.de"
+      }
+   ],
+   "persons": [
+      {
+         "personIdentifier": "http://dbpedia.org/resource/Edward_Elgar",
+         "personName": "Sir Edward William Elgar",
+         "personRole": "Composer"
+      },
+      {
+         "personIdentifier": "http://jimjones.de",
+         "personName": "Jim Jones",
+         "personRole": "Encoder"
+      }
+   ],
+   "resources": [
+      {
+         "resourceURL": "https://musescore.com/score/152011/download/pdf",
+         "resourceDescription": "Print",
+         "resourceType": "application/pdf"
+      },
+      {
+         "resourceURL": "https://en.wikipedia.org/wiki/Cello_Concerto_(Elgar)",
+         "resourceDescription": "Wikipedia Article",
+         "resourceType": "text/html"
+      }
+   ]
+}
