@@ -45,8 +45,8 @@ public class PostgreSQLEngine {
 				while (rs.next()){
 
 					Collection rec = new Collection();
-					rec.setId(Integer.toString(rs.getInt("collection_id")));
-					rec.setDescription(rs.getString("collection_description"));
+					rec.setIdentifier(Integer.toString(rs.getInt("collection_id")));
+					rec.setName(rs.getString("collection_description"));
 
 					result.add(rec);
 				}
