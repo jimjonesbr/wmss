@@ -310,7 +310,7 @@ public class Neo4jEngine {
 			
 			person.setName(record.get("name").asString().trim());
 			person.setRole(record.get("role").asString().trim());
-			person.setUrl(record.get("identifier").asString().trim());
+			person.setIdentifier(record.get("identifier").asString().trim());
 			person.setTotalRelatedScores(record.get("total").asInt());
 			result.add(person);
 		}
@@ -379,8 +379,8 @@ public class Neo4jEngine {
 			Record record = rs.next();
 			Collection collection = new Collection();
 			
-			collection.setId(record.get("identifier").asString().trim());
-			collection.setDescription(record.get("label").asString().trim());
+			collection.setIdentifier(record.get("identifier").asString().trim());
+			collection.setName(record.get("label").asString().trim());
 			
 			result.add(collection);
 		}
@@ -528,6 +528,7 @@ public class Neo4jEngine {
 		String where = "\nWHERE TRUE \n";														
 		String match = "MATCH (scr:Score)-[:MOVEMENT]->(movements:Movement)\n" +
 					   "MATCH (scr:Score)-[rel_doc:DOCUMENT ]->(document:Document)\n";
+		match = match + "MATCH (scr:Score)-[rel_role:CREATOR]->(creator:Person)\n";
 		
 		if(!wmssRequest.getMelody().equals("")) {
 
@@ -646,11 +647,11 @@ public class Neo4jEngine {
 				}
 
 				if(noteSequence.get(i).getDotted()!=0) {
-					if(noteSequence.get(i).getDotted()==1) {					
+					if(noteSequence.get(i).getDotted()==1) {
 						match = match + "MATCH (ns"+i+":Dot) \n";
-					} else if(noteSequence.get(i).getDotted()==2) {					
+					} else if(noteSequence.get(i).getDotted()==2) {
 						match = match + "MATCH (ns"+i+":DoubleDot) \n";
-					} else if(noteSequence.get(i).getDotted()==3) {					
+					} else if(noteSequence.get(i).getDotted()==3) {
 						match = match + "MATCH (ns"+i+":TripleDot) \n";
 					}
 				}
@@ -751,9 +752,36 @@ public class Neo4jEngine {
 		
 		/**
 		 * Where clause
-		 */
+		 */	
+		
+		for (int j = 0; j < wmssRequest.getPersons().size(); j++) {
+						
+			if(!wmssRequest.getPersons().get(j).getIdentifier().equals("")) {
+				
+				where = where + "AND creator"+j+".uri='"+wmssRequest.getPersons().get(j).getIdentifier()+"'\n";
+								
+			}
+			
+			if(!wmssRequest.getPersons().get(j).getName().equals("")) {
+				
+				where = where + "AND creator"+j+".name =~ '(?i).*"+wmssRequest.getPersons().get(j).getName()+".*'\n";
+								
+			} 
+
+			if(!wmssRequest.getPersons().get(j).getRole().equals("")) {
+				
+				match = match + "MATCH (scr:Score)-[rel_query_person"+j+":CREATOR {role:'"+wmssRequest.getPersons().get(j).getRole()+"' }]->(creator"+j+":Person)\n";
+								
+			} else {
+				
+				match = match + "MATCH (scr:Score)-[:CREATOR]->(creator"+j+":Person)\n";
+				
+			}
+
+		}
 		
 		
+		/*
 		if(!wmssRequest.getPerson().equals("")) {
 			
 			where = where + "AND creator2.uri=\""+wmssRequest.getPerson()+"\"\n";
@@ -769,11 +797,37 @@ public class Neo4jEngine {
 			
 			match = match + "MATCH (scr:Score)-[rel_role:CREATOR]->(creator:Person)\n";
 		}
-				
+		*/
+		
+
+		for (int i = 0; i < wmssRequest.getFormats().size(); i++) {
+			match = match + "MATCH (scr:Score)-[doc"+i+":DOCUMENT {type: '"+wmssRequest.getFormats().get(i)+"'}]->(:Document)\n";
+		}
+		
+		/**
 		if(!wmssRequest.getFormat().equals("")) {
 			
 			where = where + "AND rel_doc.type=\""+wmssRequest.getFormat()+"\"\n";
 		} 
+		*/
+		
+		for (int i = 0; i < wmssRequest.getKeys().size(); i++) {
+			
+			if(wmssRequest.getKeys().get(i).getFormat().toLowerCase().equals("pea") || wmssRequest.getKeys().get(i).getFormat().equals("")) {
+				//match = match + "MATCH (movements:Movement)-[:PART]->(:Part)-[:MEASURE]->(:"+wmssRequest.getKeys().get(i).getKey()+")\n";	
+				match = match + "MATCH (scr:Score)-[:KEY]->(query_key"+i+":"+wmssRequest.getKeys().get(i).getKey()+")\n";
+			}
+						
+		}
+		
+		for (int i = 0; i < wmssRequest.getClefs().size(); i++) {
+			
+			if(wmssRequest.getClefs().get(i).getFormat().toLowerCase().equals("pea") || wmssRequest.getClefs().get(i).getFormat().equals("")) {
+				//match = match + "MATCH (movements:Movement)-[rel_query_clef_part"+i+":PART]->(part_clef_query"+i+":Part)-[:MEASURE]->(measure_clef_query"+i+":Measure)-[:NOTESET]->(clef_query"+i+":Clef_"+String.valueOf(wmssRequest.getClefs().get(i).getClef().charAt(0))+String.valueOf(wmssRequest.getClefs().get(i).getClef().charAt(2))+")\n";	
+				match = match + "MATCH (scr:Score)-[:CLEF]->(clef_query"+i+":Clef_"+String.valueOf(wmssRequest.getClefs().get(i).getClef().charAt(0))+String.valueOf(wmssRequest.getClefs().get(i).getClef().charAt(2))+")\n";
+			}
+						
+		}
 		
 		if(!wmssRequest.getTempoBeatUnit().equals("")) {
 
@@ -830,9 +884,26 @@ public class Neo4jEngine {
 			where = where + "AND part.ensemble=\""+wmssRequest.isEnsemble()+"\"";
 		}
 
+		
+		for (int i = 0; i < wmssRequest.getCollections().size(); i++) {
+			
+			match = match + "MATCH (scr:Score)-[:COLLECTION]->(collection"+i+":Collection)\n";
+			
+			if(wmssRequest.getCollections().get(i).getIdentifier()!="") {
+				where = where + "AND collection"+i+".uri = '"+wmssRequest.getCollections().get(i).getIdentifier()+"'\n";
+			}
+
+			if(wmssRequest.getCollections().get(i).getName()!="") {
+				where = where + "AND collection"+i+".label =~ '(?i).*"+wmssRequest.getCollections().get(i).getName()+".*'\n";
+			}
+
+		}
+		
+		/*
 		if(!wmssRequest.getCollection().equals("")) {
 			where = where  + "AND scr.collectionUri = '"+wmssRequest.getCollection()+"' \n";
 		}
+		*/
 		
 		String optionalMatch = "MATCH (scr:Score)-[:RESOURCE]->(resource:ScoreResource)\n";
 		
@@ -965,8 +1036,8 @@ public class Neo4jEngine {
 			score.setDateIssued(record.get("issued").asString());
 			score.setScoreId(record.get("identifier").asString());
 			score.setThumbnail(record.get("thumbnail").asString());					
-			score.getCollection().setId(record.get("collectionIdentifier").asString());
-			score.getCollection().setDescription(record.get("collectionLabel").asString());
+			score.getCollection().setIdentifier(record.get("collectionIdentifier").asString());
+			score.getCollection().setName(record.get("collectionLabel").asString());
 			
 //			score.getOnlineResource().setId(record.get("resourceURL").asString());
 //			score.getOnlineResource().setDescription(record.get("resourceDescription").asString());
@@ -1070,7 +1141,7 @@ public class Neo4jEngine {
 					person.setRole(personsJsonObject.get("role").toString());	
 				}
 				if(personsJsonObject.get("identifier")!=null) {
-					person.setUrl(personsJsonObject.get("identifier").toString());
+					person.setIdentifier(personsJsonObject.get("identifier").toString());
 				}				 
 				result.add(person);
 			}

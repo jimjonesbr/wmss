@@ -2,24 +2,24 @@ package de.wwu.wmss.core;
 
 public class Collection {
 
-	private String id;
-	private String description;
+	private String identifier;
+	private String name;
 	
 	public Collection() {
 		super();
 
 	}
-	public String getId() {
-		return id;
+	public String getIdentifier() {
+		return identifier;
 	}
-	public void setId(String id) {
-		this.id = id;
+	public void setIdentifier(String id) {
+		this.identifier = id;
 	}
-	public String getDescription() {
-		return description;
+	public String getName() {
+		return name;
 	}
-	public void setDescription(String description) {
-		this.description = description;
+	public void setName(String description) {
+		this.name = description;
 	}
 	
 	

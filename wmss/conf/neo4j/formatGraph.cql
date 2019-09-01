@@ -109,6 +109,14 @@ WITH measure, key
 CALL apoc.create.addLabels(id(measure),[key]) YIELD node
 RETURN COUNT(measure) AS MeasureKey;
 
+MATCH (scr:mo__Score)-[:mo__movement]->(movements:mo__Movement)
+MATCH (movements)-[:mso__hasScorePart]->(:mso__ScorePart)-[:mso__hasMeasure]->(measure)
+WITH DISTINCT measure.key_code AS key_code, scr AS score 
+CREATE (score)-[:KEY]->(key:Key)
+WITH key,key_code,score
+CALL apoc.create.addLabels(id(key),[key_code]) YIELD node
+RETURN score;
+
 MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
 MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
 WITH measure, tonicNode,modeNode, 

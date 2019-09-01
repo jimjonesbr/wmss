@@ -46,6 +46,7 @@ public class ServletImport extends HttpServlet {
 			WMSSImportRequest importRequest = new WMSSImportRequest(httpRequest);		
 			Neo4jEngine.prepareDatabase(importRequest);
 
+			System.out.println("POST httpRequest.getContentType() > "+httpRequest.getContentType());
 			logger.info("POST Request -> " + httpRequest.getQueryString());
 
 			response.addHeader("Access-Control-Allow-Origin","*");

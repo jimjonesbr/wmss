@@ -1,9 +1,26 @@
 package de.wwu.wmss.core;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
-
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import de.wwu.wmss.engine.DocumentBuilder;
 import de.wwu.wmss.exceptions.InvalidClefException;
 import de.wwu.wmss.exceptions.InvalidKeyException;
 import de.wwu.wmss.exceptions.InvalidMelodyException;
@@ -18,16 +35,15 @@ public class WMSSRequest {
 	private String requestMode = SystemSettings.getDefaultRequestMode();
 	private String format = "";
 	private String collection = "";
-	private String person = "";
+	private String personIdentifier = "";
+	private String personName = "";
 	private String personRole = "";		
 	private String performanceMedium = "";
 	private String performanceMediumType = "";
 	private boolean solo = false;
 	private String title = "";
-	
 	private String tonalityTonic = "";
 	private String tonalityMode = "";
-
 	private String tempoBeatUnit = "";
 	private String tempoBeatsPerMinute = "";
 	private String timeSignature = "";
@@ -42,7 +58,7 @@ public class WMSSRequest {
 	private String clef = "";
 	private boolean ignoreChords = true;
 	private boolean ensemble = false;
-	private boolean ignoreOctaves = true;
+	private boolean ignoreOctave = true;
 	private boolean ignorePitch = false;
 	private boolean ignoreDuration  = false;
 	private int pageSize = 0;
@@ -52,8 +68,87 @@ public class WMSSRequest {
 	private String hostname = "";
 	private ArrayList<Note> noteSequence;
 	private ArrayList<String> dateIssuedArray = new ArrayList<String>(); 
-		
+	private File queryFile;
+	
+	private String responseContentType = "";
+	private int responseStatus = 0;
+	private String responseContent = "";
+	private String responseHeaderName = "";
+	private String responseHeaderValue= "";
+	
+	private static Logger logger = Logger.getLogger("QueryRequestParser");
+	private ArrayList<Person> persons = new ArrayList<Person>();
+	private ArrayList<PerformanceMedium> mediums = new ArrayList<PerformanceMedium>();
+	private ArrayList<Collection> collections = new ArrayList<Collection>();
+	private ArrayList<Key> keys = new ArrayList<Key>();
+	private ArrayList<String> formats = new ArrayList<String>();
+	private ArrayList<Time> times = new ArrayList<Time>();
+	private ArrayList<Clef> clefs = new ArrayList<Clef>();
+	
 	public WMSSRequest(HttpServletRequest httpRequest)  throws InvalidWMSSRequestException {
+		
+		logger.info("---------------------------------------------------------------");
+		logger.info("Request Method     : "+httpRequest.getMethod());
+		logger.info("Request String     : " + httpRequest.getQueryString());
+		logger.info("Request URL        : " + httpRequest.getRequestURL());
+		logger.info("Request ContentType: "+httpRequest.getContentType());
+		logger.info("---------------------------------------------------------------");
+		
+		if(httpRequest.getContentType()!=null) {
+
+			if(httpRequest.getContentType().toLowerCase().contains("multipart/form-data")) {
+			
+				File uploadDiretory = new File(SystemSettings.getImportdDirectory());
+
+				if (!uploadDiretory.exists()) {
+					uploadDiretory.mkdirs();			
+				}
+
+				try {
+
+					ServletFileUpload sf = new ServletFileUpload(new DiskFileItemFactory());				
+					List<FileItem> multifiles = sf.parseRequest(httpRequest);
+					String uuid = UUID.randomUUID().toString();
+
+					for(FileItem item : multifiles) {
+
+						if(item.getFieldName().equals("query")) {
+
+							File file = new File(uploadDiretory.getAbsolutePath()+"/"+item.getName()+uuid);
+							logger.debug("Query file: " + uploadDiretory.getAbsolutePath()+"/"+item.getName()+uuid);
+							item.write(file);													
+							this.parseQueryFile(FileUtils.readFileToString(file, StandardCharsets.UTF_8));
+
+						}
+					}
+					
+					
+				} catch (FileUploadException e) {
+					e.printStackTrace();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			
+			}
+			
+			
+			if(httpRequest.getContentType().toLowerCase().contains("application/json")) {
+				
+				try {
+					
+					logger.info("Parsing query string (application/json)");
+					this.parseQueryFile(IOUtils.toString(httpRequest.getReader()));
+					
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			
+
+
+		}
+		
 		
 		Enumeration<String> listParameters = httpRequest.getParameterNames();
 		
@@ -79,7 +174,11 @@ public class WMSSRequest {
 				
 			} else if (parameter.toLowerCase().equals("person")) {
 				
-				this.person = httpRequest.getParameter(parameter);
+				this.personIdentifier = httpRequest.getParameter(parameter);
+
+			} else if (parameter.toLowerCase().equals("personName")) {
+				
+				this.personName = httpRequest.getParameter(parameter);				
 				
 			} else if (parameter.toLowerCase().equals("personrole")) {
 				
@@ -167,7 +266,7 @@ public class WMSSRequest {
 				
 			} else if (parameter.toLowerCase().equals("ignoreoctave")) {
 				
-				this.ignoreOctaves = Boolean.parseBoolean(httpRequest.getParameter(parameter));
+				this.ignoreOctave = Boolean.parseBoolean(httpRequest.getParameter(parameter));
 				
 			} else if (parameter.toLowerCase().equals("ignorepitch")) {
 				
@@ -224,7 +323,6 @@ public class WMSSRequest {
 					throw new InvalidWMSSRequestException(e.getMessage(),e.getCode(), e.getHint());
 				}
 				
-				
 			}  
  
 		}
@@ -238,6 +336,29 @@ public class WMSSRequest {
 		}
 		
 		this.hostname = httpRequest.getServerName();
+		
+		
+		
+		
+		if(this.personIdentifier != "" || this.personName != "" || this.personRole != "") {
+			Person person = new Person();
+			person.setName(this.personName);
+			person.setIdentifier(personIdentifier);
+			person.setRole(this.personRole);
+			this.persons.add(person);
+		}
+		
+		if(this.collection !="") {
+			Collection collection = new Collection();
+			collection.setIdentifier(this.collection);
+		}
+		
+		
+		if(this.format!="") {
+			this.getFormats().add(this.format);
+		}
+		
+			
 		
 		/**
 		 * Request validation
@@ -302,7 +423,253 @@ public class WMSSRequest {
 			}
 			
 		}
+		
+		
+		/**
+		 * Sets response attributes based on the parsed and validated requests
+		 */
+		
+		
+		if (this.getRequestType().equals("checklog")) {
 
+			this.responseContentType = "text/plain";
+			this.responseStatus = HttpServletResponse.SC_OK;
+			this.responseContent = Util.loadFileTail(new File("log/wmss.log"), this.getLogPreview());
+
+		} else if (this.getRequestType().equals("describeservice")) {
+
+			this.responseContentType = "text/javascript";
+			this.responseStatus= HttpServletResponse.SC_OK;
+			this.responseContent= DocumentBuilder.getServiceDescription();
+
+		} else if (this.getRequestType().equals("getscore")) { 
+
+			MusicScore score = DocumentBuilder.getScore(this);
+			
+			this.responseHeaderName = "Content-disposition";
+			this.responseHeaderValue = "attachment; filename="+score.getTitle().replaceAll("[^a-zA-Z0-9\\.\\-]", "_")+".xml";
+			this.responseContentType = "text/xml";
+			this.responseStatus = HttpServletResponse.SC_OK;
+			this.responseContent = score.getDocument();
+
+		} else if (this.getRequestType().equals("listscores")) {
+
+			this.responseContentType ="text/javascript";
+			this.responseStatus= HttpServletResponse.SC_OK;
+			this.responseContent= DocumentBuilder.getScoreList(this);
+
+		} else if (this.getRequestType().equals("deletescore")) {
+
+			this.responseContentType = "text/javascript";
+			this.responseStatus = HttpServletResponse.SC_OK;
+			this.responseContent = DocumentBuilder.deleteScore(this); 
+
+		} 
+
+	}
+	
+	private void parseQueryFile(String jsonRequest) {
+		
+		try {
+
+			JSONParser parser = new JSONParser();	
+//			String str = FileUtils.readFileToString(file, StandardCharsets.UTF_8);						
+			Object obj = parser.parse(jsonRequest);
+			JSONObject queryObject = (JSONObject) obj;	
+
+			this.requestType = queryObject.get("request").toString();
+			
+			if(queryObject.get("scoreIdentifier")!=null) {
+				this.identifier = queryObject.get("scoreIdentifier").toString();
+				logger.info("Score Identifier: " + queryObject.get("scoreIdentifier").toString());
+			}
+			
+			if(queryObject.get("title")!=null) {
+				this.title = queryObject.get("title").toString();
+				logger.info("Title           : " + queryObject.get("title").toString());
+			}
+			
+			if(queryObject.get("issued")!=null) {
+				this.dateIssued = queryObject.get("issued").toString();
+				logger.info("Date Issued     : " + queryObject.get("issued").toString());
+			}
+			
+			if(queryObject.get("ignoreOctave")!=null) {
+				this.ignoreOctave = Boolean.parseBoolean(queryObject.get("ignoreOctave").toString());
+				logger.info("Ignore Octave     : " + queryObject.get("ignoreOctave").toString());
+			}
+			
+			if(queryObject.get("ignoreDuration")!=null) {
+				this.ignoreDuration = Boolean.parseBoolean(queryObject.get("ignoreDuration").toString());
+				logger.info("Ignore Duration     : " + queryObject.get("ignoreDuration").toString());
+			}
+			
+			if(queryObject.get("ignorePitch")!=null) {
+				this.ignorePitch = Boolean.parseBoolean(queryObject.get("ignorePitch").toString());
+				logger.info("Ignore Pitch     : " + queryObject.get("ignorePitch").toString());
+			}
+			
+			if(queryObject.get("ignoreChords")!=null) {
+				this.ignoreChords = Boolean.parseBoolean(queryObject.get("ignoreChords").toString());
+				logger.info("Ignore Chords     : " + queryObject.get("ignoreChords").toString());
+			}
+			
+			if(queryObject.get("collections")!=null) {
+				
+				JSONArray collectionObjects = (JSONArray) queryObject.get("collections");
+				
+				for (int j = 0; j < collectionObjects.size(); j++) {
+					
+					JSONObject collectionObject = (JSONObject) collectionObjects.get(j);
+					Collection collection = new Collection();
+					
+					if(collectionObject.get("collectionIdentifier")!=null) {
+						collection.setIdentifier(collectionObject.get("collectionIdentifier").toString());
+						logger.info("Collection Identifier  : " + collectionObject.get("collectionIdentifier").toString());	
+					}
+					
+					if(collectionObject.get("collectionName")!=null) {
+						collection.setName(collectionObject.get("collectionName").toString());
+						logger.info("Collection Name  : " + collectionObject.get("collectionName").toString());	
+					}
+
+					this.getCollections().add(collection);
+				}
+				
+			}
+			
+			
+			if(queryObject.get("formats")!=null) {
+				
+				JSONArray formatObjects = (JSONArray) queryObject.get("formats");
+				
+				for (int i = 0; i < formatObjects.size(); i++) {
+				
+					JSONObject formatObject = (JSONObject) formatObjects.get(i);
+					
+					logger.info("Format       : " + formatObject.get("format").toString());
+					this.getFormats().add(formatObject.get("format").toString());
+					
+				}
+				
+			}
+			
+			JSONArray keyObjects = (JSONArray) queryObject.get("keys");
+			
+			for (int j = 0; j < keyObjects.size(); j++) {
+				
+				JSONObject keyObject = (JSONObject) keyObjects.get(j);
+				Key key = new Key();
+
+				if(keyObject.get("key")!=null) {
+					logger.info("Key  : " + keyObject.get("key").toString());
+					key.setKey(keyObject.get("key").toString());
+				}
+				
+				if(keyObject.get("format")!=null) {
+					logger.info("Key Format : " + keyObject.get("format").toString());
+					key.setFormat(keyObject.get("format").toString());
+				}
+
+				this.getKeys().add(key);
+
+			}
+			
+			JSONArray timeObjects = (JSONArray) queryObject.get("times");
+			
+			for (int j = 0; j < timeObjects.size(); j++) {
+				
+				JSONObject timeObject = (JSONObject) timeObjects.get(j);
+				Time time = new Time();
+
+				if(timeObject.get("key")!=null) {
+					logger.info("Time  : " + timeObject.get("time").toString());
+					time.setTime(timeObject.get("time").toString());
+				}
+				
+				if(timeObject.get("format")!=null) {
+					logger.info("Time Format : " + timeObject.get("format").toString());
+					time.setFormat(timeObject.get("format").toString());
+				}
+
+				this.getTimes().add(time);
+
+			}
+			
+			JSONArray clefObjects = (JSONArray) queryObject.get("clefs");
+			
+			for (int j = 0; j < clefObjects.size(); j++) {
+				
+				JSONObject clefObject = (JSONObject) clefObjects.get(j);
+				Clef clef = new Clef();
+
+				if(clefObject.get("clef")!=null) {
+					logger.info("Clef  : " + clefObject.get("clef").toString());
+					clef.setClef(clefObject.get("clef").toString());
+				}
+				
+				if(clefObject.get("format")!=null) {
+					logger.info("Clef Format : " + clefObject.get("format").toString());
+					clef.setFormat(clefObject.get("format").toString());
+				}
+
+				this.getClefs().add(clef);
+
+			}
+			
+			JSONArray mediumObjects = (JSONArray) queryObject.get("mediums");
+			
+			for (int j = 0; j < mediumObjects.size(); j++) {
+				
+				JSONObject mediumObject = (JSONObject) mediumObjects.get(j);
+				PerformanceMedium medium = new PerformanceMedium();
+				
+				if(mediumObject.get("mediumType")!=null) {
+					logger.info("Medium Type  : " + mediumObject.get("mediumType").toString());
+					medium.setMediumTypeId(mediumObject.get("mediumType").toString());
+				}
+
+				if(mediumObject.get("mediumCode")!=null) {
+					logger.info("Medium Code  : " + mediumObject.get("mediumCode").toString());
+					medium.setMediumCode(mediumObject.get("mediumCode").toString());
+				}
+
+				this.mediums.add(medium);
+				
+			}
+			
+			
+			JSONArray personObjects = (JSONArray) queryObject.get("persons");
+
+			for (int j = 0; j < personObjects.size(); j++) {
+
+				JSONObject personObject = (JSONObject) personObjects.get(j);
+				Person person = new Person();
+				
+				if(personObject.get("personIdentifier")!=null) {
+					logger.info("Person Identifier  : " + personObject.get("personIdentifier").toString());
+					person.setIdentifier(personObject.get("personIdentifier").toString());
+				}
+
+				if(personObject.get("personName")!=null) {
+					logger.info("Person Name   : " + personObject.get("personName").toString());
+					person.setName(personObject.get("personName").toString());
+				}
+				
+				if(personObject.get("personRole")!=null) {
+					logger.info("Person Role  : " + personObject.get("personRole").toString());
+					person.setRole(personObject.get("personRole").toString());
+				}
+
+				this.getPersons().add(person);
+
+			}
+
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	 
+		
 	}
 		
 	private boolean isDatasourceValid(WMSSRequest wmssRequest) {
@@ -326,6 +693,9 @@ public class WMSSRequest {
 			}
 		} 
 		
+		
+		
+		
 		return result;
 	}
 
@@ -342,7 +712,7 @@ public class WMSSRequest {
 	}
 
 	public String getPerson() {
-		return person;
+		return personIdentifier;
 	}
 
 	public String getPersonRole() {
@@ -415,7 +785,7 @@ public class WMSSRequest {
 	}
 
 	public boolean isIgnoreOctaves() {
-		return ignoreOctaves;
+		return ignoreOctave;
 	}
 
 	public boolean isIgnorePitch() {
@@ -482,6 +852,57 @@ public class WMSSRequest {
 		return title;
 	}
 
+	public String getResponseContentType() {
+		return responseContentType;
+	}
+
+	public int getResponseStatus() {
+		return responseStatus;
+	}
+
+	public String getResponseContent() {
+		return responseContent;
+	}
+
+	public String getResponseHeaderName() {
+		return responseHeaderName;
+	}
+
+	public String getResponseHeaderValue() {
+		return responseHeaderValue;
+	}
+
+	public File getQueryFile() {
+		return queryFile;
+	}
+
+	public ArrayList<Person> getPersons() {
+		return persons;
+	}
+
+	public ArrayList<Collection> getCollections() {
+		return collections;
+	}
+
+	public ArrayList<PerformanceMedium> getMediums() {
+		return mediums;
+	}
+
+	public ArrayList<Key> getKeys() {
+		return keys;
+	}
+
+	public ArrayList<String> getFormats() {
+		return formats;
+	}
+
+	public ArrayList<Time> getTimes() {
+		return times;
+	}
+
+	public ArrayList<Clef> getClefs() {
+		return clefs;
+	}
 	
-		
+	
 }

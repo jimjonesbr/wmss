@@ -5,8 +5,7 @@ public class Person {
 	private String name;
 	private String role;
 	private String scoreId; 
-	private String url;
-	//private int totalScores;
+	private String identifier;
 	
 	public Person() {
 		super();
@@ -29,17 +28,11 @@ public class Person {
 	public void setScoreId(String score_id) {
 		this.scoreId = score_id;
 	}
-	public String getUrl() {
-		return url;
+	public String getIdentifier() {
+		return identifier;
 	}
-	public void setUrl(String url) {
-		this.url = url;
+	public void setIdentifier(String url) {
+		this.identifier = url;
 	}
-//	public int getTotalScores() {
-//		return totalScores;
-//	}
-//	public void setTotalScores(int totalScores) {
-//		this.totalScores = totalScores;
-//	}
 	
 }
