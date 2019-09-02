@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -18,8 +19,10 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.JSONArray;
@@ -456,6 +459,41 @@ public class Util {
 
 	}
 
+	public static String postListScoreRequest(String server, int port, String source, String jsonQuery) {
+		
+		String result = "";
+		
+		HttpClient httpClient = HttpClientBuilder.create().build();
+		HttpPost request = new HttpPost(server+":"+port+"/wmss/?request=ListScores&source="+source);
+	    
+		System.err.println(jsonQuery);
+		
+		try {
+			StringEntity params = new StringEntity(jsonQuery.trim());
+		    request.addHeader("content-type", "application/json");
+		    request.setEntity(params);
+		    
+		    HttpResponse response = httpClient.execute(request);
+		    
+		    BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+		    StringBuilder builder = new StringBuilder();
+		    for (String line = null; (line = reader.readLine()) != null;) {
+		        builder.append(line).append("\n");
+		        
+		    }
+		    
+		    result = builder.toString();
+		    System.out.println("ScoreListReport:\n " + result);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
 	
 	public static boolean postMusicXMLMetadataString(String server, int port, String source, File file, int commitSize, String metadata, String format) {
 

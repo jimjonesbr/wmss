@@ -19,13 +19,77 @@ public class ListScoresRequestsElgar {
 	private static int port = StartWMSS.port;
 	private static String source = StartWMSS.source;
 		
-
-	private boolean listScoresRequest(MusicScore score, MelodyLocation location, ArrayList<RequestParameter> parameters) {
-
-		boolean result = false;
-
-		JSONObject jsonObject;
+	private boolean verifyResultset(MusicScore score, MelodyLocation location, JSONObject jsonResponse) {
 		
+		boolean result = false;
+		
+		JSONArray datasources = jsonResponse.getJSONArray("datasources");
+
+		for (int i = 0; i < datasources.length(); i++) {
+
+			JSONArray scores =  datasources.getJSONObject(i).getJSONArray("scores");
+
+			for (int j = 0; j < scores.length(); j++) {
+				
+				System.out.println("Score identifier: "+scores.getJSONObject(j).getString("scoreIdentifier"));
+				System.out.println("Score title     : "+scores.getJSONObject(j).getString("title"));
+				System.out.println("Date issued     : "+scores.getJSONObject(j).getString("dateIssued")+"\n");
+			
+				JSONArray melodies =  scores.getJSONObject(j).getJSONArray("melodyLocations");
+
+				for (int k = 0; k < melodies.length(); k++) {
+
+					JSONArray melody =  melodies.getJSONObject(k).getJSONArray("melodyLocation");
+
+					for (int l = 0; l < melody.length(); l++) {
+						
+						if(melody.getJSONObject(l).get("startingMeasure").toString().equals(location.getStartingMeasure()) &&
+						  melody.getJSONObject(l).get("voice").toString().equals(location.getVoice()) &&
+						  melody.getJSONObject(l).get("staff").toString().equals(location.getStaff()) &&
+						  melody.getJSONObject(l).get("instrumentName").toString().equals(location.getInstrumentName()) &&
+						  melody.getJSONObject(l).get("melody").toString().equals(location.getMelody()) &&
+						  scores.getJSONObject(j).getString("title").equals(score.getTitle()) &&
+						  scores.getJSONObject(j).getString("scoreIdentifier").equals(score.getScoreId()) &&
+						  scores.getJSONObject(j).getString("dateIssued").equals(score.getDateIssued()) &&
+						  melodies.getJSONObject(k).get("movementName").toString().equals(location.getMovementName())
+						  ) {
+							result = true;
+						}
+						
+						System.out.println("- Movement        : "+melodies.getJSONObject(k).get("movementName"));
+						System.out.println("- Starting Measure: "+melody.getJSONObject(l).get("startingMeasure"));
+						System.out.println("- Voice           : "+melody.getJSONObject(l).get("voice"));
+						System.out.println("- Staff           : "+melody.getJSONObject(l).get("staff"));
+						System.out.println("- Instrument Name : "+melody.getJSONObject(l).get("instrumentName"));
+						System.out.println("- Melody          : "+melody.getJSONObject(l).get("melody")+"\n");
+						
+
+					}
+
+				}
+
+			}
+
+		}
+		
+		return result;
+	}
+	
+	private boolean listScorePostRequest(MusicScore score, MelodyLocation location, String jsonQuery) {
+		
+		JSONObject json = new JSONObject(jsonQuery);
+		
+		
+		
+		
+		JSONObject scoreListDocument = new JSONObject(Util.postListScoreRequest(server, port, source, json.toString()));
+		System.out.println(">> checking query ..");
+		return this.verifyResultset(score, location, scoreListDocument);
+	}
+	
+	private boolean listScoresGetRequest(MusicScore score, MelodyLocation location, ArrayList<RequestParameter> parameters) {
+
+		boolean result = false;		
 		try {
 			
 			String url = server+":"+port+"/wmss/?request=ListScores";
@@ -35,56 +99,8 @@ public class ListScoresRequestsElgar {
 			}
 			
 			System.out.println("\nRequest: " + url + "\n");
-			jsonObject = Util.readJsonFromUrl(url);
+			result = this.verifyResultset(score, location, Util.readJsonFromUrl(url));		
 			
-			JSONArray datasources = jsonObject.getJSONArray("datasources");
-
-			for (int i = 0; i < datasources.length(); i++) {
-
-				JSONArray scores =  datasources.getJSONObject(i).getJSONArray("scores");
-
-				for (int j = 0; j < scores.length(); j++) {
-					
-					System.out.println("Score identifier: "+scores.getJSONObject(j).getString("scoreIdentifier"));
-					System.out.println("Score title     : "+scores.getJSONObject(j).getString("title"));
-					System.out.println("Date issued     : "+scores.getJSONObject(j).getString("dateIssued")+"\n");
-				
-					JSONArray melodies =  scores.getJSONObject(j).getJSONArray("melodyLocations");
-
-					for (int k = 0; k < melodies.length(); k++) {
-
-						JSONArray melody =  melodies.getJSONObject(k).getJSONArray("melodyLocation");
-
-						for (int l = 0; l < melody.length(); l++) {
-							
-							if(melody.getJSONObject(l).get("startingMeasure").toString().equals(location.getStartingMeasure()) &&
-							  melody.getJSONObject(l).get("voice").toString().equals(location.getVoice()) &&
-							  melody.getJSONObject(l).get("staff").toString().equals(location.getStaff()) &&
-							  melody.getJSONObject(l).get("instrumentName").toString().equals(location.getInstrumentName()) &&
-							  melody.getJSONObject(l).get("melody").toString().equals(location.getMelody()) &&
-							  scores.getJSONObject(j).getString("title").equals(score.getTitle()) &&
-							  scores.getJSONObject(j).getString("scoreIdentifier").equals(score.getScoreId()) &&
-							  scores.getJSONObject(j).getString("dateIssued").equals(score.getDateIssued()) &&
-							  melodies.getJSONObject(k).get("movementName").toString().equals(location.getMovementName())
-							  ) {
-								result = true;
-							}
-							
-							System.out.println("- Movement        : "+melodies.getJSONObject(k).get("movementName"));
-							System.out.println("- Starting Measure: "+melody.getJSONObject(l).get("startingMeasure"));
-							System.out.println("- Voice           : "+melody.getJSONObject(l).get("voice"));
-							System.out.println("- Staff           : "+melody.getJSONObject(l).get("staff"));
-							System.out.println("- Instrument Name : "+melody.getJSONObject(l).get("instrumentName"));
-							System.out.println("- Melody          : "+melody.getJSONObject(l).get("melody")+"\n");
-							
-
-						}
-
-					}
-
-				}
-
-			}
 			
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -95,7 +111,7 @@ public class ListScoresRequestsElgar {
 		return result;
 
 	}
-	
+		
 	@Test
 	public void elgarCelloConcerto_6Notes_Full_Collection_Composer_PerformanceMedium_nonSolo_nonEmsemble_tempo_dateInverval_time_clef() {
 		
@@ -130,7 +146,7 @@ public class ListScoresRequestsElgar {
 		location.setMovementName("Adagio");
 		location.setMelody("%C-4 ,8AB'CDxDE");
 				
-		assertEquals(true, this.listScoresRequest(score, location, parameters));
+		assertEquals(true, this.listScoresGetRequest(score, location, parameters));
 	}
 	
 	
@@ -156,7 +172,7 @@ public class ListScoresRequestsElgar {
 		location.setMovementName("Adagio");
 		location.setMelody(",8AB'CDxDE");
 				
-		assertEquals(true, this.listScoresRequest(score, location, parameters));
+		assertEquals(true, this.listScoresGetRequest(score, location, parameters));
 	}
 
 	@Test
@@ -181,7 +197,7 @@ public class ListScoresRequestsElgar {
 		location.setMovementName("Adagio");
 		location.setMelody(",,2E--4.-6,,B,xC");
 				
-		assertEquals(true, this.listScoresRequest(score, location, parameters));
+		assertEquals(true, this.listScoresGetRequest(score, location, parameters));
 	}
 	
 	
@@ -208,7 +224,7 @@ public class ListScoresRequestsElgar {
 		location.setMovementName("Adagio");
 		location.setMelody(",8AB'CDxDExE");
 				
-		assertEquals(true, this.listScoresRequest(score, location, parameters));
+		assertEquals(true, this.listScoresGetRequest(score, location, parameters));
 	}
 
 	@Test
@@ -233,7 +249,7 @@ public class ListScoresRequestsElgar {
 		location.setMovementName("Adagio");
 		location.setMelody("'4xF8G4xF8A4B8A4G8E4D8E4C,8B4A8B4A'8C4D8C,4B8G4xF8G4E8D4xC8D4xC8E4xF8E4D,,8B4xA8B4G8xF2B");
 				
-		assertEquals(true, this.listScoresRequest(score, location, parameters));
+		assertEquals(true, this.listScoresGetRequest(score, location, parameters));
 	}
 
 	
@@ -260,7 +276,7 @@ public class ListScoresRequestsElgar {
 		location.setMovementName("Adagio");
 		location.setMelody("'4xF8G4xF8A4B8A4/G8E4D8E4C,8B/,4A8B4A'8C4D8C/,4B8G4xF8G4E8D");
 				
-		assertEquals(true, this.listScoresRequest(score, location, parameters));
+		assertEquals(true, this.listScoresGetRequest(score, location, parameters));
 	}
 	
 	
@@ -286,7 +302,7 @@ public class ListScoresRequestsElgar {
 		location.setMovementName("Adagio");
 		location.setMelody(",,2E^B^,G^'E");
 				
-		assertEquals(true, this.listScoresRequest(score, location, parameters));
+		assertEquals(true, this.listScoresGetRequest(score, location, parameters));
 	}
 	
 	
@@ -313,7 +329,7 @@ public class ListScoresRequestsElgar {
 		location.setMovementName("Adagio");
 		location.setMelody(",,2GB8G");
 				
-		assertEquals(true, this.listScoresRequest(score, location, parameters));
+		assertEquals(true, this.listScoresGetRequest(score, location, parameters));
 	}
 	
 	@Test
@@ -339,7 +355,7 @@ public class ListScoresRequestsElgar {
 		location.setMovementName("Adagio");
 		location.setMelody("@c ,8AB'CDxDExE");
 				
-		assertEquals(true, this.listScoresRequest(score, location, parameters));
+		assertEquals(true, this.listScoresGetRequest(score, location, parameters));
 	}
 	
 	@Test
@@ -365,7 +381,7 @@ public class ListScoresRequestsElgar {
 		location.setMovementName("Adagio");
 		location.setMelody("@c ,,8ABC'DxDExE");
 				
-		assertEquals(true, this.listScoresRequest(score, location, parameters));
+		assertEquals(true, this.listScoresGetRequest(score, location, parameters));
 	}
 	
 	@Test
@@ -391,7 +407,7 @@ public class ListScoresRequestsElgar {
 		location.setMovementName("Adagio");
 		location.setMelody("$xF ,8AB'CDxDE");
 				
-		assertEquals(true, this.listScoresRequest(score, location, parameters));
+		assertEquals(true, this.listScoresGetRequest(score, location, parameters));
 	}
 	
 	@Test
@@ -417,7 +433,7 @@ public class ListScoresRequestsElgar {
 		location.setMovementName("Adagio");
 		location.setMelody("4.E4.xD.ExD,8A");
 				
-		assertEquals(true, this.listScoresRequest(score, location, parameters));
+		assertEquals(true, this.listScoresGetRequest(score, location, parameters));
 	}
 	
 
@@ -444,7 +460,7 @@ public class ListScoresRequestsElgar {
 		location.setMovementName("Adagio");
 		location.setMelody(",8GxFgAG");
 				
-		assertEquals(true, this.listScoresRequest(score, location, parameters));
+		assertEquals(true, this.listScoresGetRequest(score, location, parameters));
 	}
 	
 	@Test
@@ -470,7 +486,110 @@ public class ListScoresRequestsElgar {
 		location.setMovementName("Adagio");
 		location.setMelody(",8xFG2C");
 				
-		assertEquals(true, this.listScoresRequest(score, location, parameters));
+		assertEquals(true, this.listScoresGetRequest(score, location, parameters));
 	}
+
 	
+	@Test
+	public void elgarCelloConcertoFullPostRequest() {
+		
+		MusicScore score = new MusicScore();
+		score.setTitle("Cellokonzert e-Moll op. 85");
+		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setDateIssued("1919");		
+		MelodyLocation location = new MelodyLocation();
+		location.setStartingMeasure("8");
+		location.setVoice("1");
+		location.setStaff("1");
+		location.setInstrumentName("Violoncello");
+		location.setMovementName("Adagio");
+		location.setMelody(",8AB'CDxDE");
+		
+		String jsonQuery = "{\"request\":\"ListScores\",\n" + 
+				"   \"scoreIdentifier\":\"http://dbpedia.org/resource/Cello_Concerto_(Elgar)\",\n" + 
+				"   \"scoreTitle\":\"Cellokonzert e-Moll op. 85\",\n" + 
+				"   \"issued\":\"1919\",\n" + 
+				"   \"formats\":[\n" + 
+				"      {\"format\":\"musicxml\"}\n" + 
+				"   ],\n" + 
+				"   \"keys\":[\n" + 
+				"      {\n" + 
+				"         \"key\":\"xF\",\n" + 
+				"         \"format\":\"pea\"\n" + 
+				"      },\n" + 
+				"      {\n" + 
+				"         \"key\":\"xFCGD\",\n" + 
+				"         \"format\":\"pea\"\n" + 
+				"      }\n" + 
+				"   ],\n" + 
+				"   \"times\":[\n" + 
+				"      {\n" + 
+				"         \"time\":\"4/4\",\n" + 
+				"         \"format\":\"pea\"\n" + 
+				"      },\n" + 
+				"      {\n" + 
+				"         \"time\":\"12/8\",\n" + 
+				"         \"format\":\"pea\"\n" + 
+				"      },\n" + 
+				"      {\n" + 
+				"         \"time\":\"6/8\",\n" + 
+				"         \"format\":\"pea\"\n" + 
+				"      }\n" + 
+				"   ],\n" + 
+				"   \"clefs\":[\n" + 
+				"      {\n" + 
+				"         \"clef\":\"F-4\",\n" + 
+				"         \"format\":\"pea\"\n" + 
+				"      },\n" + 
+				"      {\n" + 
+				"         \"clef\":\"G-2\",\n" + 
+				"         \"format\":\"pea\"\n" + 
+				"      },\n" + 
+				"      {\n" + 
+				"         \"clef\":\"C-4\",\n" + 
+				"         \"format\":\"pea\"\n" + 
+				"      }\n" + 
+				"   ],\n" + 
+				"   \"melody\":{\n" + 
+				"      \"format\":\"pea\",\n" + 
+				"      \"query\":\",8AB'CDxDE\",\n" + 
+				"      \"mediumCode\":\"strings.cello\",\n" + 
+				"      \"mediumType\":\"strings\",\n" + 
+				"      \"key\":\"xF\",\n" + 
+				"      \"time\":\"4/4\",\n" + 
+				"      \"clef\":\"C-4\"\n" + 
+				"   },\n" + 
+				"   \"mediums\":[\n" + 
+				"      {\n" + 
+				"         \"mediumType\":\"strings\",\n" + 
+				"         \"mediumCode\":\"strings.cello\"\n" + 
+				"      }\n" + 
+				"   ],\n" + 
+				"   \"collections\":[\n" + 
+				"      {\n" + 
+				"         \"collectionName\":\"Great Composers\",\n" + 
+				"         \"collectionIdentifier\":\"https://wwu.greatcomposers.de\"\n" + 
+				"      }\n" + 
+				"   ],\n" + 
+				"   \"persons\":[\n" + 
+				"      {\n" + 
+				"         \"personIdentifier\":\"http://dbpedia.org/resource/Edward_Elgar\",\n" + 
+				"         \"personName\":\"elgar\",\n" + 
+				"         \"personRole\":\"Composer\"\n" + 
+				"      },\n" + 
+				"      {\n" + 
+				"         \"personIdentifier\":\"http://jimjones.de\",\n" + 
+				"         \"personName\":\"jim\",\n" + 
+				"         \"personRole\":\"Encoder\"\n" + 
+				"      }\n" + 
+				"   ],\n" + 
+				"   \"ignoreOctave\":\"false\",\n" + 
+				"   \"ignoreDuration\":\"false\",\n" + 
+				"   \"ignorePitch\":\"false\",\n" + 
+				"   \"ignoreChords\":\"true\"\n" + 
+				"}";
+		
+		assertEquals(true, this.listScorePostRequest(score, location, jsonQuery));
+		
+	}
 }

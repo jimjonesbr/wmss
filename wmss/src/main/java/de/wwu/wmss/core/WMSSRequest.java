@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.plaf.synth.SynthScrollBarUI;
+
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -467,7 +469,8 @@ public class WMSSRequest {
 		
 		try {
 
-			JSONParser parser = new JSONParser();						
+			JSONParser parser = new JSONParser();	
+			System.out.println("#####"+jsonRequest);
 			Object obj = parser.parse(jsonRequest);
 			JSONObject queryObject = (JSONObject) obj;	
 
