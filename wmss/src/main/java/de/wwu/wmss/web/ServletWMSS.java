@@ -5,20 +5,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.log4j.Logger;
-
-import com.google.common.io.CharStreams;
-
 import de.wwu.wmss.core.WMSSRequest;
 import de.wwu.wmss.engine.DocumentBuilder;
 import de.wwu.wmss.exceptions.InvalidWMSSRequestException;
 
 public class ServletWMSS extends HttpServlet
 {
-
 	private static final long serialVersionUID = 1L;
-	private static Logger logger = Logger.getLogger("ServletWMSS");
-
+	//private static Logger logger = Logger.getLogger("ServletWMSS");
 	protected void doPost(HttpServletRequest httpRequest, HttpServletResponse response) throws ServletException, IOException{
 		
 		try {

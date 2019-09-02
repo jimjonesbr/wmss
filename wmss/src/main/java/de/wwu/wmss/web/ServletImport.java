@@ -45,9 +45,13 @@ public class ServletImport extends HttpServlet {
 
 			WMSSImportRequest importRequest = new WMSSImportRequest(httpRequest);		
 			Neo4jEngine.prepareDatabase(importRequest);
-
-			System.out.println("POST httpRequest.getContentType() > "+httpRequest.getContentType());
-			logger.info("POST Request -> " + httpRequest.getQueryString());
+			
+			logger.info("---------------------------------------------------------------");
+			logger.info("Request Method     : "+httpRequest.getMethod());
+			logger.info("Request String     : " + httpRequest.getQueryString());
+			logger.info("Request URL        : " + httpRequest.getRequestURL());
+			logger.info("Request ContentType: "+httpRequest.getContentType());
+			logger.info("---------------------------------------------------------------");
 
 			response.addHeader("Access-Control-Allow-Origin","*");
 			response.addHeader("Access-Control-Allow-Methods","GET,POST");
@@ -83,10 +87,10 @@ public class ServletImport extends HttpServlet {
 					fileList.add(record);					
 
 				} else {
-
+					
 					this.isFileValid(uploadDiretory.getAbsolutePath()+"/"+importRequest.getScoreFile().getName(),importRequest);
 
-					logger.debug("Checking file integrity of "+importRequest.getScoreFile().getName()+" [" + FileUtils.byteCountToDisplaySize(importRequest.getScoreFile().length())  + "] ...");
+					logger.info("Checking file integrity of "+importRequest.getScoreFile().getName()+" [" + FileUtils.byteCountToDisplaySize(importRequest.getScoreFile().length())  + "] ...");
 
 					WMSSImportRecord record = new WMSSImportRecord();
 					record.setFile(importRequest.getScoreFile().getName());

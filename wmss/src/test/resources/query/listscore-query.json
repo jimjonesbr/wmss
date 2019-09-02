@@ -20,6 +20,14 @@
       {
          "time":"4/4",
          "format":"pea"
+      },
+      {
+         "time":"12/8",
+         "format":"pea"
+      },
+      {
+         "time":"6/8",
+         "format":"pea"
       }
    ],
    "clefs":[
@@ -49,10 +57,6 @@
       {
          "mediumType":"strings",
          "mediumCode":"strings.cello"
-      },
-      {
-         "mediumType":"keyboard",
-         "mediumCode":"keyboard.piano"
       }
    ],
    "collections":[

@@ -582,7 +582,7 @@ public class WMSSRequest {
 				JSONObject timeObject = (JSONObject) timeObjects.get(j);
 				Time time = new Time();
 
-				if(timeObject.get("key")!=null) {
+				if(timeObject.get("time")!=null) {
 					logger.info("Time  : " + timeObject.get("time").toString());
 					time.setTime(timeObject.get("time").toString());
 				}

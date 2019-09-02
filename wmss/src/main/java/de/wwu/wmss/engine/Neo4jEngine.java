@@ -811,34 +811,59 @@ public class Neo4jEngine {
 		} 
 		*/
 		
-		for (int i = 0; i < wmssRequest.getKeys().size(); i++) {
-			
-			if(wmssRequest.getKeys().get(i).getFormat().toLowerCase().equals("pea") || wmssRequest.getKeys().get(i).getFormat().equals("")) {
-				//match = match + "MATCH (movements:Movement)-[:PART]->(:Part)-[:MEASURE]->(:"+wmssRequest.getKeys().get(i).getKey()+")\n";	
-				match = match + "MATCH (scr:Score)-[:KEY]->(query_key"+i+":"+wmssRequest.getKeys().get(i).getKey()+")\n";
+		String times_query = "";
+		for (int i = 0; i < wmssRequest.getTimes().size(); i++) {
+			if(wmssRequest.getTimes().get(i).getFormat().toLowerCase().equals("pea") || wmssRequest.getTimes().get(i).getFormat().equals("")) {	
+				times_query = times_query + ":Time_" + Util.formatPEAtimeSignature(wmssRequest.getTimes().get(i).getTime()).replace("/", "_");
 			}
-						
+		}
+		if(!times_query.equals("")) {
+			match = match + "MATCH (scr:Score)-[:STATS]->(stats:Stats)-[:TIMES]->(times"+times_query+")\n";
 		}
 		
-		for (int i = 0; i < wmssRequest.getClefs().size(); i++) {
-			
-			if(wmssRequest.getClefs().get(i).getFormat().toLowerCase().equals("pea") || wmssRequest.getClefs().get(i).getFormat().equals("")) {
-				//match = match + "MATCH (movements:Movement)-[rel_query_clef_part"+i+":PART]->(part_clef_query"+i+":Part)-[:MEASURE]->(measure_clef_query"+i+":Measure)-[:NOTESET]->(clef_query"+i+":Clef_"+String.valueOf(wmssRequest.getClefs().get(i).getClef().charAt(0))+String.valueOf(wmssRequest.getClefs().get(i).getClef().charAt(2))+")\n";	
-				match = match + "MATCH (scr:Score)-[:CLEF]->(clef_query"+i+":Clef_"+String.valueOf(wmssRequest.getClefs().get(i).getClef().charAt(0))+String.valueOf(wmssRequest.getClefs().get(i).getClef().charAt(2))+")\n";
+		String mediums_query = "";
+		for (int i = 0; i < wmssRequest.getMediums().size(); i++) {
+			if(!wmssRequest.getMediums().get(i).getMediumCode().equals("")) {
+				mediums_query = mediums_query + ":"+wmssRequest.getMediums().get(i).getMediumCode().replace(".", "_");
 			}
-						
+			if(!wmssRequest.getMediums().get(i).getMediumTypeId().equals("")) {
+				mediums_query = mediums_query + ":"+wmssRequest.getMediums().get(i).getMediumTypeId().replace(".", "_");
+			}
 		}
+		if(!mediums_query.equals("")) {
+			match = match + "MATCH (scr:Score)-[:STATS]->(stats:Stats)-[:MEDIUMS]->(mediums"+mediums_query+")\n";
+		}
+		
+		String keys_query = "";
+		for (int i = 0; i < wmssRequest.getKeys().size(); i++) {			
+			if(wmssRequest.getKeys().get(i).getFormat().toLowerCase().equals("pea") || wmssRequest.getKeys().get(i).getFormat().equals("")) {					
+				keys_query = keys_query + ":"+ wmssRequest.getKeys().get(i).getKey();							
+			}										
+		}		
+		if(!keys_query.equals("")) {
+			match = match + "MATCH (scr:Score)-[:STATS]->(stats:Stats)-[:KEYS]->(keys"+keys_query+")\n";
+		}
+			
+		
+		String clefs_query = "";		
+		for (int i = 0; i < wmssRequest.getClefs().size(); i++) {			
+			if(wmssRequest.getClefs().get(i).getFormat().toLowerCase().equals("pea") || wmssRequest.getClefs().get(i).getFormat().equals("")) {
+				clefs_query = clefs_query + ":Clef_"+String.valueOf(wmssRequest.getClefs().get(i).getClef().charAt(0))+String.valueOf(wmssRequest.getClefs().get(i).getClef().charAt(2));				
+			}
+		}		
+		if(!clefs_query.equals("")) {
+			match = match + "MATCH (scr:Score)-[:STATS]->(stats:Stats)-[:CLEFS]->(clefs"+clefs_query+")\n";
+		}
+		
+		
+		
 		
 		if(!wmssRequest.getTempoBeatUnit().equals("")) {
-
-			match = match + "MATCH (scr:Score)-[:MOVEMENT]->(movements:Movement {beatUnit: '"+wmssRequest.getTempoBeatUnit()+"'})\n";
-			
+			match = match + "MATCH (scr:Score)-[:MOVEMENT]->(movements:Movement {beatUnit: '"+wmssRequest.getTempoBeatUnit()+"'})\n";			
 		}
 
 		if(!wmssRequest.getClef().equals("")) {
-
-			match = match + "MATCH (ns0:Clef_"+String.valueOf(wmssRequest.getClef().charAt(0))+String.valueOf(wmssRequest.getClef().charAt(2))+")\n";
-			
+			match = match + "MATCH (ns0:Clef_"+String.valueOf(wmssRequest.getClef().charAt(0))+String.valueOf(wmssRequest.getClef().charAt(2))+")\n";			
 		}
 		
 		if(!wmssRequest.getTempoBeatsPerMinute().equals("")) {

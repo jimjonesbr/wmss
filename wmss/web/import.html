@@ -261,7 +261,7 @@
 				$("#btn-import-selected").html('<i class="fas fa-spinner fa-spin"></i> Importing ..');	
 			
 				var data = new FormData();
-	        	data.append('file-'+i, file);	
+	        	data.append('file', file);	
 
 	        	$('#import-container-'+i).empty();
 	        	$('#import-container-'+i).append('<div class="spinner-border text-primary"></div>');

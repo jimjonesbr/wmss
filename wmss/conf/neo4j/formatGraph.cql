@@ -109,13 +109,37 @@ WITH measure, key
 CALL apoc.create.addLabels(id(measure),[key]) YIELD node
 RETURN COUNT(measure) AS MeasureKey;
 
+
+
+
+
+MATCH (scr:mo__Score)
+CREATE (scr)-[:STATS]->(stats:Stats {label: 'Stats'})
+WITH stats
+CREATE (stats)-[:KEYS]->(key:Key)
+CREATE (stats)-[:CLEFS]->(clef:Clef)
+CREATE (stats)-[:MEDIUMS]->(medium:Medium)
+CREATE (stats)-[:TIMES]->(time:Time);
+
 MATCH (scr:mo__Score)-[:mo__movement]->(movements:mo__Movement)
+MATCH (scr)-[:STATS]->(stats:Stats)-[:KEYS]->(key:Key)
 MATCH (movements)-[:mso__hasScorePart]->(:mso__ScorePart)-[:mso__hasMeasure]->(measure)
-WITH DISTINCT measure.key_code AS key_code, scr AS score 
-CREATE (score)-[:KEY]->(key:Key)
-WITH key,key_code,score
-CALL apoc.create.addLabels(id(key),[key_code]) YIELD node
-RETURN score;
+CALL apoc.create.addLabels(id(key),[measure.key_code]) YIELD node
+RETURN COUNT(node);
+
+MATCH (score:mo__Score)-[:mo__movement]->(movement:mo__Movement)
+MATCH (score)-[:STATS]->(stats:Stats)-[:MEDIUMS]->(medium:Medium)
+MATCH (movement)-[:mso__hasScorePart]->(part:mso__ScorePart)
+CALL apoc.create.addLabels(id(medium),[REPLACE(part.skos__altLabel,'.','_')]) YIELD node
+WITH part,medium
+MATCH (part)-[:skos__broader]->(type)
+CALL apoc.create.addLabels(id(medium),[type.skos__prefLabel]) YIELD node
+RETURN COUNT(node) AS instrument;
+
+
+
+
+
 
 MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
 MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__mode]->(modeNode)
@@ -165,10 +189,20 @@ SET noteset :GraceNote
 CREATE (previousNoteSet)-[:NEXT]->(nextNoteSet);
 
 
-MATCH (noteset:mso__NoteSet)-[:mso__hasClef]->(clef)-[:mso__sign]->(sign)
+MATCH (score:mo__Score)-[:mo__movement]->(movement:mo__Movement)
+MATCH (movement)-[:mso__hasScorePart]->(part:mso__ScorePart)
+MATCH (part)-[:mso__hasMeasure]->(measure:mso__Measure)
+MATCH (measure)-[:mso__hasNoteSet]->(noteset:mso__NoteSet)
+MATCH (noteset)-[:mso__hasClef]->(clef)-[:mso__sign]->(sign)
 MATCH (noteset)-[r:mso__nextNoteSet]->(nextNoteset:mso__NoteSet)
+MATCH (score)-[:STATS]->(stats:Stats)-[:CLEFS]->(clef_collection:Clef)
+MATCH (score)-[:STATS]->(stats)-[:TIMES]->(time_collection:Time)
 CALL apoc.create.addLabels(id(noteset),['Clef_'+SUBSTRING(sign.uri,36)+clef.mso__line]) YIELD node
+WITH clef,sign,clef_collection,noteset,nextNoteset,r,measure,time_collection
+CALL apoc.create.addLabels(id(clef_collection),['Clef_'+SUBSTRING(sign.uri,36)+clef.mso__line]) YIELD node
 CREATE (noteset)-[:NEXT]->(nextNoteset)
+WITH measure,r,time_collection
+CALL apoc.create.addLabels(id(time_collection),['Time_'+measure.beats+'_'+measure.beatType]) YIELD node
 DELETE r;
 
 MATCH (score:mo__Score)
