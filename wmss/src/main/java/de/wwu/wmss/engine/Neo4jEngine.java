@@ -804,13 +804,6 @@ public class Neo4jEngine {
 			match = match + "MATCH (scr:Score)-[doc"+i+":DOCUMENT {type: '"+wmssRequest.getFormats().get(i)+"'}]->(:Document)\n";
 		}
 		
-		/**
-		if(!wmssRequest.getFormat().equals("")) {
-			
-			where = where + "AND rel_doc.type=\""+wmssRequest.getFormat()+"\"\n";
-		} 
-		*/
-		
 		String times_query = "";
 		for (int i = 0; i < wmssRequest.getTimes().size(); i++) {
 			if(wmssRequest.getTimes().get(i).getFormat().toLowerCase().equals("pea") || wmssRequest.getTimes().get(i).getFormat().equals("")) {	
@@ -843,7 +836,7 @@ public class Neo4jEngine {
 		if(!keys_query.equals("")) {
 			match = match + "MATCH (scr:Score)-[:STATS]->(stats:Stats)-[:KEYS]->(keys"+keys_query+")\n";
 		}
-			
+		
 		
 		String clefs_query = "";		
 		for (int i = 0; i < wmssRequest.getClefs().size(); i++) {			
@@ -890,7 +883,7 @@ public class Neo4jEngine {
 		}
 			
 		if(!wmssRequest.getKey().equals("")) {
-			match = match + "MATCH (measure1:"+wmssRequest.getKey()+")";
+			match = match + "MATCH (measure1:"+wmssRequest.getKey()+")\n";
 		}
 
 		if(!wmssRequest.getTimeSignature().equals("")) {
@@ -1042,7 +1035,7 @@ public class Neo4jEngine {
 				"    })} AS locations, \n";				
 		}		
 				
-		returnClause = returnClause +	"    {formats: COLLECT (DISTINCT {format: rel_doc.type, description: rel_doc.description })} AS formats " +
+		returnClause = returnClause +	"    {formats: COLLECT (DISTINCT {format: rel_doc.type, description: rel_doc.description })} AS formats \n" +
 									    "ORDER BY scr.title \n" +
 									    "SKIP " + request.getOffset() + "\n" + 
 									    "LIMIT " + request.getPageSize();
@@ -1063,10 +1056,6 @@ public class Neo4jEngine {
 			score.setThumbnail(record.get("thumbnail").asString());					
 			score.getCollection().setIdentifier(record.get("collectionIdentifier").asString());
 			score.getCollection().setName(record.get("collectionLabel").asString());
-			
-//			score.getOnlineResource().setId(record.get("resourceURL").asString());
-//			score.getOnlineResource().setDescription(record.get("resourceDescription").asString());
-//			score.getOnlineResource().setType(record.get("resourceType").asString());
 			
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			

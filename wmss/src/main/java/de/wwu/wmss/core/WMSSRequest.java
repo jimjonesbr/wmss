@@ -84,6 +84,7 @@ public class WMSSRequest {
 	private ArrayList<String> formats = new ArrayList<String>();
 	private ArrayList<Time> times = new ArrayList<Time>();
 	private ArrayList<Clef> clefs = new ArrayList<Clef>();
+	private Melody melody2 = new Melody();
 	
 	public WMSSRequest(HttpServletRequest httpRequest)  throws InvalidWMSSRequestException {
 		
@@ -120,8 +121,7 @@ public class WMSSRequest {
 							this.parseQueryFile(FileUtils.readFileToString(file, StandardCharsets.UTF_8));
 
 						}
-					}
-					
+					}					
 					
 				} catch (FileUploadException e) {
 					e.printStackTrace();
@@ -130,8 +130,7 @@ public class WMSSRequest {
 				}
 			
 			}
-			
-			
+						
 			if(httpRequest.getContentType().toLowerCase().contains("application/json")) {
 				
 				try {
@@ -143,10 +142,6 @@ public class WMSSRequest {
 					e.printStackTrace();
 				}
 			}
-			
-			
-
-
 		}
 		
 		
@@ -472,8 +467,7 @@ public class WMSSRequest {
 		
 		try {
 
-			JSONParser parser = new JSONParser();	
-//			String str = FileUtils.readFileToString(file, StandardCharsets.UTF_8);						
+			JSONParser parser = new JSONParser();						
 			Object obj = parser.parse(jsonRequest);
 			JSONObject queryObject = (JSONObject) obj;	
 
@@ -512,6 +506,57 @@ public class WMSSRequest {
 			if(queryObject.get("ignoreChords")!=null) {
 				this.ignoreChords = Boolean.parseBoolean(queryObject.get("ignoreChords").toString());
 				logger.info("Ignore Chords     : " + queryObject.get("ignoreChords").toString());
+			}
+			
+			
+			if(queryObject.get("melody")!=null) {
+				
+				JSONObject melodyObject = (JSONObject) queryObject.get("melody");				
+				
+				if(melodyObject.get("query")!=null) {
+					try {
+						this.melody = melodyObject.get("query").toString();
+						this.noteSequence = Util.createNoteSequence(melodyObject.get("query").toString());
+					} catch (InvalidMelodyException e) {
+						e.printStackTrace();
+						throw new InvalidWMSSRequestException(e.getMessage(),e.getCode(), e.getHint());
+					} catch (InvalidKeyException e) {
+						e.printStackTrace();
+						throw new InvalidWMSSRequestException(e.getMessage(),e.getCode(), e.getHint());
+					} catch (InvalidTimeSignatureException e) {
+						e.printStackTrace();
+						throw new InvalidWMSSRequestException(e.getMessage(),e.getCode(), e.getHint());
+					} catch (InvalidClefException e) {
+						e.printStackTrace();
+						throw new InvalidClefException(e.getMessage(),e.getCode(), e.getHint());
+					}
+				}
+				if(melodyObject.get("format")!=null) {
+					this.melodyEncoding = melodyObject.get("format").toString();
+				}
+				if(melodyObject.get("mediumCode")!=null) {
+					this.performanceMedium = melodyObject.get("mediumCode").toString();
+				}
+				if(melodyObject.get("mediumType")!=null) {
+					this.performanceMediumType = melodyObject.get("mediumType").toString();
+				}
+				if(melodyObject.get("clef")!=null) {
+					this.clef = melodyObject.get("clef").toString();
+				}
+				if(melodyObject.get("time")!=null) {
+					this.timeSignature = melodyObject.get("time").toString();
+				}
+				if(melodyObject.get("key")!=null) {
+					
+					try {
+						this.key = Util.formatPEAkey(melodyObject.get("key").toString());
+					} catch (InvalidKeyException e) {
+						e.printStackTrace();
+						throw new InvalidWMSSRequestException(e.getMessage(),e.getCode(), e.getHint());
+					}
+
+				}
+
 			}
 			
 			if(queryObject.get("collections")!=null) {
@@ -902,6 +947,10 @@ public class WMSSRequest {
 
 	public ArrayList<Clef> getClefs() {
 		return clefs;
+	}
+
+	public Melody getMelody2() {
+		return melody2;
 	}
 	
 	
