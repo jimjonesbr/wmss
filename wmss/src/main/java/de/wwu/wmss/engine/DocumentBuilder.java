@@ -105,7 +105,7 @@ public class DocumentBuilder {
 				System.getProperty("os.arch").toString()+")");
 		environment.put("heap_size", Util.readableFileSize(Runtime.getRuntime().totalMemory()));
 		environment.put("heap_max_size", Util.readableFileSize(Runtime.getRuntime().maxMemory()));
-		environment.put("heap_free_size", Util.readableFileSize(Runtime.getRuntime().freeMemory()));
+		environment.put("heap_free_size", Util.readableFileSize(Runtime.getRuntime().freeMemory()));		
 		serviceDescription.put("environment", environment);
 
 		JSONArray dsArray = new JSONArray();

@@ -25,6 +25,10 @@ public class ImportElgarMusicXML_Metadata_JSONString {
 				"      {\n" + 
 				"         \"collectionName\": \"Great Composers\",\n" + 
 				"         \"collectionURL\": \"https://wwu.greatcomposers.de\"\n" + 
+				"      },"+
+				"	   {\n" + 
+				"         \"collectionName\": \"Digitale Sammlung der Universität und Landesbibliothek Münster\",\n" + 
+				"         \"collectionURL\": \"https://sammlungen.ulb.uni-muenster.de\"\n" + 
 				"      }\n" + 
 				"   ],\n" + 
 				"   \"persons\": [\n" + 
@@ -58,7 +62,6 @@ public class ImportElgarMusicXML_Metadata_JSONString {
 			
 			File musicxml = new File(Paths.get(url.toURI()).toString()+"/elgar_cello_concerto_op.85.xml");
 			result = Util.postMusicXMLMetadataString(StartWMSS.server, StartWMSS.port, StartWMSS.source, musicxml, 10000, metadata, "musicxml");
-			//result = Util.post("http://localhost", 8283, "neo4j_local", musicxml, 10000, metadata, "musicxml");
 
 		} catch (URISyntaxException e) {
 			e.printStackTrace();

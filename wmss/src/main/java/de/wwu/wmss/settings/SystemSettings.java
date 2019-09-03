@@ -12,6 +12,8 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+
+import de.wwu.music2rdf.converter.MusicXML2RDF;
 import de.wwu.wmss.core.DataSource;
 
 
@@ -37,6 +39,7 @@ public class SystemSettings {
 	public static ArrayList<String> protocolVersions = new ArrayList<String>();
 	public static String REQUEST_MODE_FULL = "full";
 	public static String REQUEST_MODE_SIMPLIFIED = "simplified";
+	public static MusicXML2RDF music2rdf = new MusicXML2RDF();
 	
 	public static void main(String[] args) {
 

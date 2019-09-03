@@ -43,8 +43,6 @@ OPTIONAL MATCH (scr:mo__Score)-[:foaf__thumbnail]->(thumbnail)
 SET scr.thumbnail = thumbnail.uri,
     noteset.voice = voice.rdfs__label, 
     noteset.staff = staff.rdfs__label, 
-    scr.collectionUri =  collection.uri, 
-    scr.collectionLabel = collection.rdfs__label,
     creator.roleUri = role.uri, 
     creator.roleName = role.rdfs_label;
 
@@ -330,11 +328,6 @@ SET	software.label = software.rdfs__label,
 	collection :Collection,
 	collection.label = collection.rdfs__label
 REMOVE 
-	score.dc__title, 
-	score.dcterms__issued,
-	score.foaf__name,
-	score.provComments,
-	score.provGeneratedAtTime,
 	software:prov__SoftwareAgent,
 	software.rdfs__label,
 	software.foaf__name,
@@ -422,7 +415,6 @@ MATCH (n:prov__SoftwareAgent) SET n :Software REMOVE n:prov__SoftwareAgent;
 MATCH (n:prov__Collection) SET n :Collection REMOVE n:prov__Collection;
 
 CREATE INDEX ON :Movement(beatUnit);
-CREATE INDEX ON :Score(collectionUri);
 CREATE INDEX ON :NoteSet(size);		
 CREATE INDEX ON :NoteSet(clefShape,clefLine);
 CREATE INDEX ON :NoteSet(clefSign);

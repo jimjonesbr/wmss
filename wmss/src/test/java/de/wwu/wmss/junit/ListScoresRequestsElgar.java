@@ -78,12 +78,8 @@ public class ListScoresRequestsElgar {
 	private boolean listScorePostRequest(MusicScore score, MelodyLocation location, String jsonQuery) {
 		
 		JSONObject json = new JSONObject(jsonQuery);
-		
-		
-		
-		
 		JSONObject scoreListDocument = new JSONObject(Util.postListScoreRequest(server, port, source, json.toString()));
-		System.out.println(">> checking query ..");
+	
 		return this.verifyResultset(score, location, scoreListDocument);
 	}
 	
@@ -505,9 +501,10 @@ public class ListScoresRequestsElgar {
 		location.setMovementName("Adagio");
 		location.setMelody(",8AB'CDxDE");
 		
-		String jsonQuery = "{\"request\":\"ListScores\",\n" + 
+		String jsonQuery = "{\n" + 
+				"   \"request\":\"ListScores\",\n" + 
 				"   \"scoreIdentifier\":\"http://dbpedia.org/resource/Cello_Concerto_(Elgar)\",\n" + 
-				"   \"scoreTitle\":\"Cellokonzert e-Moll op. 85\",\n" + 
+				"   \"scoreTitle\":\"cellokonzert\",\n" + 
 				"   \"issued\":\"1919\",\n" + 
 				"   \"formats\":[\n" + 
 				"      {\"format\":\"musicxml\"}\n" + 
@@ -567,8 +564,12 @@ public class ListScoresRequestsElgar {
 				"   ],\n" + 
 				"   \"collections\":[\n" + 
 				"      {\n" + 
-				"         \"collectionName\":\"Great Composers\",\n" + 
+				"         \"collectionName\":\"great compo\",\n" + 
 				"         \"collectionIdentifier\":\"https://wwu.greatcomposers.de\"\n" + 
+				"      },\n" + 
+				"      {\n" + 
+				"         \"collectionName\":\"digitale sammlung\",\n" + 
+				"         \"collectionIdentifier\":\"https://sammlungen.ulb.uni-muenster.de\"\n" + 
 				"      }\n" + 
 				"   ],\n" + 
 				"   \"persons\":[\n" + 
@@ -592,4 +593,71 @@ public class ListScoresRequestsElgar {
 		assertEquals(true, this.listScorePostRequest(score, location, jsonQuery));
 		
 	}
+		
+	@Test
+	public void elgarCelloConcertoPartialPostRequest() {
+		
+		MusicScore score = new MusicScore();
+		score.setTitle("Cellokonzert e-Moll op. 85");
+		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setDateIssued("1919");		
+		MelodyLocation location = new MelodyLocation();
+		location.setStartingMeasure("8");
+		location.setVoice("1");
+		location.setStaff("1");
+		location.setInstrumentName("Violoncello");
+		location.setMovementName("Adagio");
+		location.setMelody(",8AB'CDxDE");
+		
+		String jsonQuery = "{\n" + 
+				"   \"request\":\"ListScores\",\n" + 
+				"   \"scoreIdentifier\":\"http://dbpedia.org/resource/Cello_Concerto_(Elgar)\",\n" + 
+				"   \"scoreTitle\":\"cellokonzert\",\n" + 
+				"   \"issued\":\"1919\",\n" + 
+				"   \"formats\":[\n" + 
+				"      {\"format\":\"musicxml\"}\n" + 
+				"   ], \n" + 
+				"   \"melody\":{\n" + 
+				"      \"format\":\"pea\",\n" + 
+				"      \"query\":\",8AB'CDxDE\",\n" + 
+				"      \"mediumCode\":\"strings.cello\",\n" + 
+				"      \"mediumType\":\"strings\"\n" + 
+				"   }\n" + 
+				"}";
+		
+		assertEquals(true, this.listScorePostRequest(score, location, jsonQuery));
+		
+	}
+	
+	@Test
+	public void elgarCelloConcertoMelodyPostRequest() {
+		
+		MusicScore score = new MusicScore();
+		score.setTitle("Cellokonzert e-Moll op. 85");
+		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setDateIssued("1919");		
+		MelodyLocation location = new MelodyLocation();
+		location.setStartingMeasure("8");
+		location.setVoice("1");
+		location.setStaff("1");
+		location.setInstrumentName("Violoncello");
+		location.setMovementName("Adagio");
+		location.setMelody(",8AB'CDxDE");
+		
+		String jsonQuery = "{\n" + 
+				"   \"request\":\"ListScores\",\n" + 
+				"   \"melody\":{\n" + 
+				"      \"format\":\"pea\",\n" + 
+				"      \"query\":\",8AB'CDxDE\",\n" + 
+				"      \"mediumCode\":\"strings.cello\",\n" + 
+				"   }\n" + 
+				"}";
+		
+		assertEquals(true, this.listScorePostRequest(score, location, jsonQuery));
+		
+	}
+
+	
+	
+	
 }

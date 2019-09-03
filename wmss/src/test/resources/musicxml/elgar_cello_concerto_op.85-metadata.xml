@@ -9,6 +9,10 @@
       <collectionName>Great Composers</collectionName>
       <collectionURL>https://wwu.greatcomposers.de</collectionURL>
     </collection>
+    <collection>
+      <collectionName>Digitale Sammlung der Universität und Landesbibliothek Münster</collectionName>
+      <collectionURL>https://sammlungen.ulb.uni-muenster.de</collectionURL>
+    </collection>
   </collections>
   <persons>
     <person>

@@ -27,6 +27,10 @@ public class ImportElgarMusicXML_Metadata_XMLString {
 				"			<collectionName>Great Composers</collectionName>\n" + 
 				"			<collectionURL>https://wwu.greatcomposers.de</collectionURL>\n" + 
 				"		</collection>\n" + 
+				"    <collection>\n" + 
+				"      <collectionName>Digitale Sammlung der Universität und Landesbibliothek Münster</collectionName>\n" + 
+				"      <collectionURL>https://sammlungen.ulb.uni-muenster.de</collectionURL>\n" + 
+				"    </collection>\n"+
 				"	</collections>\n" + 
 				"	<persons>\n" + 
 				"		<person>\n" + 

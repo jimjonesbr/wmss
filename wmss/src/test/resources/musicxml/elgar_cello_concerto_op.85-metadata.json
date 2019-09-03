@@ -7,6 +7,10 @@
       {
          "collectionName": "Great Composers",
          "collectionURL": "https://wwu.greatcomposers.de"
+      },
+      {
+         "collectionName": "Digitale Sammlung der Universität und Landesbibliothek Münster",
+         "collectionURL": "https://sammlungen.ulb.uni-muenster.de"
       }
    ],
    "persons": [

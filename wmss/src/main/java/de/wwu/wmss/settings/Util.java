@@ -465,8 +465,6 @@ public class Util {
 		
 		HttpClient httpClient = HttpClientBuilder.create().build();
 		HttpPost request = new HttpPost(server+":"+port+"/wmss/?request=ListScores&source="+source);
-	    
-		System.err.println(jsonQuery);
 		
 		try {
 			StringEntity params = new StringEntity(jsonQuery.trim());

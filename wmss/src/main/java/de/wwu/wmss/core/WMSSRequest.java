@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.plaf.synth.SynthScrollBarUI;
-
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -604,115 +602,134 @@ public class WMSSRequest {
 			
 			JSONArray keyObjects = (JSONArray) queryObject.get("keys");
 			
-			for (int j = 0; j < keyObjects.size(); j++) {
+			if(keyObjects != null) {
 				
-				JSONObject keyObject = (JSONObject) keyObjects.get(j);
-				Key key = new Key();
+				for (int j = 0; j < keyObjects.size(); j++) {
 
-				if(keyObject.get("key")!=null) {
-					logger.info("Key  : " + keyObject.get("key").toString());
-					key.setKey(keyObject.get("key").toString());
+					JSONObject keyObject = (JSONObject) keyObjects.get(j);
+					Key key = new Key();
+
+					if(keyObject.get("key")!=null) {
+						logger.info("Key  : " + keyObject.get("key").toString());
+						key.setKey(keyObject.get("key").toString());
+					}
+
+					if(keyObject.get("format")!=null) {
+						logger.info("Key Format : " + keyObject.get("format").toString());
+						key.setFormat(keyObject.get("format").toString());
+					}
+
+					this.getKeys().add(key);
 				}
 				
-				if(keyObject.get("format")!=null) {
-					logger.info("Key Format : " + keyObject.get("format").toString());
-					key.setFormat(keyObject.get("format").toString());
-				}
-
-				this.getKeys().add(key);
-
 			}
-			
+
 			JSONArray timeObjects = (JSONArray) queryObject.get("times");
+			
+			if(timeObjects != null) {
+				
 			
 			for (int j = 0; j < timeObjects.size(); j++) {
 				
-				JSONObject timeObject = (JSONObject) timeObjects.get(j);
-				Time time = new Time();
-
-				if(timeObject.get("time")!=null) {
-					logger.info("Time  : " + timeObject.get("time").toString());
-					time.setTime(timeObject.get("time").toString());
+					JSONObject timeObject = (JSONObject) timeObjects.get(j);
+					Time time = new Time();
+	
+					if(timeObject.get("time")!=null) {
+						logger.info("Time  : " + timeObject.get("time").toString());
+						time.setTime(timeObject.get("time").toString());
+					}
+					
+					if(timeObject.get("format")!=null) {
+						logger.info("Time Format : " + timeObject.get("format").toString());
+						time.setFormat(timeObject.get("format").toString());
+					}
+	
+					this.getTimes().add(time);
+	
 				}
-				
-				if(timeObject.get("format")!=null) {
-					logger.info("Time Format : " + timeObject.get("format").toString());
-					time.setFormat(timeObject.get("format").toString());
-				}
-
-				this.getTimes().add(time);
-
 			}
 			
 			JSONArray clefObjects = (JSONArray) queryObject.get("clefs");
 			
-			for (int j = 0; j < clefObjects.size(); j++) {
-				
-				JSONObject clefObject = (JSONObject) clefObjects.get(j);
-				Clef clef = new Clef();
-
-				if(clefObject.get("clef")!=null) {
-					logger.info("Clef  : " + clefObject.get("clef").toString());
-					clef.setClef(clefObject.get("clef").toString());
+			if(clefObjects != null) {
+							
+				for (int j = 0; j < clefObjects.size(); j++) {
+					
+					JSONObject clefObject = (JSONObject) clefObjects.get(j);
+					Clef clef = new Clef();
+	
+					if(clefObject.get("clef")!=null) {
+						logger.info("Clef  : " + clefObject.get("clef").toString());
+						clef.setClef(clefObject.get("clef").toString());
+					}
+					
+					if(clefObject.get("format")!=null) {
+						logger.info("Clef Format : " + clefObject.get("format").toString());
+						clef.setFormat(clefObject.get("format").toString());
+					}
+	
+					this.getClefs().add(clef);
+	
 				}
 				
-				if(clefObject.get("format")!=null) {
-					logger.info("Clef Format : " + clefObject.get("format").toString());
-					clef.setFormat(clefObject.get("format").toString());
-				}
-
-				this.getClefs().add(clef);
-
 			}
 			
 			JSONArray mediumObjects = (JSONArray) queryObject.get("mediums");
 			
-			for (int j = 0; j < mediumObjects.size(); j++) {
-				
-				JSONObject mediumObject = (JSONObject) mediumObjects.get(j);
-				PerformanceMedium medium = new PerformanceMedium();
-				
-				if(mediumObject.get("mediumType")!=null) {
-					logger.info("Medium Type  : " + mediumObject.get("mediumType").toString());
-					medium.setMediumTypeId(mediumObject.get("mediumType").toString());
+			if(mediumObjects != null) {
+								
+				for (int j = 0; j < mediumObjects.size(); j++) {
+					
+					JSONObject mediumObject = (JSONObject) mediumObjects.get(j);
+					PerformanceMedium medium = new PerformanceMedium();
+					
+					if(mediumObject.get("mediumType")!=null) {
+						logger.info("Medium Type  : " + mediumObject.get("mediumType").toString());
+						medium.setMediumTypeId(mediumObject.get("mediumType").toString());
+					}
+	
+					if(mediumObject.get("mediumCode")!=null) {
+						logger.info("Medium Code  : " + mediumObject.get("mediumCode").toString());
+						medium.setMediumCode(mediumObject.get("mediumCode").toString());
+					}
+	
+					this.mediums.add(medium);
+					
 				}
-
-				if(mediumObject.get("mediumCode")!=null) {
-					logger.info("Medium Code  : " + mediumObject.get("mediumCode").toString());
-					medium.setMediumCode(mediumObject.get("mediumCode").toString());
-				}
-
-				this.mediums.add(medium);
 				
 			}
-			
 			
 			JSONArray personObjects = (JSONArray) queryObject.get("persons");
 
-			for (int j = 0; j < personObjects.size(); j++) {
-
-				JSONObject personObject = (JSONObject) personObjects.get(j);
-				Person person = new Person();
+			if(personObjects != null) {
+							
+				for (int j = 0; j < personObjects.size(); j++) {
+	
+					JSONObject personObject = (JSONObject) personObjects.get(j);
+					Person person = new Person();
+					
+					if(personObject.get("personIdentifier")!=null) {
+						logger.info("Person Identifier  : " + personObject.get("personIdentifier").toString());
+						person.setIdentifier(personObject.get("personIdentifier").toString());
+					}
+	
+					if(personObject.get("personName")!=null) {
+						logger.info("Person Name   : " + personObject.get("personName").toString());
+						person.setName(personObject.get("personName").toString());
+					}
+					
+					if(personObject.get("personRole")!=null) {
+						logger.info("Person Role  : " + personObject.get("personRole").toString());
+						person.setRole(personObject.get("personRole").toString());
+					}
+	
+					this.getPersons().add(person);
+	
+				}
 				
-				if(personObject.get("personIdentifier")!=null) {
-					logger.info("Person Identifier  : " + personObject.get("personIdentifier").toString());
-					person.setIdentifier(personObject.get("personIdentifier").toString());
-				}
-
-				if(personObject.get("personName")!=null) {
-					logger.info("Person Name   : " + personObject.get("personName").toString());
-					person.setName(personObject.get("personName").toString());
-				}
-				
-				if(personObject.get("personRole")!=null) {
-					logger.info("Person Role  : " + personObject.get("personRole").toString());
-					person.setRole(personObject.get("personRole").toString());
-				}
-
-				this.getPersons().add(person);
-
 			}
 
+			
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}

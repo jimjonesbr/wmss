@@ -527,8 +527,10 @@ public class Neo4jEngine {
 		
 		String where = "\nWHERE TRUE \n";														
 		String match = "MATCH (scr:Score)-[:MOVEMENT]->(movements:Movement)\n" +
-					   "MATCH (scr:Score)-[rel_doc:DOCUMENT ]->(document:Document)\n";
-		match = match + "MATCH (scr:Score)-[rel_role:CREATOR]->(creator:Person)\n";
+					   "MATCH (scr:Score)-[rel_doc:DOCUMENT ]->(document:Document)\n"+
+					   "MATCH (scr:Score)-[:COLLECTION]->(collection:Collection)\n" + 
+					   "MATCH (scr:Score)-[rel_role:CREATOR]->(creator:Person)\n";
+		//match = match + "\n";
 		
 		if(!wmssRequest.getMelody().equals("")) {
 
@@ -612,7 +614,6 @@ public class Neo4jEngine {
 						if(!noteSequence.get(i).getPitch().equals("-")) {
 							
 							currentPitchType = currentPitchType + noteSequence.get(i).getOctave();
-							
 							
 						}
 						
@@ -980,10 +981,7 @@ public class Neo4jEngine {
 		    				
 		    		}	    		
 				}
-		    	
-		    	
-		    	
-
+	
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -1009,8 +1007,12 @@ public class Neo4jEngine {
 				"    scr.generatedAtTime AS generatedAtTime,\n " +
 				"    scr.comments AS comments,\n " +
 				"    scr.thumbnail AS thumbnail,\n " +
-			    "	 scr.collectionUri AS collectionIdentifier, \n"+
-			    "	 scr.collectionLabel AS collectionLabel, \n"+
+//			    "	 scr.collectionUri AS collectionIdentifier, \n"+
+//			    "	 scr.collectionLabel AS collectionLabel, \n"+
+			    "    {collections : COLLECT(DISTINCT \n" + 
+			    "      	{identifier: collection.uri,\n" + 
+			    "        label: collection.label}\n" + 
+			    "      )} AS collections, \n" +
 			    "	 {resources: COLLECT(DISTINCT\n" + 
 			    "       {url: resource.url, \n" + 
 			    "        type: resource.type, \n" + 
@@ -1053,9 +1055,10 @@ public class Neo4jEngine {
 			score.setTitle(record.get("title").asString());
 			score.setDateIssued(record.get("issued").asString());
 			score.setScoreId(record.get("identifier").asString());
-			score.setThumbnail(record.get("thumbnail").asString());					
-			score.getCollection().setIdentifier(record.get("collectionIdentifier").asString());
-			score.getCollection().setName(record.get("collectionLabel").asString());
+			score.setThumbnail(record.get("thumbnail").asString());			
+			
+			//score.getCollection().setIdentifier(record.get("collectionIdentifier").asString());
+			//score.getCollection().setName(record.get("collectionLabel").asString());
 			
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			
@@ -1072,13 +1075,11 @@ public class Neo4jEngine {
 			
 			score.setProvenance(prov);
 			score.getMovements().addAll(getMovementData(score.getScoreId(), dataSource));
-	
-			
+				
 			JSONParser parser = new JSONParser();
 			try {
 
-				JSONObject formatsObject = (JSONObject) parser.parse(gson.toJson(record.get("formats").asMap()));
-			
+				JSONObject formatsObject = (JSONObject) parser.parse(gson.toJson(record.get("formats").asMap()));			
 				JSONArray formatArray = (JSONArray) formatsObject.get("formats");
 
 				for (int i = 0; i < formatArray.size(); i++) {
@@ -1090,6 +1091,19 @@ public class Neo4jEngine {
 					score.getFormats().add(format);					
 				}
 
+				JSONObject collectionsObject = (JSONObject) parser.parse(gson.toJson(record.get("collections").asMap()));
+				JSONArray collectionsArray = (JSONArray) collectionsObject.get("collections");
+				
+				for (int i = 0; i < collectionsArray.size(); i++) {
+					
+					JSONObject collectionJsonObject = (JSONObject) collectionsArray.get(i);
+					Collection collection = new Collection();
+					collection.setIdentifier(collectionJsonObject.get("identifier").toString());
+					collection.setName(collectionJsonObject.get("label").toString());
+					score.getCollections().add(collection);					
+					
+				}
+							
 			} catch (ParseException e) {
 
 				e.printStackTrace();

@@ -627,6 +627,17 @@
 
 								}							
 
+
+								var collections = sc["collections"];
+								var collections_string = "";
+								for (k = 0; k < collections.length; k++) { 
+
+									var cl = collections[k];
+									collections_string = collections_string + '<a href="'+ cl["identifier"] + '">'+cl["name"]+'</a><br>';
+								}
+
+
+
 								var persons = sc["persons"];
 								var persons_string = "";
 
@@ -641,7 +652,7 @@
 	    	 							badge_class = 'badge badge-secondary';
 	    	 						} 
 
-	    	 						persons_string = persons_string +'<p><a href="'+per["url"]+'">' + per["name"] + '</a> <span class="'+badge_class+'">'+per["role"]+'</span></p>';
+	    	 						persons_string = persons_string +'<p><a href="'+per["identifier"]+'">' + per["name"] + '</a> <span class="'+badge_class+'">'+per["role"]+'</span></p>';
 
 	    	 					}
 
@@ -799,7 +810,7 @@
 
 											'	  <tr>'+
 											'		<td><strong>Collection</strong></td>'+
-											'		<td><a href="'+ collection["id"] + '">'+collection["description"]+'</a></td>'+
+											'		<td>'+collections_string+'</td>'+
 											'	  </tr>'+
 
 											'	  <tr>'+
