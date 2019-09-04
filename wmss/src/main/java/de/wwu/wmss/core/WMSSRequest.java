@@ -467,12 +467,16 @@ public class WMSSRequest {
 		
 		try {
 
-			JSONParser parser = new JSONParser();	
-			System.out.println("#####"+jsonRequest);
+			JSONParser parser = new JSONParser();
 			Object obj = parser.parse(jsonRequest);
 			JSONObject queryObject = (JSONObject) obj;	
-
-			this.requestType = queryObject.get("request").toString();
+			
+			this.requestType = queryObject.get("request").toString().toLowerCase();
+			
+			if(queryObject.get("source")!=null) {
+				this.source = queryObject.get("source").toString();
+				logger.info("Source: " + queryObject.get("source").toString());
+			}
 			
 			if(queryObject.get("scoreIdentifier")!=null) {
 				this.identifier = queryObject.get("scoreIdentifier").toString();

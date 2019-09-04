@@ -503,6 +503,7 @@ public class ListScoresRequestsElgar {
 		
 		String jsonQuery = "{\n" + 
 				"   \"request\":\"ListScores\",\n" + 
+				"   \"source\":\"neo4j_local\",\n" + 
 				"   \"scoreIdentifier\":\"http://dbpedia.org/resource/Cello_Concerto_(Elgar)\",\n" + 
 				"   \"scoreTitle\":\"cellokonzert\",\n" + 
 				"   \"issued\":\"1919\",\n" + 
@@ -611,6 +612,7 @@ public class ListScoresRequestsElgar {
 		
 		String jsonQuery = "{\n" + 
 				"   \"request\":\"ListScores\",\n" + 
+				"   \"source\":\"neo4j_local\",\n" + 
 				"   \"scoreIdentifier\":\"http://dbpedia.org/resource/Cello_Concerto_(Elgar)\",\n" + 
 				"   \"scoreTitle\":\"cellokonzert\",\n" + 
 				"   \"issued\":\"1919\",\n" + 
@@ -646,6 +648,7 @@ public class ListScoresRequestsElgar {
 		
 		String jsonQuery = "{\n" + 
 				"   \"request\":\"ListScores\",\n" + 
+				"   \"source\":\"neo4j_local\",\n" + 				
 				"   \"melody\":{\n" + 
 				"      \"format\":\"pea\",\n" + 
 				"      \"query\":\",8AB'CDxDE\",\n" + 

@@ -1,5 +1,6 @@
 {
    "request":"ListScores",
+   "source":"neo4j_local",
    "scoreIdentifier":"http://dbpedia.org/resource/Cello_Concerto_(Elgar)",
    "scoreTitle":"Cellokonzert e-Moll op. 85",
    "issued":"1919",

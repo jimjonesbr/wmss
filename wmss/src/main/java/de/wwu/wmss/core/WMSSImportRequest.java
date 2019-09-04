@@ -52,18 +52,6 @@ public class WMSSImportRequest {
 				
 				if(item.getFieldName().equals("metadata")) {
 										
-//					DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-//					DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-//					Document doc = dBuilder.parse(file);
-//					doc.getDocumentElement().normalize();
-//
-//					TransformerFactory tf = TransformerFactory.newInstance();
-//					Transformer transformer = tf.newTransformer();
-//					transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-//					StringWriter writer = new StringWriter();
-//					transformer.transform(new DOMSource(doc), new StreamResult(writer));
-//					this.metadata = writer.getBuffer().toString();
-					
 					this.metadataFile = file;
 					
 					logger.info("Metadata file:\n\n"+this.getMetadataFile().getAbsolutePath());
@@ -134,7 +122,7 @@ public class WMSSImportRequest {
 				}
 				
 				this.metadataFile = metadataFile;
-				//this.metadata = httpRequest.getParameter(parameter);				
+				
 			}	
 													
 			this.hostname = httpRequest.getServerName();				
