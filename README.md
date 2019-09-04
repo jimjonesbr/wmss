@@ -104,10 +104,7 @@ File: `conf/sources.json`
 
 `repository`&nbsp;   Data source repository (if applicable).
 
-`version`&nbsp;   Version of the data source application.
-
 `user`/`password`&nbsp;   Credentials for accessing the data source.
-
 
 
 #### [Configuring Neo4j](https://github.com/jimjonesbr/wmss/blob/master/README.md#configuring-neo4j)
