@@ -6,8 +6,13 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.neo4j.driver.v1.Record;
+import org.neo4j.driver.v1.StatementResult;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import de.wwu.wmss.connector.Neo4jConnector;
 import de.wwu.wmss.core.DataSource;
 import de.wwu.wmss.core.MusicScore;
 import de.wwu.wmss.core.WMSSImportRecord;
@@ -124,7 +129,8 @@ public class DocumentBuilder {
 				ds.put("port", SystemSettings.sourceList.get(i).getPort());
 				ds.put("host", SystemSettings.sourceList.get(i).getHost());
 				ds.put("repository", SystemSettings.sourceList.get(i).getRepository());
-				ds.put("version", SystemSettings.sourceList.get(i).getVersion());
+				
+				ds.put("edition", SystemSettings.sourceList.get(i).getEdition());
 				ds.put("user", SystemSettings.sourceList.get(i).getUser());
 				ds.put("filterCapabilities", SystemSettings.sourceList.get(i).getFilters());
 				
@@ -150,6 +156,16 @@ public class DocumentBuilder {
 					ds.put("tonalities", Neo4jEngine.getTonalities(SystemSettings.sourceList.get(i)));
 					ds.put("creationRange", null);					
 					ds.put("persons", Neo4jEngine.getRoles(SystemSettings.sourceList.get(i)));
+					
+					
+					StatementResult rs = Neo4jConnector.getInstance().executeQuery("CALL dbms.components() yield name, versions, edition unwind versions as version return name, version, edition;", SystemSettings.sourceList.get(i));
+
+					while ( rs.hasNext() ){
+						Record rec = rs.next();
+						ds.put("version", rec.get("version").asString());
+						ds.put("edition", rec.get("edition").asString());
+					}
+					
 					
 				}
 								

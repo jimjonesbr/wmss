@@ -66,6 +66,20 @@ public class Neo4jEngine {
 		return result;
 	}
 	
+//	public static DataSource getVersion(DataSource ds) {
+//		
+//		DataSource ds = new DataSource();
+//		StatementResult rs = Neo4jConnector.getInstance().executeQuery("CALL dbms.components() yield name, versions, edition unwind versions as version return name, version, edition;", Util.getDataSource(importRequest.getSource()));
+//
+//		while ( rs.hasNext() ){
+//			Record record = rs.next();
+//			ds.setVersion(record.get("version").asString());
+//			ds.setEdition(record.get("edition").asString());
+//		}
+//		
+//		return ds;
+//		
+//	}
 	
 	public static void prepareDatabase(WMSSImportRequest importRequest) {
 

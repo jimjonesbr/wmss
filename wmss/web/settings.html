@@ -48,12 +48,13 @@
 
 	        $('#table-settings').append('<tr><td width="15%">Type</td><td><code>'+data["type"]+'</code> <button id="btn-report" class="btn btn-light btn-sm" style="text-align: center"><i class="fas fa-file-code"></i></button></td></tr>');
 	        $('#table-settings').append('<tr><td width="15%">Title</td><td><code>'+data["title"]+'</code></td></tr>');
-	        $('#table-settings').append('<tr><td>Version</td><td><code>'+data["appVersion"]+'</code></td></tr>');
+	        $('#table-settings').append('<tr><td>Version</td><td><code>'+data["appVersion"]+'</code></td></tr>');	        
 	        $('#table-settings').append('<tr><td>Started at</td><td><code>'+data["startup"]+'</code></td></tr>');
 	        $('#table-settings').append('<tr><td>Port</td><td><code>'+data["port"]+'</code></td></tr>');
 	        $('#table-settings').append('<tr><td>Administrator</td><td><code>'+data["contact"]+'</code></td></tr>');
 			$('#table-settings').append('<tr><td>Service</td><td><code>'+data["service"]+'</code></td></tr>');
 			$('#table-settings').append('<tr><td>Port</td><td><code>'+data["port"]+'</code></td></tr>');
+
 
 			var environment = data["environment"];
 			$('#table-settings').append('<tr><td>Operating System</td><td><code>'+environment["os"]+'</code></td></tr>');			
@@ -88,6 +89,7 @@
 						'<tr><td style="width:15%">Host</td><td><code>'+src["host"]+'</code></td></tr>'+
 						'<tr><td style="width:15%">Port</td><td><code>'+src["port"]+'</code></td></tr>'+
 						'<tr><td style="width:15%">Version</td><td><code>'+src["version"]+'</code></td></tr>'+
+						'<tr><td style="width:15%">Edition</td><td><code>'+src["edition"]+'</code></td></tr>'+
 						'<tr><td style="width:15%">Total Scores</td><td><code>'+src["totalScores"]+'</code></td></tr>'+
 					'</table>');
 

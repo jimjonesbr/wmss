@@ -12,7 +12,6 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-
 import de.wwu.music2rdf.converter.MusicXML2RDF;
 import de.wwu.wmss.core.DataSource;
 
@@ -124,10 +123,8 @@ public class SystemSettings {
 				ds.setPort(Integer.parseInt(record.get("port").toString()));
 				ds.setHost(record.get("host").toString());
 				ds.setRepository(record.get("repository").toString());
-				ds.setVersion(record.get("version").toString());
 				ds.setUser(record.get("user").toString());
 				ds.setPassword(record.get("password").toString());
-
 				
 				JSONObject filters = (JSONObject) record.get("filterCapabilities");
 				
@@ -145,6 +142,7 @@ public class SystemSettings {
 				ds.getFilters().setSource((boolean)filters.get("source"));
 				ds.getFilters().setIdentifier((boolean)filters.get("identifier"));
 				ds.getFilters().setFormat((boolean)filters.get("format"));
+			
 				
 				sourceList.add(ds);            	
 			}

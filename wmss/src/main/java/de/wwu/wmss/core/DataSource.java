@@ -15,6 +15,7 @@ public class DataSource {
 	private String user;
 	private String password;
 	private String info;
+	private String edition;
 	private Driver neo4jConnectionDriver;
 	private FilterCapability filters;
 	
@@ -105,6 +106,14 @@ public class DataSource {
 
 	public void setNeo4jConnectionDriver(Driver connectionDriver) {
 		this.neo4jConnectionDriver = connectionDriver;
+	}
+
+	public String getEdition() {
+		return edition;
+	}
+
+	public void setEdition(String edition) {
+		this.edition = edition;
 	}
 	
 }

@@ -10,9 +10,8 @@
       "port": "7687",
       "host": "bolt://localhost",
       "repository": "",
-      "version": "3.5.5",
       "user": "neo4j",
-      "password": "123456",
+      "password": "",
             "filterCapabilities": 
             {
               "melody": true,
