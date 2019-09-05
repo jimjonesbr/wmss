@@ -69,7 +69,7 @@ File: `conf/settings.json`
 
 `pageSize`&nbsp;   Number of records per page in the Score List Document.
 
-`defaultRequestMode`&nbsp;   Default request mode for the `ListScore` requests (default `full`). Supported request modes are: `simplified`, omitting the movements and performance medium data, and `full` for a complete  Score List Document.
+`defaultRequestMode`&nbsp;   Default request mode for the `ListScores` requests (default `full`). Supported request modes are: `simplified`, omitting the movements and performance medium data, and `full` for a complete  Score List Document.
 
 `contact`&nbsp;   E-mail address of the server administrator.
 
@@ -363,7 +363,9 @@ An example of a Service Description Report can be found [here](https://github.co
  http://localhost:8295/wmss?request=ListScores
  ```
  
- In order to facilitate the music score discovery, the ListScores request offers several filter capabilities:
+ In order to facilitate the music score discovery the ListScores request offers several filter capabilities, which can be queried as GET and POST requests.
+ 
+ ### ListScores via GET Requests
  
  #### [Data Source](https://github.com/jimjonesbr/wmss/blob/master/README.md#data-source)
  Parameter: `source`
@@ -722,7 +724,7 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&key=xFCGDA
 ```
 
 
-##### ListScore Request Examples 
+##### ListScores Request Examples 
 
 The following example deals with a melody of 36 notes in containing several durations and octaves:
 
@@ -731,6 +733,112 @@ The following example deals with a melody of 36 notes in containing several dura
 ```http
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody='4xF8G4xF8A4B8A4G8E4D8E4C,8B4A8B4A'8C4D8C,4B8G4xF8G4E8D4xC8D4xC8E4xF8E4D,,8B4xA8B4G8xF2B&ignoreOctave=false
 ```
+
+### ListScores via POST Requests
+
+POST requests can be sent using a JSON string (`application/json`). The following example shows a ListScores request containing all filters supported by ListScores Request:
+
+```json
+{
+   "request":"ListScores",
+   "source":"neo4j_local",
+   "scoreIdentifier":"http://dbpedia.org/resource/Cello_Concerto_(Elgar)",
+   "scoreTitle":"Cellokonzert e-Moll op. 85",
+   "issued":"1919",
+   "formats":[
+      {"format":"musicxml"}
+   ],
+   "keys":[
+      {
+         "key":"xF",
+         "format":"pea"
+      },
+      {
+         "key":"xFCGD",
+         "format":"pea"
+      }
+   ],
+   "times":[
+      {
+         "time":"4/4",
+         "format":"pea"
+      },
+      {
+         "time":"12/8",
+         "format":"pea"
+      },
+      {
+         "time":"6/8",
+         "format":"pea"
+      }
+   ],
+   "clefs":[
+      {
+         "clef":"F-4",
+         "format":"pea"
+      },
+      {
+         "clef":"G-2",
+         "format":"pea"
+      },
+      {
+         "clef":"C-4",
+         "format":"pea"
+      }
+   ],
+   "melody":{
+      "format":"pea",
+      "query":",8AB'CDxDE",
+      "mediumCode":"strings.cello",
+      "mediumType":"strings",
+      "key":"xF",
+      "time":"4/4",
+      "clef":"C-4"
+   },
+   "mediums":[
+      {
+         "mediumType":"strings",
+         "mediumCode":"strings.cello"
+      }
+   ],
+   "collections":[
+      {
+         "collectionName":"great compo",
+         "collectionIdentifier":"https://wwu.greatcomposers.de"
+      },
+      {
+         "collectionName":"digitale sammlung",
+         "collectionIdentifier":"https://sammlungen.ulb.uni-muenster.de"
+      }
+   ],
+   "persons":[
+      {
+         "personIdentifier":"http://dbpedia.org/resource/Edward_Elgar",
+         "personName":"elgar",
+         "personRole":"Composer"
+      },
+      {
+         "personIdentifier":"http://jimjones.de",
+         "personName":"jim",
+         "personRole":"Encoder"
+      }
+   ],
+   "ignoreOctave":"false",
+   "ignoreDuration":"false",
+   "ignorePitch":"false",
+   "ignoreChords":"true"
+}
+```
+
+The only obligatory fields are `request` and `source`. For instance, to retrieve a complete list of all available scores use the following json string:
+
+```json
+{
+   "request":"ListScores",
+   "source":"neo4j_local"
+}
+```
+
 
 
 
