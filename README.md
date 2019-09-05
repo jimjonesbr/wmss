@@ -21,29 +21,31 @@ The application relies on datasets encoded using the [MusicOWL ontology](http://
   - [DescribeService](#describeservice)
     - [Service Description Report](#service-description-report)
   - [ListScores](#listscores)
-    - [Data Source](#data-source)  
-    - [Title](#title)      
-    - [Collections](#collections)  
-    - [Persons](#persons)  
-    - [Performance Medium (Instrument)](#performance-medium-instrument)  
-    - [Performance Medium Type](#performance-medium-type)
-    - [Tempo](#tempo)    
-    - [Date Issued](#date-issued)  
-    - [Format](#format)  
-    - [Melodies](#melody)  
-    - [Octaves](#octaves)
-    - [Durations](#durations)   
-    - [Dotted Durations](#dotted-durations) 
-    - [Pitches](#pitches)  
-    - [Grace Notes](#grace-notes)  
-    - [Embedded Note Sequences](#embedded-sequences-note-sequences-inside-chords)  
-    - [Chords Search](#chords-search)  
-    - [Time Signatures](#time-signatures)
-    - [Clefs](#clefs)
-    - [Measures](#measures)
-    - [Rests](#rests)      
-    - [Key Signatures](#key-signatures)  
-    - [Score List Report](#score-list-report)  
+    - [ListScores via GET](#listscores-via-get)
+      - [Data Source](#data-source)  
+      - [Title](#title)      
+      - [Collections](#collections)  
+      - [Persons](#persons)  
+      - [Performance Medium (Instrument)](#performance-medium-instrument)  
+      - [Performance Medium Type](#performance-medium-type)
+      - [Tempo](#tempo)    
+      - [Date Issued](#date-issued)  
+      - [Format](#format)  
+      - [Melodies](#melody)  
+      - [Octaves](#octaves)
+      - [Durations](#durations)   
+      - [Dotted Durations](#dotted-durations) 
+      - [Pitches](#pitches)  
+      - [Grace Notes](#grace-notes)  
+      - [Embedded Note Sequences](#embedded-sequences-note-sequences-inside-chords)  
+      - [Chords Search](#chords-search)  
+      - [Time Signatures](#time-signatures)
+      - [Clefs](#clefs)
+      - [Measures](#measures)
+      - [Rests](#rests)      
+      - [Key Signatures](#key-signatures)  
+      - [Score List Report](#score-list-report)  
+    - [ListScores via POST](#listscores-via-post)
   - [GetScore](#getscore)
   - [DeleteScore](#deletescore)    
   - [GetLogging](#logging)
@@ -356,7 +358,7 @@ The [Service Description Document](https://github.com/jimjonesbr/wmss/blob/maste
 
 An example of a Service Description Report can be found [here](https://github.com/jimjonesbr/wmss/tree/master/wmss/data/system/reports/DescribeService.json).
 ### [ListScores](https://github.com/jimjonesbr/wmss/blob/master/README.md#listscores)
- 
+
  Lists all scores from available repositories. 
  
  ```http
@@ -365,7 +367,7 @@ An example of a Service Description Report can be found [here](https://github.co
  
  In order to facilitate the music score discovery the ListScores request offers several filter capabilities, which can be queried as GET and POST requests.
  
- ### ListScores via GET Requests
+ ### [ListScores via GET](https://github.com/jimjonesbr/wmss/blob/master/README.md#listscores-via-get)
  
  #### [Data Source](https://github.com/jimjonesbr/wmss/blob/master/README.md#data-source)
  Parameter: `source`
@@ -734,7 +736,7 @@ The following example deals with a melody of 36 notes in containing several dura
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody='4xF8G4xF8A4B8A4G8E4D8E4C,8B4A8B4A'8C4D8C,4B8G4xF8G4E8D4xC8D4xC8E4xF8E4D,,8B4xA8B4G8xF2B&ignoreOctave=false
 ```
 
-### ListScores via POST Requests
+### [ListScores via POST](https://github.com/jimjonesbr/wmss/blob/master/README.md#listscores-via-post)
 
 POST requests can be sent using a JSON string (`application/json`). The following example shows a ListScores request containing all filters supported by ListScores Request:
 
