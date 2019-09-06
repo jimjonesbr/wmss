@@ -369,12 +369,12 @@
 		        	for (j = 0; j < collections.length; j++) { 
 		        		var col = collections[j];
 		        		var opt_collection_url = document.createElement("option");
-		        		opt_collection_url.value = col["id"];
-		        		opt_collection_url.label = col["description"];		        	 	
+		        		opt_collection_url.value = col["identifier"];
+		        		opt_collection_url.label = col["name"];		        	 	
 		        	 	$('#collection-url-list').append(opt_collection_url); 
 		        	 	var opt_collection_description = document.createElement("option");
-		        		opt_collection_description.value = col["description"];
-		        		opt_collection_description.label = col["id"];		        	 	
+		        		opt_collection_description.value = col["name"];
+		        		opt_collection_description.label = col["identifier"];		        	 	
 		        	 	$('#collection-description-list').append(opt_collection_description); 
 
 		        	}

@@ -62,7 +62,8 @@ public class SystemSettings {
 	            
 				MavenXpp3Reader reader = new MavenXpp3Reader();
 	            org.apache.maven.model.Model model = reader.read(is);
-	            serviceVersion = model.getVersion();			
+	            serviceVersion = model.getVersion();
+	            	          
 	            
 	        } catch (XmlPullParserException e) {
 	        	logger.error("Problem reading pom.xml.");
