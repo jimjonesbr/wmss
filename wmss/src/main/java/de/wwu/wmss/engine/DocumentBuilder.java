@@ -279,8 +279,8 @@ public class DocumentBuilder {
 						if(!request.getDateIssued().equals("")) {
 							nextPage = nextPage + "&creationDate="+request.getDateIssued();
 						}					
-						if(!request.getIdentifier().equals("")) {
-							nextPage = nextPage + "&identifier="+request.getIdentifier();
+						if(!request.getScoreIdentifier().equals("")) {
+							nextPage = nextPage + "&identifier="+request.getScoreIdentifier();
 						}						
 						if(!request.getProtocolVersion().equals("")) {
 							nextPage = nextPage + "&version="+request.getProtocolVersion();

@@ -1,0 +1,36 @@
+{
+  "request": "EditScore",
+  "source": "neo4j_local",
+  "scoreIdentifier": "http://dbpedia.org/resource/Cello_Concerto_(Elgar)",
+  "scoreTitle": "Cellokonzert e-Moll op. 85",
+  "issued": "1919",
+  "collections": [
+    {
+      "collectionName": "great compo",
+      "collectionIdentifier": "https://wwu.greatcomposers.de"
+    }
+  ],
+  "persons": [
+    {
+      "personIdentifier": "http://dbpedia.org/resource/Edward_Elgar",
+      "personName": "elgar",
+      "personRole": "Composer"
+    }
+  ],
+  "movements": [
+    {
+      "movementIdentifier": "",
+      "movementName": "",
+      "mediums": [
+        {
+          "mediumDescription": "Violoncello",
+          "mediumIdentifier": "http://linkeddata.uni-muenster.de/node/d30b05fa-6856-4b49-ac37-d5ea3141c1f9/MOV1_PART_P1",
+          "mediumCode": "strings.cello",
+          "mediumScoreDescription": "Violoncello",
+          "solo": false,
+          "ensemble": false
+        }
+      ]
+    }
+  ]
+}

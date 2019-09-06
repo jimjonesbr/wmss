@@ -66,21 +66,6 @@ public class Neo4jEngine {
 		return result;
 	}
 	
-//	public static DataSource getVersion(DataSource ds) {
-//		
-//		DataSource ds = new DataSource();
-//		StatementResult rs = Neo4jConnector.getInstance().executeQuery("CALL dbms.components() yield name, versions, edition unwind versions as version return name, version, edition;", Util.getDataSource(importRequest.getSource()));
-//
-//		while ( rs.hasNext() ){
-//			Record record = rs.next();
-//			ds.setVersion(record.get("version").asString());
-//			ds.setEdition(record.get("edition").asString());
-//		}
-//		
-//		return ds;
-//		
-//	}
-	
 	public static void prepareDatabase(WMSSImportRequest importRequest) {
 
     	InputStream is;
@@ -216,7 +201,7 @@ public class Neo4jEngine {
 			format = SystemSettings.getDefaultScoreFormat();
 		}
 		
-		String cypher = "\n\nMATCH (score:Score {uri:'"+request.getIdentifier()+"'})-[:DOCUMENT {type:'"+format+"'}]->(document:Document) "
+		String cypher = "\n\nMATCH (score:Score {uri:'"+request.getScoreIdentifier()+"'})-[:DOCUMENT {type:'"+format+"'}]->(document:Document) "
 				+ "RETURN score.title AS title, document.content AS xml";
 
 		logger.debug("getMusicXML:\n"+cypher);
@@ -331,6 +316,36 @@ public class Neo4jEngine {
 		
 		return result;
 
+	}
+	
+	public static MusicScore editScore(WMSSRequest request, DataSource ds){
+		
+		MusicScore result = new MusicScore();
+		
+		String _match = "MATCH (score:Score {uri: '"+request.getScoreIdentifier()+"'})";		
+		String _set = "SET \n";
+		String _return = "";
+		
+		if(!request.getTitle().equals("")) {
+			_set = _set + "score.title = '" + request.getTitle() + "'\n ";
+		}
+
+		if(!request.getDateIssued().equals("")) {
+			_set = _set + "score.issued = '" + request.getDateIssued() + "'\n ";
+		}
+
+		StatementResult rs = Neo4jConnector.getInstance().executeQuery(_match + _set + _return, ds);
+		
+		
+		String cypher_getscore = 
+				"MATCH (score:Score {uri: '"+request.getScoreIdentifier()+"'})-[:COLLECTION]->(collection:Collection)\n"+
+				"MATCH (score)-[:CREATOR]->(person:Person)\n";
+		
+		
+		
+		
+		return result;
+		
 	}
 	
 	public static ArrayList<Format> getFormats(DataSource ds){
@@ -969,7 +984,7 @@ public class Neo4jEngine {
 		    			logger.debug(arrayCypher[i]);
 		    			
 		    			try {
-		    				StatementResult rs = Neo4jConnector.getInstance().executeQuery(arrayCypher[i].replaceAll("\n", " ").replace("SCORE_URI_PLACEHOLDER", request.getIdentifier()), dataSource);
+		    				StatementResult rs = Neo4jConnector.getInstance().executeQuery(arrayCypher[i].replaceAll("\n", " ").replace("SCORE_URI_PLACEHOLDER", request.getScoreIdentifier()), dataSource);
 						
 		    			
 			    			while ( rs.hasNext() ) {
@@ -1021,8 +1036,6 @@ public class Neo4jEngine {
 				"    scr.generatedAtTime AS generatedAtTime,\n " +
 				"    scr.comments AS comments,\n " +
 				"    scr.thumbnail AS thumbnail,\n " +
-//			    "	 scr.collectionUri AS collectionIdentifier, \n"+
-//			    "	 scr.collectionLabel AS collectionLabel, \n"+
 			    "    {collections : COLLECT(DISTINCT \n" + 
 			    "      	{identifier: collection.uri,\n" + 
 			    "        label: collection.label}\n" + 
@@ -1070,9 +1083,6 @@ public class Neo4jEngine {
 			score.setDateIssued(record.get("issued").asString());
 			score.setScoreId(record.get("identifier").asString());
 			score.setThumbnail(record.get("thumbnail").asString());			
-			
-			//score.getCollection().setIdentifier(record.get("collectionIdentifier").asString());
-			//score.getCollection().setName(record.get("collectionLabel").asString());
 			
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			

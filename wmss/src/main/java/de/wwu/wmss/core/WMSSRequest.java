@@ -6,7 +6,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Properties;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -122,14 +121,14 @@ public class WMSSRequest {
 							this.parseQueryFile(FileUtils.readFileToString(file, StandardCharsets.UTF_8));
 
 						}
-					}					
+					}
 					
 				} catch (FileUploadException e) {
 					e.printStackTrace();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			
+
 			}
 						
 			if(httpRequest.getContentType().toLowerCase().contains("application/json")) {
@@ -454,7 +453,13 @@ public class WMSSRequest {
 			this.responseStatus= HttpServletResponse.SC_OK;
 			this.responseContent= DocumentBuilder.getScoreList(this);
 
-		} else if (this.getRequestType().equals("deletescore")) {
+		}  else if (this.getRequestType().equals("editscore")) {
+
+			this.responseContentType ="text/javascript";
+			this.responseStatus= HttpServletResponse.SC_OK;
+			//this.responseContent= DocumentBuilder.getScoreList(this);
+
+		}	else if (this.getRequestType().equals("deletescore")) {
 
 			this.responseContentType = "text/javascript";
 			this.responseStatus = HttpServletResponse.SC_OK;
@@ -830,7 +835,7 @@ public class WMSSRequest {
 		return melody;
 	}
 
-	public String getIdentifier() {
+	public String getScoreIdentifier() {
 		return identifier;
 	}
 
