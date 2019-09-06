@@ -498,7 +498,7 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&format=musicxm
 Parameter: `melody`
 
 
-Selects records containing a specific a sequence of notes or phrases (not limited to *incipt*) throughout the database, encoded using the [Plaine & Easie musical notation](https://www.iaml.info/plaine-easie-code#toc-4) (PEA).  For instance, the value `,8AB'CDxDE` - which is going to be used throughout this section - corresponds to ..
+Selects records containing a specific a sequence of notes or phrases (not limited to *incipt*) throughout the database, encoded using the [Plaine & Easie musical notation](https://www.iaml.info/plaine-easie-code#toc-4) (PAE).  For instance, the value `,8AB'CDxDE` - which is going to be used throughout this section - corresponds to ..
 
 ![melody_sample](https://github.com/jimjonesbr/wmss/blob/master/wmss/web/img/melody_sample.jpg)
 
@@ -515,7 +515,7 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,8AB'CD
 #### [Octaves](https://github.com/jimjonesbr/wmss/blob/master/README.md#octaves)
 Parameter: `ignoreOctave`
 
-To search for melodies encoded in specific octaves, set the parameter `ignoreOctave` to `false` (`true` by default). Note that in the PEA string the 4th octave is assumed, if no octave is explicitly defined. The following example searches for scores matching the sequence `A` 3rd octave, `B` 3rd octave, `C` 4th octave, `D` 4th octave, `D#` 4th octave and `E` 4th octave, all with the duration `eighth` (as described above):
+To search for melodies encoded in specific octaves, set the parameter `ignoreOctave` to `false` (`true` by default). Note that in the PAE string the 4th octave is assumed, if no octave is explicitly defined. The following example searches for scores matching the sequence `A` 3rd octave, `B` 3rd octave, `C` 4th octave, `D` 4th octave, `D#` 4th octave and `E` 4th octave, all with the duration `eighth` (as described above):
 
 ```http
 http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,8AB'CDxDE&ignoreOctave=false
@@ -589,7 +589,7 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,,2GB8G
 
 Parameter: `melody`
 
-Melodies containing chords can be searched by means of using the [PEA chords notation](https://www.iaml.info/plaine-easie-code#toc-19). The PEA notation states that every note of a chord is to be separated by `^`, starting by the upper note; then followed by the lower ones.
+Melodies containing chords can be searched by means of using the [PAE chords notation](https://www.iaml.info/plaine-easie-code#toc-19). The PAE notation states that every note of a chord is to be separated by `^`, starting by the upper note; then followed by the lower ones.
 
 Searching for the following chord `,,2E^B^,G^'E` .. 
 
@@ -604,7 +604,7 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody=,,2E^B^
 #### [Time signatures](https://github.com/jimjonesbr/wmss/blob/master/README.md#time-signatures)
 Parameters: `melody` / `time`
 
-Time signatures are to be encoded according to the [PEA key time signature notation](https://www.iaml.info/plaine-easie-code#toc-3). Time signatures embedded in melodies are preceded by `@` and followed by beats and beat unit, separated by `/`, e.g. `@3/4` (three-four or waltz time), `@2/4` (march time). Common time signatures can be also represented as `@c` and will be considered by the system as `@4/4`.
+Time signatures are to be encoded according to the [PAE key time signature notation](https://www.iaml.info/plaine-easie-code#toc-3). Time signatures embedded in melodies are preceded by `@` and followed by beats and beat unit, separated by `/`, e.g. `@3/4` (three-four or waltz time), `@2/4` (march time). Common time signatures can be also represented as `@c` and will be considered by the system as `@4/4`.
 
 Examples
 
@@ -633,7 +633,7 @@ See also: *UNIMARC field 036 $o — MARC21 field 789 $g — MAB field 681 $h (RI
 #### [Clefs](https://github.com/jimjonesbr/wmss/blob/master/README.md#clefs)
 Parameters: `melody` / `clef`
 
-Clefs are to be encoded according to the [PEA clef notation](https://www.iaml.info/plaine-easie-code#toc-1). Clefs embedded in melodies are preceded by `%`, and are three characters long. The first character specifies the clef shape (`G`,`C`,`F`,`g`). The second character is `-` to indicate modern notation, `+` to indicate mensural notation. The third character (numeric 1-5) indicates the position of the clef on the staff, starting from the bottom line. 
+Clefs are to be encoded according to the [PAE clef notation](https://www.iaml.info/plaine-easie-code#toc-1). Clefs embedded in melodies are preceded by `%`, and are three characters long. The first character specifies the clef shape (`G`,`C`,`F`,`g`). The second character is `-` to indicate modern notation, `+` to indicate mensural notation. The third character (numeric 1-5) indicates the position of the clef on the staff, starting from the bottom line. 
 
 Clef examples: `G-2` (trebble clef), `F-4` (bass clef), `C-3` (alto clef), `C-4` (tenor clef).
 
@@ -683,11 +683,11 @@ Melody containing [rests](https://www.iaml.info/plaine-easie-code#toc-12) can be
 #### [Key signatures](https://github.com/jimjonesbr/wmss/blob/master/README.md#key-signatures)
 Parameters: `melody` / `key`
 
-Keys signatures are to be encoded according to the [PEA key signature notation](https://www.iaml.info/plaine-easie-code#toc-2). Key signatures embedded in melodies are preceded by the character `$`; The symbol `x` indicates sharpened keys, `b` flattened keys; the symbol is followed by the capital letters indicating the altered notes.
+Keys signatures are to be encoded according to the [PAE key signature notation](https://www.iaml.info/plaine-easie-code#toc-2). Key signatures embedded in melodies are preceded by the character `$`; The symbol `x` indicates sharpened keys, `b` flattened keys; the symbol is followed by the capital letters indicating the altered notes.
 
 Sharpened keys have to be encoded in the following order: `F♯ C♯ G♯ D♯ A♯ E♯ B♯`
 
-||Major key   | Minor Key  | PEA key 
+||Major key   | Minor Key  | PAE key 
 |:-:|:-:|:-:|:-:
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/C-major_a-minor.svg/220px-C-major_a-minor.svg.png" width="80">|C major|A minor|`$`
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/G-major_e-minor.svg/220px-G-major_e-minor.svg.png" width="80">|G major|E minor|`xF`|
@@ -700,7 +700,7 @@ Sharpened keys have to be encoded in the following order: `F♯ C♯ G♯ D♯ A
 
 Flattened keys have to be encoded in the following order: `B♭ E♭ A♭ D♭ G♭ C♭ F♭`
 
-||Major key   | Minor Key  | PEA key 
+||Major key   | Minor Key  | PAE key 
 |:-:|:-:|:-:|:-:
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/C-major_a-minor.svg/220px-C-major_a-minor.svg.png" width="80">|C major|A minor|`$`|
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/F-major_d-minor.svg/220px-F-major_d-minor.svg.png" width="80">|F major|D minor|`bB`|
