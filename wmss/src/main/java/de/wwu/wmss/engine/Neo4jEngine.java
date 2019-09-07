@@ -40,6 +40,7 @@ import de.wwu.wmss.core.Provenance;
 import de.wwu.wmss.core.ScoreResource;
 import de.wwu.wmss.core.WMSSRequest;
 import de.wwu.wmss.exceptions.DatabaseImportException;
+import de.wwu.wmss.exceptions.InvalidWMSSRequestException;
 import de.wwu.wmss.core.Tonality;
 import de.wwu.wmss.core.WMSSImportRequest;
 import de.wwu.wmss.settings.SystemSettings;
@@ -318,34 +319,84 @@ public class Neo4jEngine {
 
 	}
 	
-	public static MusicScore editScore(WMSSRequest request, DataSource ds){
-		
-		MusicScore result = new MusicScore();
+	public static void editScore(WMSSRequest request, DataSource ds) {
 		
 		String _match = "MATCH (score:Score {uri: '"+request.getScoreIdentifier()+"'})";		
-		String _set = "SET \n";
-		String _return = "";
 		
-		if(!request.getTitle().equals("")) {
-			_set = _set + "score.title = '" + request.getTitle() + "'\n ";
+		if(!request.getScoreTitle().equals("")) {		
+			System.out.println(_match + "SET score.title = '"+request.getScoreTitle()+"'");
+			Neo4jConnector.getInstance().executeQuery(_match + "SET score.title = '"+request.getScoreTitle()+"'", ds);			
 		}
-
-		if(!request.getDateIssued().equals("")) {
-			_set = _set + "score.issued = '" + request.getDateIssued() + "'\n ";
+		
+		if(!request.getDateIssued().equals("")) {						
+			Neo4jConnector.getInstance().executeQuery(_match + "SET score.issued = '"+request.getDateIssued()+"'", ds);			
 		}
-
-		StatementResult rs = Neo4jConnector.getInstance().executeQuery(_match + _set + _return, ds);
 		
 		
-		String cypher_getscore = 
-				"MATCH (score:Score {uri: '"+request.getScoreIdentifier()+"'})-[:COLLECTION]->(collection:Collection)\n"+
-				"MATCH (score)-[:CREATOR]->(person:Person)\n";
+		/**
+		 * Edit Collections 
+		 */
+		for (int i = 0; i < request.getCollections().size(); i++) {
+			
+			if(request.getCollections().get(i).getIdentifier().equals("") || request.getCollections().get(i).getName().equals("") ) {
+				if(!request.getCollections().get(i).getAction().equals("delete")) {
+					throw new InvalidWMSSRequestException(ErrorCodes.INSUFFICIENT_DATA_DESCRIPTION + "a collection must have an identifier and a non-empty label.",
+							  							  ErrorCodes.INSUFFICIENT_DATA_CODE, 
+							  							  ErrorCodes.INSUFFICIENT_DATA_HINT);					
+				}
+			}
+			
+			if(request.getCollections().get(i).getAction().equals("add")) {
+				
+				StatementResult rs = Neo4jConnector.getInstance().executeQuery(_match + "MATCH (score)-[:COLLECTION]->(collection:Collection {uri:'"+request.getCollections().get(i).getIdentifier()+"'})\n" + 
+						"RETURN collection", ds);
+				
+				if(rs.hasNext()) {
+					throw new InvalidWMSSRequestException(ErrorCodes.RELATIONSHIP_CONFLICT_DESCRIPTION + "The score '"+request.getScoreIdentifier()+"' already has a collection with the given identifier: "+request.getCollections().get(i).getIdentifier()+" (" + request.getCollections().get(i).getName()+")",
+														  ErrorCodes.RELATIONSHIP_CONFLICT_CODE,
+														  ErrorCodes.RELATIONSHIP_CONFLICT_HINT);
+				}
+				
+				String cypher = _match + "MERGE (score)-[:COLLECTION]->(collection:Collection "
+						+ "{uri:'"+request.getCollections().get(i).getIdentifier()+"', label:'"+request.getCollections().get(i).getName()+"'})";				
+				Neo4jConnector.getInstance().executeQuery(cypher, ds);				
+				
+			}
+			
+			if(request.getCollections().get(i).getAction().equals("update")) {
+				
+				String cypher = _match + "MATCH (score)-[:COLLECTION]->(collection:Collection {uri: '"+request.getCollections().get(i).getIdentifier()+"'})\n"
+						+ "SET collection.label = '"+request.getCollections().get(i).getName()+"'";				
+				Neo4jConnector.getInstance().executeQuery(cypher, ds);
+				
+			}
+			
+			if(request.getCollections().get(i).getAction().equals("delete")) {
+				
+				String cypher = _match + "MATCH (score)-[rel:COLLECTION]->(collection:Collection {uri: '"+request.getCollections().get(i).getIdentifier()+"'})\n"
+						+ "DELETE rel";				
+				Neo4jConnector.getInstance().executeQuery(cypher, ds);
+				
+			}
+		}
+		
+		
+		for (int i = 0; i < request.getResources().size(); i++) {
+			
+			if(request.getResources().get(i).getUrl().equals("") || request.getResources().get(i).getLabel().equals("") ) {
+				if(!request.getResources().get(i).getAction().equals("delete")) {
+					throw new InvalidWMSSRequestException(ErrorCodes.INSUFFICIENT_DATA_DESCRIPTION + "a resource must have an URL and a non-empty label.",
+							  							  ErrorCodes.INSUFFICIENT_DATA_CODE, 
+							  							  ErrorCodes.INSUFFICIENT_DATA_HINT);					
+				}
+			}
+			
+		}
 		
 		
 		
-		
-		return result;
-		
+		Neo4jConnector.getInstance().executeQuery(_match + "WHERE NOT (score)-[:COLLECTION]-() "
+				+ "MERGE (score)-[:COLLECTION]->(:Collection {uri:'https://github.com/jimjonesbr/wmss#collections',label:'WMSS Collection'})", ds);
 	}
 	
 	public static ArrayList<Format> getFormats(DataSource ds){
@@ -541,7 +592,7 @@ public class Neo4jEngine {
 	
 	public static int getResultsetSize(WMSSRequest wmssRequest, DataSource dataSource) {
 		
-		String cypherQuery = createMelodyQuery(wmssRequest) + "\nRETURN COUNT(DISTINCT scr.uri) AS total";
+		String cypherQuery = createMatchStatements(wmssRequest) + "\nRETURN COUNT(DISTINCT scr.uri) AS total";
 		
 		logger.debug("\n[count]:\n"+cypherQuery);
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypherQuery, dataSource);
@@ -551,7 +602,7 @@ public class Neo4jEngine {
 		
 	}
 	
-	public static String createMelodyQuery(WMSSRequest wmssRequest) {
+	public static String createMatchStatements(WMSSRequest wmssRequest) {
 	
 		
 		String where = "\nWHERE TRUE \n";														
@@ -559,7 +610,6 @@ public class Neo4jEngine {
 					   "MATCH (scr:Score)-[rel_doc:DOCUMENT ]->(document:Document)\n"+
 					   "MATCH (scr:Score)-[:COLLECTION]->(collection:Collection)\n" + 
 					   "MATCH (scr:Score)-[rel_role:CREATOR]->(creator:Person)\n";
-		//match = match + "\n";
 		
 		if(!wmssRequest.getMelody().equals("")) {
 
@@ -744,9 +794,9 @@ public class Neo4jEngine {
 		}
 		
 				
-		if(!wmssRequest.getTitle().equals("")){
+		if(!wmssRequest.getScoreTitle().equals("")){
 		
-			where = where + "AND scr.title =~ '(?i).*"+wmssRequest.getTitle()+".*'\n";
+			where = where + "AND scr.title =~ '(?i).*"+wmssRequest.getScoreTitle()+".*'\n";
 			
 		}
 		
@@ -935,14 +985,17 @@ public class Neo4jEngine {
 		
 		for (int i = 0; i < wmssRequest.getCollections().size(); i++) {
 			
-			match = match + "MATCH (scr:Score)-[:COLLECTION]->(collection"+i+":Collection)\n";
-			
-			if(wmssRequest.getCollections().get(i).getIdentifier()!="") {
-				where = where + "AND collection"+i+".uri = '"+wmssRequest.getCollections().get(i).getIdentifier()+"'\n";
-			}
+			if(!wmssRequest.getCollections().get(i).getAction().equals("delete")) {
 
-			if(wmssRequest.getCollections().get(i).getName()!="") {
-				where = where + "AND collection"+i+".label =~ '(?i).*"+wmssRequest.getCollections().get(i).getName()+".*'\n";
+				match = match + "MATCH (scr:Score)-[:COLLECTION]->(collection"+i+":Collection)\n";
+				
+				if(wmssRequest.getCollections().get(i).getIdentifier()!="") {
+					where = where + "AND collection"+i+".uri = '"+wmssRequest.getCollections().get(i).getIdentifier()+"'\n";
+				}
+	
+				if(wmssRequest.getCollections().get(i).getName()!="") {
+					where = where + "AND collection"+i+".label =~ '(?i).*"+wmssRequest.getCollections().get(i).getName()+".*'\n";
+				}
 			}
 
 		}
@@ -1027,7 +1080,7 @@ public class Neo4jEngine {
 		ArrayList<MusicScore> result = new ArrayList<MusicScore>();		
 		String returnClause = "";
 				
-		String matchClause = createMelodyQuery(request);
+		String matchClause = createMatchStatements(request);
 		
 		returnClause =   "\nRETURN \n" + 				
 				"    scr.title AS title,\n" + 
@@ -1124,6 +1177,7 @@ public class Neo4jEngine {
 					Collection collection = new Collection();
 					collection.setIdentifier(collectionJsonObject.get("identifier").toString());
 					collection.setName(collectionJsonObject.get("label").toString());
+
 					score.getCollections().add(collection);					
 					
 				}

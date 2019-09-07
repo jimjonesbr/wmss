@@ -37,7 +37,7 @@ public class Neo4jConnector {
 				if(SystemSettings.sourceList.get(i).getId().equals(ds.getId())) {
 					SystemSettings.sourceList.get(i).setNeo4jConnectionDriver(GraphDatabase.driver(ds.getHost(),AuthTokens.basic(ds.getUser(),ds.getPassword())));
 					ds.setNeo4jConnectionDriver(GraphDatabase.driver(ds.getHost(),AuthTokens.basic(ds.getUser(),ds.getPassword())));					
-					logger.debug("Neo4j connection driver created.");
+					logger.info("Neo4j connection driver created.");
 				}
 			}
 		}

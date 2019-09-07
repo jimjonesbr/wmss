@@ -2,8 +2,9 @@ package de.wwu.wmss.core;
 
 public class Collection {
 
-	private String identifier;
-	private String name;
+	private String identifier = "";
+	private String name = "";
+	private String action = "";
 	
 	public Collection() {
 		super();
@@ -20,6 +21,12 @@ public class Collection {
 	}
 	public void setName(String description) {
 		this.name = description;
+	}
+	public String getAction() {
+		return action;
+	}
+	public void setAction(String action) {
+		this.action = action;
 	}
 	
 	

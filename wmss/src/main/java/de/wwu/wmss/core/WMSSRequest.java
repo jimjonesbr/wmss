@@ -50,7 +50,7 @@ public class WMSSRequest {
 	private String dateIssued = "";
 	private String melody = "";
 	private String melodyEncoding = "";
-	private String identifier = "";
+	private String scoreIdentifier = "";
 	private String protocolVersion = "";
 	private String source = "";
 	private String score = "";
@@ -84,15 +84,17 @@ public class WMSSRequest {
 	private ArrayList<String> formats = new ArrayList<String>();
 	private ArrayList<Time> times = new ArrayList<Time>();
 	private ArrayList<Clef> clefs = new ArrayList<Clef>();
+	private ArrayList<Resource> resources = new ArrayList<Resource>();
 	private Melody melody2 = new Melody();
 	
-	public WMSSRequest(HttpServletRequest httpRequest)  throws InvalidWMSSRequestException {
+	
+	public WMSSRequest(HttpServletRequest httpRequest) throws InvalidWMSSRequestException {
 		
 		logger.info("---------------------------------------------------------------");
-		logger.info("Request Method     : "+httpRequest.getMethod());
+		logger.info("Request Method     : " + httpRequest.getMethod());
 		logger.info("Request String     : " + httpRequest.getQueryString());
 		logger.info("Request URL        : " + httpRequest.getRequestURL());
-		logger.info("Request ContentType: "+httpRequest.getContentType());
+		logger.info("Request ContentType: " + httpRequest.getContentType());
 		logger.info("---------------------------------------------------------------");
 		
 		if(httpRequest.getContentType()!=null) {
@@ -233,7 +235,7 @@ public class WMSSRequest {
 								
 			} else if (parameter.toLowerCase().equals("identifier")) {
 				
-				this.identifier = httpRequest.getParameter(parameter);
+				this.scoreIdentifier = httpRequest.getParameter(parameter);
 			
 			} else if (parameter.toLowerCase().equals("title")) {
 				
@@ -332,9 +334,6 @@ public class WMSSRequest {
 		
 		this.hostname = httpRequest.getServerName();
 		
-		
-		
-		
 		if(this.personIdentifier != "" || this.personName != "" || this.personRole != "") {
 			Person person = new Person();
 			person.setName(this.personName);
@@ -362,7 +361,7 @@ public class WMSSRequest {
 		if(this.requestType.equals("") || this.requestType==null) {			
 			throw new InvalidWMSSRequestException(ErrorCodes.MISSING_REQUEST_DESCRIPTION,ErrorCodes.MISSING_REQUEST_CODE, ErrorCodes.INVALID_REQUEST_HINT);			
 		} 
-		if(!this.requestType.equals("listscores") && !this.requestType.equals("getscore") && !this.requestType.equals("checklog")
+		if(!this.requestType.equals("listscores") && !this.requestType.equals("getscore") && !this.requestType.equals("checklog")&& !this.requestType.equals("editscore")
 				&& !this.requestType.equals("describeservice")&& !this.requestType.equals("deletescore") && !this.requestType.equals("insertscore")) {			
 			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_REQUEST_DESCRIPTION+" ["+this.requestType+"]",ErrorCodes.INVALID_REQUEST_CODE,ErrorCodes.INVALID_REQUEST_HINT);			
 		} 
@@ -375,7 +374,7 @@ public class WMSSRequest {
 		if(!isDatasourceValid(this) && !this.requestType.equals("describeservice") && !this.requestType.equals("checklog")) {
 			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_DATASOURCE_DESCRIPTION+" ["+ this.source + "]",ErrorCodes.INVALID_DATASOURCE_CODE,ErrorCodes.INVALID_DATASOURCE_HINT);
 		}
-		if((this.requestType.equals("getscore") || this.requestType.equals("deletescore") ) && this.identifier.equals("")) {
+		if((this.requestType.equals("getscore") || this.requestType.equals("deletescore") ) && this.scoreIdentifier.equals("")) {
 			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_IDENTIFIER_DESCRIPTION +" for '"+this.requestType+"' request" ,ErrorCodes.INVALID_IDENTIFIER_CODE,ErrorCodes.INVALID_IDENTIFIER_HINT);
 		}
 		if(!this.requestMode.equals(SystemSettings.REQUEST_MODE_FULL)&&!this.requestMode.equals(SystemSettings.REQUEST_MODE_SIMPLIFIED)) {
@@ -457,7 +456,7 @@ public class WMSSRequest {
 
 			this.responseContentType ="text/javascript";
 			this.responseStatus= HttpServletResponse.SC_OK;
-			//this.responseContent= DocumentBuilder.getScoreList(this);
+			this.responseContent= DocumentBuilder.editScore(this);
 
 		}	else if (this.getRequestType().equals("deletescore")) {
 
@@ -485,13 +484,13 @@ public class WMSSRequest {
 			}
 			
 			if(queryObject.get("scoreIdentifier")!=null) {
-				this.identifier = queryObject.get("scoreIdentifier").toString();
+				this.scoreIdentifier = queryObject.get("scoreIdentifier").toString();
 				logger.info("Score Identifier: " + queryObject.get("scoreIdentifier").toString());
 			}
 			
-			if(queryObject.get("title")!=null) {
-				this.title = queryObject.get("title").toString();
-				logger.info("Title           : " + queryObject.get("title").toString());
+			if(queryObject.get("scoreTitle")!=null) {
+				this.title = queryObject.get("scoreTitle").toString();
+				logger.info("Title           : " + queryObject.get("scoreTitle").toString());
 			}
 			
 			if(queryObject.get("issued")!=null) {
@@ -588,6 +587,12 @@ public class WMSSRequest {
 						collection.setName(collectionObject.get("collectionName").toString());
 						logger.info("Collection Name  : " + collectionObject.get("collectionName").toString());	
 					}
+					
+					if(collectionObject.get("action")!=null) {
+						collection.setAction(collectionObject.get("action").toString());
+						logger.info("Collection Action  : " + collectionObject.get("action").toString().toLowerCase());	
+					}
+
 
 					this.getCollections().add(collection);
 				}
@@ -740,6 +745,37 @@ public class WMSSRequest {
 			}
 
 			
+			JSONArray resourceObjects = (JSONArray) queryObject.get("resources");
+
+			if(resourceObjects != null) {
+							
+				for (int j = 0; j < resourceObjects.size(); j++) {
+	
+					JSONObject resourceObject = (JSONObject) resourceObjects.get(j);
+					Resource resource = new Resource();
+					
+					if(resourceObject.get("resourceURL")!=null) {
+						logger.info("Resource URL  : " + resourceObject.get("resourceURL").toString());
+						resource.setUrl(resourceObject.get("resourceURL").toString());
+					}
+	
+					if(resourceObject.get("resourceLabel")!=null) {
+						logger.info("Resource Label  : " + resourceObject.get("resourceLabel").toString());
+						resource.setLabel(resourceObject.get("resourceLabel").toString());
+					}
+					
+					if(resourceObject.get("action")!=null) {
+						logger.info("Resource Action  : " + resourceObject.get("action").toString());
+						resource.setAction(resourceObject.get("action").toString());
+					}
+	
+					this.getResources().add(resource);
+	
+				}
+				
+			}
+
+			
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -836,7 +872,7 @@ public class WMSSRequest {
 	}
 
 	public String getScoreIdentifier() {
-		return identifier;
+		return scoreIdentifier;
 	}
 
 	public String getProtocolVersion() {
@@ -923,7 +959,7 @@ public class WMSSRequest {
 		return clef;
 	}
 
-	public String getTitle() {
+	public String getScoreTitle() {
 		return title;
 	}
 
@@ -977,6 +1013,10 @@ public class WMSSRequest {
 
 	public ArrayList<Clef> getClefs() {
 		return clefs;
+	}
+	
+	public ArrayList<Resource> getResources() {
+		return resources;
 	}
 
 	public Melody getMelody2() {

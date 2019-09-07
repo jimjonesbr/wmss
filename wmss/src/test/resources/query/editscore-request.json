@@ -6,15 +6,25 @@
   "issued": "1919",
   "collections": [
     {
-      "collectionName": "great compo",
-      "collectionIdentifier": "https://wwu.greatcomposers.de"
+      "collectionName": "Great Composers",
+      "collectionIdentifier": "https://wwu.greatcomposers.de",
+      "action": "remove"
     }
   ],
   "persons": [
     {
       "personIdentifier": "http://dbpedia.org/resource/Edward_Elgar",
-      "personName": "elgar",
-      "personRole": "Composer"
+      "personName": "Sir Edward Elgar",
+      "personRole": "Composer",
+      "action": "update"
+    }
+  ],
+  "resources": [
+    {
+      "resourceURL": "https://musescore.com/score/152011/download/pdf",
+      "resourceDescription": "Print PDF file",
+      "resourceType": "application/pdf",
+      "action": "add"
     }
   ],
   "movements": [
@@ -23,12 +33,13 @@
       "movementName": "",
       "mediums": [
         {
-          "mediumDescription": "Violoncello",
           "mediumIdentifier": "http://linkeddata.uni-muenster.de/node/d30b05fa-6856-4b49-ac37-d5ea3141c1f9/MOV1_PART_P1",
+          "mediumDescription": "Violoncello",
           "mediumCode": "strings.cello",
           "mediumScoreDescription": "Violoncello",
           "solo": false,
           "ensemble": false
+          "action":"update"
         }
       ]
     }

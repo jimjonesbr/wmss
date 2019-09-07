@@ -87,7 +87,14 @@ public class ErrorCodes {
 	public static String INVALID_CONTENT_TYPE_CODE = "E0020";
 	public static String INVALID_CONTENT_TYPE_DESCRIPTION  = "An error occurred while importing an RDF file ";
 	public static String INVALID_CONTENT_TYPE_HINT = "Check the uploaded file and try again.";
+
+	public static String INSUFFICIENT_DATA_CODE = "E0021";
+	public static String INSUFFICIENT_DATA_DESCRIPTION  = "Insufficient data: ";
+	public static String INSUFFICIENT_DATA_HINT = "Check the request document and try again.";
 	
+	public static String RELATIONSHIP_CONFLICT_CODE = "E0022";
+	public static String RELATIONSHIP_CONFLICT_DESCRIPTION  = "Relationship already exists. ";
+	public static String RELATIONSHIP_CONFLICT_HINT = "Check the request document and try again.";
 	
 	public static String WARNING_CONFLICTING_CHORDS_PARAMETER_CODE = "W0001";
 	public static String WARNING_CONFLICTING_CHORDS_PARAMETER_DESCRIPTION  = "Conflicting parameter 'ignoreChords'.";

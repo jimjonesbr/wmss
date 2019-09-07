@@ -72,6 +72,14 @@ public class DocumentBuilder {
 	
 	}
 	
+	public static String editScore(WMSSRequest request) {
+		
+		DataSource ds = loadDataSource(request);		
+		Neo4jEngine.editScore(request, ds);		
+		return StringEscapeUtils.unescapeJson(getScoreList(request));
+		
+	}
+	
 	private static DataSource loadDataSource(WMSSRequest request) {
 	
 		DataSource result = new DataSource();
@@ -120,7 +128,7 @@ public class DocumentBuilder {
 			JSONObject ds = new JSONObject();
 			
 			if(SystemSettings.sourceList.get(i).isActive()) {
-			
+				
 				ds.put("id", SystemSettings.sourceList.get(i).getId());
 				ds.put("info", SystemSettings.sourceList.get(i).getInfo());
 				ds.put("active", SystemSettings.sourceList.get(i).isActive());
@@ -187,145 +195,140 @@ public class DocumentBuilder {
 		JSONObject listScoresJSON = new JSONObject();
 		String result = "";
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		
+
 		try {
 
-			JSONArray repoArray = new JSONArray();
+			JSONArray repositories = new JSONArray();
+			DataSource ds = loadDataSource(request);
 
-			for (int i = 0; i < SystemSettings.sourceList.size(); i++) {
+			if(ds.getType().equals("database")) {
 
-				if(request.getSource().equals(SystemSettings.sourceList.get(i).getId()) || request.getSource().equals("")){
-
-					if(SystemSettings.sourceList.get(i).getType().equals("database")) {
-
-						if(SystemSettings.sourceList.get(i).getStorage().equals("postgresql")){
-							/**
+				if(ds.getStorage().equals("postgresql")){
+					/**
 							listScores = FactoryPostgreSQL.getScoreList(parameterList, SystemSettings.sourceList.get(i));							 
-							 */
-						}
-
-					}
-
-					if(SystemSettings.sourceList.get(i).getType().equals("lpg")) {
-
-						if(SystemSettings.sourceList.get(i).getStorage().equals("neo4j")){
-
-							listScores = Neo4jEngine.getScoreList(request, SystemSettings.sourceList.get(i));
-
-						}
-
-					}
-
-					JSONObject repo = new JSONObject();
-					repo.put("identifier", SystemSettings.sourceList.get(i).getId());
-					repo.put("host", SystemSettings.sourceList.get(i).getHost());
-					repo.put("version", SystemSettings.sourceList.get(i).getVersion());
-					repo.put("type", SystemSettings.sourceList.get(i).getType());
-					repo.put("storage", SystemSettings.sourceList.get(i).getStorage());
-									
-					int totalSize;
-					
-					if(request.getOffset()==0 && listScores.size() == request.getPageSize()) {						
-						totalSize = Neo4jEngine.getResultsetSize(request, SystemSettings.sourceList.get(i));
-						repo.put("requestSize",totalSize);	
-					} else {
-						
-						if(request.getOffset()==0) {
-							totalSize = listScores.size();
-						} else {
-							totalSize = request.getTotalSize();
-						}
-						
-					}
-					
-					if(request.getOffset() + listScores.size() < totalSize ) {
-						
-						String nextPage = request.getHostname() + ":" +
-										  SystemSettings.getPort() + "/"+
-						                  SystemSettings.getService()+"?request=ListScores&source="+SystemSettings.sourceList.get(i).getId();						
-						if(!request.getMelody().equals("")) {
-							nextPage = nextPage + "&melody="+request.getMelody();
-						}						
-						if(!request.getFormat().equals("")) {
-							nextPage = nextPage + "&format="+request.getFormat();
-						}												
-						if(!request.getCollection().equals("")) {
-							nextPage = nextPage + "&collection="+request.getCollection();
-						}												
-						if(!request.getPerson().equals("")) {
-							nextPage = nextPage + "&person="+request.getPerson();
-						}												
-						if(!request.getPersonRole().equals("")) {
-							nextPage = nextPage + "&personRole="+request.getPersonRole();
-						}												
-						if(!request.getPerformanceMedium().equals("")) {
-							nextPage = nextPage + "&performanceMedium="+request.getPerformanceMedium();
-						}												
-						if(!request.getPerformanceMediumType().equals("")) {
-							nextPage = nextPage + "&performanceMediumType="+request.getPerformanceMediumType();
-						}												
-						if(request.isSolo()) {
-							nextPage = nextPage + "&solo="+request.isSolo();
-						}												
-						if(!request.getTonalityTonic().equals("")) {
-							nextPage = nextPage + "&tonalityTonic="+request.getTonalityTonic();
-						}
-						if(!request.getTonalityMode().equals("")) {
-							nextPage = nextPage + "&tonalityMode="+request.getTonalityMode();
-						}						
-						if(!request.getTempoBeatUnit().equals("")) {
-							nextPage = nextPage + "&tempo="+request.getTempoBeatUnit();
-						}						
-						if(!request.getDateIssued().equals("")) {
-							nextPage = nextPage + "&creationDate="+request.getDateIssued();
-						}					
-						if(!request.getScoreIdentifier().equals("")) {
-							nextPage = nextPage + "&identifier="+request.getScoreIdentifier();
-						}						
-						if(!request.getProtocolVersion().equals("")) {
-							nextPage = nextPage + "&version="+request.getProtocolVersion();
-						}						
-						if(!request.isIgnoreChords()) {
-							nextPage = nextPage + "&ignoreChords="+request.isIgnoreChords();
-						}						
-						if(request.isEnsemble()) {
-							nextPage = nextPage + "&ensemble="+request.isEnsemble();
-						}			
-						if(request.isIgnoreOctaves()) {
-							nextPage = nextPage + "&ignoreOctaves="+request.isIgnoreOctaves();
-						}
-						if(request.isIgnorePitch()) {
-							nextPage = nextPage + "&ignorePitch="+request.isIgnorePitch();
-						}
-						if(request.isIgnoreDuration()) {
-							nextPage = nextPage + "&ignoreDuration="+request.isIgnoreDuration();
-						}
-						if(!request.getRequestMode().equals("")) {
-							nextPage = nextPage + "&requestMode="+request.getRequestMode();
-						}
-						nextPage = nextPage + "&offset=" + (request.getOffset() + listScores.size());
-						nextPage = nextPage + "&pageSize=" + request.getPageSize();
-						nextPage = nextPage + "&totalSize=" + totalSize;
-						repo.put("nextPage", nextPage);	
-					}
-					
-					repo.put("offset", request.getOffset());
-					repo.put("pageSize", listScores.size());
-					repo.put("totalSize", totalSize);					
-					repo.put("scores", listScores);
-
-					repoArray.add(repo);
-
+					 */
 				}
+
 			}
 
-			listScoresJSON.put("datasources", repoArray);
+			if(ds.getType().equals("lpg")) {
+
+				if(ds.getStorage().equals("neo4j")){
+
+					listScores = Neo4jEngine.getScoreList(request, ds);
+
+				}
+
+			}
+
+			JSONObject repo = new JSONObject();
+			repo.put("identifier", ds.getId());
+			repo.put("host", ds.getHost());
+			repo.put("version", ds.getVersion());
+			repo.put("type", ds.getType());
+			repo.put("storage", ds.getStorage());
+
+			int totalSize;
+
+			if(request.getOffset()==0 && listScores.size() == request.getPageSize()) {						
+				totalSize = Neo4jEngine.getResultsetSize(request, ds);
+				repo.put("requestSize",totalSize);	
+			} else {
+
+				if(request.getOffset()==0) {
+					totalSize = listScores.size();
+				} else {
+					totalSize = request.getTotalSize();
+				}
+
+			}
+
+			if(request.getOffset() + listScores.size() < totalSize ) {
+
+				String nextPage = request.getHostname() + ":" +
+						SystemSettings.getPort() + "/"+
+						SystemSettings.getService()+"?request=ListScores&source="+ds;						
+				if(!request.getMelody().equals("")) {
+					nextPage = nextPage + "&melody="+request.getMelody();
+				}						
+				if(!request.getFormat().equals("")) {
+					nextPage = nextPage + "&format="+request.getFormat();
+				}												
+				if(!request.getCollection().equals("")) {
+					nextPage = nextPage + "&collection="+request.getCollection();
+				}												
+				if(!request.getPerson().equals("")) {
+					nextPage = nextPage + "&person="+request.getPerson();
+				}												
+				if(!request.getPersonRole().equals("")) {
+					nextPage = nextPage + "&personRole="+request.getPersonRole();
+				}												
+				if(!request.getPerformanceMedium().equals("")) {
+					nextPage = nextPage + "&performanceMedium="+request.getPerformanceMedium();
+				}												
+				if(!request.getPerformanceMediumType().equals("")) {
+					nextPage = nextPage + "&performanceMediumType="+request.getPerformanceMediumType();
+				}												
+				if(request.isSolo()) {
+					nextPage = nextPage + "&solo="+request.isSolo();
+				}												
+				if(!request.getTonalityTonic().equals("")) {
+					nextPage = nextPage + "&tonalityTonic="+request.getTonalityTonic();
+				}
+				if(!request.getTonalityMode().equals("")) {
+					nextPage = nextPage + "&tonalityMode="+request.getTonalityMode();
+				}						
+				if(!request.getTempoBeatUnit().equals("")) {
+					nextPage = nextPage + "&tempo="+request.getTempoBeatUnit();
+				}						
+				if(!request.getDateIssued().equals("")) {
+					nextPage = nextPage + "&creationDate="+request.getDateIssued();
+				}					
+				if(!request.getScoreIdentifier().equals("")) {
+					nextPage = nextPage + "&identifier="+request.getScoreIdentifier();
+				}						
+				if(!request.getProtocolVersion().equals("")) {
+					nextPage = nextPage + "&version="+request.getProtocolVersion();
+				}						
+				if(!request.isIgnoreChords()) {
+					nextPage = nextPage + "&ignoreChords="+request.isIgnoreChords();
+				}						
+				if(request.isEnsemble()) {
+					nextPage = nextPage + "&ensemble="+request.isEnsemble();
+				}			
+				if(request.isIgnoreOctaves()) {
+					nextPage = nextPage + "&ignoreOctaves="+request.isIgnoreOctaves();
+				}
+				if(request.isIgnorePitch()) {
+					nextPage = nextPage + "&ignorePitch="+request.isIgnorePitch();
+				}
+				if(request.isIgnoreDuration()) {
+					nextPage = nextPage + "&ignoreDuration="+request.isIgnoreDuration();
+				}
+				if(!request.getRequestMode().equals("")) {
+					nextPage = nextPage + "&requestMode="+request.getRequestMode();
+				}
+				nextPage = nextPage + "&offset=" + (request.getOffset() + listScores.size());
+				nextPage = nextPage + "&pageSize=" + request.getPageSize();
+				nextPage = nextPage + "&totalSize=" + totalSize;
+				repo.put("nextPage", nextPage);	
+			}
+
+			repo.put("offset", request.getOffset());
+			repo.put("pageSize", listScores.size());
+			repo.put("totalSize", totalSize);					
+			repo.put("scores", listScores);
+
+			repositories.add(repo);
+
+
+			listScoresJSON.put("datasources", repositories);
 			listScoresJSON.put("type", "ScoreListReport");
 			listScoresJSON.put("protocolVersion", "1.0");
-			listScoresJSON.put("size", repoArray.size());
+			listScoresJSON.put("size", repositories.size());
 
 			result = StringEscapeUtils.unescapeJson(gson.toJson(listScoresJSON));
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("Unexpected error at the ListScores request.");

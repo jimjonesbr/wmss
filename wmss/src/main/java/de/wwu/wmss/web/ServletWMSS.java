@@ -39,6 +39,7 @@ public class ServletWMSS extends HttpServlet
 			response.getWriter().println(DocumentBuilder.getServiceExceptionReport(e.getCode(), e.getMessage(), e.getHint()));
 			e.printStackTrace();
 		}
+		
 	}
 	
 	protected void doGet(HttpServletRequest httpRequest, HttpServletResponse response) throws ServletException, IOException
@@ -62,57 +63,13 @@ public class ServletWMSS extends HttpServlet
 			response.setStatus(wmssRequest.getResponseStatus());
 			response.getWriter().println(wmssRequest.getResponseContent());
 
-			/**
-			if (wmssRequest.getRequestType().equals("checklog")) {
-
-				response.setContentType("text/plain");
-				response.setStatus(HttpServletResponse.SC_OK);
-				response.getWriter().println(Util.loadFileTail(new File("log/wmss.log"), wmssRequest.getLogPreview()));
-
-			} else if (wmssRequest.getRequestType().equals("describeservice")) {
-
-				response.setContentType("text/javascript");
-				response.setStatus(HttpServletResponse.SC_OK);
-				response.getWriter().println(DocumentBuilder.getServiceDescription());
-
-			} else if (wmssRequest.getRequestType().equals("getscore")) { 
-
-				MusicScore score = DocumentBuilder.getScore(wmssRequest);
-				
-				response.setHeader("Content-disposition", "attachment; filename="+score.getTitle().replaceAll("[^a-zA-Z0-9\\.\\-]", "_")+".xml");
-				response.setContentType("text/xml");
-				response.setStatus(HttpServletResponse.SC_OK);
-				response.getWriter().println(score.getDocument());
-
-			} else if (wmssRequest.getRequestType().equals("listscores")) {
-
-				response.setContentType("text/javascript");
-				response.setStatus(HttpServletResponse.SC_OK);
-				response.getWriter().println(DocumentBuilder.getScoreList(wmssRequest));
-
-			} else if (wmssRequest.getRequestType().equals("deletescore")) {
-
-				response.setContentType("text/javascript");
-				response.setStatus(HttpServletResponse.SC_OK);
-				response.getWriter().println(DocumentBuilder.deleteScore(wmssRequest)); 
-
-			} else if (wmssRequest.getRequestType().equals("insertscore")) {
-
-				response.setContentType("text/javascript");
-				response.setStatus(HttpServletResponse.SC_OK);
-				response.getWriter().println(DocumentBuilder.getServiceExceptionReport(ErrorCodes.NONSUPPORTED_REQUEST_DESCRIPTION +" [GET/"+wmssRequest.getRequestType()+"]", ErrorCodes.NONSUPPORTED_REQUEST_CODE, ErrorCodes.NONSUPPORTED_REQUEST_DATE_HINT));
-			}
-			
-			**/
-
 		} catch (InvalidWMSSRequestException e) {
-			
 			response.setContentType("text/javascript");
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.getWriter().println(DocumentBuilder.getServiceExceptionReport(e.getCode(), e.getMessage(), e.getHint()));
 			e.printStackTrace();
-		}
-
+		} 
+		
 	}
 
 }
