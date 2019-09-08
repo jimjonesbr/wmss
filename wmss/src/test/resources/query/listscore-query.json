@@ -62,11 +62,11 @@
    ],
    "collections":[
       {
-         "collectionName":"great compo",
+         "collectionLabel":"great compo",
          "collectionIdentifier":"https://wwu.greatcomposers.de"
       },
       {
-         "collectionName":"digitale sammlung",
+         "collectionLabel":"digitale sammlung",
          "collectionIdentifier":"https://sammlungen.ulb.uni-muenster.de"
       }
    ],

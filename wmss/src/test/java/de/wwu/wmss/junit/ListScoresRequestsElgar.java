@@ -565,11 +565,11 @@ public class ListScoresRequestsElgar {
 				"   ],\n" + 
 				"   \"collections\":[\n" + 
 				"      {\n" + 
-				"         \"collectionName\":\"great compo\",\n" + 
+				"         \"collectionLabel\":\"great compo\",\n" + 
 				"         \"collectionIdentifier\":\"https://wwu.greatcomposers.de\"\n" + 
 				"      },\n" + 
 				"      {\n" + 
-				"         \"collectionName\":\"digitale sammlung\",\n" + 
+				"         \"collectionLabel\":\"digitale sammlung\",\n" + 
 				"         \"collectionIdentifier\":\"https://sammlungen.ulb.uni-muenster.de\"\n" + 
 				"      }\n" + 
 				"   ],\n" + 

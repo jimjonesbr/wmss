@@ -6,6 +6,7 @@ public class Person {
 	private String role;
 	private String scoreId; 
 	private String identifier;
+	private String action = "";
 	
 	public Person() {
 		super();
@@ -34,5 +35,12 @@ public class Person {
 	public void setIdentifier(String url) {
 		this.identifier = url;
 	}
+	public String getAction() {
+		return action;
+	}
+	public void setAction(String action) {
+		this.action = action;
+	}
+
 	
 }

@@ -3,7 +3,7 @@ package de.wwu.wmss.core;
 public class Collection {
 
 	private String identifier = "";
-	private String name = "";
+	private String label = "";
 	private String action = "";
 	
 	public Collection() {
@@ -16,11 +16,11 @@ public class Collection {
 	public void setIdentifier(String id) {
 		this.identifier = id;
 	}
-	public String getName() {
-		return name;
+	public String getLabel() {
+		return label;
 	}
-	public void setName(String description) {
-		this.name = description;
+	public void setLabel(String description) {
+		this.label = description;
 	}
 	public String getAction() {
 		return action;

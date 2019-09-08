@@ -2,43 +2,64 @@
   "request": "EditScore",
   "source": "neo4j_local",
   "scoreIdentifier": "http://dbpedia.org/resource/Cello_Concerto_(Elgar)",
-  "scoreTitle": "Cellokonzert e-Moll op. 85",
-  "issued": "1919",
+  "scoreTitle": "Cellokonzert e-Moll op. 85 - updated",
+  "issued": "1920",
   "collections": [
     {
-      "collectionName": "Great Composers",
+      "collectionLabel": "Great Composers2",
+      "collectionIdentifier": "https://wwu.greatcomposers2.de",
+      "action": "delete"
+    },
+    {
+      "collectionLabel": "Great Composers",
       "collectionIdentifier": "https://wwu.greatcomposers.de",
-      "action": "remove"
+      "action": "update"
+    },
+    {
+      "collectionLabel": "Digitale Sammlung der Universität und Landesbibliothek Münster",
+      "collectionIdentifier": "https://sammlungen.ulb.uni-muenster.de",
+      "action": "update"
+    },
+    {
+      "collectionIdentifier": "https://github.com/jimjonesbr/wmss#collections",
+      "action": "delete"
     }
   ],
   "persons": [
     {
       "personIdentifier": "http://dbpedia.org/resource/Edward_Elgar",
-      "personName": "Sir Edward Elgar",
+      "personName": "Elgar 1",
       "personRole": "Composer",
       "action": "update"
+    },
+    {
+      "personIdentifier": "http://dbpedia.org/resource/Edward_Elgar2",
+      "personName": "Elgar 2 updated",
+      "personRole": "Encoder",
+      "action": "DELETE"
     }
+
   ],
   "resources": [
     {
       "resourceURL": "https://musescore.com/score/152011/download/pdf",
-      "resourceDescription": "Print PDF file",
+      "resourceLabel": "Print PDF file",
       "resourceType": "application/pdf",
-      "action": "add"
+      "action": "update"
     }
   ],
   "movements": [
     {
       "movementIdentifier": "",
-      "movementName": "",
+      "movementLabel": "",
       "mediums": [
         {
           "mediumIdentifier": "http://linkeddata.uni-muenster.de/node/d30b05fa-6856-4b49-ac37-d5ea3141c1f9/MOV1_PART_P1",
-          "mediumDescription": "Violoncello",
+          "mediumLabel": "Violoncello",
           "mediumCode": "strings.cello",
           "mediumScoreDescription": "Violoncello",
           "solo": false,
-          "ensemble": false
+          "ensemble": false,
           "action":"update"
         }
       ]

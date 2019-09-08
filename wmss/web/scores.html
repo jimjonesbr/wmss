@@ -356,7 +356,7 @@
 		        	var persons = src["persons"];
 		        	for (j = 0; j < persons.length; j++) { 
 		        		var col = persons[j];
-		        	 	var o = new Option(col["name"] + ' ('+col["role"]+')',col["url"]);
+		        	 	var o = new Option(col["name"] + ' ('+col["role"]+')',col["identifier"]);
 		        	 	$('#persons').append(o); 
 		        	}
 		        	
@@ -633,7 +633,7 @@
 								for (k = 0; k < collections.length; k++) { 
 
 									var cl = collections[k];
-									collections_string = collections_string + '<i class="fas fa-archive"></i> <a href="'+ cl["identifier"] + '">'+cl["name"]+'</a><br>';
+									collections_string = collections_string + '<i class="fas fa-archive"></i> <a href="'+ cl["identifier"] + '">'+cl["label"]+'</a><br>';
 								}
 
 

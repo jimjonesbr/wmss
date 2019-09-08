@@ -5,6 +5,7 @@ public class Resource {
 	private String url = "";
 	private String label = "";
 	private String action = "";
+	private String type = "";
 	
 	public Resource() {
 		super();
@@ -31,6 +32,12 @@ public class Resource {
 	}
 	public void setAction(String action) {
 		this.action = action;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
 	}
 	
 }

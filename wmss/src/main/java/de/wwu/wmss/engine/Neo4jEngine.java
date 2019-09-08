@@ -321,7 +321,7 @@ public class Neo4jEngine {
 	
 	public static void editScore(WMSSRequest request, DataSource ds) {
 		
-		String _match = "MATCH (score:Score {uri: '"+request.getScoreIdentifier()+"'})";		
+		String _match = "MATCH (score:Score {uri: '"+request.getScoreIdentifier()+"'})\n";		
 		
 		if(!request.getScoreTitle().equals("")) {		
 			System.out.println(_match + "SET score.title = '"+request.getScoreTitle()+"'");
@@ -331,14 +331,13 @@ public class Neo4jEngine {
 		if(!request.getDateIssued().equals("")) {						
 			Neo4jConnector.getInstance().executeQuery(_match + "SET score.issued = '"+request.getDateIssued()+"'", ds);			
 		}
-		
-		
+			
 		/**
 		 * Edit Collections 
 		 */
 		for (int i = 0; i < request.getCollections().size(); i++) {
 			
-			if(request.getCollections().get(i).getIdentifier().equals("") || request.getCollections().get(i).getName().equals("") ) {
+			if(request.getCollections().get(i).getIdentifier().equals("") || request.getCollections().get(i).getLabel().equals("") ) {
 				if(!request.getCollections().get(i).getAction().equals("delete")) {
 					throw new InvalidWMSSRequestException(ErrorCodes.INSUFFICIENT_DATA_DESCRIPTION + "a collection must have an identifier and a non-empty label.",
 							  							  ErrorCodes.INSUFFICIENT_DATA_CODE, 
@@ -352,26 +351,22 @@ public class Neo4jEngine {
 						"RETURN collection", ds);
 				
 				if(rs.hasNext()) {
-					throw new InvalidWMSSRequestException(ErrorCodes.RELATIONSHIP_CONFLICT_DESCRIPTION + "The score '"+request.getScoreIdentifier()+"' already has a collection with the given identifier: "+request.getCollections().get(i).getIdentifier()+" (" + request.getCollections().get(i).getName()+")",
+					throw new InvalidWMSSRequestException(ErrorCodes.RELATIONSHIP_CONFLICT_DESCRIPTION + "The score '"+request.getScoreIdentifier()+"' already has a collection with the given identifier: "+request.getCollections().get(i).getIdentifier()+" (" + request.getCollections().get(i).getLabel()+")",
 														  ErrorCodes.RELATIONSHIP_CONFLICT_CODE,
 														  ErrorCodes.RELATIONSHIP_CONFLICT_HINT);
 				}
 				
 				String cypher = _match + "MERGE (score)-[:COLLECTION]->(collection:Collection "
-						+ "{uri:'"+request.getCollections().get(i).getIdentifier()+"', label:'"+request.getCollections().get(i).getName()+"'})";				
+						+ "{uri:'"+request.getCollections().get(i).getIdentifier()+"', label:'"+request.getCollections().get(i).getLabel()+"'})";				
 				Neo4jConnector.getInstance().executeQuery(cypher, ds);				
 				
-			}
-			
-			if(request.getCollections().get(i).getAction().equals("update")) {
+			} else if(request.getCollections().get(i).getAction().equals("update")) {
 				
 				String cypher = _match + "MATCH (score)-[:COLLECTION]->(collection:Collection {uri: '"+request.getCollections().get(i).getIdentifier()+"'})\n"
-						+ "SET collection.label = '"+request.getCollections().get(i).getName()+"'";				
+						+ "SET collection.label = '"+request.getCollections().get(i).getLabel()+"'";				
 				Neo4jConnector.getInstance().executeQuery(cypher, ds);
 				
-			}
-			
-			if(request.getCollections().get(i).getAction().equals("delete")) {
+			} else if(request.getCollections().get(i).getAction().equals("delete")) {
 				
 				String cypher = _match + "MATCH (score)-[rel:COLLECTION]->(collection:Collection {uri: '"+request.getCollections().get(i).getIdentifier()+"'})\n"
 						+ "DELETE rel";				
@@ -380,9 +375,11 @@ public class Neo4jEngine {
 			}
 		}
 		
-		
+		/**
+		 * Edit Resources 
+		 */	
 		for (int i = 0; i < request.getResources().size(); i++) {
-			
+						
 			if(request.getResources().get(i).getUrl().equals("") || request.getResources().get(i).getLabel().equals("") ) {
 				if(!request.getResources().get(i).getAction().equals("delete")) {
 					throw new InvalidWMSSRequestException(ErrorCodes.INSUFFICIENT_DATA_DESCRIPTION + "a resource must have an URL and a non-empty label.",
@@ -391,8 +388,82 @@ public class Neo4jEngine {
 				}
 			}
 			
+			if(request.getResources().get(i).getType().equals("")) {
+				request.getResources().get(i).setType("text/html");
+			}
+			
+			if(request.getResources().get(i).getAction().equals("add")) {				
+				Neo4jConnector.getInstance().executeQuery(_match + "MERGE (score)-[:RESOURCE]->(:ScoreResource {url:'"+request.getResources().get(i).getUrl()+
+																									    "', type: '"+request.getResources().get(i).getType()+
+																									    "', label:'"+request.getResources().get(i).getLabel()+"'})", ds);				
+			} else if(request.getResources().get(i).getAction().equals("update")) {				
+				Neo4jConnector.getInstance().executeQuery(_match + "MATCH (score)-[:RESOURCE]->(res:ScoreResource {url:'"+request.getResources().get(i).getUrl()+ "'})\n"+
+																   "SET res.type = '"+request.getResources().get(i).getType()+"',\n"+
+																   "	res.label = '"+request.getResources().get(i).getLabel()+"'", ds);				
+			} else if(request.getResources().get(i).getAction().equals("delete")) {				
+				Neo4jConnector.getInstance().executeQuery(_match + "MATCH (score)-[r:RESOURCE]->(:ScoreResource {url:'"+request.getResources().get(i).getUrl()+"'}) DELETE r", ds);				
+			}
+			
 		}
 		
+		/**
+		 * Edit Persons
+		 */	
+		for (int i = 0; i < request.getPersons().size(); i++) {
+			
+			if(request.getPersons().get(i).getIdentifier().equals("") || request.getPersons().get(i).getName().equals("") || request.getPersons().get(i).getRole().equals("")) {
+				if(!request.getPersons().get(i).getAction().equals("delete")) {
+					throw new InvalidWMSSRequestException(ErrorCodes.INSUFFICIENT_DATA_DESCRIPTION + "a person must have an identifier, a non-empty name and a role.",
+							  							  ErrorCodes.INSUFFICIENT_DATA_CODE, 
+							  							  ErrorCodes.INSUFFICIENT_DATA_HINT);					
+				}
+			}
+			
+			if(request.getPersons().get(i).getAction().equals("add")) {
+			
+				StatementResult rs = Neo4jConnector.getInstance().executeQuery(_match + "MATCH (score)-[r:CREATOR {role:'"+request.getPersons().get(i).getRole()+"'}]->(person:Person {uri:'"+request.getPersons().get(i).getIdentifier()+"'})\n" + 
+						"RETURN person", ds);
+				
+				if(rs.hasNext()) {
+					throw new InvalidWMSSRequestException(ErrorCodes.RELATIONSHIP_CONFLICT_DESCRIPTION + "The score '"+request.getScoreIdentifier()+"' already has a related person with the given identifier and role: "+request.getPersons().get(i).getIdentifier()+" (" + request.getPersons().get(i).getName()+") - "+request.getPersons().get(i).getRole(),
+														  ErrorCodes.RELATIONSHIP_CONFLICT_CODE,
+														  ErrorCodes.RELATIONSHIP_CONFLICT_HINT);
+				}
+
+				rs = Neo4jConnector.getInstance().executeQuery("MATCH (person:Person {uri:'"+request.getPersons().get(i).getIdentifier()+"'}) RETURN person.uri AS identifier, person.name AS name, id(person) AS id", ds);
+
+				if(rs.hasNext()) {
+					
+					Record record = rs.next();
+					String cypher = "MATCH (person:Person) WHERE id(person)="+record.get("id").asInt()+" \n" + 
+									"WITH person\n"+
+									_match+
+									"MERGE (score)-[:CREATOR {role: '"+Util.capitalizeFirstLetter(request.getPersons().get(i).getRole())+"'}]->(person)";
+					
+					Neo4jConnector.getInstance().executeQuery(cypher, ds);
+					
+				} else {
+				
+					Neo4jConnector.getInstance().executeQuery( _match + "MERGE (score)-[:CREATOR {role: '"+Util.capitalizeFirstLetter(request.getPersons().get(i).getRole())+"'}]->(:Person:Resource"
+							+ " {uri:'"+request.getPersons().get(i).getIdentifier()+"', name:'"+request.getPersons().get(i).getName()+"'})", ds);
+					
+				}
+			
+			} else if(request.getPersons().get(i).getAction().equals("update")) {
+				
+				Neo4jConnector.getInstance().executeQuery(_match + "MATCH (score)-[r:CREATOR]->(per:Person {uri:'"+request.getPersons().get(i).getIdentifier()+ "'})\n"+
+					   "SET per.name = '"+request.getPersons().get(i).getName()+"',\n"+
+					   "	r.role = '"+Util.capitalizeFirstLetter(request.getPersons().get(i).getRole())+"'", ds);
+				
+			}  else if(request.getPersons().get(i).getAction().equals("delete")) {
+				
+				Neo4jConnector.getInstance().executeQuery( _match + "MATCH (score)-[r:CREATOR {role: '"+Util.capitalizeFirstLetter(request.getPersons().get(i).getRole())+"'}]->(:Person {uri:'"+request.getPersons().get(i).getIdentifier()+"'})\n"
+														 + "DELETE r", ds);
+								
+			}
+			
+			
+		}
 		
 		
 		Neo4jConnector.getInstance().executeQuery(_match + "WHERE NOT (score)-[:COLLECTION]-() "
@@ -460,8 +531,8 @@ public class Neo4jEngine {
 			Collection collection = new Collection();
 			
 			collection.setIdentifier(record.get("identifier").asString().trim());
-			collection.setName(record.get("label").asString().trim());
-			
+			collection.setLabel(record.get("label").asString().trim());
+			collection.setAction(null);
 			result.add(collection);
 		}
 		
@@ -835,27 +906,31 @@ public class Neo4jEngine {
 		 */	
 		
 		for (int j = 0; j < wmssRequest.getPersons().size(); j++) {
-						
-			if(!wmssRequest.getPersons().get(j).getIdentifier().equals("")) {
-				
-				where = where + "AND creator"+j+".uri='"+wmssRequest.getPersons().get(j).getIdentifier()+"'\n";
-								
-			}
-			
-			if(!wmssRequest.getPersons().get(j).getName().equals("")) {
-				
-				where = where + "AND creator"+j+".name =~ '(?i).*"+wmssRequest.getPersons().get(j).getName()+".*'\n";
-								
-			} 
 
-			if(!wmssRequest.getPersons().get(j).getRole().equals("")) {
+			if(wmssRequest.getPersons().get(j).getAction().equals("")) {
+
+				if(!wmssRequest.getPersons().get(j).getIdentifier().equals("")) {
+					
+					where = where + "AND creator"+j+".uri='"+wmssRequest.getPersons().get(j).getIdentifier()+"'\n";
+									
+				}
 				
-				match = match + "MATCH (scr:Score)-[rel_query_person"+j+":CREATOR {role:'"+wmssRequest.getPersons().get(j).getRole()+"' }]->(creator"+j+":Person)\n";
-								
-			} else {
-				
-				match = match + "MATCH (scr:Score)-[:CREATOR]->(creator"+j+":Person)\n";
-				
+				if(!wmssRequest.getPersons().get(j).getName().equals("")) {
+					
+					where = where + "AND creator"+j+".name =~ '(?i).*"+wmssRequest.getPersons().get(j).getName()+".*'\n";
+									
+				} 
+
+				if(!wmssRequest.getPersons().get(j).getRole().equals("")) {
+					
+					match = match + "MATCH (scr:Score)-[rel_query_person"+j+":CREATOR {role:'"+wmssRequest.getPersons().get(j).getRole()+"' }]->(creator"+j+":Person)\n";
+									
+				} else {
+					
+					match = match + "MATCH (scr:Score)-[:CREATOR]->(creator"+j+":Person)\n";
+					
+				}
+
 			}
 
 		}
@@ -993,8 +1068,8 @@ public class Neo4jEngine {
 					where = where + "AND collection"+i+".uri = '"+wmssRequest.getCollections().get(i).getIdentifier()+"'\n";
 				}
 	
-				if(wmssRequest.getCollections().get(i).getName()!="") {
-					where = where + "AND collection"+i+".label =~ '(?i).*"+wmssRequest.getCollections().get(i).getName()+".*'\n";
+				if(wmssRequest.getCollections().get(i).getLabel()!="") {
+					where = where + "AND collection"+i+".label =~ '(?i).*"+wmssRequest.getCollections().get(i).getLabel()+".*'\n";
 				}
 			}
 
@@ -1176,8 +1251,8 @@ public class Neo4jEngine {
 					JSONObject collectionJsonObject = (JSONObject) collectionsArray.get(i);
 					Collection collection = new Collection();
 					collection.setIdentifier(collectionJsonObject.get("identifier").toString());
-					collection.setName(collectionJsonObject.get("label").toString());
-
+					collection.setLabel(collectionJsonObject.get("label").toString());
+					collection.setAction(null);
 					score.getCollections().add(collection);					
 					
 				}
@@ -1249,6 +1324,7 @@ public class Neo4jEngine {
 				if(personsJsonObject.get("identifier")!=null) {
 					person.setIdentifier(personsJsonObject.get("identifier").toString());
 				}				 
+				person.setAction(null);
 				result.add(person);
 			}
 					

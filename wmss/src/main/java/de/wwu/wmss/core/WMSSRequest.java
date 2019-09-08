@@ -583,9 +583,9 @@ public class WMSSRequest {
 						logger.info("Collection Identifier  : " + collectionObject.get("collectionIdentifier").toString());	
 					}
 					
-					if(collectionObject.get("collectionName")!=null) {
-						collection.setName(collectionObject.get("collectionName").toString());
-						logger.info("Collection Name  : " + collectionObject.get("collectionName").toString());	
+					if(collectionObject.get("collectionLabel")!=null) {
+						collection.setLabel(collectionObject.get("collectionLabel").toString());
+						logger.info("Collection Label  : " + collectionObject.get("collectionLabel").toString());	
 					}
 					
 					if(collectionObject.get("action")!=null) {
@@ -732,12 +732,17 @@ public class WMSSRequest {
 						logger.info("Person Name   : " + personObject.get("personName").toString());
 						person.setName(personObject.get("personName").toString());
 					}
-					
+										
 					if(personObject.get("personRole")!=null) {
 						logger.info("Person Role  : " + personObject.get("personRole").toString());
 						person.setRole(personObject.get("personRole").toString());
 					}
 	
+					if(personObject.get("action")!=null) {
+						logger.info("Person Action   : " + personObject.get("action").toString());
+						person.setAction(personObject.get("action").toString().toLowerCase());
+					}
+					
 					this.getPersons().add(person);
 	
 				}
@@ -764,9 +769,15 @@ public class WMSSRequest {
 						resource.setLabel(resourceObject.get("resourceLabel").toString());
 					}
 					
+					if(resourceObject.get("resourceType")!=null) {
+						logger.info("Resource Type  : " + resourceObject.get("resourceType").toString());
+						resource.setType(resourceObject.get("resourceType").toString());
+					}
+
+					
 					if(resourceObject.get("action")!=null) {
 						logger.info("Resource Action  : " + resourceObject.get("action").toString());
-						resource.setAction(resourceObject.get("action").toString());
+						resource.setAction(resourceObject.get("action").toString().toLowerCase());
 					}
 	
 					this.getResources().add(resource);

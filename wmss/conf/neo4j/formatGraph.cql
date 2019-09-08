@@ -242,7 +242,6 @@ WITH score,person,occupation,role,r1,r2,r4,
       WHEN 'http://dbpedia.org/resource/Dedicatee' THEN 'Dedicatee'
       WHEN 'http://dbpedia.org/resource/Unknown' THEN 'Unknown'
   END AS occupationType
-CALL apoc.create.addLabels(id(person),[occupationType]) YIELD node
 CREATE (score)-[:CREATOR {role: occupationType}]->(person)
 SET person.name = person.foaf__name
 REMOVE person.foaf__name
@@ -266,8 +265,7 @@ WITH activity, person, score, role, occupation, r1, r2, r4, r5,
       WHEN 'http://dbpedia.org/resource/Encoder' THEN 'Encoder'
       WHEN 'http://dbpedia.org/resource/Unknown' THEN 'Unknown'
   END AS occupationType
-SET person:Encoder,	
-	person.name = person.foaf__name
+SET person.name = person.foaf__name
 REMOVE person.foaf__name	
 CREATE (score)-[:CREATOR  {role: occupationType}]->(person)
 CREATE (activity)-[:ASSOCIATEDWITH]->(person)
