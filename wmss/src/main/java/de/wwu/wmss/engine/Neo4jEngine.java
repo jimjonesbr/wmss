@@ -28,7 +28,7 @@ import de.wwu.wmss.core.ErrorCodes;
 import de.wwu.wmss.core.Format;
 import de.wwu.wmss.core.MelodyLocation;
 import de.wwu.wmss.core.MelodyLocationGroup;
-import de.wwu.wmss.core.Movement;
+import de.wwu.wmss.core.MovementListScoreRequest;
 import de.wwu.wmss.core.MusicScore;
 import de.wwu.wmss.core.DeletedRecord;
 import de.wwu.wmss.core.Note;
@@ -260,7 +260,7 @@ public class Neo4jEngine {
 					PerformanceMedium medium = new PerformanceMedium();	
 
 					JSONObject mediumJsonObject = (JSONObject) mediumListJsonArray.get(j);
-					medium.setMediumDescription(mediumJsonObject.get("mediumDescription").toString().trim());
+					medium.setLabel(mediumJsonObject.get("mediumDescription").toString().trim());
 					medium.setMediumCode(mediumJsonObject.get("mediumCode").toString().trim());
 																	
 					type.getMediums().add(medium);					
@@ -462,13 +462,35 @@ public class Neo4jEngine {
 								
 			}
 			
+		}
+		
+		for (int i = 0; i < request.getMovements().size(); i++) {
+			
+			if(request.getMovements().get(i).getIdentifier().equals("")) {
+				throw new InvalidWMSSRequestException(ErrorCodes.INSUFFICIENT_DATA_DESCRIPTION + "a movement must have a valid identifier.",
+						  							  ErrorCodes.INSUFFICIENT_DATA_CODE, 
+						  							  ErrorCodes.INSUFFICIENT_DATA_HINT);									
+			}
+			
+			if(!request.getMovements().get(i).getAction().equals("update")) {
+				throw new InvalidWMSSRequestException(ErrorCodes.NONSUPPORTED_ACTION_DESCRIPTION + "The action '"+request.getMovements().get(i).getAction()+"' is not supported for movements.",
+						  ErrorCodes.NONSUPPORTED_ACTION_CODE, 
+						  "Movements are automatically generated based on MusicXML or RDF files.  ");								
+				
+			}
+
 			
 		}
 		
-		
 		Neo4jConnector.getInstance().executeQuery(_match + "WHERE NOT (score)-[:COLLECTION]-() "
 				+ "MERGE (score)-[:COLLECTION]->(:Collection {uri:'https://github.com/jimjonesbr/wmss#collections',label:'WMSS Collection'})", ds);
+		
+		Neo4jConnector.getInstance().executeQuery(_match + "WHERE NOT (score)-[:CREATOR]-() "
+				+ "MERGE (score)-[:CREATOR {role: 'Composer'}]->(:Person {uri:'https://github.com/jimjonesbr/wmss#person',name:'Unknown Composer'})", ds);
+
+		
 	}
+	
 	
 	public static ArrayList<Format> getFormats(DataSource ds){
 
@@ -540,9 +562,9 @@ public class Neo4jEngine {
 		
 	}
 	
-	public static ArrayList<Movement> getMovementData(String scoreURI, DataSource dataSource){
+	public static ArrayList<MovementListScoreRequest> getMovementData(String scoreURI, DataSource dataSource){
 
-		ArrayList<Movement> result = new ArrayList<Movement>();
+		ArrayList<MovementListScoreRequest> result = new ArrayList<MovementListScoreRequest>();
 		
 		String cypher = 
 				"MATCH (scr:Score)-[:MOVEMENT]->(mov:Movement)-[:MEDIUMTYPE]->(mediumType:mediumType)-[:MEDIUM]->(medium:Medium)\n" + 
@@ -582,14 +604,14 @@ public class Neo4jEngine {
 
 			try {
 				
-				Movement movement = new Movement();
+				MovementListScoreRequest movement = new MovementListScoreRequest();
 				
 				JSONObject movementsObject = (JSONObject) parser.parse(gson.toJson(record.get("movementsResultset").asMap()));
 				movement.setMovementIdentifier(movementsObject.get("movementIdentifier").toString().trim());
 				if(movementsObject.get("movementName")!=null) {
-					movement.setMovementName(movementsObject.get("movementName").toString());
+					movement.setMovementLabel(movementsObject.get("movementName").toString());
 				} else {
-					movement.setMovementName("");
+					movement.setMovementLabel("");
 				}
 				movement.setBeatUnit(movementsObject.get("beatUnit").toString());
 				movement.setBeatsPerMinute(Integer.parseInt(movementsObject.get("beatsPerMinute").toString()));
@@ -611,8 +633,8 @@ public class Neo4jEngine {
 						PerformanceMedium medium = new PerformanceMedium();	
 
 						JSONObject mediumJsonObject = (JSONObject) mediumsArray.get(j);
-						medium.setMediumDescription(mediumJsonObject.get("mediumName").toString().trim());
-						medium.setMediumId(mediumJsonObject.get("mediumIdentifier").toString().trim());
+						medium.setLabel(mediumJsonObject.get("mediumName").toString().trim());
+						medium.setMediumIdentifier(mediumJsonObject.get("mediumIdentifier").toString().trim());
 						medium.setMediumScoreDescription(mediumJsonObject.get("mediumLabel").toString().trim());
 						medium.setMediumCode(mediumJsonObject.get("mediumCode").toString().trim());
 												

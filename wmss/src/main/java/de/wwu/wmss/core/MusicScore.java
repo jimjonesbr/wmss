@@ -16,7 +16,7 @@ public class MusicScore {
 	private String printResource;
 	private String dateIssued;
 	private String documentCreationDate;
-	private ArrayList<Movement> movements;
+	private ArrayList<MovementListScoreRequest> movements;
 	private ArrayList<Format> formats;
 	private Provenance provenance;
 	private ArrayList<Person> persons;
@@ -30,7 +30,7 @@ public class MusicScore {
 	public MusicScore() {
 		super();
 		
-		this.movements = new ArrayList<Movement>();
+		this.movements = new ArrayList<MovementListScoreRequest>();
 		this.formats = new ArrayList<Format>();
 		this.persons = new ArrayList<Person>();
 		this.melodyLocations = new ArrayList<MelodyLocationGroup>();
@@ -89,7 +89,7 @@ public class MusicScore {
 		this.tonalityMode = tonalityMode;
 	}
 
-	public ArrayList<Movement> getMovements() {
+	public ArrayList<MovementListScoreRequest> getMovements() {
 		return movements;
 	}
 

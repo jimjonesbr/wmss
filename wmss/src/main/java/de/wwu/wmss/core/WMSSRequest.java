@@ -85,6 +85,8 @@ public class WMSSRequest {
 	private ArrayList<Time> times = new ArrayList<Time>();
 	private ArrayList<Clef> clefs = new ArrayList<Clef>();
 	private ArrayList<Resource> resources = new ArrayList<Resource>();
+	private ArrayList<MovementEditScoreRequest> movements = new ArrayList<MovementEditScoreRequest>();
+	
 	private Melody melody2 = new Melody();
 	
 	
@@ -490,32 +492,32 @@ public class WMSSRequest {
 			
 			if(queryObject.get("scoreTitle")!=null) {
 				this.title = queryObject.get("scoreTitle").toString();
-				logger.info("Title           : " + queryObject.get("scoreTitle").toString());
+				logger.info("Title: " + queryObject.get("scoreTitle").toString());
 			}
 			
 			if(queryObject.get("issued")!=null) {
 				this.dateIssued = queryObject.get("issued").toString();
-				logger.info("Date Issued     : " + queryObject.get("issued").toString());
+				logger.info("Date Issued: " + queryObject.get("issued").toString());
 			}
 			
 			if(queryObject.get("ignoreOctave")!=null) {
 				this.ignoreOctave = Boolean.parseBoolean(queryObject.get("ignoreOctave").toString());
-				logger.info("Ignore Octave     : " + queryObject.get("ignoreOctave").toString());
+				logger.info("Ignore Octave: " + queryObject.get("ignoreOctave").toString());
 			}
 			
 			if(queryObject.get("ignoreDuration")!=null) {
 				this.ignoreDuration = Boolean.parseBoolean(queryObject.get("ignoreDuration").toString());
-				logger.info("Ignore Duration     : " + queryObject.get("ignoreDuration").toString());
+				logger.info("Ignore Duration: " + queryObject.get("ignoreDuration").toString());
 			}
 			
 			if(queryObject.get("ignorePitch")!=null) {
 				this.ignorePitch = Boolean.parseBoolean(queryObject.get("ignorePitch").toString());
-				logger.info("Ignore Pitch     : " + queryObject.get("ignorePitch").toString());
+				logger.info("Ignore Pitch: " + queryObject.get("ignorePitch").toString());
 			}
 			
 			if(queryObject.get("ignoreChords")!=null) {
 				this.ignoreChords = Boolean.parseBoolean(queryObject.get("ignoreChords").toString());
-				logger.info("Ignore Chords     : " + queryObject.get("ignoreChords").toString());
+				logger.info("Ignore Chords: " + queryObject.get("ignoreChords").toString());
 			}
 			
 			
@@ -580,17 +582,17 @@ public class WMSSRequest {
 					
 					if(collectionObject.get("collectionIdentifier")!=null) {
 						collection.setIdentifier(collectionObject.get("collectionIdentifier").toString());
-						logger.info("Collection Identifier  : " + collectionObject.get("collectionIdentifier").toString());	
+						logger.info("Collection Identifier: " + collectionObject.get("collectionIdentifier").toString());	
 					}
 					
 					if(collectionObject.get("collectionLabel")!=null) {
 						collection.setLabel(collectionObject.get("collectionLabel").toString());
-						logger.info("Collection Label  : " + collectionObject.get("collectionLabel").toString());	
+						logger.info("Collection Label: " + collectionObject.get("collectionLabel").toString());	
 					}
 					
 					if(collectionObject.get("action")!=null) {
 						collection.setAction(collectionObject.get("action").toString());
-						logger.info("Collection Action  : " + collectionObject.get("action").toString().toLowerCase());	
+						logger.info("Collection Action: " + collectionObject.get("action").toString().toLowerCase());	
 					}
 
 
@@ -608,7 +610,7 @@ public class WMSSRequest {
 				
 					JSONObject formatObject = (JSONObject) formatObjects.get(i);
 					
-					logger.info("Format       : " + formatObject.get("format").toString());
+					logger.info("Format: " + formatObject.get("format").toString());
 					this.getFormats().add(formatObject.get("format").toString());
 					
 				}
@@ -625,12 +627,12 @@ public class WMSSRequest {
 					Key key = new Key();
 
 					if(keyObject.get("key")!=null) {
-						logger.info("Key  : " + keyObject.get("key").toString());
+						logger.info("Key: " + keyObject.get("key").toString());
 						key.setKey(keyObject.get("key").toString());
 					}
 
 					if(keyObject.get("format")!=null) {
-						logger.info("Key Format : " + keyObject.get("format").toString());
+						logger.info("Key Format: " + keyObject.get("format").toString());
 						key.setFormat(keyObject.get("format").toString());
 					}
 
@@ -650,12 +652,12 @@ public class WMSSRequest {
 					Time time = new Time();
 	
 					if(timeObject.get("time")!=null) {
-						logger.info("Time  : " + timeObject.get("time").toString());
+						logger.info("Time: " + timeObject.get("time").toString());
 						time.setTime(timeObject.get("time").toString());
 					}
 					
 					if(timeObject.get("format")!=null) {
-						logger.info("Time Format : " + timeObject.get("format").toString());
+						logger.info("Time Format: " + timeObject.get("format").toString());
 						time.setFormat(timeObject.get("format").toString());
 					}
 	
@@ -674,12 +676,12 @@ public class WMSSRequest {
 					Clef clef = new Clef();
 	
 					if(clefObject.get("clef")!=null) {
-						logger.info("Clef  : " + clefObject.get("clef").toString());
+						logger.info("Clef: " + clefObject.get("clef").toString());
 						clef.setClef(clefObject.get("clef").toString());
 					}
 					
 					if(clefObject.get("format")!=null) {
-						logger.info("Clef Format : " + clefObject.get("format").toString());
+						logger.info("Clef Format: " + clefObject.get("format").toString());
 						clef.setFormat(clefObject.get("format").toString());
 					}
 	
@@ -699,12 +701,12 @@ public class WMSSRequest {
 					PerformanceMedium medium = new PerformanceMedium();
 					
 					if(mediumObject.get("mediumType")!=null) {
-						logger.info("Medium Type  : " + mediumObject.get("mediumType").toString());
+						logger.info("Medium Type: " + mediumObject.get("mediumType").toString());
 						medium.setMediumTypeId(mediumObject.get("mediumType").toString());
 					}
 	
 					if(mediumObject.get("mediumCode")!=null) {
-						logger.info("Medium Code  : " + mediumObject.get("mediumCode").toString());
+						logger.info("Medium Code: " + mediumObject.get("mediumCode").toString());
 						medium.setMediumCode(mediumObject.get("mediumCode").toString());
 					}
 	
@@ -724,22 +726,22 @@ public class WMSSRequest {
 					Person person = new Person();
 					
 					if(personObject.get("personIdentifier")!=null) {
-						logger.info("Person Identifier  : " + personObject.get("personIdentifier").toString());
+						logger.info("Person Identifier: " + personObject.get("personIdentifier").toString());
 						person.setIdentifier(personObject.get("personIdentifier").toString());
 					}
 	
 					if(personObject.get("personName")!=null) {
-						logger.info("Person Name   : " + personObject.get("personName").toString());
+						logger.info("Person Name: " + personObject.get("personName").toString());
 						person.setName(personObject.get("personName").toString());
 					}
 										
 					if(personObject.get("personRole")!=null) {
-						logger.info("Person Role  : " + personObject.get("personRole").toString());
+						logger.info("Person Role: " + personObject.get("personRole").toString());
 						person.setRole(personObject.get("personRole").toString());
 					}
 	
 					if(personObject.get("action")!=null) {
-						logger.info("Person Action   : " + personObject.get("action").toString());
+						logger.info("Person Action: " + personObject.get("action").toString());
 						person.setAction(personObject.get("action").toString().toLowerCase());
 					}
 					
@@ -748,7 +750,6 @@ public class WMSSRequest {
 				}
 				
 			}
-
 			
 			JSONArray resourceObjects = (JSONArray) queryObject.get("resources");
 
@@ -760,27 +761,120 @@ public class WMSSRequest {
 					Resource resource = new Resource();
 					
 					if(resourceObject.get("resourceURL")!=null) {
-						logger.info("Resource URL  : " + resourceObject.get("resourceURL").toString());
+						logger.info("Resource URL: " + resourceObject.get("resourceURL").toString());
 						resource.setUrl(resourceObject.get("resourceURL").toString());
 					}
 	
 					if(resourceObject.get("resourceLabel")!=null) {
-						logger.info("Resource Label  : " + resourceObject.get("resourceLabel").toString());
+						logger.info("Resource Label: " + resourceObject.get("resourceLabel").toString());
 						resource.setLabel(resourceObject.get("resourceLabel").toString());
 					}
 					
 					if(resourceObject.get("resourceType")!=null) {
-						logger.info("Resource Type  : " + resourceObject.get("resourceType").toString());
+						logger.info("Resource Type: " + resourceObject.get("resourceType").toString());
 						resource.setType(resourceObject.get("resourceType").toString());
 					}
 
 					
 					if(resourceObject.get("action")!=null) {
-						logger.info("Resource Action  : " + resourceObject.get("action").toString());
+						logger.info("Resource Action: " + resourceObject.get("action").toString());
 						resource.setAction(resourceObject.get("action").toString().toLowerCase());
 					}
 	
 					this.getResources().add(resource);
+	
+				}
+				
+			}
+			
+			
+			JSONArray movementsObjects = (JSONArray) queryObject.get("movements");
+
+			if(movementsObjects != null) {
+							
+				for (int j = 0; j < movementsObjects.size(); j++) {
+	
+					JSONObject movementObject = (JSONObject) movementsObjects.get(j);
+					MovementEditScoreRequest movement = new MovementEditScoreRequest();
+					
+					if(movementObject.get("movementIdentifier")!=null) {
+						logger.info("Movement Identifier: " + movementObject.get("movementIdentifier").toString());
+						movement.setMovementIdentifier(movementObject.get("movementIdentifier").toString());
+					}
+	
+					if(movementObject.get("movementLabel")!=null) {
+						logger.info("Movement Label: " + movementObject.get("movementLabel").toString());
+						movement.setMovementLabel(movementObject.get("movementLabel").toString());
+					}
+					
+					if(movementObject.get("beatUnit")!=null) {
+						logger.info("Beat Unit: " + movementObject.get("beatUnit").toString());
+						movement.setBeatUnit(movementObject.get("beatUnit").toString());
+					}
+					
+					if(movementObject.get("beatsPerMinute")!=null) {
+						logger.info("Beats per Minute: " + movementObject.get("beatsPerMinute").toString());
+						movement.setBeatsPerMinute(Integer.parseInt( movementObject.get("beatsPerMinute").toString()));
+					}
+					
+					if(movementObject.get("action")!=null) {
+						logger.info("Movement Action: " + movementObject.get("action").toString());
+						movement.setAction(movementObject.get("action").toString());
+					}
+	
+					
+					
+					JSONArray mediumMovementObjects = (JSONArray) movementObject.get("mediums");
+					
+					if(mediumMovementObjects != null) {
+										
+						for (int k = 0; k < mediumMovementObjects.size(); k++) {
+							
+							JSONObject mediumObject = (JSONObject) mediumMovementObjects.get(k);
+							PerformanceMedium medium = new PerformanceMedium();
+							
+							if(mediumObject.get("mediumIdentifier")!=null) {
+								logger.info("  Medium Identifier: " + mediumObject.get("mediumIdentifier").toString());
+								medium.setMediumIdentifier(mediumObject.get("mediumIdentifier").toString());
+							}							
+							
+							if(mediumObject.get("mediumLabel")!=null) {
+								logger.info("  Medium Label: " + mediumObject.get("mediumLabel").toString());
+								medium.setLabel(mediumObject.get("mediumLabel").toString());
+							}
+			
+							if(mediumObject.get("mediumCode")!=null) {
+								logger.info("  Medium Code: " + mediumObject.get("mediumCode").toString());
+								medium.setMediumCode(mediumObject.get("mediumCode").toString());
+							}
+							
+							if(mediumObject.get("mediumScoreDescription")!=null) {
+								logger.info("  Medium Score Description: " + mediumObject.get("mediumScoreDescription").toString());
+								medium.setMediumScoreDescription(mediumObject.get("mediumScoreDescription").toString());
+							}
+							
+							if(mediumObject.get("solo")!=null) {
+								logger.info("  Medium Solo: " + mediumObject.get("solo").toString());
+								medium.setSolo(Boolean.parseBoolean(mediumObject.get("solo").toString()));
+							}
+
+							if(mediumObject.get("ensemble")!=null) {
+								logger.info("  Medium Ensemble: " + mediumObject.get("ensemble").toString());
+								medium.setEnsemble(Boolean.parseBoolean(mediumObject.get("ensemble").toString()));
+							}
+
+							if(mediumObject.get("action")!=null) {
+								logger.info("  Medium Action: " + mediumObject.get("action").toString());
+								medium.setAction(mediumObject.get("action").toString());
+							}
+
+							movement.getMediums().add(medium);
+							
+						}
+						
+					}
+					
+					this.getMovements().add(movement);
 	
 				}
 				
@@ -1033,6 +1127,11 @@ public class WMSSRequest {
 	public Melody getMelody2() {
 		return melody2;
 	}
+
+	public ArrayList<MovementEditScoreRequest> getMovements() {
+		return movements;
+	}
+	
 	
 	
 }

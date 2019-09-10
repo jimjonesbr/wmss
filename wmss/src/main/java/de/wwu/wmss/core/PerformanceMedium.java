@@ -12,6 +12,7 @@ public class PerformanceMedium {
 	private String scoreId;
 	private boolean solo;
 	private boolean ensemble;
+	private String action;
 	
 	public PerformanceMedium() {
 		super();
@@ -37,7 +38,7 @@ public class PerformanceMedium {
 		return mediumDescription;
 	}
 
-	public void setMediumDescription(String mediumDescription) {
+	public void setLabel(String mediumDescription) {
 		this.mediumDescription = mediumDescription;
 	}
 
@@ -45,7 +46,7 @@ public class PerformanceMedium {
 		return mediumId;
 	}
 
-	public void setMediumId(String mediumClassification) {
+	public void setMediumIdentifier(String mediumClassification) {
 		this.mediumId = mediumClassification;
 	}
 
@@ -95,6 +96,14 @@ public class PerformanceMedium {
 
 	public void setMediumCode(String mediumCode) {
 		this.mediumCode = mediumCode;
+	}
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
 	}
 
 	

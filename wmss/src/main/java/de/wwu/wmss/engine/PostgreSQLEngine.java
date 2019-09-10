@@ -14,7 +14,7 @@ import de.wwu.wmss.core.Format;
 import de.wwu.wmss.core.Interval;
 import de.wwu.wmss.core.MelodyLocation;
 import de.wwu.wmss.core.MelodyLocationGroup;
-import de.wwu.wmss.core.Movement;
+import de.wwu.wmss.core.MovementListScoreRequest;
 import de.wwu.wmss.core.MusicScore;
 import de.wwu.wmss.core.PerformanceMedium;
 import de.wwu.wmss.core.PerformanceMediumType;
@@ -292,8 +292,8 @@ public class PostgreSQLEngine {
 					type.setMediumTypeId(rs.getString("performance_medium_type_id"));
 					type.setMediumTypeDescription(rs.getString("performance_medium_type_description"));
 					
-					medium.setMediumId(rs.getString("performance_medium_id"));
-					medium.setMediumDescription(rs.getString("performance_medium_description"));
+					medium.setMediumIdentifier(rs.getString("performance_medium_id"));
+					medium.setLabel(rs.getString("performance_medium_description"));
 					medium.setMediumTypeId(rs.getString("performance_medium_type_id"));
 					
 					mediumList.add(medium);
@@ -363,7 +363,7 @@ public class PostgreSQLEngine {
 	public static ArrayList<MusicScore> getScoreList(ArrayList<RequestParameter> parameters, DataSource dataSource){
 
 		ArrayList<MusicScore> scoreList = new ArrayList<MusicScore>();
-		ArrayList<Movement> movementList = new ArrayList<Movement>();
+		ArrayList<MovementListScoreRequest> movementList = new ArrayList<MovementListScoreRequest>();
 		ArrayList<PerformanceMedium> mediumList = new ArrayList<PerformanceMedium>();
 		ArrayList<PerformanceMediumType> mediumTypeList = new ArrayList<PerformanceMediumType>();
 		ArrayList<Person> personList = new ArrayList<Person>();
@@ -656,11 +656,11 @@ public class PostgreSQLEngine {
 					rec.setPrintResource(rs.getString("score_print_resource"));
 					//rec.setOnlineResource(rs.getString("score_online_resource"));
 					
-					Movement mov = new Movement();					
+					MovementListScoreRequest mov = new MovementListScoreRequest();					
 					mov.setMovementIdentifier(rs.getString("movement_id"));
-					mov.setMovementName(rs.getString("score_movement_description"));
+					mov.setMovementLabel(rs.getString("score_movement_description"));
 					mov.setBeatUnit(rs.getString("movement_tempo"));
-					mov.setScoreId(rs.getString("score_id"));
+					//mov.setScoreId(rs.getString("score_id"));
 
 					movementList.add(mov);
 
@@ -673,8 +673,8 @@ public class PostgreSQLEngine {
 					mediumTypeList.add(pmt);
 
 					PerformanceMedium med = new PerformanceMedium();
-					med.setMediumId(rs.getString("performance_medium_id"));
-					med.setMediumDescription(rs.getString("performance_medium_description"));
+					med.setMediumIdentifier(rs.getString("performance_medium_id"));
+					med.setLabel(rs.getString("performance_medium_description"));
 					med.setMediumTypeId(rs.getString("performance_medium_type_id"));
 					med.setTypeDescription(rs.getString("performance_medium_type_description"));
 					med.setMovementId(rs.getString("movement_id"));
@@ -728,19 +728,19 @@ public class PostgreSQLEngine {
 
 			for (int j = 0; j < movementList.size(); j++) {						
 
-				if(scoreList.get(i).getScoreId().equals(movementList.get(j).getScoreId())){
+//				if(scoreList.get(i).getScoreId().equals(movementList.get(j).getScoreId())){
 
 					boolean movementAdded = false;
 
 					for (int k = 0; k < scoreList.get(i).getMovements().size(); k++) {
 
-						if(scoreList.get(i).getMovements().get(k).getScoreId().equals(movementList.get(j).getScoreId()) &&
-								scoreList.get(i).getMovements().get(k).getMovementName().equals(movementList.get(j).getMovementName())){
+//						if(scoreList.get(i).getMovements().get(k).getScoreId().equals(movementList.get(j).getScoreId()) &&
+//								scoreList.get(i).getMovements().get(k).getMovementName().equals(movementList.get(j).getMovementName())){
+//
+//							movementAdded = true;
+//						}
 
-							movementAdded = true;
-						}
-
-					}
+//					}
 
 					if(!movementAdded) {
 
@@ -769,7 +769,7 @@ public class PostgreSQLEngine {
 
 
 					if(scoreList.get(i).getScoreId().equals(mediumList.get(k).getScoreId())  &&
-					   scoreList.get(i).getMovements().get(j).getMovementId().equals(mediumList.get(k).getMovementId())){
+					   scoreList.get(i).getMovements().get(j).getIdentifier().equals(mediumList.get(k).getMovementId())){
 
 						for (int l = 0; l < scoreList.get(i).getMovements().get(j).getPerformanceMediumList().size(); l++) {
 
@@ -812,7 +812,7 @@ public class PostgreSQLEngine {
 						boolean mediumAdded = false;
 
 						if(scoreList.get(i).getScoreId().equals(mediumList.get(k).getScoreId())  &&
-						   scoreList.get(i).getMovements().get(j).getMovementId().equals(mediumList.get(k).getMovementId()) &&
+						   scoreList.get(i).getMovements().get(j).getIdentifier().equals(mediumList.get(k).getMovementId()) &&
 						   scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediumTypeId().equals(mediumList.get(k).getMediumTypeId())){
 
 

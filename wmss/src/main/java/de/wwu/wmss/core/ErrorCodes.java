@@ -96,6 +96,11 @@ public class ErrorCodes {
 	public static String RELATIONSHIP_CONFLICT_DESCRIPTION  = "Relationship already exists. ";
 	public static String RELATIONSHIP_CONFLICT_HINT = "Check the request document and try again.";
 	
+	public static String NONSUPPORTED_ACTION_CODE = "E0023";
+	public static String NONSUPPORTED_ACTION_DESCRIPTION  = "Action not supported: ";
+	public static String NONSUPPORTED_ACTION_HINT = "Check the request document and try again.";
+
+	
 	public static String WARNING_CONFLICTING_CHORDS_PARAMETER_CODE = "W0001";
 	public static String WARNING_CONFLICTING_CHORDS_PARAMETER_DESCRIPTION  = "Conflicting parameter 'ignoreChords'.";
 	public static String WARNING_CONFLICTING_CHORDS_PARAMETER_HINT = "The searched melody contains chords but the parameter 'ignoreChords' ist set to 'true'. The 'ignoreChords' parameter will be ignored.";
