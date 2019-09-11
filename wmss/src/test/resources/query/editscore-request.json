@@ -53,7 +53,8 @@
       "movementIdentifier": "http://linkeddata.uni-muenster.de/node/e4d1f11f-b2b6-4c96-b926-4c034ba28088_MOV1",
       "movementLabel": "Adagio",
       "beatUnit": "quarter",
-      "beatsPerMinute": 120,      
+      "beatsPerMinute": 120,     
+      "movementOrder": 1,      
       "mediums": [
         {
           "mediumIdentifier": "http://linkeddata.uni-muenster.de/node/d30b05fa-6856-4b49-ac37-d5ea3141c1f9/MOV1_PART_P1",

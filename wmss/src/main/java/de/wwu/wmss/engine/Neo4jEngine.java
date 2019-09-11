@@ -588,6 +588,7 @@ public class Neo4jEngine {
 				"  {movementIdentifier: movementIdentifier,\n" + 
 				"   movementName: movementName, \n" + 
 				"   beatUnit: beatUnit,\n" + 
+				"   movementOrder: movOrder,\n" + 
 				"   beatsPerMinute: beatsPerMinute,\n" + 
 				"   mediumsList: COLLECT(mediumsListResultset)} AS movementsResultset,movOrder \n"+
 				"ORDER BY movOrder \n";
@@ -613,6 +614,12 @@ public class Neo4jEngine {
 				} else {
 					movement.setMovementLabel("");
 				}
+				//if(movementsObject.get("movementOrder")!=null) {
+					movement.setOrder(Integer.parseInt(movementsObject.get("movementOrder").toString()));
+				//} else {
+				//	movement.setOrder(null);
+				//}
+
 				movement.setBeatUnit(movementsObject.get("beatUnit").toString());
 				movement.setBeatsPerMinute(Integer.parseInt(movementsObject.get("beatsPerMinute").toString()));
 				
@@ -1207,6 +1214,7 @@ public class Neo4jEngine {
 				"    COLLECT(DISTINCT{ \n" + 
 				"      movementIdentifier: mov.uri,\n" + 
 				"      movementName: mov.title,\n" + 
+				"      movementOrder: mov.order,\n" + 
 				"      startingMeasure: measure1.order, \n" + 
 				"      staff: ns0.staff, \n" + 
 				"      voice: ns0.voice, \n" + 
@@ -1232,7 +1240,7 @@ public class Neo4jEngine {
 			score.setTitle(record.get("title").asString());
 			score.setDateIssued(record.get("issued").asString());
 			score.setScoreId(record.get("identifier").asString());
-			score.setThumbnail(record.get("thumbnail").asString());			
+			score.setThumbnail(record.get("thumbnail").asString());	
 			
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			
@@ -1402,6 +1410,12 @@ public class Neo4jEngine {
 						} else {
 							loc.setMovementName("(no title)");
 						}
+						if(locationJsonObject.get("movementOrder")!=null) {
+							loc.setOrder(Integer.parseInt(locationJsonObject.get("movementOrder").toString().trim()));	
+						} else {
+							loc.setOrder(0);
+						}
+						
 						
 						loc.getMelodyLocation().add(location);
 						result.add(loc);
