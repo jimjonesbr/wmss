@@ -71,12 +71,12 @@ public class DescribeServiceRequest {
 
 					for (int j = 0; j < persons.length(); j++) {
 
-						String personUrl = persons.getJSONObject(j).get("url").toString();
+						String personUrl = persons.getJSONObject(j).get("identifier").toString();
 						String personScores = persons.getJSONObject(j).get("totalRelatedScores").toString();
 						String personRole = persons.getJSONObject(j).get("role").toString();
 						String personName = persons.getJSONObject(j).get("name").toString();
 
-						System.out.println("    |__URL: "+persons.getJSONObject(j).get("url").toString());
+						System.out.println("    |__Identifier: "+persons.getJSONObject(j).get("identifier").toString());
 						System.out.println("    |__Name: "+persons.getJSONObject(j).get("name").toString());
 						System.out.println("    |__Role: "+persons.getJSONObject(j).get("role").toString());
 						System.out.println("    |__Scores: "+persons.getJSONObject(j).get("totalRelatedScores").toString());
@@ -126,13 +126,13 @@ public class DescribeServiceRequest {
 					System.out.println("  |__Collections");
 					for (int j = 0; j < collections.length(); j++) {
 
-						System.out.println("    |__Identifier: "+collections.getJSONObject(j).get("id").toString());
-						System.out.println("    |__Description: "+collections.getJSONObject(j).get("description").toString());
+						System.out.println("    |__Identifier: "+collections.getJSONObject(j).get("identifier").toString());
+						System.out.println("    |__Label: "+collections.getJSONObject(j).get("label").toString());
 
-						if(!collections.getJSONObject(j).get("id").toString().equals("https://wwu.greatcomposers.de") && 
-								!collections.getJSONObject(j).get("id").toString().equals("https://sammlungen.ulb.uni-muenster.de")) {
+						if(!collections.getJSONObject(j).get("identifier").toString().equals("https://wwu.greatcomposers.de") && 
+								!collections.getJSONObject(j).get("identifier").toString().equals("https://sammlungen.ulb.uni-muenster.de")) {
 							result = false;
-							System.err.println("Unknown collection: '" + collections.getJSONObject(j).get("id").toString() + "' (" + collections.getJSONObject(j).get("description").toString() +")");
+							System.err.println("Unknown collection: '" + collections.getJSONObject(j).get("identifier").toString() + "' (" + collections.getJSONObject(j).get("label").toString() +")");
 						}
 					}
 
@@ -178,15 +178,13 @@ public class DescribeServiceRequest {
 						}
 					}
 
-
-					JSONArray instrumentType =  datasources.getJSONObject(i).getJSONArray("performanceMediums");
+					JSONArray instrumentType =  datasources.getJSONObject(i).getJSONArray("mediums");
 
 					if(instrumentType.length()!=3) {
 						result = false;
 					}
-
+					
 					for (int j = 0; j < instrumentType.length(); j++) {
-
 						System.out.println("  |__Instrument Type: " + instrumentType.getJSONObject(j).get("mediumTypeDescription").toString());
 
 					}
@@ -202,9 +200,11 @@ public class DescribeServiceRequest {
 			}
 
 		} catch (JSONException e) {
+			result = false;
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+			result = false;
 		}
 
 

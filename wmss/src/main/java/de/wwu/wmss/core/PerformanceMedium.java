@@ -2,12 +2,12 @@ package de.wwu.wmss.core;
 
 public class PerformanceMedium {
 
-	private String mediumTypeDescription;
-	private String mediumTypeId;
-	private String mediumDescription;
-	private String mediumId;
-	private String mediumCode;
-	private String mediumScoreDescription;	
+	private String mediumTypeDescription="";
+	private String mediumTypeId="";
+	private String mediumDescription="";
+	private String mediumId="";
+	private String mediumCode="";
+	private String mediumScoreDescription="";	
 	private String movementId;
 	private String scoreId;
 	private boolean solo;
@@ -34,7 +34,7 @@ public class PerformanceMedium {
 		this.mediumTypeId = typeClassification;
 	}
 
-	public String getMediumDescription() {
+	public String getLabel() {
 		return mediumDescription;
 	}
 
@@ -42,11 +42,11 @@ public class PerformanceMedium {
 		this.mediumDescription = mediumDescription;
 	}
 
-	public String getMediumId() {
+	public String getIdentifier() {
 		return mediumId;
 	}
 
-	public void setMediumIdentifier(String mediumClassification) {
+	public void setIdentifier(String mediumClassification) {
 		this.mediumId = mediumClassification;
 	}
 
@@ -74,11 +74,11 @@ public class PerformanceMedium {
 		this.scoreId = scoreId;
 	}
 
-	public String getMediumScoreDescription() {
+	public String getScoreLabel() {
 		return mediumScoreDescription;
 	}
 
-	public void setMediumScoreDescription(String mediumScoreDescription) {
+	public void setScoreLabel(String mediumScoreDescription) {
 		this.mediumScoreDescription = mediumScoreDescription;
 	}
 
@@ -90,7 +90,7 @@ public class PerformanceMedium {
 		this.ensemble = ensemble;
 	}
 
-	public String getMediumCode() {
+	public String getCode() {
 		return mediumCode;
 	}
 

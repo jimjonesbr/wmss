@@ -699,16 +699,48 @@ public class WMSSRequest {
 					
 					JSONObject mediumObject = (JSONObject) mediumObjects.get(j);
 					PerformanceMedium medium = new PerformanceMedium();
+
+					if(mediumObject.get("mediumIdentifier")!=null) {
+						logger.info("Medium Identifier: " + mediumObject.get("mediumIdentifier").toString());
+						medium.setIdentifier(mediumObject.get("mediumIdentifier").toString());
+					}
+
+					if(mediumObject.get("mediumLabel")!=null) {
+						logger.info("Medium Label: " + mediumObject.get("mediumLabel").toString());
+						medium.setLabel(mediumObject.get("mediumLabel").toString());
+					}
+
+					if(mediumObject.get("mediumCode")!=null) {
+						logger.info("Medium Code: " + mediumObject.get("mediumCode").toString());
+						medium.setMediumCode(mediumObject.get("mediumCode").toString());
+					}
+
+					if(mediumObject.get("mediumScoreLabel")!=null) {
+						logger.info("Medium Score Label: " + mediumObject.get("mediumScoreLabel").toString());
+						medium.setScoreLabel(mediumObject.get("mediumScoreLabel").toString());
+					}
+					
+					if(mediumObject.get("solo")!=null) {
+						logger.info("Medium Solo: " + mediumObject.get("solo").toString());
+						medium.setSolo(Boolean.parseBoolean(mediumObject.get("solo").toString()));
+					}
+
+					if(mediumObject.get("ensemble")!=null) {
+						logger.info("Medium Ensemble: " + mediumObject.get("ensemble").toString());
+						medium.setEnsemble(Boolean.parseBoolean(mediumObject.get("ensemble").toString()));
+					}
+
+					if(mediumObject.get("action")!=null) {
+						logger.info("Medium Action: " + mediumObject.get("action").toString());
+						medium.setAction(mediumObject.get("action").toString());
+					}
 					
 					if(mediumObject.get("mediumType")!=null) {
 						logger.info("Medium Type: " + mediumObject.get("mediumType").toString());
 						medium.setMediumTypeId(mediumObject.get("mediumType").toString());
 					}
 	
-					if(mediumObject.get("mediumCode")!=null) {
-						logger.info("Medium Code: " + mediumObject.get("mediumCode").toString());
-						medium.setMediumCode(mediumObject.get("mediumCode").toString());
-					}
+					
 	
 					this.mediums.add(medium);
 					
@@ -787,7 +819,6 @@ public class WMSSRequest {
 				
 			}
 			
-			
 			JSONArray movementsObjects = (JSONArray) queryObject.get("movements");
 
 			if(movementsObjects != null) {
@@ -828,7 +859,7 @@ public class WMSSRequest {
 					}
 	
 					
-					
+					/**
 					JSONArray mediumMovementObjects = (JSONArray) movementObject.get("mediums");
 					
 					if(mediumMovementObjects != null) {
@@ -840,7 +871,7 @@ public class WMSSRequest {
 							
 							if(mediumObject.get("mediumIdentifier")!=null) {
 								logger.info("  Medium Identifier: " + mediumObject.get("mediumIdentifier").toString());
-								medium.setMediumIdentifier(mediumObject.get("mediumIdentifier").toString());
+								medium.setIdentifier(mediumObject.get("mediumIdentifier").toString());
 							}							
 							
 							if(mediumObject.get("mediumLabel")!=null) {
@@ -853,9 +884,9 @@ public class WMSSRequest {
 								medium.setMediumCode(mediumObject.get("mediumCode").toString());
 							}
 							
-							if(mediumObject.get("mediumScoreDescription")!=null) {
-								logger.info("  Medium Score Description: " + mediumObject.get("mediumScoreDescription").toString());
-								medium.setMediumScoreDescription(mediumObject.get("mediumScoreDescription").toString());
+							if(mediumObject.get("mediumScoreLabel")!=null) {
+								logger.info("  Medium Score Label: " + mediumObject.get("mediumScoreLabel").toString());
+								medium.setMediumScoreLabel(mediumObject.get("mediumScoreLabel").toString());
 							}
 							
 							if(mediumObject.get("solo")!=null) {
@@ -877,10 +908,11 @@ public class WMSSRequest {
 							
 						}
 						
+						
 					}
-					
+					*/
 					this.getMovements().add(movement);
-	
+					
 				}
 				
 			}

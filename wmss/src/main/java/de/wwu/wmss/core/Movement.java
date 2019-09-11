@@ -3,10 +3,10 @@ package de.wwu.wmss.core;
 public class Movement {
 
 	private String movementIdentifier;
-	private String movementName;	
-	private String beatUnit;
-	private int beatsPerMinute;
-	private int movementOrder;
+	private String movementName = "";	
+	private String beatUnit = "";
+	private int beatsPerMinute = 0;
+	private int movementOrder = 0;
 
 	public Movement() {
 		super();
@@ -20,7 +20,7 @@ public class Movement {
 		this.movementIdentifier = identifier;
 	}
 
-	public String getMovementName() {
+	public String getLabel() {
 		return movementName;
 	}
 

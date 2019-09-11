@@ -48,24 +48,24 @@
       "action": "update"
     }
   ],
+  "mediums": [
+    {
+      "mediumIdentifier": "http://linkeddata.uni-muenster.de/node/21dde7d3-e280-44d5-900a-4660e91ba4f4_MOV1_PART_P1",
+      "mediumLabel": "Violoncello",
+      "mediumCode": "strings.cello",
+      "mediumScoreLabel": "Violoncello",
+      "solo": false,
+      "ensemble": false,
+      "action":"update"
+    }
+  ], 
   "movements": [
     {
       "movementIdentifier": "http://linkeddata.uni-muenster.de/node/e4d1f11f-b2b6-4c96-b926-4c034ba28088_MOV1",
-      "movementLabel": "Adagio",
-       "movementOrder": 1,
+      "movementOrder": 1,
+      "movementLabel": "Adagio",      
       "beatUnit": "quarter",
-      "beatsPerMinute": 120,           
-      "mediums": [
-        {
-          "mediumIdentifier": "http://linkeddata.uni-muenster.de/node/d30b05fa-6856-4b49-ac37-d5ea3141c1f9/MOV1_PART_P1",
-          "mediumDescription": "Violoncello",
-          "mediumCode": "strings.cello",
-          "mediumScoreDescription": "Violoncello",
-          "solo": false,
-          "ensemble": false,
-          "action":"update"
-        }
-      ]
+      "beatsPerMinute": 120
     }
   ]
 }

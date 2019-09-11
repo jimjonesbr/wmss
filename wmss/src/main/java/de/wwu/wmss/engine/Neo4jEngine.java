@@ -222,17 +222,18 @@ public class Neo4jEngine {
 		
 		ArrayList<PerformanceMediumType> result = new ArrayList<PerformanceMediumType>();
 		
-		String cypher = "\n\nMATCH (type:mediumType)-[:MEDIUM]->(medium:Medium)\n" + 
+		String cypher = "\n\nMATCH (movement:Movement)-[:MEDIUM]->(medium:Medium)\n" + 
 				"RETURN DISTINCT \n" + 
-				"     {performanceMediumList: {mediumTypeId: type.mediumTypeId,\n" + 
-				"      mediumTypeDescription: type.mediumTypeDescription,\n" + 
-				"      instruments: COLLECT(DISTINCT\n" + 
-				"         {\n" + 
-				"          mediumCode: medium.mediumCode,\n" + 
-				"          mediumDescription: medium.mediumDescription\n" + 
+				"     {performanceMediumList: "+
+				"		{mediumTypeId: medium.mediumTypeId,\n" + 
+				"        mediumTypeDescription: medium.mediumTypeDescription,\n" + 
+				"        instruments: COLLECT(DISTINCT\n" + 
+				"       	{\n" + 
+				"		      mediumCode: medium.mediumCode,\n" + 
+				"             mediumDescription: medium.mediumDescription\n" + 
 				"         })}} AS performanceMediumList";
 		
-		logger.debug("getPerformanceMedium:\n"+cypher);
+		logger.info("getPerformanceMedium:\n"+cypher);
 		
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, ds);
 		
@@ -464,22 +465,92 @@ public class Neo4jEngine {
 			
 		}
 		
+		/**
+		 * Edit Movements
+		 */	
 		for (int i = 0; i < request.getMovements().size(); i++) {
 			
-			if(request.getMovements().get(i).getIdentifier().equals("")) {
-				throw new InvalidWMSSRequestException(ErrorCodes.INSUFFICIENT_DATA_DESCRIPTION + "a movement must have a valid identifier.",
+			if(request.getMovements().get(i).getIdentifier().equals("") && request.getMovements().get(i).getOrder()==0) {
+				throw new InvalidWMSSRequestException(ErrorCodes.INSUFFICIENT_DATA_DESCRIPTION + "a movement must have a valid identifier or an movement oder.",
 						  							  ErrorCodes.INSUFFICIENT_DATA_CODE, 
 						  							  ErrorCodes.INSUFFICIENT_DATA_HINT);									
 			}
 			
 			if(!request.getMovements().get(i).getAction().equals("update")) {
 				throw new InvalidWMSSRequestException(ErrorCodes.NONSUPPORTED_ACTION_DESCRIPTION + "The action '"+request.getMovements().get(i).getAction()+"' is not supported for movements.",
-						  ErrorCodes.NONSUPPORTED_ACTION_CODE, 
-						  "Movements are automatically generated based on MusicXML or RDF files.  ");								
+						  ErrorCodes.NONSUPPORTED_ACTION_CODE,
+						  "Movements are automatically generated based on MusicXML or RDF files.  ");
+			} else {
+				
+				String cypher = _match;
+				
+				if(request.getMovements().get(i).getOrder()!=0) {
+					cypher = cypher + "MATCH (score)-[:MOVEMENT]->(movement:Movement {order:"+request.getMovements().get(i).getOrder()+"}) \n";
+				} else if(!request.getMovements().get(i).getIdentifier().equals("")) {
+					cypher = cypher + "MATCH (score)-[:MOVEMENT]->(movement:Movement {uri:'"+request.getMovements().get(i).getIdentifier()+"'}) \n";
+				}
+				
+				if(request.getMovements().get(i).getBeatsPerMinute()!=0) {
+					cypher = cypher + "SET movement.beatsPerMinute=" + request.getMovements().get(i).getBeatsPerMinute() + "\n"; 
+				}
+				
+				if(!request.getMovements().get(i).getBeatUnit().equals("")) {
+					cypher = cypher + "SET movement.beatUnit='" + request.getMovements().get(i).getBeatUnit() + "'\n"; 
+				}
+				if(!request.getMovements().get(i).getLabel().equals("")) {
+					cypher = cypher + "SET movement.title='" + request.getMovements().get(i).getLabel() + "'\n"; 
+				}
+
+				logger.info("########'> "+cypher);
+				
+				Neo4jConnector.getInstance().executeQuery(cypher, ds);
 				
 			}
-
+						
+		}
+		
+		/**
+		 * Edit Mediums
+		 */	
+		
+		for (int i = 0; i < request.getMediums().size(); i++) {
 			
+			if(request.getMediums().get(i).getIdentifier().equals("")) {
+				throw new InvalidWMSSRequestException(ErrorCodes.INSUFFICIENT_DATA_DESCRIPTION + "a performance medium must have a valid identifier.",
+						  							  ErrorCodes.INSUFFICIENT_DATA_CODE, 
+						  							  ErrorCodes.INSUFFICIENT_DATA_HINT);									
+			}
+			
+			if(!request.getMediums().get(i).getAction().equals("update")) {
+				throw new InvalidWMSSRequestException(ErrorCodes.NONSUPPORTED_ACTION_DESCRIPTION + "The action '"+request.getMediums().get(i).getAction()+"' is not supported for performance mediums.",
+						  ErrorCodes.NONSUPPORTED_ACTION_CODE,
+						  "Movements are automatically generated based on MusicXML or RDF files and therefore cannot be manually added or deleted.  ");
+			} else {
+				
+				String cypher = _match + "MATCH (score)-[:MOVEMENT]->(:Movement)-[:MEDIUM]-(medium:Medium {uri:'"+request.getMediums().get(i).getIdentifier()+"'})\n";
+				
+				if(!request.getMediums().get(i).getCode().equals("")) {
+					cypher = cypher + "SET medium.mediumCode = '"+request.getMediums().get(i).getCode()+"'\n";
+					cypher = cypher + "SET medium : "+request.getMediums().get(i).getCode().replace(".", "_")+"\n";
+				}
+				
+				if(!request.getMediums().get(i).getLabel().equals("")) {
+					cypher = cypher + "SET medium.mediumDescription = '"+request.getMediums().get(i).getLabel()+"'\n";
+				}
+				
+				if(!request.getMediums().get(i).getScoreLabel().equals("")) {
+					cypher = cypher + "SET medium.mediumScoreDescription = '"+request.getMediums().get(i).getScoreLabel()+"'\n";
+				}
+								
+				Neo4jConnector.getInstance().executeQuery(cypher, ds);
+
+				
+			}
+			
+			
+			
+			
+							
 		}
 		
 		Neo4jConnector.getInstance().executeQuery(_match + "WHERE NOT (score)-[:COLLECTION]-() "
@@ -562,10 +633,10 @@ public class Neo4jEngine {
 		
 	}
 	
-	public static ArrayList<MovementListScoreRequest> getMovementData(String scoreURI, DataSource dataSource){
+	private static ArrayList<MovementListScoreRequest> getMovementData(String scoreURI, DataSource dataSource){
 
 		ArrayList<MovementListScoreRequest> result = new ArrayList<MovementListScoreRequest>();
-		
+		/**
 		String cypher = 
 				"MATCH (scr:Score)-[:MOVEMENT]->(mov:Movement)-[:MEDIUMTYPE]->(mediumType:mediumType)-[:MEDIUM]->(medium:Medium)\n" + 
 				"WHERE scr.uri=\""+ scoreURI +"\"\n" + 
@@ -592,7 +663,37 @@ public class Neo4jEngine {
 				"   beatsPerMinute: beatsPerMinute,\n" + 
 				"   mediumsList: COLLECT(mediumsListResultset)} AS movementsResultset,movOrder \n"+
 				"ORDER BY movOrder \n";
+		
+		*/
 
+		String cypher = 
+				"MATCH (scr:Score)-[:MOVEMENT]->(mov:Movement)-[:MEDIUM]->(medium:Medium)\n" + 
+				"WHERE scr.uri=\""+ scoreURI +"\"\n" + 
+				"WITH  \n" + 
+				"  mov.uri AS movementIdentifier,\n" + 
+				"  mov.title AS  movementName,\n" + 
+				"  mov.beatUnit AS beatUnit,\n" + 
+				"  mov.order AS movOrder,\n" +				
+				"  mov.beatsPerMinute AS beatsPerMinute,    \n" + 
+				"    {type: medium.mediumTypeDescription,\n" + 
+				"     typeIdentifier: medium.mediumTypeId,\n" + 
+				"     performanceMediums: COLLECT(DISTINCT{\n" + 
+				"       mediumCode: medium.mediumCode,\n" + 
+				"       mediumIdentifier: medium.mediumId,\n" + 
+				"       mediumName: medium.mediumDescription,\n" + 
+				"       mediumLabel: medium.mediumScoreDescription,\n" + 
+				"       solo: medium.solo,\n" + 
+				"       ensemble: medium.ensemble})} AS mediumsListResultset\n" + 
+				"RETURN \n" + 
+				"  {movementIdentifier: movementIdentifier,\n" + 
+				"   movementName: movementName, \n" + 
+				"   beatUnit: beatUnit,\n" + 
+				"   movementOrder: movOrder,\n" + 
+				"   beatsPerMinute: beatsPerMinute,\n" + 
+				"   mediumsList: COLLECT(mediumsListResultset)} AS movementsResultset,movOrder \n"+
+				"ORDER BY movOrder \n";
+
+		
 		logger.debug("getMovementData:\n"+cypher);
 		
 		StatementResult rs = Neo4jConnector.getInstance().executeQuery(cypher, dataSource);
@@ -614,12 +715,8 @@ public class Neo4jEngine {
 				} else {
 					movement.setMovementLabel("");
 				}
-				//if(movementsObject.get("movementOrder")!=null) {
-					movement.setOrder(Integer.parseInt(movementsObject.get("movementOrder").toString()));
-				//} else {
-				//	movement.setOrder(null);
-				//}
 
+				movement.setOrder(Integer.parseInt(movementsObject.get("movementOrder").toString()));
 				movement.setBeatUnit(movementsObject.get("beatUnit").toString());
 				movement.setBeatsPerMinute(Integer.parseInt(movementsObject.get("beatsPerMinute").toString()));
 				
@@ -641,10 +738,12 @@ public class Neo4jEngine {
 
 						JSONObject mediumJsonObject = (JSONObject) mediumsArray.get(j);
 						medium.setLabel(mediumJsonObject.get("mediumName").toString().trim());
-						medium.setMediumIdentifier(mediumJsonObject.get("mediumIdentifier").toString().trim());
-						medium.setMediumScoreDescription(mediumJsonObject.get("mediumLabel").toString().trim());
+						medium.setIdentifier(mediumJsonObject.get("mediumIdentifier").toString().trim());
+						medium.setScoreLabel(mediumJsonObject.get("mediumLabel").toString().trim());
 						medium.setMediumCode(mediumJsonObject.get("mediumCode").toString().trim());
-												
+						medium.setMediumTypeId(null);
+						medium.setTypeDescription(null);
+						
 						if(mediumJsonObject.get("solo")!=null) {
 							medium.setSolo(Boolean.parseBoolean(mediumJsonObject.get("solo").toString().trim()));
 						}
@@ -903,17 +1002,17 @@ public class Neo4jEngine {
 		if(!wmssRequest.getPerformanceMedium().equals("") || 
 		   !wmssRequest.getPerformanceMediumType().equals("") &&
 		    wmssRequest.getMelody().equals("")) {
-			match = match + "MATCH (movements:Movement)-[:PART]->(part:Part) \n";
+			match = match + "MATCH (movements:Movement)-[:MEDIUM]->(part:Medium) \n";
 		}
 		
 		if(!wmssRequest.getMelody().equals("") || !wmssRequest.getKey().equals("")) {
 			if(wmssRequest.getClef().equals("")) {
-				match = match + "MATCH (scr:Score)-[:MOVEMENT]->(mov:Movement)-[:PART]->(part:Part)-[:MEASURE]->(measure1:Measure)\n";
+				match = match + "MATCH (scr:Score)-[:MOVEMENT]->(mov:Movement)-[:MEDIUM]->(part:Medium)-[:MEASURE]->(measure1:Measure)\n";
 			}			
 		}
 		
 		if(!wmssRequest.getClef().equals("")) {
-			match = match + "MATCH (scr:Score)-[:MOVEMENT]->(mov:Movement)-[:PART]->(part:Part)-[:MEASURE]->(measure1:Measure)-[:NOTESET]->(ns0)\n";
+			match = match + "MATCH (scr:Score)-[:MOVEMENT]->(mov:Movement)-[:MEDIUM]->(part:Medium)-[:MEASURE]->(measure1:Measure)-[:NOTESET]->(ns0)\n";
 		}
 		
 		
@@ -963,26 +1062,7 @@ public class Neo4jEngine {
 			}
 
 		}
-		
-		
-		/*
-		if(!wmssRequest.getPerson().equals("")) {
-			
-			where = where + "AND creator2.uri=\""+wmssRequest.getPerson()+"\"\n";
-			
-			match = match + "MATCH (scr:Score)-[:CREATOR]->(creator2:Person)\n";
-		} 
-
-		if(!wmssRequest.getPersonRole().equals("")) {
-
-			match = match + "MATCH (scr:Score)-[rel_role:CREATOR {role:'"+wmssRequest.getPersonRole()+"' }]->(creator:Person)\n";
-
-		} else {
-			
-			match = match + "MATCH (scr:Score)-[rel_role:CREATOR]->(creator:Person)\n";
-		}
-		*/
-		
+	
 
 		for (int i = 0; i < wmssRequest.getFormats().size(); i++) {
 			match = match + "MATCH (scr:Score)-[doc"+i+":DOCUMENT {type: '"+wmssRequest.getFormats().get(i)+"'}]->(:Document)\n";
@@ -1000,15 +1080,16 @@ public class Neo4jEngine {
 		
 		String mediums_query = "";
 		for (int i = 0; i < wmssRequest.getMediums().size(); i++) {
-			if(!wmssRequest.getMediums().get(i).getMediumCode().equals("")) {
-				mediums_query = mediums_query + ":"+wmssRequest.getMediums().get(i).getMediumCode().replace(".", "_");
+			if(!wmssRequest.getMediums().get(i).getCode().equals("")) {
+				mediums_query = mediums_query + ":"+wmssRequest.getMediums().get(i).getCode().replace(".", "_");
 			}
 			if(!wmssRequest.getMediums().get(i).getMediumTypeId().equals("")) {
 				mediums_query = mediums_query + ":"+wmssRequest.getMediums().get(i).getMediumTypeId().replace(".", "_");
 			}
 		}
 		if(!mediums_query.equals("")) {
-			match = match + "MATCH (scr:Score)-[:STATS]->(stats:Stats)-[:MEDIUMS]->(mediums"+mediums_query+")\n";
+			//match = match + "MATCH (scr:Score)-[:STATS]->(stats:Stats)-[:MEDIUMS]->(mediums"+mediums_query+")\n";
+			match = match + "MATCH (movements)-[:MEDIUM]->(mediums"+mediums_query+")\n";
 		}
 		
 		String keys_query = "";
@@ -1075,7 +1156,7 @@ public class Neo4jEngine {
 			String[] time = wmssRequest.getTimeSignature().split("/");
 			where = where + "AND measure.beatType="+time[1]+"\n" 
 					      + "AND measure.beats="+time[0]+"\n";
-			match = match + "MATCH (movements:Movement)-[:PART]->(part:Part)-[:MEASURE]->(measure:Measure) \n";
+			match = match + "MATCH (movements:Movement)-[:MEDIUM]->(part:Medium)-[:MEASURE]->(measure:Measure) \n";
 		}
 		
 		if(wmssRequest.isSolo()) {
@@ -1103,12 +1184,6 @@ public class Neo4jEngine {
 			}
 
 		}
-		
-		/*
-		if(!wmssRequest.getCollection().equals("")) {
-			where = where  + "AND scr.collectionUri = '"+wmssRequest.getCollection()+"' \n";
-		}
-		*/
 		
 		String optionalMatch = "MATCH (scr:Score)-[:RESOURCE]->(resource:ScoreResource)\n";
 		

@@ -71,34 +71,34 @@ WITH measure, tonicNode,modeNode,
      LOWER(SUBSTRING(tonicNode.uri,36)) AS tonic
 WITH measure,tonic,mode,
    CASE tonic+'-'+mode
-       WHEN 'c-major' THEN 'standard_key' 
-       WHEN 'a-minor' THEN 'standard_key'        
+       WHEN 'c-major' THEN 'standard_key'
+       WHEN 'a-minor' THEN 'standard_key'      
        WHEN 'g-major' THEN 'xF'
-       WHEN 'e-minor' THEN 'xF'       
+       WHEN 'e-minor' THEN 'xF'
        WHEN 'd-major' THEN 'xFC'
-       WHEN 'b-minor' THEN 'xFC'       
-       WHEN 'a-major' THEN 'xFCG' 
-       WHEN 'fsharp-minor' THEN 'xFCG'        
-       WHEN 'e-major' THEN 'xFCGD' 
-       WHEN 'csharp-minor' THEN 'xFCGD'        
-       WHEN 'b-major' THEN 'xFCGDA' 
-       WHEN 'gsharp-minor' THEN 'xFCGDA'        
+       WHEN 'b-minor' THEN 'xFC'
+       WHEN 'a-major' THEN 'xFCG'
+       WHEN 'fsharp-minor' THEN 'xFCG'
+       WHEN 'e-major' THEN 'xFCGD'
+       WHEN 'csharp-minor' THEN 'xFCGD'
+       WHEN 'b-major' THEN 'xFCGDA'
+       WHEN 'gsharp-minor' THEN 'xFCGDA'
        WHEN 'fsharp-major' THEN 'xFCGDAE'
-       WHEN 'dsharp-minor' THEN 'xFCGDAE'       
+       WHEN 'dsharp-minor' THEN 'xFCGDAE'
        WHEN 'csharp-major' THEN 'xFCGDAEB'
-       WHEN 'asharp-minor' THEN 'xFCGDAEB'              
+       WHEN 'asharp-minor' THEN 'xFCGDAEB'
        WHEN 'f-major' THEN 'bB'
-       WHEN 'd-minor' THEN 'bB'       
+       WHEN 'd-minor' THEN 'bB'
        WHEN 'bflat-major' THEN 'bBE'
-       WHEN 'g-minor' THEN 'bBE'       
+       WHEN 'g-minor' THEN 'bBE'
        WHEN 'eflat-major' THEN 'bBEA'
-       WHEN 'c-minor' THEN 'bBEA'       
+       WHEN 'c-minor' THEN 'bBEA'
        WHEN 'aflat-major' THEN 'bBEAD'
-       WHEN 'f-minor' THEN 'bBEAD'              
+       WHEN 'f-minor' THEN 'bBEAD'
        WHEN 'dflat-major' THEN 'bBEADG'
-       WHEN 'bflat-minor' THEN 'bBEADG'       
+       WHEN 'bflat-minor' THEN 'bBEADG'
        WHEN 'gflat-major' THEN 'bBEADGC'
-       WHEN 'eflat-minor' THEN 'bBEADGC'       
+       WHEN 'eflat-minor' THEN 'bBEADGC'
        WHEN 'cflat-major' THEN 'bBEADGCF'
        WHEN 'aflat-minor' THEN 'bBEADGCF'       
      END AS key
@@ -108,15 +108,11 @@ CALL apoc.create.addLabels(id(measure),[key]) YIELD node
 RETURN COUNT(measure) AS MeasureKey;
 
 
-
-
-
 MATCH (scr:mo__Score)
 CREATE (scr)-[:STATS]->(stats:Stats {label: 'Stats'})
 WITH stats
 CREATE (stats)-[:KEYS]->(key:Key)
 CREATE (stats)-[:CLEFS]->(clef:Clef)
-CREATE (stats)-[:MEDIUMS]->(medium:Medium)
 CREATE (stats)-[:TIMES]->(time:Time);
 
 MATCH (scr:mo__Score)-[:mo__movement]->(movements:mo__Movement)
@@ -124,19 +120,6 @@ MATCH (scr)-[:STATS]->(stats:Stats)-[:KEYS]->(key:Key)
 MATCH (movements)-[:mso__hasScorePart]->(:mso__ScorePart)-[:mso__hasMeasure]->(measure)
 CALL apoc.create.addLabels(id(key),[measure.key_code]) YIELD node
 RETURN COUNT(node);
-
-MATCH (score:mo__Score)-[:mo__movement]->(movement:mo__Movement)
-MATCH (score)-[:STATS]->(stats:Stats)-[:MEDIUMS]->(medium:Medium)
-MATCH (movement)-[:mso__hasScorePart]->(part:mso__ScorePart)
-CALL apoc.create.addLabels(id(medium),[REPLACE(part.skos__altLabel,'.','_')]) YIELD node
-WITH part,medium
-MATCH (part)-[:skos__broader]->(type)
-CALL apoc.create.addLabels(id(medium),[type.skos__prefLabel]) YIELD node
-RETURN COUNT(node) AS instrument;
-
-
-
-
 
 
 MATCH (part)-[:mso__hasMeasure]->(measure)-[:mso__hasKey]-(key)-[:ton__tonic]->(tonicNode)
@@ -153,9 +136,19 @@ MATCH (part)-[:skos__broader]->(type)
 CALL apoc.create.addLabels(id(part),[type.skos__prefLabel]) YIELD node
 RETURN COUNT(node) AS instrument;
 
-MATCH (score:mo__Score)-[:mo__movement]->(movement:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:skos__broader]->(type) 
-MERGE (movement)-[:MEDIUMTYPE]-(t:mediumType {mediumTypeId:type.uri, mediumTypeDescription: type.skos__prefLabel})
-MERGE (t)-[:MEDIUM]->(i:Medium {mediumId: part.uri,mediumDescription: part.skos__prefLabel, mediumScoreDescription: part.dc__description, mediumCode: part.skos__altLabel, ensemble: part.mso__isEnsemble, solo:part.mso__isSolo});
+
+MATCH (score:mo__Score)-[:mo__movement]->(movement:mo__Movement)-[:mso__hasScorePart]->(part:mso__ScorePart)-[:skos__broader]->(type)
+MERGE (movement)-[:MEDIUM]->(part)
+SET part.mediumId = part.uri,
+	part.mediumDescription = part.skos__prefLabel,
+	part.mediumScoreDescription = part.dc__description,
+	part.mediumCode = part.skos__altLabel,
+	part.ensemble = part.mso__isEnsemble, 
+	part.solo = part.mso__isSolo,
+	part.mediumTypeId = type.uri,
+	part.mediumTypeDescription = type.skos__prefLabel;
+	
+	
 
 MATCH (mov:mo__Movement)
 OPTIONAL MATCH (mov:mo__Movement)-[:mso__hasBeatUnit]-(unit)
@@ -166,7 +159,6 @@ WHERE mov.beatUnit IS NULL
 SET mov.beatUnit = b, 
     mov.order = mov.dbo__order
 REMOVE mov.dbo__order;
-
 
 MATCH (mov:mo__Movement)
 WITH mov, CASE mov.mso__hasBeatsPerMinute 
@@ -277,10 +269,9 @@ CREATE (score)-[:MOVEMENT]->(movement)
 DELETE r;
 
 MATCH (movement:mo__Movement)-[r:mso__hasScorePart]->(part:mso__ScorePart) 
-CREATE (movement)-[:PART]->(part)
 DELETE r;
 
-MATCH (movement:mo__Movement)-[:PART]->(part:mso__ScorePart)
+MATCH (movement:mo__Movement)-[MEDIUM]->(part:mso__ScorePart)
 SET 
 	movement.title = movement.dc__title,
     part.description = part.dc__description,
@@ -290,7 +281,7 @@ SET
     part.altLabel = part.skos__altLabel,
     part.prefLabel = part.skos__prefLabel;
     
-MATCH (movement:mo__Movement)-[:PART]->(part:mso__ScorePart)    
+MATCH (movement:mo__Movement)-[MEDIUM]->(part:mso__ScorePart)    
 REMOVE 
 	movement.mso__hasBeatsPerMinute,
     movement.dc__title,
@@ -403,7 +394,7 @@ CREATE (scr)-[:RESOURCE]->(resource:ScoreResource {url:scr.uri, type: "text/html
 
 MATCH (n:mo__Score) SET n :Score REMOVE n:mo__Score;
 MATCH (n:mo__Movement) SET n :Movement REMOVE n:mo__Movement;
-MATCH (n:mso__ScorePart) SET n :Part REMOVE n:mso__ScorePart;
+MATCH (n:mso__ScorePart) SET n :Medium REMOVE n:mso__ScorePart;
 MATCH (n:mo__Instrument) SET n :Instrument REMOVE n:mo__Instrument, n:skos__Concept;
 MATCH (n:mso__Measure) SET n :Measure REMOVE n:mso__Measure;
 MATCH (n:mso__NoteSet) SET n :NoteSet REMOVE n:mso__NoteSet;

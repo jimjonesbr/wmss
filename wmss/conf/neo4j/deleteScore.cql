@@ -1,5 +1,5 @@
 MATCH (score:Score {uri:"SCORE_URI_PLACEHOLDER"})-[:MOVEMENT]->(movement:Movement)
-MATCH (movement)-[:PART]->(part:Part)
+MATCH (movement)-[:MEDIUM]->(part:Medium)
 MATCH (part)-[:MEASURE]->(measure:Measure)
 MATCH (measure)-[:NOTESET]->(noteset:NoteSet)
 WITH score,movement,part,measure,noteset,score.uri AS uri, score.title AS title, score.collectionUri as collection

@@ -292,7 +292,7 @@ public class PostgreSQLEngine {
 					type.setMediumTypeId(rs.getString("performance_medium_type_id"));
 					type.setMediumTypeDescription(rs.getString("performance_medium_type_description"));
 					
-					medium.setMediumIdentifier(rs.getString("performance_medium_id"));
+					medium.setIdentifier(rs.getString("performance_medium_id"));
 					medium.setLabel(rs.getString("performance_medium_description"));
 					medium.setMediumTypeId(rs.getString("performance_medium_type_id"));
 					
@@ -673,14 +673,14 @@ public class PostgreSQLEngine {
 					mediumTypeList.add(pmt);
 
 					PerformanceMedium med = new PerformanceMedium();
-					med.setMediumIdentifier(rs.getString("performance_medium_id"));
+					med.setIdentifier(rs.getString("performance_medium_id"));
 					med.setLabel(rs.getString("performance_medium_description"));
 					med.setMediumTypeId(rs.getString("performance_medium_type_id"));
 					med.setTypeDescription(rs.getString("performance_medium_type_description"));
 					med.setMovementId(rs.getString("movement_id"));
 					med.setScoreId(rs.getString("score_id"));
 					med.setSolo(Boolean.parseBoolean(rs.getString("movement_performance_medium_solo")));
-					med.setMediumScoreDescription(rs.getString("movement_performance_medium_description"));
+					med.setScoreLabel(rs.getString("movement_performance_medium_description"));
 
 					mediumList.add(med);
 
@@ -818,7 +818,7 @@ public class PostgreSQLEngine {
 
 							for (int m = 0; m < scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediums().size(); m++) {
 
-								if(scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediums().get(m).getMediumId().equals(mediumList.get(k).getMediumId()) &&
+								if(scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediums().get(m).getIdentifier().equals(mediumList.get(k).getIdentifier()) &&
 								   scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediums().get(m).getMovementId().equals(mediumList.get(k).getMovementId()) &&
 								   scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediums().get(m).getScoreId().equals(mediumList.get(k).getScoreId()) && 
 								   scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediums().get(m).getMediumTypeId().equals(mediumList.get(k).getMediumTypeId())) {

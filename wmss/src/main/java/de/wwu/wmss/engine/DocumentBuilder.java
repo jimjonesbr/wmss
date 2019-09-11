@@ -145,7 +145,7 @@ public class DocumentBuilder {
 				if(SystemSettings.sourceList.get(i).getStorage().equals("postgresql")) {
 				
 					ds.put("collections", PostgreSQLEngine.getCollections(SystemSettings.sourceList.get(i)));
-					ds.put("performanceMediums", PostgreSQLEngine.getPerformanceMediumList(SystemSettings.sourceList.get(i)));
+					ds.put("mediums", PostgreSQLEngine.getPerformanceMediumList(SystemSettings.sourceList.get(i)));
 					ds.put("tempoMarkings", PostgreSQLEngine.getTempoMarkings(SystemSettings.sourceList.get(i)));
 					ds.put("formats", PostgreSQLEngine.getFormats(SystemSettings.sourceList.get(i)));
 					ds.put("tonalities", PostgreSQLEngine.getTonalities(SystemSettings.sourceList.get(i)));
@@ -158,13 +158,12 @@ public class DocumentBuilder {
 					
 					ds.put("totalScores", Neo4jEngine.getScoresCount(SystemSettings.sourceList.get(i)));
 					ds.put("collections", Neo4jEngine.getCollections(SystemSettings.sourceList.get(i)));					
-					ds.put("performanceMediums", Neo4jEngine.getPerformanceMedium(SystemSettings.sourceList.get(i)));
+					ds.put("mediums", Neo4jEngine.getPerformanceMedium(SystemSettings.sourceList.get(i)));
 					ds.put("tempoMarkings", null);
 					ds.put("formats", Neo4jEngine.getFormats(SystemSettings.sourceList.get(i)));
 					ds.put("tonalities", Neo4jEngine.getTonalities(SystemSettings.sourceList.get(i)));
 					ds.put("creationRange", null);					
 					ds.put("persons", Neo4jEngine.getRoles(SystemSettings.sourceList.get(i)));
-					
 					
 					StatementResult rs = Neo4jConnector.getInstance().executeQuery("CALL dbms.components() yield name, versions, edition unwind versions as version return name, version, edition;", SystemSettings.sourceList.get(i));
 
