@@ -737,10 +737,19 @@ public class WMSSRequest {
 					
 					if(mediumObject.get("mediumType")!=null) {
 						logger.info("Medium Type: " + mediumObject.get("mediumType").toString());
-						medium.setMediumTypeId(mediumObject.get("mediumType").toString());
+						medium.setTypeIdentifier(mediumObject.get("mediumType").toString());
 					}
-	
 					
+					if(mediumObject.get("mediumTypeIdentifier")!=null) {
+						logger.info("Medium Type Identifier: " + mediumObject.get("mediumTypeIdentifier").toString());
+						medium.setTypeIdentifier(mediumObject.get("mediumTypeIdentifier").toString());
+					}
+					
+					if(mediumObject.get("mediumTypeLabel")!=null) {
+						logger.info("Medium Type Label: " + mediumObject.get("mediumTypeLabel").toString());
+						medium.setTypeLabel(mediumObject.get("mediumTypeLabel").toString());
+					}
+						
 	
 					this.mediums.add(medium);
 					

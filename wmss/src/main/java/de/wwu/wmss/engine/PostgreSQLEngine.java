@@ -294,7 +294,7 @@ public class PostgreSQLEngine {
 					
 					medium.setIdentifier(rs.getString("performance_medium_id"));
 					medium.setLabel(rs.getString("performance_medium_description"));
-					medium.setMediumTypeId(rs.getString("performance_medium_type_id"));
+					medium.setTypeIdentifier(rs.getString("performance_medium_type_id"));
 					
 					mediumList.add(medium);
 					
@@ -323,7 +323,7 @@ public class PostgreSQLEngine {
 					
 					for (int j = 0; j < mediumList.size(); j++) {
 						
-						if(mediumList.get(j).getMediumTypeId().equals(mediumTypeList.get(i).getMediumTypeId())) {
+						if(mediumList.get(j).getTypeIdentifier().equals(mediumTypeList.get(i).getMediumTypeId())) {
 							
 							mediumTypeList.get(i).getMediums().add(mediumList.get(j));
 							
@@ -340,7 +340,7 @@ public class PostgreSQLEngine {
 					
 					for (int j = 0; j < mediumTypeList.get(i).getMediums().size(); j++) {
 						
-						mediumTypeList.get(i).getMediums().get(j).setMediumTypeId(null);
+						mediumTypeList.get(i).getMediums().get(j).setTypeIdentifier(null);
 						
 					}
 				}
@@ -675,8 +675,8 @@ public class PostgreSQLEngine {
 					PerformanceMedium med = new PerformanceMedium();
 					med.setIdentifier(rs.getString("performance_medium_id"));
 					med.setLabel(rs.getString("performance_medium_description"));
-					med.setMediumTypeId(rs.getString("performance_medium_type_id"));
-					med.setTypeDescription(rs.getString("performance_medium_type_description"));
+					med.setTypeIdentifier(rs.getString("performance_medium_type_id"));
+					med.setTypeLabel(rs.getString("performance_medium_type_description"));
 					med.setMovementId(rs.getString("movement_id"));
 					med.setScoreId(rs.getString("score_id"));
 					med.setSolo(Boolean.parseBoolean(rs.getString("movement_performance_medium_solo")));
@@ -813,7 +813,7 @@ public class PostgreSQLEngine {
 
 						if(scoreList.get(i).getScoreId().equals(mediumList.get(k).getScoreId())  &&
 						   scoreList.get(i).getMovements().get(j).getIdentifier().equals(mediumList.get(k).getMovementId()) &&
-						   scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediumTypeId().equals(mediumList.get(k).getMediumTypeId())){
+						   scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediumTypeId().equals(mediumList.get(k).getTypeIdentifier())){
 
 
 							for (int m = 0; m < scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediums().size(); m++) {
@@ -821,7 +821,7 @@ public class PostgreSQLEngine {
 								if(scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediums().get(m).getIdentifier().equals(mediumList.get(k).getIdentifier()) &&
 								   scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediums().get(m).getMovementId().equals(mediumList.get(k).getMovementId()) &&
 								   scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediums().get(m).getScoreId().equals(mediumList.get(k).getScoreId()) && 
-								   scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediums().get(m).getMediumTypeId().equals(mediumList.get(k).getMediumTypeId())) {
+								   scoreList.get(i).getMovements().get(j).getPerformanceMediumList().get(l).getMediums().get(m).getTypeIdentifier().equals(mediumList.get(k).getTypeIdentifier())) {
 
 									mediumAdded = true;
 

@@ -51,9 +51,11 @@
   "mediums": [
     {
       "mediumIdentifier": "http://linkeddata.uni-muenster.de/node/21dde7d3-e280-44d5-900a-4660e91ba4f4_MOV1_PART_P1",
-      "mediumLabel": "Violoncello",
+      "mediumLabel": "Violoncello updated",
       "mediumCode": "strings.cello",
-      "mediumScoreLabel": "Violoncello",
+      "mediumScoreLabel": "Violoncello - score updated",
+      "mediumTypeIdentifier": "strings.updated",
+      "mediumTypeLabel": "Strings updated",      
       "solo": false,
       "ensemble": false,
       "action":"update"
@@ -63,9 +65,10 @@
     {
       "movementIdentifier": "http://linkeddata.uni-muenster.de/node/e4d1f11f-b2b6-4c96-b926-4c034ba28088_MOV1",
       "movementOrder": 1,
-      "movementLabel": "Adagio",      
-      "beatUnit": "quarter",
-      "beatsPerMinute": 120
+      "movementLabel": "Adagio - updated",      
+      "beatUnit": "quarter-updated",
+      "beatsPerMinute": 121,
+      "action":"update"
     }
   ]
 }

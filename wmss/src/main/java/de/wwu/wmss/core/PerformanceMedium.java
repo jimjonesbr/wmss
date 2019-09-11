@@ -18,19 +18,19 @@ public class PerformanceMedium {
 		super();
 	}
 
-	public String getTypeDescription() {
+	public String getTypeLabel() {
 		return mediumTypeDescription;
 	}
 
-	public void setTypeDescription(String typeDescription) {
+	public void setTypeLabel(String typeDescription) {
 		this.mediumTypeDescription = typeDescription;
 	}
 
-	public String getMediumTypeId() {
+	public String getTypeIdentifier() {
 		return mediumTypeId;
 	}
 
-	public void setMediumTypeId(String typeClassification) {
+	public void setTypeIdentifier(String typeClassification) {
 		this.mediumTypeId = typeClassification;
 	}
 

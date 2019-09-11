@@ -500,8 +500,6 @@ public class Neo4jEngine {
 				if(!request.getMovements().get(i).getLabel().equals("")) {
 					cypher = cypher + "SET movement.title='" + request.getMovements().get(i).getLabel() + "'\n"; 
 				}
-
-				logger.info("########'> "+cypher);
 				
 				Neo4jConnector.getInstance().executeQuery(cypher, ds);
 				
@@ -540,6 +538,15 @@ public class Neo4jEngine {
 				
 				if(!request.getMediums().get(i).getScoreLabel().equals("")) {
 					cypher = cypher + "SET medium.mediumScoreDescription = '"+request.getMediums().get(i).getScoreLabel()+"'\n";
+				}
+				
+				if(!request.getMediums().get(i).getTypeIdentifier().equals("")) {
+					cypher = cypher + "SET medium.mediumTypeId = '"+request.getMediums().get(i).getTypeIdentifier()+"'\n";
+					cypher = cypher + "SET medium : "+request.getMediums().get(i).getTypeIdentifier().replace(".", "_")+"\n";
+				}
+
+				if(!request.getMediums().get(i).getTypeLabel().equals("")) {
+					cypher = cypher + "SET medium.mediumTypeDescription = '"+request.getMediums().get(i).getTypeLabel()+"'\n";
 				}
 								
 				Neo4jConnector.getInstance().executeQuery(cypher, ds);
@@ -741,8 +748,8 @@ public class Neo4jEngine {
 						medium.setIdentifier(mediumJsonObject.get("mediumIdentifier").toString().trim());
 						medium.setScoreLabel(mediumJsonObject.get("mediumLabel").toString().trim());
 						medium.setMediumCode(mediumJsonObject.get("mediumCode").toString().trim());
-						medium.setMediumTypeId(null);
-						medium.setTypeDescription(null);
+						medium.setTypeIdentifier(null);
+						medium.setTypeLabel(null);
 						
 						if(mediumJsonObject.get("solo")!=null) {
 							medium.setSolo(Boolean.parseBoolean(mediumJsonObject.get("solo").toString().trim()));
@@ -1083,8 +1090,8 @@ public class Neo4jEngine {
 			if(!wmssRequest.getMediums().get(i).getCode().equals("")) {
 				mediums_query = mediums_query + ":"+wmssRequest.getMediums().get(i).getCode().replace(".", "_");
 			}
-			if(!wmssRequest.getMediums().get(i).getMediumTypeId().equals("")) {
-				mediums_query = mediums_query + ":"+wmssRequest.getMediums().get(i).getMediumTypeId().replace(".", "_");
+			if(!wmssRequest.getMediums().get(i).getTypeIdentifier().equals("")) {
+				mediums_query = mediums_query + ":"+wmssRequest.getMediums().get(i).getTypeIdentifier().replace(".", "_");
 			}
 		}
 		if(!mediums_query.equals("")) {
