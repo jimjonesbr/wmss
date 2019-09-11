@@ -807,6 +807,11 @@ public class WMSSRequest {
 						movement.setMovementLabel(movementObject.get("movementLabel").toString());
 					}
 					
+					if(movementObject.get("movementOrder")!=null) {
+						logger.info("Movement Order: " + movementObject.get("movementOrder").toString());
+						movement.setOrder(Integer.parseInt(movementObject.get("movementOrder").toString()));
+					}
+					
 					if(movementObject.get("beatUnit")!=null) {
 						logger.info("Beat Unit: " + movementObject.get("beatUnit").toString());
 						movement.setBeatUnit(movementObject.get("beatUnit").toString());

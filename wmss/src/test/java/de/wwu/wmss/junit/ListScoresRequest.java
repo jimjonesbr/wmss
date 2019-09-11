@@ -65,12 +65,14 @@ public class ListScoresRequest {
 							  scores.getJSONObject(j).getString("title").equals(score.getTitle()) &&
 							  scores.getJSONObject(j).getString("scoreIdentifier").equals(score.getScoreId()) &&
 							  scores.getJSONObject(j).getString("dateIssued").equals(score.getDateIssued()) &&
+							  Integer.parseInt(melodies.getJSONObject(k).get("movementOrder").toString()) == location.getOrder() &&
 							  melodies.getJSONObject(k).get("movementName").toString().equals(location.getMovementName())
 							  ) {
 								result = true;
 							}
 							
 							System.out.println("- Movement        : "+melodies.getJSONObject(k).get("movementName"));
+							System.out.println("- Movement Order  : "+melodies.getJSONObject(k).get("movementOrder"));
 							System.out.println("- Starting Measure: "+melody.getJSONObject(l).get("startingMeasure"));
 							System.out.println("- Voice           : "+melody.getJSONObject(l).get("voice"));
 							System.out.println("- Staff           : "+melody.getJSONObject(l).get("staff"));
@@ -126,6 +128,7 @@ public class ListScoresRequest {
 		location.setStartingMeasure("8");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody("%C-4 ,8AB'CDxDE");
@@ -152,6 +155,7 @@ public class ListScoresRequest {
 		location.setStartingMeasure("8");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody(",8AB'CDxDE");
@@ -177,6 +181,7 @@ public class ListScoresRequest {
 		location.setStartingMeasure("5");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody(",,2E--4.-6,,B,xC");
@@ -204,6 +209,7 @@ public class ListScoresRequest {
 		location.setStartingMeasure("8");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody(",8AB'CDxDExE");
@@ -229,6 +235,7 @@ public class ListScoresRequest {
 		location.setStartingMeasure("80");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody("'4xF8G4xF8A4B8A4G8E4D8E4C,8B4A8B4A'8C4D8C,4B8G4xF8G4E8D4xC8D4xC8E4xF8E4D,,8B4xA8B4G8xF2B");
@@ -256,6 +263,7 @@ public class ListScoresRequest {
 		location.setStartingMeasure("98");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody("'4xF8G4xF8A4B8A4/G8E4D8E4C,8B/,4A8B4A'8C4D8C/,4B8G4xF8G4E8D");
@@ -282,6 +290,7 @@ public class ListScoresRequest {
 		location.setStartingMeasure("1");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody(",,2E^B^,G^'E");
@@ -309,6 +318,7 @@ public class ListScoresRequest {
 		location.setStartingMeasure("1");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody(",,2GB8G");
@@ -335,6 +345,7 @@ public class ListScoresRequest {
 		location.setStartingMeasure("8");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody("@c ,8AB'CDxDExE");
@@ -361,6 +372,7 @@ public class ListScoresRequest {
 		location.setStartingMeasure("8");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody("@c ,,8ABC'DxDExE");
@@ -387,6 +399,7 @@ public class ListScoresRequest {
 		location.setStartingMeasure("8");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody("$xF ,8AB'CDxDE");
@@ -413,6 +426,7 @@ public class ListScoresRequest {
 		location.setStartingMeasure("48");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody("4.E4.xD.ExD,8A");
@@ -440,6 +454,7 @@ public class ListScoresRequest {
 		location.setStartingMeasure("3");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody(",8GxFgAG");
@@ -466,6 +481,7 @@ public class ListScoresRequest {
 		location.setStartingMeasure("3");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody(",8xFG2C");
@@ -492,6 +508,7 @@ public class ListScoresRequest {
 		location.setStartingMeasure("6");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(3);
 		location.setInstrumentName("Violine I");
 		location.setMovementName("No. 3. Larghetto.");
 		location.setMelody("''6DFbED");
@@ -517,6 +534,7 @@ public class ListScoresRequest {
 		location.setStartingMeasure("17");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(3);
 		location.setInstrumentName("Violine I");
 		location.setMovementName("No. 3. Larghetto.");
 		location.setMelody("''6bE3bAGFbEDCC'bBAbBAbB''C'bBbBbAGbAGbAbBbA4G-8A''4bE3qD6C'3bBA8bB");
@@ -543,6 +561,7 @@ public class ListScoresRequest {
 		location.setStartingMeasure("5");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(3);
 		location.setInstrumentName("Violine II");
 		location.setMovementName("No. 3. Larghetto.");
 		location.setMelody("8.G6bE8.G6bE");
@@ -568,6 +587,7 @@ public class ListScoresRequest {
 		location.setStartingMeasure("20");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Piano");
 		location.setMovementName("Marsch Nº1.");
 		location.setMelody("''4FbA8CbAGFFEDC'B''CDE");

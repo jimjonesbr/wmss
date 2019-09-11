@@ -11,7 +11,7 @@ public class MelodyLocation {
 	private String movementName;	
 	private String movementId;
 	private String scoreId;
-	private String order;
+	private int order;
 	
 	public MelodyLocation() {
 		super();
@@ -89,11 +89,11 @@ public class MelodyLocation {
 		this.movementId = movementId;
 	}
 
-	public String getOrder() {
+	public int getOrder() {
 		return order;
 	}
 
-	public void setOrder(String order) {
+	public void setMovementOrder(int order) {
 		this.order = order;
 	}
 

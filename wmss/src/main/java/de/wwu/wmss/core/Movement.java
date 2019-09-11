@@ -6,7 +6,7 @@ public class Movement {
 	private String movementName;	
 	private String beatUnit;
 	private int beatsPerMinute;
-	private int order;
+	private int movementOrder;
 
 	public Movement() {
 		super();
@@ -45,11 +45,11 @@ public class Movement {
 	}
 
 	public int getOrder() {
-		return order;
+		return movementOrder;
 	}
 
 	public void setOrder(int order) {
-		this.order = order;
+		this.movementOrder = order;
 	}
 
 	

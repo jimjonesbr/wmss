@@ -7,7 +7,7 @@ public class MelodyLocationGroup {
 	private ArrayList<MelodyLocation> melodyLocation = new ArrayList<MelodyLocation>();
 	private String movementId;
 	private String movementName;
-	private int order;
+	private int movementOrder;
 	private String scoreId;
 	
 	public MelodyLocationGroup() {
@@ -36,10 +36,10 @@ public class MelodyLocationGroup {
 		this.scoreId = scoreId;
 	}
 	public int getOrder() {
-		return order;
+		return movementOrder;
 	}
 	public void setOrder(int order) {
-		this.order = order;
+		this.movementOrder = order;
 	}
 
 }

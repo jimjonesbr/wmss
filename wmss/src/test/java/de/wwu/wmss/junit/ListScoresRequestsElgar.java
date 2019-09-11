@@ -46,17 +46,19 @@ public class ListScoresRequestsElgar {
 						if(melody.getJSONObject(l).get("startingMeasure").toString().equals(location.getStartingMeasure()) &&
 						  melody.getJSONObject(l).get("voice").toString().equals(location.getVoice()) &&
 						  melody.getJSONObject(l).get("staff").toString().equals(location.getStaff()) &&
-						  melody.getJSONObject(l).get("instrumentName").toString().equals(location.getInstrumentName()) &&
+						  melody.getJSONObject(l).get("instrumentName").toString().equals(location.getInstrumentName()) &&						  
 						  melody.getJSONObject(l).get("melody").toString().equals(location.getMelody()) &&
 						  scores.getJSONObject(j).getString("title").equals(score.getTitle()) &&
 						  scores.getJSONObject(j).getString("scoreIdentifier").equals(score.getScoreId()) &&
 						  scores.getJSONObject(j).getString("dateIssued").equals(score.getDateIssued()) &&
+						  Integer.parseInt(melodies.getJSONObject(k).get("movementOrder").toString()) == location.getOrder() &&
 						  melodies.getJSONObject(k).get("movementName").toString().equals(location.getMovementName())
 						  ) {
 							result = true;
 						}
 						
 						System.out.println("- Movement        : "+melodies.getJSONObject(k).get("movementName"));
+						System.out.println("- Movement Order  : "+melodies.getJSONObject(k).get("movementOrder"));
 						System.out.println("- Starting Measure: "+melody.getJSONObject(l).get("startingMeasure"));
 						System.out.println("- Voice           : "+melody.getJSONObject(l).get("voice"));
 						System.out.println("- Staff           : "+melody.getJSONObject(l).get("staff"));
@@ -138,6 +140,7 @@ public class ListScoresRequestsElgar {
 		location.setStartingMeasure("8");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody("%C-4 ,8AB'CDxDE");
@@ -164,6 +167,7 @@ public class ListScoresRequestsElgar {
 		location.setStartingMeasure("8");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody(",8AB'CDxDE");
@@ -189,6 +193,7 @@ public class ListScoresRequestsElgar {
 		location.setStartingMeasure("5");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody(",,2E--4.-6,,B,xC");
@@ -216,6 +221,7 @@ public class ListScoresRequestsElgar {
 		location.setStartingMeasure("8");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody(",8AB'CDxDExE");
@@ -241,6 +247,7 @@ public class ListScoresRequestsElgar {
 		location.setStartingMeasure("80");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody("'4xF8G4xF8A4B8A4G8E4D8E4C,8B4A8B4A'8C4D8C,4B8G4xF8G4E8D4xC8D4xC8E4xF8E4D,,8B4xA8B4G8xF2B");
@@ -268,6 +275,7 @@ public class ListScoresRequestsElgar {
 		location.setStartingMeasure("98");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody("'4xF8G4xF8A4B8A4/G8E4D8E4C,8B/,4A8B4A'8C4D8C/,4B8G4xF8G4E8D");
@@ -294,6 +302,7 @@ public class ListScoresRequestsElgar {
 		location.setStartingMeasure("1");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody(",,2E^B^,G^'E");
@@ -321,6 +330,7 @@ public class ListScoresRequestsElgar {
 		location.setStartingMeasure("1");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody(",,2GB8G");
@@ -347,6 +357,7 @@ public class ListScoresRequestsElgar {
 		location.setStartingMeasure("8");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody("@c ,8AB'CDxDExE");
@@ -373,6 +384,7 @@ public class ListScoresRequestsElgar {
 		location.setStartingMeasure("8");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody("@c ,,8ABC'DxDExE");
@@ -399,6 +411,7 @@ public class ListScoresRequestsElgar {
 		location.setStartingMeasure("8");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody("$xF ,8AB'CDxDE");
@@ -425,6 +438,7 @@ public class ListScoresRequestsElgar {
 		location.setStartingMeasure("48");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody("4.E4.xD.ExD,8A");
@@ -452,6 +466,7 @@ public class ListScoresRequestsElgar {
 		location.setStartingMeasure("3");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody(",8GxFgAG");
@@ -478,6 +493,7 @@ public class ListScoresRequestsElgar {
 		location.setStartingMeasure("3");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody(",8xFG2C");
@@ -497,6 +513,7 @@ public class ListScoresRequestsElgar {
 		location.setStartingMeasure("8");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody(",8AB'CDxDE");
@@ -605,9 +622,10 @@ public class ListScoresRequestsElgar {
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("8");
 		location.setVoice("1");
-		location.setStaff("1");
+		location.setStaff("1");		
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
+		location.setMovementOrder(1);
 		location.setMelody(",8AB'CDxDE");
 		
 		String jsonQuery = "{\n" + 
@@ -642,6 +660,7 @@ public class ListScoresRequestsElgar {
 		location.setStartingMeasure("8");
 		location.setVoice("1");
 		location.setStaff("1");
+		location.setMovementOrder(1);
 		location.setInstrumentName("Violoncello");
 		location.setMovementName("Adagio");
 		location.setMelody(",8AB'CDxDE");
