@@ -56,6 +56,7 @@ public class WMSSRequest {
 	private String score = "";
 	private String key = "";
 	private String clef = "";
+	private String thumbnail = "";
 	private boolean ignoreChords = true;
 	private boolean ensemble = false;
 	private boolean ignoreOctave = true;
@@ -85,7 +86,7 @@ public class WMSSRequest {
 	private ArrayList<Time> times = new ArrayList<Time>();
 	private ArrayList<Clef> clefs = new ArrayList<Clef>();
 	private ArrayList<Resource> resources = new ArrayList<Resource>();
-	private ArrayList<MovementEditScoreRequest> movements = new ArrayList<MovementEditScoreRequest>();
+	private ArrayList<Movement> movements = new ArrayList<Movement>();
 	
 	private Melody melody2 = new Melody();
 	
@@ -490,6 +491,11 @@ public class WMSSRequest {
 				logger.info("Score Identifier: " + queryObject.get("scoreIdentifier").toString());
 			}
 			
+			if(queryObject.get("thumbnail")!=null) {
+				this.thumbnail = queryObject.get("thumbnail").toString();
+				logger.info("Score Thumbnail: " + queryObject.get("thumbnail").toString());
+			}
+			
 			if(queryObject.get("scoreTitle")!=null) {
 				this.title = queryObject.get("scoreTitle").toString();
 				logger.info("Title: " + queryObject.get("scoreTitle").toString());
@@ -712,7 +718,7 @@ public class WMSSRequest {
 
 					if(mediumObject.get("mediumCode")!=null) {
 						logger.info("Medium Code: " + mediumObject.get("mediumCode").toString());
-						medium.setMediumCode(mediumObject.get("mediumCode").toString());
+						medium.setCode(mediumObject.get("mediumCode").toString());
 					}
 
 					if(mediumObject.get("mediumScoreLabel")!=null) {
@@ -835,7 +841,7 @@ public class WMSSRequest {
 				for (int j = 0; j < movementsObjects.size(); j++) {
 	
 					JSONObject movementObject = (JSONObject) movementsObjects.get(j);
-					MovementEditScoreRequest movement = new MovementEditScoreRequest();
+					Movement movement = new Movement();
 					
 					if(movementObject.get("movementIdentifier")!=null) {
 						logger.info("Movement Identifier: " + movementObject.get("movementIdentifier").toString());
@@ -1174,8 +1180,12 @@ public class WMSSRequest {
 		return melody2;
 	}
 
-	public ArrayList<MovementEditScoreRequest> getMovements() {
+	public ArrayList<Movement> getMovements() {
 		return movements;
+	}
+
+	public String getThumbnail() {
+		return thumbnail;
 	}
 	
 	

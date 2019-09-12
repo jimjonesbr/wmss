@@ -28,7 +28,7 @@ import de.wwu.wmss.core.ErrorCodes;
 import de.wwu.wmss.core.Format;
 import de.wwu.wmss.core.MelodyLocation;
 import de.wwu.wmss.core.MelodyLocationGroup;
-import de.wwu.wmss.core.MovementListScoreRequest;
+import de.wwu.wmss.core.Movement;
 import de.wwu.wmss.core.MusicScore;
 import de.wwu.wmss.core.DeletedRecord;
 import de.wwu.wmss.core.Note;
@@ -37,7 +37,7 @@ import de.wwu.wmss.core.PerformanceMediumType;
 import de.wwu.wmss.core.Person;
 import de.wwu.wmss.core.PersonDescription;
 import de.wwu.wmss.core.Provenance;
-import de.wwu.wmss.core.ScoreResource;
+import de.wwu.wmss.core.Resource;
 import de.wwu.wmss.core.WMSSRequest;
 import de.wwu.wmss.exceptions.DatabaseImportException;
 import de.wwu.wmss.exceptions.InvalidWMSSRequestException;
@@ -262,7 +262,7 @@ public class Neo4jEngine {
 
 					JSONObject mediumJsonObject = (JSONObject) mediumListJsonArray.get(j);
 					medium.setLabel(mediumJsonObject.get("mediumDescription").toString().trim());
-					medium.setMediumCode(mediumJsonObject.get("mediumCode").toString().trim());
+					medium.setCode(mediumJsonObject.get("mediumCode").toString().trim());
 																	
 					type.getMediums().add(medium);					
 				
@@ -313,6 +313,7 @@ public class Neo4jEngine {
 			person.setRole(record.get("role").asString().trim());
 			person.setIdentifier(record.get("identifier").asString().trim());
 			person.setTotalRelatedScores(record.get("total").asInt());
+			person.setAction(null);
 			result.add(person);
 		}
 		
@@ -331,6 +332,10 @@ public class Neo4jEngine {
 		
 		if(!request.getDateIssued().equals("")) {						
 			Neo4jConnector.getInstance().executeQuery(_match + "SET score.issued = '"+request.getDateIssued()+"'", ds);			
+		}
+		
+		if(!request.getThumbnail().equals("")) {						
+			Neo4jConnector.getInstance().executeQuery(_match + "SET score.thumbnail = '"+request.getThumbnail()+"'", ds);			
 		}
 			
 		/**
@@ -412,12 +417,19 @@ public class Neo4jEngine {
 		 */	
 		for (int i = 0; i < request.getPersons().size(); i++) {
 			
+			System.out.println("> "+ request.getPersons().get(i).getIdentifier());
+			System.out.println("> "+ request.getPersons().get(i).getName());
+			System.out.println("> "+ request.getPersons().get(i).getRole());
+			System.out.println("> "+ request.getPersons().get(i).getAction());
+			
 			if(request.getPersons().get(i).getIdentifier().equals("") || request.getPersons().get(i).getName().equals("") || request.getPersons().get(i).getRole().equals("")) {
+				
 				if(!request.getPersons().get(i).getAction().equals("delete")) {
 					throw new InvalidWMSSRequestException(ErrorCodes.INSUFFICIENT_DATA_DESCRIPTION + "a person must have an identifier, a non-empty name and a role.",
 							  							  ErrorCodes.INSUFFICIENT_DATA_CODE, 
 							  							  ErrorCodes.INSUFFICIENT_DATA_HINT);					
 				}
+				
 			}
 			
 			if(request.getPersons().get(i).getAction().equals("add")) {
@@ -458,8 +470,12 @@ public class Neo4jEngine {
 				
 			}  else if(request.getPersons().get(i).getAction().equals("delete")) {
 				
-				Neo4jConnector.getInstance().executeQuery( _match + "MATCH (score)-[r:CREATOR {role: '"+Util.capitalizeFirstLetter(request.getPersons().get(i).getRole())+"'}]->(:Person {uri:'"+request.getPersons().get(i).getIdentifier()+"'})\n"
+				if(!request.getPersons().get(i).getRole().equals("")) {
+					Neo4jConnector.getInstance().executeQuery( _match + "MATCH (score)-[r:CREATOR {role: '"+Util.capitalizeFirstLetter(request.getPersons().get(i).getRole())+"'}]->(:Person {uri:'"+request.getPersons().get(i).getIdentifier()+"'})\n"
 														 + "DELETE r", ds);
+				} else {
+					Neo4jConnector.getInstance().executeQuery( _match + "MATCH (score)-[r:CREATOR]->(:Person {uri:'"+request.getPersons().get(i).getIdentifier()+"'})\n DELETE r", ds);					
+				}
 								
 			}
 			
@@ -551,13 +567,8 @@ public class Neo4jEngine {
 								
 				Neo4jConnector.getInstance().executeQuery(cypher, ds);
 
-				
 			}
-			
-			
-			
-			
-							
+										
 		}
 		
 		Neo4jConnector.getInstance().executeQuery(_match + "WHERE NOT (score)-[:COLLECTION]-() "
@@ -611,8 +622,6 @@ public class Neo4jEngine {
 			result.add(tonality);
 		}
 		
-		
-		
 		return result;
 	}
 	
@@ -640,9 +649,9 @@ public class Neo4jEngine {
 		
 	}
 	
-	private static ArrayList<MovementListScoreRequest> getMovementData(String scoreURI, DataSource dataSource){
+	private static ArrayList<Movement> getMovementData(String scoreURI, DataSource dataSource){
 
-		ArrayList<MovementListScoreRequest> result = new ArrayList<MovementListScoreRequest>();
+		ArrayList<Movement> result = new ArrayList<Movement>();
 		/**
 		String cypher = 
 				"MATCH (scr:Score)-[:MOVEMENT]->(mov:Movement)-[:MEDIUMTYPE]->(mediumType:mediumType)-[:MEDIUM]->(medium:Medium)\n" + 
@@ -713,7 +722,7 @@ public class Neo4jEngine {
 
 			try {
 				
-				MovementListScoreRequest movement = new MovementListScoreRequest();
+				Movement movement = new Movement();
 				
 				JSONObject movementsObject = (JSONObject) parser.parse(gson.toJson(record.get("movementsResultset").asMap()));
 				movement.setMovementIdentifier(movementsObject.get("movementIdentifier").toString().trim());
@@ -726,6 +735,7 @@ public class Neo4jEngine {
 				movement.setOrder(Integer.parseInt(movementsObject.get("movementOrder").toString()));
 				movement.setBeatUnit(movementsObject.get("beatUnit").toString());
 				movement.setBeatsPerMinute(Integer.parseInt(movementsObject.get("beatsPerMinute").toString()));
+				movement.setAction(null);
 				
 				JSONArray mediumTypeArray = (JSONArray) movementsObject.get("mediumsList");
 				
@@ -747,7 +757,7 @@ public class Neo4jEngine {
 						medium.setLabel(mediumJsonObject.get("mediumName").toString().trim());
 						medium.setIdentifier(mediumJsonObject.get("mediumIdentifier").toString().trim());
 						medium.setScoreLabel(mediumJsonObject.get("mediumLabel").toString().trim());
-						medium.setMediumCode(mediumJsonObject.get("mediumCode").toString().trim());
+						medium.setCode(mediumJsonObject.get("mediumCode").toString().trim());
 						medium.setTypeIdentifier(null);
 						medium.setTypeLabel(null);
 						
@@ -1199,65 +1209,63 @@ public class Neo4jEngine {
 			
 	public static ArrayList<DeletedRecord> deleteScore(WMSSRequest request, DataSource dataSource) {
 
-		
 		ArrayList<DeletedRecord> result = new ArrayList<DeletedRecord>();
-		
-	  	InputStream is;
-			try {
-				is = new FileInputStream("conf/neo4j/deleteScore.cql");
 
-		    	@SuppressWarnings("resource")
-				BufferedReader buf = new BufferedReader(new InputStreamReader(is));        
-		    	String line = buf.readLine();
-		    	StringBuilder sb = new StringBuilder();
-		    	        
-		    	while(line != null){
-		    	   sb.append(line).append("\n");
-		    	   line = buf.readLine();
-		    	}
-		    		    	
-		    	String arrayCypher[] = sb.toString().split(";");
-		    	logger.info("Deleting music score ... ");
-		    	for (int i = 0; i < arrayCypher.length; i++) {
-		    		if(!arrayCypher[i].trim().equals("")) {
-		    			logger.debug(arrayCypher[i]);
-		    			
-		    			try {
-		    				StatementResult rs = Neo4jConnector.getInstance().executeQuery(arrayCypher[i].replaceAll("\n", " ").replace("SCORE_URI_PLACEHOLDER", request.getScoreIdentifier()), dataSource);
-						
-		    			
-			    			while ( rs.hasNext() ) {
-			    				
-			    				Record record = rs.next();
-	
-			    				if(record.containsKey("uri")) {
-			    					DeletedRecord score = new DeletedRecord();
-				    				score.setTitle(record.get("title").asString());
-				    				score.setScoreIdentifier(record.get("uri").asString());
-				    				score.setCollection(record.get("collection").asString());
-				    				result.add(score);
-				    				
-				    				logger.info("Music score deleted: " + record.get("title").asString() + " ("+record.get("uri").asString()+")");
-			    				}
-			    				
-			    			}
-			    			
-		    			} catch (TransientException e) {
+		try {
+			InputStream is = new FileInputStream("conf/neo4j/deleteScore.cql");
 
-							logger.error("TransientException: " + e.getMessage());
-						}
-		    				
-		    		}	    		
-				}
-	
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+			@SuppressWarnings("resource")
+			BufferedReader buf = new BufferedReader(new InputStreamReader(is));        
+			String line = buf.readLine();
+			StringBuilder sb = new StringBuilder();
+
+			while(line != null){
+				sb.append(line).append("\n");
+				line = buf.readLine();
 			}
 
+			String arrayCypher[] = sb.toString().split(";");
+			logger.info("Deleting music score ... ");
+			for (int i = 0; i < arrayCypher.length; i++) {
+				if(!arrayCypher[i].trim().equals("")) {
+					logger.debug(arrayCypher[i]);
+
+					try {
+						
+						StatementResult rs = Neo4jConnector.getInstance().executeQuery(arrayCypher[i].replaceAll("\n", " ").replace("SCORE_URI_PLACEHOLDER", request.getScoreIdentifier()), dataSource);
+
+						while ( rs.hasNext() ) {
+
+							Record record = rs.next();
+
+							if(record.containsKey("uri")) {
+								DeletedRecord score = new DeletedRecord();
+								score.setTitle(record.get("title").asString());
+								score.setScoreIdentifier(record.get("uri").asString());
+								score.setCollection(null);
+								result.add(score);
+
+								logger.info("Music score deleted: " + record.get("title").asString() + " ("+record.get("uri").asString()+")");
+							}
+
+						}
+
+					} catch (TransientException e) {
+
+						logger.error("TransientException: " + e.getMessage());
+					}
+
+				}	    		
+			}
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		return result;
-		
+
 	}
 
 	
@@ -1338,7 +1346,7 @@ public class Neo4jEngine {
 			prov.setComments(record.get("comments").asString());
 			
 			score.setProvenance(prov);
-			score.getMovements().addAll(getMovementData(score.getScoreId(), dataSource));
+			score.getMovements().addAll(getMovementData(score.getIdentifier(), dataSource));
 				
 			JSONParser parser = new JSONParser();
 			try {
@@ -1381,10 +1389,10 @@ public class Neo4jEngine {
 		
 	}
 
-	private static ArrayList<ScoreResource> getResources(String json){
+	private static ArrayList<Resource> getResources(String json){
 		
 		JSONParser parser = new JSONParser();
-		ArrayList<ScoreResource> result = new ArrayList<ScoreResource>();
+		ArrayList<Resource> result = new ArrayList<Resource>();
 		
 		try {
 		
@@ -1395,12 +1403,13 @@ public class Neo4jEngine {
 			if(resourcesJsonArray.size()>0) {
 								
 				for (int i = 0; i < resourcesJsonArray.size(); i++) {				
-					ScoreResource resource = new ScoreResource();
+					Resource resource = new Resource();
 					JSONObject resourcesJsonObject = (JSONObject) resourcesJsonArray.get(i);
 					if(resourcesJsonObject.get("url")!=null) {
-						resource.setId(resourcesJsonObject.get("url").toString());
+						resource.setUrl(resourcesJsonObject.get("url").toString());
 						resource.setType(resourcesJsonObject.get("type").toString());
-						resource.setDescription(resourcesJsonObject.get("label").toString()); 
+						resource.setLabel(resourcesJsonObject.get("label").toString()); 
+						resource.setAction(null);
 						result.add(resource);						
 					}
 				}

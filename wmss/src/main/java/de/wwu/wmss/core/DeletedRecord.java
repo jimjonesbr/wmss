@@ -3,8 +3,8 @@ package de.wwu.wmss.core;
 public class DeletedRecord {
 
 	private String scoreIdentifier;
-	private String title;
-	private String collection;
+	private String scoreTitle;
+	private String collectionLabel;
 	
 	public DeletedRecord() {
 		super();
@@ -19,19 +19,19 @@ public class DeletedRecord {
 	}
 
 	public String getTitle() {
-		return title;
+		return scoreTitle;
 	}
 
 	public void setTitle(String title) {
-		this.title = title;
+		this.scoreTitle = title;
 	}
 
 	public String getCollection() {
-		return collection;
+		return collectionLabel;
 	}
 
 	public void setCollection(String collection) {
-		this.collection = collection;
+		this.collectionLabel = collection;
 	}
 
 	

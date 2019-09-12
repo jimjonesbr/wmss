@@ -144,6 +144,7 @@ public class DocumentBuilder {
 				
 				if(SystemSettings.sourceList.get(i).getStorage().equals("postgresql")) {
 				
+					/**
 					ds.put("collections", PostgreSQLEngine.getCollections(SystemSettings.sourceList.get(i)));
 					ds.put("mediums", PostgreSQLEngine.getPerformanceMediumList(SystemSettings.sourceList.get(i)));
 					ds.put("tempoMarkings", PostgreSQLEngine.getTempoMarkings(SystemSettings.sourceList.get(i)));
@@ -151,7 +152,7 @@ public class DocumentBuilder {
 					ds.put("tonalities", PostgreSQLEngine.getTonalities(SystemSettings.sourceList.get(i)));
 					ds.put("creationRange", PostgreSQLEngine.getCreationInterval(SystemSettings.sourceList.get(i)));
 					ds.put("roles", PostgreSQLEngine.getRoles(SystemSettings.sourceList.get(i)));
-				
+					 **/
 				}
 				
 				if(SystemSettings.sourceList.get(i).getStorage().equals("neo4j")) {

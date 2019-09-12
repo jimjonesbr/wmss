@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class MelodyLocationGroup {
 	
 	private ArrayList<MelodyLocation> melodyLocation = new ArrayList<MelodyLocation>();
-	private String movementId;
-	private String movementName;
+	private String movementIdentifier;
+	private String movementLabel;
 	private int movementOrder;
 	private String scoreId;
 	
@@ -15,16 +15,16 @@ public class MelodyLocationGroup {
 		this.melodyLocation = new ArrayList<MelodyLocation>();
 	}
 	public String getMovementId() {
-		return movementId;
+		return movementIdentifier;
 	}
 	public void setMovementId(String movementId) {
-		this.movementId = movementId;
+		this.movementIdentifier = movementId;
 	}
 	public String getMovementName() {
-		return movementName;
+		return movementLabel;
 	}
 	public void setMovementName(String movementName) {
-		this.movementName = movementName;
+		this.movementLabel = movementName;
 	}
 	public ArrayList<MelodyLocation> getMelodyLocation() {
 		return melodyLocation;

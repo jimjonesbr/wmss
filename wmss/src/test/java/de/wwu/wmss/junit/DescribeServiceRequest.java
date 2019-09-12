@@ -71,14 +71,14 @@ public class DescribeServiceRequest {
 
 					for (int j = 0; j < persons.length(); j++) {
 
-						String personUrl = persons.getJSONObject(j).get("identifier").toString();
+						String personUrl = persons.getJSONObject(j).get("personIdentifier").toString();
 						String personScores = persons.getJSONObject(j).get("totalRelatedScores").toString();
-						String personRole = persons.getJSONObject(j).get("role").toString();
-						String personName = persons.getJSONObject(j).get("name").toString();
+						String personRole = persons.getJSONObject(j).get("personRole").toString();
+						String personName = persons.getJSONObject(j).get("personName").toString();
 
-						System.out.println("    |__Identifier: "+persons.getJSONObject(j).get("identifier").toString());
-						System.out.println("    |__Name: "+persons.getJSONObject(j).get("name").toString());
-						System.out.println("    |__Role: "+persons.getJSONObject(j).get("role").toString());
+						System.out.println("    |__Identifier: "+persons.getJSONObject(j).get("personIdentifier").toString());
+						System.out.println("    |__Name: "+persons.getJSONObject(j).get("personName").toString());
+						System.out.println("    |__Role: "+persons.getJSONObject(j).get("personRole").toString());
 						System.out.println("    |__Scores: "+persons.getJSONObject(j).get("totalRelatedScores").toString());
 
 						if(personUrl.equals("http://jimjones.de") && personRole.equals("Encoder") ) {
@@ -126,13 +126,13 @@ public class DescribeServiceRequest {
 					System.out.println("  |__Collections");
 					for (int j = 0; j < collections.length(); j++) {
 
-						System.out.println("    |__Identifier: "+collections.getJSONObject(j).get("identifier").toString());
-						System.out.println("    |__Label: "+collections.getJSONObject(j).get("label").toString());
+						System.out.println("    |__Identifier: "+collections.getJSONObject(j).get("collectionIdentifier").toString());
+						System.out.println("    |__Label: "+collections.getJSONObject(j).get("collectionLabel").toString());
 
-						if(!collections.getJSONObject(j).get("identifier").toString().equals("https://wwu.greatcomposers.de") && 
-								!collections.getJSONObject(j).get("identifier").toString().equals("https://sammlungen.ulb.uni-muenster.de")) {
+						if(!collections.getJSONObject(j).get("collectionIdentifier").toString().equals("https://wwu.greatcomposers.de") && 
+								!collections.getJSONObject(j).get("collectionIdentifier").toString().equals("https://sammlungen.ulb.uni-muenster.de")) {
 							result = false;
-							System.err.println("Unknown collection: '" + collections.getJSONObject(j).get("identifier").toString() + "' (" + collections.getJSONObject(j).get("label").toString() +")");
+							System.err.println("Unknown collection: '" + collections.getJSONObject(j).get("collectionIdentifier").toString() + "' (" + collections.getJSONObject(j).get("collectionLabel").toString() +")");
 						}
 					}
 
@@ -141,13 +141,13 @@ public class DescribeServiceRequest {
 					System.out.println("  |__Formats");
 					for (int j = 0; j < formats.length(); j++) {
 
-						System.out.println("    |__Type: "+formats.getJSONObject(j).get("formatId").toString());
-						System.out.println("    |__Description: "+formats.getJSONObject(j).get("formatDescription").toString());
+						System.out.println("    |__Type: "+formats.getJSONObject(j).get("formatIdentifier").toString());
+						System.out.println("    |__Description: "+formats.getJSONObject(j).get("formatLabel").toString());
 
-						if(!formats.getJSONObject(j).get("formatId").toString().equals("musicxml") && 
-								!formats.getJSONObject(j).get("formatId").toString().equals("mei")) {
+						if(!formats.getJSONObject(j).get("formatIdentifier").toString().equals("musicxml") && 
+								!formats.getJSONObject(j).get("formatIdentifier").toString().equals("mei")) {
 							result = false;
-							System.err.println("Unknown score format: '" + formats.getJSONObject(j).get("formatId").toString() + "' (" + formats.getJSONObject(j).get("formatDescription").toString() +")");
+							System.err.println("Unknown score format: '" + formats.getJSONObject(j).get("formatIdentifier").toString() + "' (" + formats.getJSONObject(j).get("formatLabel").toString() +")");
 						}
 					}
 
@@ -185,7 +185,7 @@ public class DescribeServiceRequest {
 					}
 					
 					for (int j = 0; j < instrumentType.length(); j++) {
-						System.out.println("  |__Instrument Type: " + instrumentType.getJSONObject(j).get("mediumTypeDescription").toString());
+						System.out.println("  |__Instrument Type: " + instrumentType.getJSONObject(j).get("mediumTypeLabel").toString());
 
 					}
 					

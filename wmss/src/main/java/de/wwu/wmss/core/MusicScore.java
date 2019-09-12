@@ -6,7 +6,7 @@ public class MusicScore {
 
 	private String scoreIdentifier;
 	private String source;
-	private String title;
+	private String scoreTitle;
 	private String composer;
 	private String collectionDescription;
 	private String collectionId;
@@ -16,13 +16,12 @@ public class MusicScore {
 	private String printResource;
 	private String dateIssued;
 	private String documentCreationDate;
-	private ArrayList<MovementListScoreRequest> movements;
+	private ArrayList<Movement> movements;
 	private ArrayList<Format> formats;
 	private Provenance provenance;
 	private ArrayList<Person> persons;
 	private ArrayList<MelodyLocationGroup> melodyLocations;
-	//private Collection collection;
-	private ArrayList<ScoreResource> resources;
+	private ArrayList<Resource> resources;
 	private ArrayList<Collection> collections;
 	
 	private String document;
@@ -30,18 +29,17 @@ public class MusicScore {
 	public MusicScore() {
 		super();
 		
-		this.movements = new ArrayList<MovementListScoreRequest>();
+		this.movements = new ArrayList<Movement>();
 		this.formats = new ArrayList<Format>();
 		this.persons = new ArrayList<Person>();
 		this.melodyLocations = new ArrayList<MelodyLocationGroup>();
 		this.provenance = new Provenance();
-		//this.collection = new Collection();
-		this.resources= new ArrayList<ScoreResource>();
+		this.resources= new ArrayList<Resource>();
 		this.collections= new ArrayList<Collection>();
 		
 	}
 
-	public String getScoreId() {
+	public String getIdentifier() {
 		return scoreIdentifier;
 	}
 
@@ -58,11 +56,11 @@ public class MusicScore {
 	}
 
 	public String getTitle() {
-		return title;
+		return scoreTitle;
 	}
 
 	public void setTitle(String title) {
-		this.title = title;
+		this.scoreTitle = title;
 	}
 
 	public String getComposer() {
@@ -89,7 +87,7 @@ public class MusicScore {
 		this.tonalityMode = tonalityMode;
 	}
 
-	public ArrayList<MovementListScoreRequest> getMovements() {
+	public ArrayList<Movement> getMovements() {
 		return movements;
 	}
 
@@ -169,7 +167,7 @@ public class MusicScore {
 		this.document = document;
 	}
 
-	public ArrayList<ScoreResource> getResources() {
+	public ArrayList<Resource> getResources() {
 		return resources;
 	}
 

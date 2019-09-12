@@ -10,10 +10,6 @@ MATCH (person:Person)
 WHERE NOT ()-[:CREATOR]->(person)
 DETACH DELETE person;
 
-MATCH (mediumType:mediumType)
-WHERE NOT ()-[:MEDIUMTYPE]->(mediumType:mediumType)
-DETACH DELETE mediumType;
-
 MATCH (activity:Activity)
 WHERE NOT (activity)-[:GENERATED]->()
 DETACH DELETE activity;

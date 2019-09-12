@@ -2,30 +2,30 @@ package de.wwu.wmss.core;
 
 public class Resource {
 
-	private String url = "";
-	private String label = "";
+	private String resourceURL = "";
+	private String resourceLabel = "";
 	private String action = "";
-	private String type = "";
+	private String resourceType = "";
 	
 	public Resource() {
 		super();
 	}
 	public Resource(String url, String label) {
 		super();
-		this.url = url;
-		this.label = label;
+		this.resourceURL = url;
+		this.resourceLabel = label;
 	}
 	public String getUrl() {
-		return url;
+		return resourceURL;
 	}
 	public void setUrl(String url) {
-		this.url = url;
+		this.resourceURL = url;
 	}
 	public String getLabel() {
-		return label;
+		return resourceLabel;
 	}
 	public void setLabel(String label) {
-		this.label = label;
+		this.resourceLabel = label;
 	}
 	public String getAction() {
 		return action;
@@ -34,10 +34,10 @@ public class Resource {
 		this.action = action;
 	}
 	public String getType() {
-		return type;
+		return resourceType;
 	}
 	public void setType(String type) {
-		this.type = type;
+		this.resourceType = type;
 	}
 	
 }

@@ -2,8 +2,8 @@ package de.wwu.wmss.core;
 
 public class Collection {
 
-	private String identifier = "";
-	private String label = "";
+	private String collectionIdentifier = "";
+	private String collectionLabel = "";
 	private String action = "";
 	
 	public Collection() {
@@ -11,16 +11,16 @@ public class Collection {
 
 	}
 	public String getIdentifier() {
-		return identifier;
+		return collectionIdentifier;
 	}
 	public void setIdentifier(String id) {
-		this.identifier = id;
+		this.collectionIdentifier = id;
 	}
 	public String getLabel() {
-		return label;
+		return collectionLabel;
 	}
 	public void setLabel(String description) {
-		this.label = description;
+		this.collectionLabel = description;
 	}
 	public String getAction() {
 		return action;

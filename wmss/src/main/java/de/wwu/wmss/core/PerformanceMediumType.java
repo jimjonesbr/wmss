@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class PerformanceMediumType {
 
-	private String mediumTypeDescription;
-	private String mediumTypeId;
+	private String mediumTypeLabel;
+	private String mediumTypeIdentifier;
 	private ArrayList<PerformanceMedium> mediums;
 	private String scoreId;
 	private String movementId;
@@ -18,22 +18,22 @@ public class PerformanceMediumType {
 
 
 	public String getMediumTypeDescription() {
-		return mediumTypeDescription;
+		return mediumTypeLabel;
 	}
 
 
 	public void setMediumTypeDescription(String mediumTypeDescription) {
-		this.mediumTypeDescription = mediumTypeDescription;
+		this.mediumTypeLabel = mediumTypeDescription;
 	}
 
 
 	public String getMediumTypeId() {
-		return mediumTypeId;
+		return mediumTypeIdentifier;
 	}
 
 
 	public void setMediumTypeId(String mediumTypeId) {
-		this.mediumTypeId = mediumTypeId;
+		this.mediumTypeIdentifier = mediumTypeId;
 	}
 
 

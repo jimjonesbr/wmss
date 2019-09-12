@@ -2,26 +2,26 @@ package de.wwu.wmss.core;
 
 public class Person {
 
-	private String name;
-	private String role;
+	private String personName ="";
+	private String personRole ="";
 	private String scoreId; 
-	private String identifier;
+	private String personIdentifier ="";
 	private String action = "";
 	
 	public Person() {
 		super();
 	}
 	public String getName() {
-		return name;
+		return personName;
 	}
 	public void setName(String name) {
-		this.name = name;
+		this.personName = name;
 	}
 	public String getRole() {
-		return role;
+		return personRole;
 	}
 	public void setRole(String role) {
-		this.role = role;
+		this.personRole = role;
 	}
 	public String getScoreId() {
 		return scoreId;
@@ -30,10 +30,10 @@ public class Person {
 		this.scoreId = score_id;
 	}
 	public String getIdentifier() {
-		return identifier;
+		return personIdentifier;
 	}
 	public void setIdentifier(String url) {
-		this.identifier = url;
+		this.personIdentifier = url;
 	}
 	public String getAction() {
 		return action;

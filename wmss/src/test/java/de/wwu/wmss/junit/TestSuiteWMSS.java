@@ -11,6 +11,7 @@ import org.junit.runners.Suite;
 	ExceptionsTest.class,
 	DescribeServiceRequest.class,
 	ImportRDFScoreFromURL.class,
+	EditScores.class,
 	GetScore.class,
 	
 	DeleteElgarScore.class,	

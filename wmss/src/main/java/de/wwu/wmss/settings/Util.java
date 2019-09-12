@@ -462,7 +462,7 @@ public class Util {
 	public static String postListScoreRequest(String server, int port, String source, String jsonQuery) {
 		
 		String result = "";
-		
+
 		HttpClient httpClient = HttpClientBuilder.create().build();
 		HttpPost request = new HttpPost(server+":"+port+"/wmss/");
 		

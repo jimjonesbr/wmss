@@ -2,12 +2,12 @@ package de.wwu.wmss.core;
 
 public class PerformanceMedium {
 
-	private String mediumTypeDescription="";
-	private String mediumTypeId="";
-	private String mediumDescription="";
-	private String mediumId="";
+	private String mediumTypeLabel="";
+	private String mediumTypeIdentifier="";
+	private String mediumLabel="";
+	private String mediumIdentifier="";
 	private String mediumCode="";
-	private String mediumScoreDescription="";	
+	private String mediumScoreLabel="";	
 	private String movementId;
 	private String scoreId;
 	private boolean solo;
@@ -19,35 +19,35 @@ public class PerformanceMedium {
 	}
 
 	public String getTypeLabel() {
-		return mediumTypeDescription;
+		return mediumTypeLabel;
 	}
 
 	public void setTypeLabel(String typeDescription) {
-		this.mediumTypeDescription = typeDescription;
+		this.mediumTypeLabel = typeDescription;
 	}
 
 	public String getTypeIdentifier() {
-		return mediumTypeId;
+		return mediumTypeIdentifier;
 	}
 
 	public void setTypeIdentifier(String typeClassification) {
-		this.mediumTypeId = typeClassification;
+		this.mediumTypeIdentifier = typeClassification;
 	}
 
 	public String getLabel() {
-		return mediumDescription;
+		return mediumLabel;
 	}
 
 	public void setLabel(String mediumDescription) {
-		this.mediumDescription = mediumDescription;
+		this.mediumLabel = mediumDescription;
 	}
 
 	public String getIdentifier() {
-		return mediumId;
+		return mediumIdentifier;
 	}
 
 	public void setIdentifier(String mediumClassification) {
-		this.mediumId = mediumClassification;
+		this.mediumIdentifier = mediumClassification;
 	}
 
 	public boolean isSolo() {
@@ -75,11 +75,11 @@ public class PerformanceMedium {
 	}
 
 	public String getScoreLabel() {
-		return mediumScoreDescription;
+		return mediumScoreLabel;
 	}
 
 	public void setScoreLabel(String mediumScoreDescription) {
-		this.mediumScoreDescription = mediumScoreDescription;
+		this.mediumScoreLabel = mediumScoreDescription;
 	}
 
 	public boolean isEnsemble() {
@@ -94,7 +94,7 @@ public class PerformanceMedium {
 		return mediumCode;
 	}
 
-	public void setMediumCode(String mediumCode) {
+	public void setCode(String mediumCode) {
 		this.mediumCode = mediumCode;
 	}
 

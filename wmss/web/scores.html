@@ -349,14 +349,14 @@
 		        	var collections = src["collections"];
 		        	for (j = 0; j < collections.length; j++) { 
 		        		var col = collections[j];
-		        	 	var o = new Option(col["label"],col["identifier"]);
+		        	 	var o = new Option(col["collectionLabel"],col["collectionIdentifier"]);
 		        	 	$('#collections').append(o); 
 		        	}
 
 		        	var persons = src["persons"];
 		        	for (j = 0; j < persons.length; j++) { 
 		        		var col = persons[j];
-		        	 	var o = new Option(col["name"] + ' ('+col["role"]+')',col["identifier"]);
+		        	 	var o = new Option(col["personName"] + ' ('+col["personRole"]+')',col["personIdentifier"]);
 		        	 	$('#persons').append(o); 
 		        	}
 		        	
@@ -370,7 +370,7 @@
 		        	var formats = src["formats"];
 		        	for (j = 0; j < formats.length; j++) { 
 		        		var frm = formats[j];
-		        	 	var o = new Option(frm["formatDescription"],frm["formatId"]);
+		        	 	var o = new Option(frm["formatLabel"],frm["formatIdentifier"]);
 		        	 	$('#formats').append(o); 
 		        	}
 
@@ -378,8 +378,8 @@
 
 		        	for (j = 0; j < performance_mediums.length; j++) {
 
-		        		var performance_mediums_group = performance_mediums[j]["mediumTypeDescription"];
-		        		var g = new Option(performance_mediums[j]["mediumTypeDescription"].charAt(0).toUpperCase() + performance_mediums[j]["mediumTypeDescription"].slice(1),performance_mediums[j]["mediumTypeDescription"]);
+		        		var performance_mediums_group = performance_mediums[j]["mediumTypeLabel"];
+		        		var g = new Option(performance_mediums[j]["mediumTypeLabel"].charAt(0).toUpperCase() + performance_mediums[j]["mediumTypeLabel"].slice(1),performance_mediums[j]["mediumTypeLabel"]);
 		        		$('#instruments-group').append(g);
 
 		        		var mediums = performance_mediums[j]["mediums"];	        									
@@ -387,7 +387,7 @@
 						for (k = 0; k < mediums.length; k++) {
 
 			        		var med = mediums[k];
-			        	 	var o = new Option(med["mediumDescription"], med["mediumCode"]);
+			        	 	var o = new Option(med["mediumLabel"], med["mediumCode"]);
 			        	 	$('#instruments').append(o); 
 
 						} 		        		
@@ -607,7 +607,7 @@
 							for (j = 0; j < scores.length; j++) { 
 
 								var sc = scores[j];
-								var collection = sc["collection"];
+								//var collection = sc["collection"];
 								var formats = sc["formats"];
 								var formats_string = "";
 
@@ -615,15 +615,15 @@
 
 									var fr = formats[k];
 									var badge_class = "";
-									if (fr["formatId"]=="musicxml"){
+									if (fr["formatIdentifier"]=="musicxml"){
 										badge_class="badge badge-info";
-									} else if (fr["formatId"]=="mei"){
+									} else if (fr["formatIdentifier"]=="mei"){
 										badge_class="badge badge-secondary";
 									} else {
 										badge_class="badge badge-dark";
 									}
 
-									formats_string = formats_string + '<i class="fa fa-code" style="padding: 3px"/><a href="javascript:getScore(\''+j+'\',\''+fr["formatId"].trim()+'\')">'+fr["formatDescription"]+'</span></a>';
+									formats_string = formats_string + '<i class="fa fa-code" style="padding: 3px"/><a href="javascript:getScore(\''+j+'\',\''+fr["formatIdentifier"].trim()+'\')">'+fr["formatLabel"]+'</span></a>';
 
 								}							
 
@@ -633,7 +633,7 @@
 								for (k = 0; k < collections.length; k++) { 
 
 									var cl = collections[k];
-									collections_string = collections_string + '<i class="fas fa-archive"></i> <a href="'+ cl["identifier"] + '">'+cl["label"]+'</a><br>';
+									collections_string = collections_string + '<i class="fas fa-archive"></i> <a href="'+ cl["collectionIdentifier"] + '">'+cl["collectionLabel"]+'</a><br>';
 								}
 
 
@@ -646,13 +646,13 @@
 	    	 						var per = persons[k];
 	    	 						var badge_class;
 
-	    	 						if(per["role"]=='Composer'){
+	    	 						if(per["personRole"]=='Composer'){
 	    	 							badge_class = 'badge badge-info';
 	    	 						} else {
 	    	 							badge_class = 'badge badge-secondary';
 	    	 						} 
 
-	    	 						persons_string = persons_string +'<p><a href="'+per["identifier"]+'">' + per["name"] + '</a> <span class="'+badge_class+'">'+per["role"]+'</span></p>';
+	    	 						persons_string = persons_string +'<p><a href="'+per["personIdentifier"]+'">' + per["personName"] + '</a> <span class="'+badge_class+'">'+per["personRole"]+'</span></p>';
 
 	    	 					}
 
@@ -666,21 +666,21 @@
 	    	 						var res = resources[k];
 	    	 						var icon_resource;
 
-	    	 						if(res["type"].includes('application/pdf')){
+	    	 						if(res["resourceType"].includes('application/pdf')){
 
-	    	 							icon_resource = '<i class="fa fa-file-pdf" style="padding: 5px"/><a href="'+ res["url"] + '">'+res["description"]+'</a>';
+	    	 							icon_resource = '<i class="fa fa-file-pdf" style="padding: 5px"/><a href="'+ res["resourceURL"] + '">'+res["resourceLabel"]+'</a>';
 
-	    	 						} else if(res["type"].includes('text/html')){
+	    	 						} else if(res["resourceType"].includes('text/html')){
 
-										icon_resource = '<i class="fa fa-link" style="padding: 5px"/><a href="'+ res["url"] + '">'+res["description"]+'</a>';
+										icon_resource = '<i class="fa fa-link" style="padding: 5px"/><a href="'+ res["resourceURL"] + '">'+res["resourceLabel"]+'</a>';
 
-									} else if(res["type"].includes('audio')){
+									} else if(res["resourceType"].includes('audio')){
 
-										icon_resource = '<i class="fa fa-play" style="padding: 5px"/><a href="'+ res["url"] + '">'+res["description"]+'</a>';
+										icon_resource = '<i class="fa fa-play" style="padding: 5px"/><a href="'+ res["resourceURL"] + '">'+res["resourceLabel"]+'</a>';
 
 	    	 						} else {
 
-	    	 							icon_resource = '<i class="fa fa-file-alt" style="padding: 5px"/><a href="'+ res["url"] + '">'+res["description"]+'</a>';
+	    	 							icon_resource = '<i class="fa fa-file-alt" style="padding: 5px"/><a href="'+ res["resourceURL"] + '">'+res["resourceLabel"]+'</a>';
 
 	    	 						}
 	    	 						
@@ -704,7 +704,7 @@
 
 											var loc = melodies[l];
 											location_string = location_string + 
-											'Instrument: <b>'+loc["instrumentName"] + '</b><br>'+
+											'Instrument: <b>'+loc["mediumLabel"] + '</b><br>'+
 											'Measure: <b>'+loc["startingMeasure"] + '</b><br>'+
 											'Voice: <b>'+loc["voice"] + '</b><br>'+
 											'Staff: <b>'+loc["staff"]+'</b><br><br>';
@@ -715,7 +715,7 @@
 										'<div class="card">'+
 										'  <div class="card-header bg-light" id="heading-location-'+j+k+'">'+								
 										'      <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse-location-'+j+k+'" aria-expanded="false" aria-controls="collapse-location-'+j+k+'" style="padding:0">'+
-										'        '+location_item["movementName"]+
+										'        '+location_item["movementLabel"]+
 										'      </button>'+										
 										'  </div>'+
 										'  <div id="collapse-location-'+j+k+'" class="collapse hide" aria-labelledby="heading-location-'+j+k+'" data-parent="#locations-'+j+'">'+
@@ -746,7 +746,7 @@
 
 	        	 						
 			 						var mov = movements[k];
-			 						var perf_type = mov["performanceMediumList"];
+			 						var perf_type = mov["mediumTypes"];
 
 			 						var mediums_string = "<ul>";
 
@@ -758,7 +758,7 @@
 			 							for (m = 0; m < medium.length; m++) { 
 
 			 								var med = medium[m];        	 								
-			 								mediums_string = mediums_string + '<li>' +med["mediumScoreDescription"]+' ('+med["mediumDescription"]+')</li>';
+			 								mediums_string = mediums_string + '<li>' +med["mediumScoreLabel"]+' ('+med["mediumLabel"]+')</li>';
 			 								
 			 							}
 			 						}
@@ -769,7 +769,7 @@
 										'<div class="card">'+
 										'  <div class="card-header" id="heading-'+j+k+'">'+
 										'      <button class="btn btn-link" type="button" style="padding:0" data-toggle="collapse" data-target="#collapse-'+j+k+'" aria-expanded="false" aria-controls="collapse-'+j+k+'">'+
-										'        '+mov["movementName"]+
+										'        '+mov["movementLabel"]+
 										'      </button>'+
 										'  </div>'+
 										'  <div id="collapse-'+j+k+'" class="collapse hide" aria-labelledby="heading-'+j+k+'" data-parent="#movements-'+j+'">'+
@@ -800,7 +800,7 @@
 
 											'	  <tr>'+
 											'	    <td><strong>Title</strong></td>'+
-											'	    <td><span id="score_title_'+j+'">'+sc["title"] +'</span></td>'+
+											'	    <td><span id="score_title_'+j+'">'+sc["scoreTitle"] +'</span></td>'+
 											'	  </tr>'+
 
 											'	  <tr>'+

@@ -1,12 +1,17 @@
 package de.wwu.wmss.core;
 
+import java.util.ArrayList;
+
 public class Movement {
 
 	private String movementIdentifier;
-	private String movementName = "";	
+	private String movementLabel = "";	
 	private String beatUnit = "";
 	private int beatsPerMinute = 0;
 	private int movementOrder = 0;
+	private String action = "";
+	private ArrayList<PerformanceMedium> mediums2 = new ArrayList<PerformanceMedium>();
+	private ArrayList<PerformanceMediumType> mediumTypes = new ArrayList<PerformanceMediumType>();
 
 	public Movement() {
 		super();
@@ -21,11 +26,11 @@ public class Movement {
 	}
 
 	public String getLabel() {
-		return movementName;
+		return movementLabel;
 	}
 
 	public void setMovementLabel(String movementName) {
-		this.movementName = movementName;
+		this.movementLabel = movementName;
 	}
 
 	public String getBeatUnit() {
@@ -52,5 +57,19 @@ public class Movement {
 		this.movementOrder = order;
 	}
 
+	public ArrayList<PerformanceMedium> getMediums() {
+		return mediums2;
+	}
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}	
 	
+	public ArrayList<PerformanceMediumType> getPerformanceMediumList() {
+		return mediumTypes;
+	}
 }

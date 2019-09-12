@@ -5,10 +5,10 @@ public class MelodyLocation {
 	private String startingMeasure;
 	private String voice;
 	private String staff;
-	private String instrumentName;
+	private String mediumLabel;
 	private String melody;
 	private String movementIdentifier;
-	private String movementName;	
+	private String movementLabel;	
 	private String movementId;
 	private String scoreId;
 	private int order;
@@ -42,11 +42,11 @@ public class MelodyLocation {
 	}
 
 	public String getInstrumentName() {
-		return instrumentName;
+		return mediumLabel;
 	}
 
 	public void setInstrumentName(String instrumentName) {
-		this.instrumentName = instrumentName;
+		this.mediumLabel = instrumentName;
 	}
 
 	public String getMelody() {
@@ -66,11 +66,11 @@ public class MelodyLocation {
 	}
 
 	public String getMovementName() {
-		return movementName;
+		return movementLabel;
 	}
 
 	public void setMovementName(String movementName) {
-		this.movementName = movementName;
+		this.movementLabel = movementName;
 	}
 
 	public String getScoreId() {

@@ -2,62 +2,73 @@
   "request": "EditScore",
   "source": "neo4j_local",
   "scoreIdentifier": "http://dbpedia.org/resource/Cello_Concerto_(Elgar)",
-  "scoreTitle": "Cellokonzert e-Moll op. 85 - updated",
-  "issued": "1920",
+  "scoreTitle": "score-title-updated",
+  "thumbnail":"https://www.designtagebuch.de/wp-content/uploads/mediathek//2017/01/wwu-logo-700x377.png",
+  "issued": "9999",
   "collections": [
-    {
-      "collectionLabel": "Great Composers2",
-      "collectionIdentifier": "https://wwu.greatcomposers2.de",
-      "action": "delete"
-    },
     {
       "collectionLabel": "Great Composers",
       "collectionIdentifier": "https://wwu.greatcomposers.de",
-      "action": "update"
+      "action": "delete"
     },
     {
-      "collectionLabel": "Digitale Sammlung der Universität und Landesbibliothek Münster",
+      "collectionLabel": "collection-sammlung-label-updated",
       "collectionIdentifier": "https://sammlungen.ulb.uni-muenster.de",
       "action": "update"
     },
     {
       "collectionIdentifier": "https://github.com/jimjonesbr/wmss#collections",
-      "action": "delete"
+      "collectionLabel": "new-collection",
+      "action": "add"
     }
   ],
   "persons": [
     {
       "personIdentifier": "http://dbpedia.org/resource/Edward_Elgar",
-      "personName": "Elgar 1",
-      "personRole": "Composer",
+      "personName": "elgar-updated",
+      "personRole": "elgar-role-updated",
       "action": "update"
     },
     {
-      "personIdentifier": "http://dbpedia.org/resource/Edward_Elgar2",
-      "personName": "Elgar 2 updated",
-      "personRole": "Encoder",
-      "action": "DELETE"
+      "personIdentifier": "http://jimjones.de",
+      "action": "delete"
+    },
+    {
+      "personIdentifier": "http://new.person.de",
+      "personName": "new-person",
+      "personRole": "new-person-role",
+      "action": "add"
     }
 
   ],
   "resources": [
     {
-      "resourceURL": "https://musescore.com/score/152011/download/pdf",
-      "resourceLabel": "Print PDF file",
-      "resourceType": "application/pdf",
+      "resourceURL": "https://en.wikipedia.org/wiki/Cello_Concerto_(Elgar)",
+      "resourceLabel": "wikipedia-resource-updated",
+      "resourceType": "text/html",
       "action": "update"
-    }
+    },
+    {
+      "resourceURL": "https://musescore.com/score/152011/download/pdf",
+      "action": "delete"
+    },    
+    {
+      "resourceURL": "http://new.resource.de/",
+      "resourceLabel": "new-resource",
+      "resourceType": "application/pdf",
+      "action": "add"
+    }    
   ],
   "mediums": [
     {
       "mediumIdentifier": "http://linkeddata.uni-muenster.de/node/21dde7d3-e280-44d5-900a-4660e91ba4f4_MOV1_PART_P1",
-      "mediumLabel": "Violoncello updated",
-      "mediumCode": "strings.cello",
-      "mediumScoreLabel": "Violoncello - score updated",
-      "mediumTypeIdentifier": "strings.updated",
-      "mediumTypeLabel": "Strings updated",      
-      "solo": false,
-      "ensemble": false,
+      "mediumLabel": "medium-label-updated",
+      "mediumCode": "medium.code.updated",
+      "mediumScoreLabel": "medium-score-label-updated",
+      "mediumTypeIdentifier": "medium.type.identifier.updated",
+      "mediumTypeLabel": "medium-type-label-updated",      
+      "solo": true,
+      "ensemble": true,
       "action":"update"
     }
   ], 
@@ -65,9 +76,9 @@
     {
       "movementIdentifier": "http://linkeddata.uni-muenster.de/node/e4d1f11f-b2b6-4c96-b926-4c034ba28088_MOV1",
       "movementOrder": 1,
-      "movementLabel": "Adagio - updated",      
+      "movementLabel": "movement-label-updated",      
       "beatUnit": "quarter-updated",
-      "beatsPerMinute": 121,
+      "beatsPerMinute": 999,
       "action":"update"
     }
   ]

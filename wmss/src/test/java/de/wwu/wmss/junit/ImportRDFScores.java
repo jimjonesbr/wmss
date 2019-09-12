@@ -37,7 +37,6 @@ public class ImportRDFScores {
 		HttpResponse response=null;
 		try { 
 			response = httpClient.execute(post);
-
 			HttpEntity entity = response.getEntity(); 
 			
 			JSONParser parser = new JSONParser();

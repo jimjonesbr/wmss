@@ -318,8 +318,8 @@ public class ServletEdit extends HttpServlet {
 
 				logger.info("New Score: " + uriFile + " - " + scores.get(i).getTitle());
 
-				if(uriFile.equals(scores.get(i).getScoreId())) {
-					throw new ScoreExistsException("The provided RDF file '"+ file +", containing the music score [Identifier: '"+uriFile+"', Title: '"+ titleFile + "'], has a conflicting score in the database: [Identifier: '" + scores.get(i).getScoreId() + "', Title: '" + scores.get(i).getTitle()+"']. Either delete the existing score from the database or provide a different identifier for the new one.");
+				if(uriFile.equals(scores.get(i).getIdentifier())) {
+					throw new ScoreExistsException("The provided RDF file '"+ file +", containing the music score [Identifier: '"+uriFile+"', Title: '"+ titleFile + "'], has a conflicting score in the database: [Identifier: '" + scores.get(i).getIdentifier() + "', Title: '" + scores.get(i).getTitle()+"']. Either delete the existing score from the database or provide a different identifier for the new one.");
 				}
 			}
 

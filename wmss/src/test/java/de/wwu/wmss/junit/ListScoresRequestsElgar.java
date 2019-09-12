@@ -32,7 +32,7 @@ public class ListScoresRequestsElgar {
 			for (int j = 0; j < scores.length(); j++) {
 				
 				System.out.println("Score identifier: "+scores.getJSONObject(j).getString("scoreIdentifier"));
-				System.out.println("Score title     : "+scores.getJSONObject(j).getString("title"));
+				System.out.println("Score title     : "+scores.getJSONObject(j).getString("scoreTitle"));
 				System.out.println("Date issued     : "+scores.getJSONObject(j).getString("dateIssued")+"\n");
 			
 				JSONArray melodies =  scores.getJSONObject(j).getJSONArray("melodyLocations");
@@ -46,23 +46,23 @@ public class ListScoresRequestsElgar {
 						if(melody.getJSONObject(l).get("startingMeasure").toString().equals(location.getStartingMeasure()) &&
 						  melody.getJSONObject(l).get("voice").toString().equals(location.getVoice()) &&
 						  melody.getJSONObject(l).get("staff").toString().equals(location.getStaff()) &&
-						  melody.getJSONObject(l).get("instrumentName").toString().equals(location.getInstrumentName()) &&						  
+						  melody.getJSONObject(l).get("mediumLabel").toString().equals(location.getInstrumentName()) &&						  
 						  melody.getJSONObject(l).get("melody").toString().equals(location.getMelody()) &&
-						  scores.getJSONObject(j).getString("title").equals(score.getTitle()) &&
-						  scores.getJSONObject(j).getString("scoreIdentifier").equals(score.getScoreId()) &&
+						  scores.getJSONObject(j).getString("scoreTitle").equals(score.getTitle()) &&
+						  scores.getJSONObject(j).getString("scoreIdentifier").equals(score.getIdentifier()) &&
 						  scores.getJSONObject(j).getString("dateIssued").equals(score.getDateIssued()) &&
 						  Integer.parseInt(melodies.getJSONObject(k).get("movementOrder").toString()) == location.getOrder() &&
-						  melodies.getJSONObject(k).get("movementName").toString().equals(location.getMovementName())
+						  melodies.getJSONObject(k).get("movementLabel").toString().equals(location.getMovementName())
 						  ) {
 							result = true;
 						}
 						
-						System.out.println("- Movement        : "+melodies.getJSONObject(k).get("movementName"));
+						System.out.println("- Movement        : "+melodies.getJSONObject(k).get("movementLabel"));
 						System.out.println("- Movement Order  : "+melodies.getJSONObject(k).get("movementOrder"));
 						System.out.println("- Starting Measure: "+melody.getJSONObject(l).get("startingMeasure"));
 						System.out.println("- Voice           : "+melody.getJSONObject(l).get("voice"));
 						System.out.println("- Staff           : "+melody.getJSONObject(l).get("staff"));
-						System.out.println("- Instrument Name : "+melody.getJSONObject(l).get("instrumentName"));
+						System.out.println("- Instrument Name : "+melody.getJSONObject(l).get("mediumLabel"));
 						System.out.println("- Melody          : "+melody.getJSONObject(l).get("melody")+"\n");
 						
 

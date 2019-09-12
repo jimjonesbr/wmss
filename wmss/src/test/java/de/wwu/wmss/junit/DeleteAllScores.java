@@ -22,7 +22,7 @@ public class DeleteAllScores {
 
 		boolean result = false;
 
-		String url = server+":"+port+"/wmss?source="+source+"&request=DeleteScore&identifier="+score.getScoreId();
+		String url = server+":"+port+"/wmss?source="+source+"&request=DeleteScore&identifier="+score.getIdentifier();
 		System.out.println("\nRequest: " + url + "\n");
 		try {
 
@@ -33,10 +33,9 @@ public class DeleteAllScores {
 				
 				System.out.println("\nDeleted Score\n"+
 						"- Identifier: "+scoreObject.getJSONObject(i).get("scoreIdentifier")+"\n"+ 
-						"- Title     : "+scoreObject.getJSONObject(i).get("title")+"\n"+
-						"- Collection: "+scoreObject.getJSONObject(i).get("collection")+"\n");
+						"- Title     : "+scoreObject.getJSONObject(i).get("scoreTitle")+"\n");
 				
-				if(scoreObject.getJSONObject(i).get("scoreIdentifier").toString().equals(score.getScoreId())) {
+				if(scoreObject.getJSONObject(i).get("scoreIdentifier").toString().equals(score.getIdentifier())) {
 					result = true;
 				}
 				

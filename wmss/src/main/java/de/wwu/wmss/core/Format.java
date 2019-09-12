@@ -2,24 +2,24 @@ package de.wwu.wmss.core;
 
 public class Format {
 
-	private String formatId;
-	private String formatDescription;
+	private String formatIdentifier;
+	private String formatLabel;
 	private String scoreId;
 	
 	public Format() {
 		super();
 	}
 	public String getFormatId() {
-		return formatId;
+		return formatIdentifier;
 	}
 	public void setFormatId(String formatId) {
-		this.formatId = formatId;
+		this.formatIdentifier = formatId;
 	}
 	public String getFormatDescription() {
-		return formatDescription;
+		return formatLabel;
 	}
 	public void setFormatDescription(String formatDescription) {
-		this.formatDescription = formatDescription;
+		this.formatLabel = formatDescription;
 	}
 	public String getScoreId() {
 		return scoreId;
