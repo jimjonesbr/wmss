@@ -121,7 +121,7 @@ public class ListScoresRequest {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("8");
@@ -148,7 +148,7 @@ public class ListScoresRequest {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("8");
@@ -174,7 +174,7 @@ public class ListScoresRequest {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("5");
@@ -202,7 +202,7 @@ public class ListScoresRequest {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("8");
@@ -228,7 +228,7 @@ public class ListScoresRequest {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("80");
@@ -256,7 +256,7 @@ public class ListScoresRequest {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("98");
@@ -283,7 +283,7 @@ public class ListScoresRequest {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("1");
@@ -311,7 +311,7 @@ public class ListScoresRequest {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("1");
@@ -338,7 +338,7 @@ public class ListScoresRequest {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("8");
@@ -365,7 +365,7 @@ public class ListScoresRequest {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("8");
@@ -392,7 +392,7 @@ public class ListScoresRequest {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("8");
@@ -419,7 +419,7 @@ public class ListScoresRequest {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("48");
@@ -447,7 +447,7 @@ public class ListScoresRequest {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("3");
@@ -474,7 +474,7 @@ public class ListScoresRequest {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("3");
@@ -501,7 +501,7 @@ public class ListScoresRequest {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Achilles: Grand Opera");
-		score.setScoreId("https://sammlungen.ulb.uni-muenster.de/id/5731633");
+		score.setIdentifier("https://sammlungen.ulb.uni-muenster.de/id/5731633");
 		score.setDateIssued("1802");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("6");
@@ -527,7 +527,7 @@ public class ListScoresRequest {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Achilles: Grand Opera");
-		score.setScoreId("https://sammlungen.ulb.uni-muenster.de/id/5731633");
+		score.setIdentifier("https://sammlungen.ulb.uni-muenster.de/id/5731633");
 		score.setDateIssued("1802");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("17");
@@ -554,7 +554,7 @@ public class ListScoresRequest {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Achilles: Grand Opera");
-		score.setScoreId("https://sammlungen.ulb.uni-muenster.de/id/5731633");
+		score.setIdentifier("https://sammlungen.ulb.uni-muenster.de/id/5731633");
 		score.setDateIssued("1802");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("5");
@@ -580,7 +580,7 @@ public class ListScoresRequest {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Sieges Märsche für's Piano-Forte");
-		score.setScoreId("https://sammlungen.ulb.uni-muenster.de/id/5393365");
+		score.setIdentifier("https://sammlungen.ulb.uni-muenster.de/id/5393365");
 		score.setDateIssued("1850");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("20");

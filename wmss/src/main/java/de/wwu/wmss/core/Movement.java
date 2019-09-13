@@ -21,7 +21,7 @@ public class Movement {
 		return movementIdentifier;
 	}
 
-	public void setMovementIdentifier(String identifier) {
+	public void setIdentifier(String identifier) {
 		this.movementIdentifier = identifier;
 	}
 
@@ -29,7 +29,7 @@ public class Movement {
 		return movementLabel;
 	}
 
-	public void setMovementLabel(String movementName) {
+	public void setLabel(String movementName) {
 		this.movementLabel = movementName;
 	}
 
@@ -69,7 +69,7 @@ public class Movement {
 		this.action = action;
 	}	
 	
-	public ArrayList<PerformanceMediumType> getPerformanceMediumList() {
+	public ArrayList<PerformanceMediumType> getMediumTypes() {
 		return mediumTypes;
 	}
 }

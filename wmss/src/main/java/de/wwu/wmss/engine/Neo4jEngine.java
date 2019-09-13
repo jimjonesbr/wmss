@@ -59,7 +59,7 @@ public class Neo4jEngine {
 		while (rs.hasNext()){
 			Record record = rs.next();
 			MusicScore score = new MusicScore();
-			score.setScoreId(record.get("uri").asString());
+			score.setIdentifier(record.get("uri").asString());
 			score.setTitle(record.get("title").asString());
 			result.add(score);
 		}
@@ -564,6 +564,14 @@ public class Neo4jEngine {
 				if(!request.getMediums().get(i).getTypeLabel().equals("")) {
 					cypher = cypher + "SET medium.mediumTypeDescription = '"+request.getMediums().get(i).getTypeLabel()+"'\n";
 				}
+				
+				if(!request.getMediums().get(i).isSolo().equals("")) {
+					cypher = cypher + "SET medium.solo = "+request.getMediums().get(i).isSolo()+"\n";
+				}
+		
+				if(!request.getMediums().get(i).isEnsemble().equals("")) {
+					cypher = cypher + "SET medium.ensemble = "+request.getMediums().get(i).isEnsemble()+"\n";
+				}
 								
 				Neo4jConnector.getInstance().executeQuery(cypher, ds);
 
@@ -725,11 +733,11 @@ public class Neo4jEngine {
 				Movement movement = new Movement();
 				
 				JSONObject movementsObject = (JSONObject) parser.parse(gson.toJson(record.get("movementsResultset").asMap()));
-				movement.setMovementIdentifier(movementsObject.get("movementIdentifier").toString().trim());
+				movement.setIdentifier(movementsObject.get("movementIdentifier").toString().trim());
 				if(movementsObject.get("movementName")!=null) {
-					movement.setMovementLabel(movementsObject.get("movementName").toString());
+					movement.setLabel(movementsObject.get("movementName").toString());
 				} else {
-					movement.setMovementLabel("");
+					movement.setLabel("");
 				}
 
 				movement.setOrder(Integer.parseInt(movementsObject.get("movementOrder").toString()));
@@ -762,17 +770,17 @@ public class Neo4jEngine {
 						medium.setTypeLabel(null);
 						
 						if(mediumJsonObject.get("solo")!=null) {
-							medium.setSolo(Boolean.parseBoolean(mediumJsonObject.get("solo").toString().trim()));
+							medium.setSolo(mediumJsonObject.get("solo").toString().trim());
 						}
 						
 						if(mediumJsonObject.get("ensemble")!=null) {
-							medium.setEnsemble(Boolean.parseBoolean(mediumJsonObject.get("ensemble").toString().trim()));
+							medium.setEnsemble(mediumJsonObject.get("ensemble").toString().trim());
 						}
 						
 						mediumType.getMediums().add(medium);
 					}
 					
-					movement.getPerformanceMediumList().add(mediumType);
+					movement.getMediumTypes().add(mediumType);
 					
 				}
 				
@@ -1329,7 +1337,7 @@ public class Neo4jEngine {
 			MusicScore score = new MusicScore();
 			score.setTitle(record.get("title").asString());
 			score.setDateIssued(record.get("issued").asString());
-			score.setScoreId(record.get("identifier").asString());
+			score.setIdentifier(record.get("identifier").asString());
 			score.setThumbnail(record.get("thumbnail").asString());	
 			
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();

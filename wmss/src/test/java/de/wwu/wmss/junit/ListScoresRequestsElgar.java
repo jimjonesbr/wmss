@@ -134,7 +134,7 @@ public class ListScoresRequestsElgar {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("8");
@@ -161,7 +161,7 @@ public class ListScoresRequestsElgar {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("8");
@@ -187,7 +187,7 @@ public class ListScoresRequestsElgar {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("5");
@@ -215,7 +215,7 @@ public class ListScoresRequestsElgar {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("8");
@@ -241,7 +241,7 @@ public class ListScoresRequestsElgar {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("80");
@@ -269,7 +269,7 @@ public class ListScoresRequestsElgar {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("98");
@@ -296,7 +296,7 @@ public class ListScoresRequestsElgar {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("1");
@@ -324,7 +324,7 @@ public class ListScoresRequestsElgar {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("1");
@@ -351,7 +351,7 @@ public class ListScoresRequestsElgar {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("8");
@@ -378,7 +378,7 @@ public class ListScoresRequestsElgar {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("8");
@@ -405,7 +405,7 @@ public class ListScoresRequestsElgar {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("8");
@@ -432,7 +432,7 @@ public class ListScoresRequestsElgar {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("48");
@@ -460,7 +460,7 @@ public class ListScoresRequestsElgar {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("3");
@@ -487,7 +487,7 @@ public class ListScoresRequestsElgar {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("3");
@@ -507,7 +507,7 @@ public class ListScoresRequestsElgar {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("8");
@@ -617,7 +617,7 @@ public class ListScoresRequestsElgar {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("8");
@@ -654,7 +654,7 @@ public class ListScoresRequestsElgar {
 		
 		MusicScore score = new MusicScore();
 		score.setTitle("Cellokonzert e-Moll op. 85");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 		score.setDateIssued("1919");		
 		MelodyLocation location = new MelodyLocation();
 		location.setStartingMeasure("8");

@@ -50,12 +50,12 @@ public class PerformanceMedium {
 		this.mediumIdentifier = mediumClassification;
 	}
 
-	public boolean isSolo() {
-		return solo;
+	public String isSolo() {
+		return String.valueOf(solo);
 	}
 
-	public void setSolo(boolean solo) {
-		this.solo = solo;
+	public void setSolo(String solo) {
+		this.solo = Boolean.parseBoolean(solo);
 	}
 
 	public String getMovementId() {
@@ -82,12 +82,12 @@ public class PerformanceMedium {
 		this.mediumScoreLabel = mediumScoreDescription;
 	}
 
-	public boolean isEnsemble() {
-		return ensemble;
+	public String isEnsemble() {
+		return String.valueOf(ensemble);
 	}
 
-	public void setEnsemble(boolean ensemble) {
-		this.ensemble = ensemble;
+	public void setEnsemble(String ensemble) {
+		this.ensemble = Boolean.parseBoolean(ensemble);
 	}
 
 	public String getCode() {

@@ -43,7 +43,7 @@ public class MusicScore {
 		return scoreIdentifier;
 	}
 
-	public void setScoreId(String identifier) {
+	public void setIdentifier(String identifier) {
 		this.scoreIdentifier = identifier;
 	}
 

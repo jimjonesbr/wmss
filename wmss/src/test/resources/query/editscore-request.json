@@ -77,7 +77,7 @@
       "movementIdentifier": "http://linkeddata.uni-muenster.de/node/e4d1f11f-b2b6-4c96-b926-4c034ba28088_MOV1",
       "movementOrder": 1,
       "movementLabel": "movement-label-updated",      
-      "beatUnit": "quarter-updated",
+      "beatUnit": "beat-unit-updated",
       "beatsPerMinute": 999,
       "action":"update"
     }

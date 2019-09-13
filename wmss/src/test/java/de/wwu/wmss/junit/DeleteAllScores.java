@@ -53,7 +53,7 @@ public class DeleteAllScores {
 	public void deleteElgarScore() {
 		
 		MusicScore score = new MusicScore();
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");		
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");		
 		assertEquals(true, this.delete(score));
 		
 	}
@@ -62,7 +62,7 @@ public class DeleteAllScores {
 	public void deleteAchillesGrandOpera() {
 		
 		MusicScore score = new MusicScore();
-		score.setScoreId("https://sammlungen.ulb.uni-muenster.de/id/5731633");		
+		score.setIdentifier("https://sammlungen.ulb.uni-muenster.de/id/5731633");		
 		assertEquals(true, this.delete(score));
 		
 	}
@@ -71,7 +71,7 @@ public class DeleteAllScores {
 	public void deleteSiegesMaersche() {
 		
 		MusicScore score = new MusicScore();
-		score.setScoreId("https://sammlungen.ulb.uni-muenster.de/id/5393365");		
+		score.setIdentifier("https://sammlungen.ulb.uni-muenster.de/id/5393365");		
 		assertEquals(true, this.delete(score));
 		
 	}
@@ -80,7 +80,7 @@ public class DeleteAllScores {
 	public void deleteNachtOhneLicht() {
 		
 		MusicScore score = new MusicScore();
-		score.setScoreId("https://sammlungen.ulb.uni-muenster.de/id/3079355");		
+		score.setIdentifier("https://sammlungen.ulb.uni-muenster.de/id/3079355");		
 		assertEquals(true, this.delete(score));
 		
 	}

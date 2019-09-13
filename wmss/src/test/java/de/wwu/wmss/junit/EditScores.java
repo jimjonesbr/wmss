@@ -29,8 +29,6 @@ public class EditScores {
 	private static String source = StartWMSS.source;
 	
 	private boolean postEditScoreRequest(MusicScore score, String json) {
-		
-		boolean result = false;
 			
 		try {
 		
@@ -46,17 +44,65 @@ public class EditScores {
 
 				for (int j = 0; j < scores.length(); j++) {
 					
+					System.out.println();
 					System.out.println("Score identifier: "+scores.getJSONObject(j).getString("scoreIdentifier"));
 					System.out.println("Score title     : "+scores.getJSONObject(j).getString("scoreTitle"));
-					System.out.println("Date issued     : "+scores.getJSONObject(j).getString("dateIssued")+"\n");
-					System.out.println("Score thumbail  : "+scores.getJSONObject(j).getString("thumbnail")+"\n");
+					System.out.println("Date issued     : "+scores.getJSONObject(j).getString("dateIssued"));
+					System.out.println("Score thumbail  : "+scores.getJSONObject(j).getString("thumbnail"));
 									
-					if(score.getIdentifier().equals(scores.getJSONObject(j).getString("scoreIdentifier")) &&
-					   score.getTitle().equals(scores.getJSONObject(j).getString("scoreTitle")) &&
-					   score.getDateIssued().equals(scores.getJSONObject(j).getString("dateIssued")) &&
-					   score.getThumbnail().equals(scores.getJSONObject(j).getString("thumbnail"))) {
-						result = true;
+					if(!score.getIdentifier().equals(scores.getJSONObject(j).getString("scoreIdentifier")) ||
+					   !score.getTitle().equals(scores.getJSONObject(j).getString("scoreTitle")) ||
+					   !score.getDateIssued().equals(scores.getJSONObject(j).getString("dateIssued")) ||
+					   !score.getThumbnail().equals(scores.getJSONObject(j).getString("thumbnail"))) {
+						return false;
 					}
+					
+					JSONArray movements =  scores.getJSONObject(i).getJSONArray("movements");
+					System.out.println();
+					System.out.println("Movement identifier: "+movements.getJSONObject(j).getString("movementIdentifier"));
+					System.out.println("Movement label     : "+movements.getJSONObject(j).getString("movementLabel"));
+					System.out.println("Movement order     : "+movements.getJSONObject(j).getInt("movementOrder"));
+					System.out.println("Beats per Minute   : "+movements.getJSONObject(j).getInt("beatsPerMinute"));
+					System.out.println("Beat unit          : "+movements.getJSONObject(j).getString("beatUnit"));
+
+					if(!score.getMovements().get(0).getIdentifier().equals(movements.getJSONObject(0).getString("movementIdentifier")) ||
+					   !score.getMovements().get(0).getLabel().equals(movements.getJSONObject(0).getString("movementLabel")) ||
+					   score.getMovements().get(0).getOrder() != movements.getJSONObject(0).getInt("movementOrder") ||
+					   score.getMovements().get(0).getBeatsPerMinute() != movements.getJSONObject(0).getInt("beatsPerMinute") ||
+					   !score.getMovements().get(0).getBeatUnit().equals(movements.getJSONObject(0).getString("beatUnit"))) {
+						return false;
+						
+					} 
+					
+					JSONArray mediumTypes =  movements.getJSONObject(i).getJSONArray("mediumTypes");
+					System.out.println("Medium type identifier : "+mediumTypes.getJSONObject(0).getString("mediumTypeIdentifier"));
+					System.out.println("Medium type label : "+mediumTypes.getJSONObject(0).getString("mediumTypeLabel"));
+					
+					if(!score.getMovements().get(0).getMediums().get(0).getTypeIdentifier().equals(mediumTypes.getJSONObject(0).getString("mediumTypeIdentifier")) ||
+					   !score.getMovements().get(0).getMediums().get(0).getTypeLabel().equals(mediumTypes.getJSONObject(0).getString("mediumTypeLabel"))) {						
+						return false;						
+					}
+					
+					JSONArray mediums =  mediumTypes.getJSONObject(i).getJSONArray("mediums");
+					
+					System.out.println();
+					System.out.println("Medium identifier : "+mediums.getJSONObject(0).getString("mediumIdentifier"));
+					System.out.println("Medium label      : "+mediums.getJSONObject(0).getString("mediumLabel"));
+					System.out.println("Medium code       : "+mediums.getJSONObject(0).getString("mediumCode"));
+					System.out.println("Medium score label: "+mediums.getJSONObject(0).getString("mediumScoreLabel"));
+					System.out.println("Medium solo       : "+mediums.getJSONObject(0).getBoolean("solo"));
+					System.out.println("Medium ensemble   : "+mediums.getJSONObject(0).getBoolean("ensemble"));
+					
+					if(!score.getMovements().get(0).getMediums().get(0).getIdentifier().equals(mediums.getJSONObject(0).getString("mediumIdentifier")) ||
+					   !score.getMovements().get(0).getMediums().get(0).getLabel().equals(mediums.getJSONObject(0).getString("mediumLabel")) ||
+					   !score.getMovements().get(0).getMediums().get(0).getCode().equals(mediums.getJSONObject(0).getString("mediumCode")) ||
+					   !score.getMovements().get(0).getMediums().get(0).getScoreLabel().equals(mediums.getJSONObject(0).getString("mediumScoreLabel")) ||
+					   !score.getMovements().get(0).getMediums().get(0).isSolo().equals(String.valueOf(mediums.getJSONObject(0).getBoolean("solo"))) ||
+					   !score.getMovements().get(0).getMediums().get(0).isEnsemble().equals(String.valueOf(mediums.getJSONObject(0).getBoolean("ensemble")))){
+						return false;
+					}
+					
+					
 				}
 
 			}
@@ -65,9 +111,10 @@ public class EditScores {
 			
 		} catch (JSONException e) {
 			e.printStackTrace();
+			return false;
 		} 
 
-		return result;
+		return true;
 
 	}
 
@@ -75,22 +122,25 @@ public class EditScores {
 	public void editElgarCelloConcertoFull() {
 		
 		MusicScore score = new MusicScore();
-		score.setTitle("score-title-updated");
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+		score.setTitle("score-title-updated");		
 		score.setDateIssued("9999");		
 		score.setThumbnail("https://www.designtagebuch.de/wp-content/uploads/mediathek//2017/01/wwu-logo-700x377.png");
 		
 		Movement movement = new Movement();
+		movement.setIdentifier("http://linkeddata.uni-muenster.de/node/21dde7d3-e280-44d5-900a-4660e91ba4f4_MOV1");
+		movement.setOrder(1);
 		movement.setBeatsPerMinute(999);
 		movement.setBeatUnit("beat-unit-updated");
-		movement.setMovementLabel("movement-label-updated");
+		movement.setLabel("movement-label-updated");
 		PerformanceMedium medium = new PerformanceMedium();
-		medium.setEnsemble(true);
-		medium.setSolo(true);
+		medium.setIdentifier("http://linkeddata.uni-muenster.de/node/21dde7d3-e280-44d5-900a-4660e91ba4f4_MOV1_PART_P1");
+		medium.setEnsemble("true");
+		medium.setSolo("true");
 		medium.setLabel("medium-label-updated");
 		medium.setCode("medium.code.updated");
 		medium.setScoreLabel("medium-score-label-updated");
-		medium.setTypeIdentifier("medium.type-identifier.updated");
+		medium.setTypeIdentifier("medium.type.identifier.updated");
 		medium.setTypeLabel("medium-type-label-updated");
 		movement.getMediums().add(medium);
 		score.getMovements().add(movement);

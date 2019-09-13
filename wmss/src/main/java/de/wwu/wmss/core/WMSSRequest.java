@@ -728,12 +728,12 @@ public class WMSSRequest {
 					
 					if(mediumObject.get("solo")!=null) {
 						logger.info("Medium Solo: " + mediumObject.get("solo").toString());
-						medium.setSolo(Boolean.parseBoolean(mediumObject.get("solo").toString()));
+						medium.setSolo(mediumObject.get("solo").toString());
 					}
 
 					if(mediumObject.get("ensemble")!=null) {
 						logger.info("Medium Ensemble: " + mediumObject.get("ensemble").toString());
-						medium.setEnsemble(Boolean.parseBoolean(mediumObject.get("ensemble").toString()));
+						medium.setEnsemble(mediumObject.get("ensemble").toString());
 					}
 
 					if(mediumObject.get("action")!=null) {
@@ -845,12 +845,12 @@ public class WMSSRequest {
 					
 					if(movementObject.get("movementIdentifier")!=null) {
 						logger.info("Movement Identifier: " + movementObject.get("movementIdentifier").toString());
-						movement.setMovementIdentifier(movementObject.get("movementIdentifier").toString());
+						movement.setIdentifier(movementObject.get("movementIdentifier").toString());
 					}
 	
 					if(movementObject.get("movementLabel")!=null) {
 						logger.info("Movement Label: " + movementObject.get("movementLabel").toString());
-						movement.setMovementLabel(movementObject.get("movementLabel").toString());
+						movement.setLabel(movementObject.get("movementLabel").toString());
 					}
 					
 					if(movementObject.get("movementOrder")!=null) {

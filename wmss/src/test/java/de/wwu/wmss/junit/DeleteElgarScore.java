@@ -50,7 +50,7 @@ public class DeleteElgarScore {
 	public void deleteElgarScore() {
 		
 		MusicScore score = new MusicScore();
-		score.setScoreId("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");		
+		score.setIdentifier("http://dbpedia.org/resource/Cello_Concerto_(Elgar)");		
 		assertEquals(true, this.delete(score));
 		
 	}	

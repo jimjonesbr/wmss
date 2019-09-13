@@ -476,12 +476,12 @@ public class Util {
 		    BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
 		    StringBuilder builder = new StringBuilder();
 		    for (String line = null; (line = reader.readLine()) != null;) {
-		        builder.append(line).append("\n");
-		        
+		        builder.append(line).append("\n");		        
 		    }
 		    
 		    result = builder.toString();
 		    System.out.println("ScoreListReport:\n " + result);
+		    
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		} catch (ClientProtocolException e) {
