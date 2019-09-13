@@ -57,6 +57,20 @@ public class EditScores {
 						return false;
 					}
 					
+					JSONArray collections =  scores.getJSONObject(i).getJSONArray("collections");
+					System.out.println();
+					for (int k = 0; k < collections.length(); k++) {
+						
+						System.out.println("Collection identifier: "+collections.getJSONObject(k).getString("collectionIdentifier"));
+						System.out.println("Collection label: "+collections.getJSONObject(k).getString("collectionLabel"));
+						Collection c = new Collection();
+						c.setIdentifier(collections.getJSONObject(k).getString("collectionIdentifier"));
+						c.setLabel(collections.getJSONObject(k).getString("collectionLabel"));
+						
+						System.out.println("contains? >" +score.getCollections().contains(c));
+						
+					}
+					
 					JSONArray movements =  scores.getJSONObject(i).getJSONArray("movements");
 					System.out.println();
 					System.out.println("Movement identifier: "+movements.getJSONObject(j).getString("movementIdentifier"));
