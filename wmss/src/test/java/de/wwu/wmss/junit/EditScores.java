@@ -142,16 +142,6 @@ public class EditScores {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-	    
-//		 json = "{\n" + 
-//				"   \"request\":\"ListScores\",\n" + 
-//				"   \"source\":\"neo4j_local\",\n" + 				
-//				"   \"melody\":{\n" + 
-//				"      \"format\":\"pea\",\n" + 
-//				"      \"query\":\",8AB'CDxDE\",\n" + 
-//				"      \"mediumCode\":\"strings.cello\",\n" + 
-//				"   }\n" + 
-//				"}";
 		
 		assertEquals(true, postEditScoreRequest(score, json));
 		
