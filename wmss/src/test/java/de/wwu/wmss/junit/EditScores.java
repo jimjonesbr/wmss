@@ -59,15 +59,67 @@ public class EditScores {
 					
 					JSONArray collections =  scores.getJSONObject(i).getJSONArray("collections");
 					System.out.println();
+					
 					for (int k = 0; k < collections.length(); k++) {
 						
 						System.out.println("Collection identifier: "+collections.getJSONObject(k).getString("collectionIdentifier"));
 						System.out.println("Collection label: "+collections.getJSONObject(k).getString("collectionLabel"));
-						Collection c = new Collection();
-						c.setIdentifier(collections.getJSONObject(k).getString("collectionIdentifier"));
-						c.setLabel(collections.getJSONObject(k).getString("collectionLabel"));
 						
-						System.out.println("contains? >" +score.getCollections().contains(c));
+						if(!collections.getJSONObject(k).getString("collectionIdentifier").equals(score.getCollections().get(0).getIdentifier()) &&
+						   !collections.getJSONObject(k).getString("collectionIdentifier").equals(score.getCollections().get(1).getIdentifier())) {
+							return false;
+						}
+						
+						if(!collections.getJSONObject(k).getString("collectionLabel").equals(score.getCollections().get(0).getLabel()) &&
+						   !collections.getJSONObject(k).getString("collectionLabel").equals(score.getCollections().get(1).getLabel())) {
+							return false;
+						}
+						
+						
+					}
+					
+					JSONArray resources =  scores.getJSONObject(i).getJSONArray("resources");
+					System.out.println();
+
+					for (int k = 0; k < resources.length(); k++) {
+						
+						System.out.println("Resource url: "+resources.getJSONObject(k).getString("resourceURL"));
+						System.out.println("Resource label: "+resources.getJSONObject(k).getString("resourceLabel"));
+						
+						if(!resources.getJSONObject(k).getString("resourceURL").equals(score.getResources().get(0).getUrl()) &&
+						   !resources.getJSONObject(k).getString("resourceURL").equals(score.getResources().get(1).getUrl())) {
+							return false;
+						}
+						
+						if(!resources.getJSONObject(k).getString("resourceLabel").equals(score.getResources().get(0).getLabel()) &&
+						   !resources.getJSONObject(k).getString("resourceLabel").equals(score.getResources().get(1).getLabel())) {
+									return false;
+						}
+					}
+					
+					JSONArray persons =  scores.getJSONObject(i).getJSONArray("persons");
+					System.out.println();
+					
+					for (int k = 0; k < persons.length(); k++) {
+						
+						System.out.println("Person identifier: "+persons.getJSONObject(k).getString("personIdentifier"));
+						System.out.println("Person name: "+persons.getJSONObject(k).getString("personIdentifier"));
+						System.out.println("Person role: "+persons.getJSONObject(k).getString("personRole"));
+						
+						if(!persons.getJSONObject(k).getString("personIdentifier").equals(score.getPersons().get(0).getIdentifier()) &&
+						   !persons.getJSONObject(k).getString("personIdentifier").equals(score.getPersons().get(1).getIdentifier())) {
+							return false;
+						}
+						if(!persons.getJSONObject(k).getString("personName").toLowerCase().equals(score.getPersons().get(0).getName()) &&
+						   !persons.getJSONObject(k).getString("personName").toLowerCase().equals(score.getPersons().get(1).getName())) {
+							return false;
+						}
+						if(!persons.getJSONObject(k).getString("personRole").toLowerCase().equals(score.getPersons().get(0).getRole()) &&
+						   !persons.getJSONObject(k).getString("personRole").toLowerCase().equals(score.getPersons().get(1).getRole())) {
+							return false;
+						}						
+						
+						
 						
 					}
 					
