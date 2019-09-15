@@ -4,11 +4,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 
-The Web Music Score Service (WMSS) provides an interface allowing requests for music scores on the web using platform-independent clients. It serves as an intermediate layer between data sets and application clients, providing standard access to MEI and MusicXML files.
+The Web Music Score Service (WMSS) provides an interface allowing requests for music scores on the web using platform-independent clients. It serves as an intermediate layer between data sets and application clients, providing standard access to music score files.
 
 ![wmss](https://github.com/jimjonesbr/wmss/blob/master/wmss/web/img/wmss.png)
 
-The application relies on datasets encoded using the [MusicOWL ontology](http://linkeddata.uni-muenster.de/ontology/musicscore/mso.owl). For more information on creating MusicOWL datasets see [Music2RDF converter](https://github.com/jimjonesbr/musicowl).  
+The application currently supports RDF datasets encoded using the [MusicOWL ontology](http://linkeddata.uni-muenster.de/ontology/musicscore/mso.owl) or MusicXML files. For more information on creating RDF MusicOWL datasets see [Music2RDF converter](https://github.com/jimjonesbr/musicowl).  
 
 ## Index
 
@@ -46,6 +46,7 @@ The application relies on datasets encoded using the [MusicOWL ontology](http://
       - [Key Signatures](#key-signatures)  
       - [Score List Report](#score-list-report)  
     - [ListScores via POST](#listscores-via-post)
+  - [EditScore](#getscore)
   - [GetScore](#getscore)
   - [DeleteScore](#deletescore)    
   - [GetLogging](#logging)
@@ -223,7 +224,7 @@ In this variabe you can set the initial credentials to access Neo4j, e.g. `NEO4J
 - NEO4J_dbms_memory_heap.max_size=1G
 ```
 
-Tunes the [memory and cache](https://neo4j.com/developer/guide-performance-tuning/) usage for Neo4j. 
+For more information visit: [neo4j memory tuning](https://neo4j.com/developer/guide-performance-tuning/).
 
 
 Once you have your plugin environment and your `docker-compose.yml` ready, just run the container with the following command:
@@ -256,11 +257,10 @@ After successfully starting the server you will see a message like this:
 ```
 Web Music Score Service - University of Münster
 Service Name: wmss
-Default Protocol: 1.0
-WMSS Version: 1.0.0
-Port: 8295
-Application Startup: 2018/11/19 14:46:14
-Default Melody Encoding: pea
+WMSS Version: 1.0.0-alpha.1
+Port: 8283
+Application Startup: 2019/09/15 11:25:59
+Default Melody Encoding: pae
 Time-out: 5000ms
 Page Size: 10 records 
 System Administrator: jim.jones@math.uni-muenster.de
@@ -270,7 +270,7 @@ After seeing this message, you can access the server API via the HTTP requests d
 
 ## [Requests](https://github.com/jimjonesbr/wmss/blob/master/README.md#requests)
 
-The WMSS communication protocol is based on the following HTTP requests: `DescribeService`, `ListScores`, `GetScore`, `GetLogging`.
+The WMSS communication protocol is based on the following HTTP requests: `DescribeService`, `ListScores`, `GetScore`, `EditScore`, `GetLogging`.
 
 ### [DescribeService](https://github.com/jimjonesbr/wmss/blob/master/README.md#describeservice)
 
@@ -379,31 +379,31 @@ An example of a Service Description Report can be found [here](https://github.co
  ```
 
  #### [Title](https://github.com/jimjonesbr/wmss/blob/master/README.md#title)
-Parameter: `title` 
+Parameter: `scoreTitle` 
  
  Searches for scores containing a certain string in the title (case insensitive).
  
  ```http
- http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&title=cellokonzert
+ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&scoreTitle=cellokonzert
 ```
  
  #### [Collections](https://github.com/jimjonesbr/wmss/blob/master/README.md#collections)
-Parameter: `collection`
+Parameter: `collectionIdentifier`
 
 To facilitate the management of large repositories, WMSS offers the possibility to add music scores to specific collections. The collection uri, required for this parameter, is delivered together with the music score in the Score List and Service Description Reports.
 
 ```http
- http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&collection=https://url.collection.de
+ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&collectionIdentifier=https://url.collection.de
 ```
 
 #### [Persons](https://github.com/jimjonesbr/wmss/blob/master/README.md#persons)
 
-Parameters: `person` / `personRole`
+Parameters: `personIdentifier` / `personName` / `personRole`
 
 Selects all music scores containing specific persons and optionally with their respective roles. For instance, a request to list all scores from the person "Elgar" as a "Composer" is enconded like this:
 
 ```http
- http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&person=http://dbpedia.org/resource/Edward_Elgar&personRole=composer
+ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&personIdentifier=http://dbpedia.org/resource/Edward_Elgar&personRole=composer
 ```
 
 The __personRole__ parameter may contain the following values:
@@ -421,18 +421,18 @@ The __personRole__ parameter may contain the following values:
 
 #### [Performance Medium (Instrument)](https://github.com/jimjonesbr/wmss/blob/master/README.md#performance-medium-instrument)
 
-**Parameters**: `performanceMedium` / `solo`
+**Parameters**: `mediumIdentifier` / `solo`
 
 Selects all music scores containing specific performance mediums. The performance mediums are structure follows the principles adopted by [MusicXML 3.0 Standard Sounds](https://github.com/w3c/musicxml/blob/v3.1/schema/sounds.xml). For instance, requesting a list of all scores containing cello voices can be enconded like this:
 
  ```http
- http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&performanceMedium=strings.cello
+ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&mediumIdentifier=strings.cello
 ```
 
 To constraint the search for the given performance medium to only solo mediums, use the *solo* parameter: 
 
  ```http
- http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&performanceMedium=strings.cello&solo=true
+ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&mediumIdentifier=strings.cello&solo=true
 ```
 
 A complete list of performance mediums containing approx. 900 items can be found [here](https://github.com/jimjonesbr/wmss/tree/master/wmss/data/system/mediums.csv).
@@ -444,10 +444,10 @@ Parameter: `performanceMediumType`
 It is also possible to select music scores based on performance medium types, e.g. Strings, Keyboard. The example bellow selects all records that contain movements that are played with bowed string instruments:
  
  ```http
- http://localhost:8295/wmss?request=ListScores&source=neo4j_local&performanceMediumType=strings
+ http://localhost:8295/wmss?request=ListScores&source=neo4j_local&mediumTypeIdentifier=strings
 ```
 
-The performanceMediumType paramater is also based on the [MusicXML 3.0 Standard Sounds](https://github.com/w3c/musicxml/blob/v3.1/schema/sounds.xml) and the following codes:
+The `mediumTypeIdentifier` paramater is also based on the [MusicXML 3.0 Standard Sounds](https://github.com/w3c/musicxml/blob/v3.1/schema/sounds.xml) and the following codes:
 
 | code|medium type| code|medium type|
 |:-:|:-:|:-:|:-:|
@@ -855,16 +855,114 @@ An example of a Score List Report can be found [here](https://github.com/jimjone
 Retrieves a specific score based on its identifier:
 
   ```http
-  http://localhost:8295/wmss/?request=GetScore&source=neo4j_local&identifier=http://dbpedia.org/resource/Cello_Concerto_(Elgar)
+  http://localhost:8295/wmss/?request=GetScore&source=neo4j_local&scoreIdentifier=http://dbpedia.org/resource/Cello_Concerto_(Elgar)
   ```
  The output format can be selected using the parameter `format`:
 
   ```http
-  http://localhost:8295/wmss/?request=GetScore&source=neo4j_local&identifier=http://dbpedia.org/resource/Cello_Concerto_(Elgar)&format=musicxml
+  http://localhost:8295/wmss/?request=GetScore&source=neo4j_local&scoreIdentifier=http://dbpedia.org/resource/Cello_Concerto_(Elgar)&formatIdentifier=musicxml
   ```
 
   * mei (Music Encoding Initiative files)
   * musicxml (MusicXML files)
+
+
+  ### [EditScore](https://github.com/jimjonesbr/wmss/blob/master/README.md#editscore)
+  
+Edits the metadata of an existing music score. `EditScore` requests can be performed via POST using a JSON string `application/json`:
+
+`EditScore` complete example
+
+```json
+{
+  "request": "EditScore",
+  "source": "neo4j_local",
+  "scoreIdentifier": "http://dbpedia.org/resource/Cello_Concerto_(Elgar)",
+  "scoreTitle": "score-title-updated",
+  "thumbnail":"https://www.designtagebuch.de/wp-content/uploads/mediathek//2017/01/wwu-logo-700x377.png",
+  "issued": "9999",
+  "collections": [
+    {
+      "collectionLabel": "Great Composers",
+      "collectionIdentifier": "https://wwu.greatcomposers.de",
+      "action": "delete"
+    },
+    {
+      "collectionLabel": "collection-sammlung-label-updated",
+      "collectionIdentifier": "https://sammlungen.ulb.uni-muenster.de",
+      "action": "update"
+    },
+    {
+      "collectionIdentifier": "https://github.com/jimjonesbr/wmss#collections",
+      "collectionLabel": "new-collection",
+      "action": "add"
+    }
+  ],
+  "persons": [
+    {
+      "personIdentifier": "http://dbpedia.org/resource/Edward_Elgar",
+      "personName": "elgar-updated",
+      "personRole": "elgar-role-updated",
+      "action": "update"
+    },
+    {
+      "personIdentifier": "http://jimjones.de",
+      "action": "delete"
+    },
+    {
+      "personIdentifier": "http://new.person.de",
+      "personName": "new-person",
+      "personRole": "new-person-role",
+      "action": "add"
+    }
+
+  ],
+  "resources": [
+    {
+      "resourceURL": "https://en.wikipedia.org/wiki/Cello_Concerto_(Elgar)",
+      "resourceLabel": "wikipedia-resource-updated",
+      "resourceType": "text/html",
+      "action": "update"
+    },
+    {
+      "resourceURL": "https://musescore.com/score/152011/download/pdf",
+      "action": "delete"
+    },    
+    {
+      "resourceURL": "http://new.resource.de/",
+      "resourceLabel": "new-resource",
+      "resourceType": "application/pdf",
+      "action": "add"
+    }    
+  ],
+  "mediums": [
+    {
+      "mediumIdentifier": "http://linkeddata.uni-muenster.de/node/21dde7d3-e280-44d5-900a-4660e91ba4f4_MOV1_PART_P1",
+      "mediumLabel": "medium-label-updated",
+      "mediumCode": "medium.code.updated",
+      "mediumScoreLabel": "medium-score-label-updated",
+      "mediumTypeIdentifier": "medium.type.identifier.updated",
+      "mediumTypeLabel": "medium-type-label-updated",      
+      "solo": true,
+      "ensemble": true,
+      "action":"update"
+    }
+  ], 
+  "movements": [
+    {
+      "movementIdentifier": "http://linkeddata.uni-muenster.de/node/e4d1f11f-b2b6-4c96-b926-4c034ba28088_MOV1",
+      "movementOrder": 1,
+      "movementLabel": "movement-label-updated",      
+      "beatUnit": "beat-unit-updated",
+      "beatsPerMinute": 999,
+      "action":"update"
+    }
+  ]
+}
+```
+`action`: This parameter expects one of the following values: `add`, `update` or `delete`.
+
+The `EditScore` request returns a `Score List Report` with the edited score.
 
 
   ### [Logging](https://github.com/jimjonesbr/wmss/blob/master/README.md#logging)
@@ -880,7 +978,7 @@ http://localhost:8295/wmss/?request=Checklog&logPreview=1000
   
 |Code   | Message  | Hint |
 |:-:|:-:|:-:|
-|E0001|No request type provided| The request type has to provided in the parameter `request`, containing one of the following request types: `ListScores`, `GetScores`, `DescribeService`, `Checklog`. |
+|E0001|No request type provided| The request type has to provided in the parameter `request`, containing one of the following request types: `ListScores`, `GetScore`, `EditScore`, `DescribeService`, `Checklog`. |
 |E0002|Invalid request parameter| Provide one of the following request types: `ListScores`, `GetScores`, `DescribeService`, `Checklog`. |
 |E0003|Invalid document format| Provide one of the following XML formats: `musicxml`, `mei` |
 |E0004|Invalid time signature| Time signatures must be encoded in the following format: beat unit / beats. Examples: `3/4,` `4/4`, `6/8`, `c` (meaning common time and interpreted as `4/4`). |
