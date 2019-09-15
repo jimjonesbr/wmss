@@ -27,7 +27,12 @@ public class ServletWebAdmin extends HttpServlet {
 		response.addHeader("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");
 				
 		ServletContext context = httpRequest.getServletContext();
-		String filename = httpRequest.getRequestURI().toString().replace("/"+SystemSettings.getService()+"/admin", "web/");
+		String filename = httpRequest.getRequestURI().toString().replace("/"+SystemSettings.getService()+"/admin", "web");
+		
+		if(filename.toLowerCase().equals("web")) {
+			filename = "web/index.html";
+			System.out.println("Redirect: " + filename);
+		}
 		
 		File file = new File(filename);				
 		response.setContentType(context.getMimeType(filename));

@@ -520,27 +520,27 @@
 		}		
 
 		if($('#collections').val()!=''){
-			request_url = request_url +'&collection='+$('#collections').val();
+			request_url = request_url +'&collectionIdentifier='+$('#collections').val();
 		}
 
 		if($('#persons').val()!=''){
-			request_url = request_url +'&person='+$('#persons').val();
+			request_url = request_url +'&personIdentifier='+$('#persons').val();
 		}
 
 		if($('#title').val()!=''){
-			request_url = request_url +'&title='+$('#title').val();
+			request_url = request_url +'&scoreTitle='+$('#title').val();
 		}
 
 		if($('#formats').val()!=''){
-			request_url = request_url +'&format='+$('#formats').val();
+			request_url = request_url +'&formatIdentifier='+$('#formats').val();
 		}
 
 		if($('#instruments').val()!=''){
-			request_url = request_url +'&performanceMedium='+$('#instruments').val();
+			request_url = request_url +'&mediumIdentifier='+$('#instruments').val();
 		}
 
 		if($('#instruments-group').val()!=''){
-			request_url = request_url +'&performanceMediumType='+$('#instruments-group').val();
+			request_url = request_url +'&mediumTypeIdentifier='+$('#instruments-group').val();
 		}
 
 		if($('#timesig_01').val()!=''){
@@ -955,7 +955,7 @@
 					$('#del_'+row_number).empty();
 					$('#del_'+row_number).append('<div class="spinner-border text-danger"></div>');
 
-					var delete_url = base_url+'?source='+current_source+'&request=DeleteScore&identifier='+$('#score_id_'+row_number).text();
+					var delete_url = base_url+'?source='+current_source+'&request=DeleteScore&scoreIdentifier='+$('#score_id_'+row_number).text();
 					$('#request-url').text(delete_url);
 
 					$.getJSON(delete_url, function(data){

@@ -30,7 +30,7 @@ public class GetScore {
 
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = dbf.newDocumentBuilder();
-			URL url = new URL(server+":"+port+"/wmss?source="+source+"&request=GetScore&identifier=http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
+			URL url = new URL(server+":"+port+"/wmss?source="+source+"&request=GetScore&scoreIdentifier=http://dbpedia.org/resource/Cello_Concerto_(Elgar)");
 			InputStream stream = url.openStream();
 			Document doc = docBuilder.parse(stream);
 						

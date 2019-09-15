@@ -164,19 +164,19 @@ public class WMSSRequest {
 				
 				this.requestMode = httpRequest.getParameter(parameter).toLowerCase();
 				
-			} else if (parameter.toLowerCase().equals("format")) {
+			} else if (parameter.toLowerCase().equals("formatidentifier")) {
 				
 				this.format = httpRequest.getParameter(parameter).toLowerCase();
 				
-			} else if (parameter.toLowerCase().equals("collection")) {
+			} else if (parameter.toLowerCase().equals("collectionidentifier")) {
 				
 				this.collection = httpRequest.getParameter(parameter).toLowerCase();
 				
-			} else if (parameter.toLowerCase().equals("person")) {
+			} else if (parameter.toLowerCase().equals("personidentifier")) {
 				
 				this.personIdentifier = httpRequest.getParameter(parameter);
 
-			} else if (parameter.toLowerCase().equals("personName")) {
+			} else if (parameter.toLowerCase().equals("personname")) {
 				
 				this.personName = httpRequest.getParameter(parameter);				
 				
@@ -184,11 +184,11 @@ public class WMSSRequest {
 				
 				this.personRole = Util.capitalizeFirstLetter(httpRequest.getParameter(parameter));
 
-			} else if (parameter.toLowerCase().equals("performancemedium")) {
+			} else if (parameter.toLowerCase().equals("mediumidentifier")) {
 				
 				this.performanceMedium = httpRequest.getParameter(parameter).toLowerCase();
 
-			} else if (parameter.toLowerCase().equals("performancemediumtype")) {
+			} else if (parameter.toLowerCase().equals("mediumtypeidentifier")) {
 				
 				this.performanceMediumType = httpRequest.getParameter(parameter).toLowerCase();
 
@@ -236,11 +236,11 @@ public class WMSSRequest {
 					throw new InvalidClefException(e.getMessage(),e.getCode(), e.getHint());
 				}
 								
-			} else if (parameter.toLowerCase().equals("identifier")) {
+			} else if (parameter.toLowerCase().equals("scoreidentifier")) {
 				
 				this.scoreIdentifier = httpRequest.getParameter(parameter);
 			
-			} else if (parameter.toLowerCase().equals("title")) {
+			} else if (parameter.toLowerCase().equals("scoretitle")) {
 				
 				this.title = httpRequest.getParameter(parameter);
 				

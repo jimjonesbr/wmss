@@ -95,7 +95,7 @@ public class ExceptionsTest {
 		ArrayList<RequestParameter> parameters = new ArrayList<RequestParameter>();
 		parameters.add(new RequestParameter("request", "getScore"));
 		parameters.add(new RequestParameter("identifier", "http://dbpedia.org/resource/Cello_Concerto_(Elgar)"));
-		parameters.add(new RequestParameter("format", "invalid_score_format"));	
+		parameters.add(new RequestParameter("formatIdentifier", "invalid_score_format"));	
 		assertEquals("E0003", this.getException(parameters));
 
 	}

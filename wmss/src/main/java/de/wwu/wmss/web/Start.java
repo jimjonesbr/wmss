@@ -40,8 +40,8 @@ public class Start implements Runnable {
 		contextAPI.addServlet(new ServletHolder(new ServletWebAdmin()),"/admin/*");
 		contextAPI.addServlet(new ServletHolder(new ServletFileAccess()),"/file");
 		
-		ServletContextHandler contextWebAdmin = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		contextWebAdmin.setContextPath("/admin");
+//		ServletContextHandler contextWebAdmin = new ServletContextHandler(ServletContextHandler.SESSIONS);
+//		contextWebAdmin.setContextPath("/admin");
 		
 		if(port!=0) {
 			SystemSettings.setPort(port);

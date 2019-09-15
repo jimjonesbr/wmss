@@ -19,7 +19,7 @@ public class DeleteElgarScore {
 
 		boolean result = false;
 
-		String url = server+":"+port+"/wmss?source="+source+"&request=DeleteScore&identifier="+score.getIdentifier();
+		String url = server+":"+port+"/wmss?source="+source+"&request=DeleteScore&scoreIdentifier="+score.getIdentifier();
 		System.out.println("\nRequest: " + url + "\n");
 		try {
 

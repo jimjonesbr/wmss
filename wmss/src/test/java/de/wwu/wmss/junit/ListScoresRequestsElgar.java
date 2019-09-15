@@ -117,17 +117,17 @@ public class ListScoresRequestsElgar {
 		parameters.add(new RequestParameter("ignoreOctave", "false"));
 		parameters.add(new RequestParameter("ignorePitch", "false"));
 		parameters.add(new RequestParameter("ignoreDuration", "false"));
-		parameters.add(new RequestParameter("collection", "https://wwu.greatcomposers.de"));
-		parameters.add(new RequestParameter("person", "http://dbpedia.org/resource/Edward_Elgar"));
+		parameters.add(new RequestParameter("collectionIdentifier", "https://wwu.greatcomposers.de"));
+		parameters.add(new RequestParameter("personIdentifier", "http://dbpedia.org/resource/Edward_Elgar"));
 		parameters.add(new RequestParameter("personRole", "composer"));
-		parameters.add(new RequestParameter("performanceMedium", "strings.cello"));
+		parameters.add(new RequestParameter("mediumIdentifier", "strings.cello"));
 		parameters.add(new RequestParameter("solo", "false"));
 		parameters.add(new RequestParameter("ensemble", "false"));
 		parameters.add(new RequestParameter("tempoBeatUnit", "quarter"));
 		parameters.add(new RequestParameter("tempoBeatsPerMinute", "120-125"));
 		parameters.add(new RequestParameter("dateIssued", "1910-1920"));		
 		parameters.add(new RequestParameter("melody", "%C-4 ,8AB'CDxDE"));
-		parameters.add(new RequestParameter("format", "musicxml"));
+		parameters.add(new RequestParameter("formatIdentifier", "musicxml"));
 		parameters.add(new RequestParameter("time", "4/4"));
 		
 		parameters.add(new RequestParameter("source", source));
@@ -210,7 +210,7 @@ public class ListScoresRequestsElgar {
 		parameters.add(new RequestParameter("ignorePitch", "false"));
 		parameters.add(new RequestParameter("ignoreDuration", "false"));
 		parameters.add(new RequestParameter("melody", ",8AB'CDxDExE"));
-		parameters.add(new RequestParameter("title", "op. 85"));
+		parameters.add(new RequestParameter("scoreTitle", "op. 85"));
 		parameters.add(new RequestParameter("source", source));
 		
 		MusicScore score = new MusicScore();
