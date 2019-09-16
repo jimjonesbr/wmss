@@ -89,8 +89,7 @@ public class WMSSRequest {
 	private ArrayList<Movement> movements = new ArrayList<Movement>();
 	
 	private Melody melody2 = new Melody();
-	
-	
+		
 	public WMSSRequest(HttpServletRequest httpRequest) throws InvalidWMSSRequestException {
 		
 		logger.info("---------------------------------------------------------------");

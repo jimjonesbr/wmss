@@ -31,7 +31,7 @@ public class DescribeServiceRequest {
 
 			String url = server+":"+port+"/wmss/?request=DescribeService";
 
-			jsonObject = Util.readJsonFromUrl(url);		
+			jsonObject = Util.readJsonFromUrl(url);
 			System.out.println("\nRequest: " + url + "\n");
 			System.out.println("Report Type	: "+jsonObject.get("type"));
 			System.out.println("Description	: "+jsonObject.get("title"));
@@ -178,7 +178,7 @@ public class DescribeServiceRequest {
 						}
 					}
 
-					JSONArray instrumentType =  datasources.getJSONObject(i).getJSONArray("mediums");
+					JSONArray instrumentType =  datasources.getJSONObject(i).getJSONArray("mediumTypes");
 
 					if(instrumentType.length()!=3) {
 						result = false;

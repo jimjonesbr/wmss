@@ -54,7 +54,7 @@ public class DocumentBuilder {
 		importReport.put("files", fileList);
 
 		return StringEscapeUtils.unescapeJson(gson.toJson(importReport));
-
+		
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -159,7 +159,7 @@ public class DocumentBuilder {
 					
 					ds.put("totalScores", Neo4jEngine.getScoresCount(SystemSettings.sourceList.get(i)));
 					ds.put("collections", Neo4jEngine.getCollections(SystemSettings.sourceList.get(i)));					
-					ds.put("mediums", Neo4jEngine.getPerformanceMedium(SystemSettings.sourceList.get(i)));
+					ds.put("mediumTypes", Neo4jEngine.getPerformanceMedium(SystemSettings.sourceList.get(i)));
 					ds.put("tempoMarkings", null);
 					ds.put("formats", Neo4jEngine.getFormats(SystemSettings.sourceList.get(i)));
 					ds.put("tonalities", Neo4jEngine.getTonalities(SystemSettings.sourceList.get(i)));
