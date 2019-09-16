@@ -19,18 +19,18 @@ public class ImportElgarMusicXML_Metadata_XMLString {
 				"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
 				"<score>\n" + 
 				"	<scoreIdentifier>http://dbpedia.org/resource/Cello_Concerto_(Elgar)</scoreIdentifier>\n" + 
-				"	<title>Cellokonzert e-Moll op. 85</title>\n" + 
+				"	<scoreTitle>Cellokonzert e-Moll op. 85</scoreTitle>\n" + 
 				"	<thumbnail>https://www.rcm.ac.uk/media/Elgar%20Cello%20Concerto%20maunscript%206x4.jpg</thumbnail>\n" + 
 				"	<issued>1919</issued>\n" + 
 				"	<collections>\n" + 
 				"		<collection>\n" + 
-				"			<collectionName>Great Composers</collectionName>\n" + 
-				"			<collectionURL>https://wwu.greatcomposers.de</collectionURL>\n" + 
+				"			<collectionLabel>Great Composers</collectionLabel>\n" + 
+				"			<collectionIdentifier>https://wwu.greatcomposers.de</collectionIdentifier>\n" + 
 				"		</collection>\n" + 
-				"    <collection>\n" + 
-				"      <collectionName>Digitale Sammlung der Universität und Landesbibliothek Münster</collectionName>\n" + 
-				"      <collectionURL>https://sammlungen.ulb.uni-muenster.de</collectionURL>\n" + 
-				"    </collection>\n"+
+				"		<collection>\n" + 
+				"			<collectionLabel>Digitale Sammlung der Universität und Landesbibliothek Münster</collectionLabel>\n" + 
+				"			<collectionIdentifier>https://sammlungen.ulb.uni-muenster.de</collectionIdentifier>\n" + 
+				"		</collection>		\n" + 
 				"	</collections>\n" + 
 				"	<persons>\n" + 
 				"		<person>\n" + 
@@ -47,18 +47,16 @@ public class ImportElgarMusicXML_Metadata_XMLString {
 				"	<resources>\n" + 
 				"		<resource>\n" + 
 				"			<resourceURL>https://musescore.com/score/152011/download/pdf</resourceURL>\n" + 
-				"			<resourceDescription>Print</resourceDescription>\n" + 
+				"			<resourceLabel>Print</resourceLabel>\n" + 
 				"			<resourceType>application/pdf</resourceType>\n" + 
 				"		</resource>\n" + 
 				"		<resource>\n" + 
 				"			<resourceURL>https://en.wikipedia.org/wiki/Cello_Concerto_(Elgar)</resourceURL>\n" + 
-				"			<resourceDescription>Wikipedia Article</resourceDescription>\n" + 
+				"			<resourceLabel>Wikipedia Article</resourceLabel>\n" + 
 				"			<resourceType>text/html</resourceType>\n" + 
 				"		</resource>\n" + 
 				"	</resources>\n" + 
-				"</score>\n" + 
-				"";
-
+				"</score>";
 		
 		try {
 			

@@ -299,7 +299,7 @@ public class WMSSRequest {
 			} else if (parameter.toLowerCase().equals("key")) {
 	
 				try {
-					this.key = Util.formatPEAkey(httpRequest.getParameter(parameter));
+					this.key = Util.formatPAEkey(httpRequest.getParameter(parameter));
 				} catch (InvalidKeyException e) {
 					e.printStackTrace();
 					throw new InvalidWMSSRequestException(e.getMessage(),e.getCode(), e.getHint());
@@ -308,7 +308,7 @@ public class WMSSRequest {
 			} else if (parameter.toLowerCase().equals("time")) {
 												
 				try {
-					this.timeSignature = Util.formatPEAtimeSignature(httpRequest.getParameter(parameter));
+					this.timeSignature = Util.formatPAEtimeSignature(httpRequest.getParameter(parameter));
 				} catch (InvalidTimeSignatureException e) {
 					e.printStackTrace();
 					throw new InvalidWMSSRequestException(e.getMessage(),e.getCode(), e.getHint());
@@ -317,7 +317,7 @@ public class WMSSRequest {
 			} else if (parameter.toLowerCase().equals("clef")) {
 				
 				try {
-					this.clef = Util.formatPEAclef(httpRequest.getParameter(parameter).replace(" ", "+"));
+					this.clef = Util.formatPAEclef(httpRequest.getParameter(parameter).replace(" ", "+"));
 				} catch (InvalidClefException e) {
 					e.printStackTrace();
 					throw new InvalidWMSSRequestException(e.getMessage(),e.getCode(), e.getHint());
@@ -371,7 +371,7 @@ public class WMSSRequest {
 		if (!this.format.equals("mei") && !this.format.equals("musicxml") && !this.format.equals("") ){
 			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_DOCUMENT_FORMAT_DESCRIPTION+" ["+this.format+"]",ErrorCodes.INVALID_DOCUMENT_FORMAT_CODE,ErrorCodes.INVALID_DOCUMENT_FORMAT_HINT);
 		}
-		if(!this.melodyEncoding.equals("pea")) {
+		if(!this.melodyEncoding.equals("pae")) {
 			throw new InvalidWMSSRequestException(ErrorCodes.INVALID_MELODY_ENCODING_DESCRIPTION+" ["+this.melodyEncoding+"]",ErrorCodes.INVALID_MELODY_ENCODING_CODE,ErrorCodes.INVALID_MELODY_ENCODING_HINT);
 		}
 		if(!isDatasourceValid(this) && !this.requestType.equals("describeservice") && !this.requestType.equals("checklog")) {
@@ -495,7 +495,7 @@ public class WMSSRequest {
 				this.thumbnail = queryObject.get("thumbnail").toString();
 				logger.info("Score Thumbnail: " + queryObject.get("thumbnail").toString());
 			}
-			
+
 			if(queryObject.get("scoreTitle")!=null) {
 				this.title = queryObject.get("scoreTitle").toString();
 				logger.info("Title: " + queryObject.get("scoreTitle").toString());
@@ -567,7 +567,7 @@ public class WMSSRequest {
 				if(melodyObject.get("key")!=null) {
 					
 					try {
-						this.key = Util.formatPEAkey(melodyObject.get("key").toString());
+						this.key = Util.formatPAEkey(melodyObject.get("key").toString());
 					} catch (InvalidKeyException e) {
 						e.printStackTrace();
 						throw new InvalidWMSSRequestException(e.getMessage(),e.getCode(), e.getHint());
@@ -615,9 +615,8 @@ public class WMSSRequest {
 				for (int i = 0; i < formatObjects.size(); i++) {
 				
 					JSONObject formatObject = (JSONObject) formatObjects.get(i);
-					
-					logger.info("Format: " + formatObject.get("format").toString());
-					this.getFormats().add(formatObject.get("format").toString());
+					logger.info("Format: " + formatObject.get("formatIdentifier").toString());
+					this.getFormats().add(formatObject.get("formatIdentifier").toString());
 					
 				}
 				

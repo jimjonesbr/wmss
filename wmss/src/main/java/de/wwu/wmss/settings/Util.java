@@ -135,7 +135,7 @@ public class Util {
 		return dataSource;
 	}
 
-	public static ArrayList<Note> createNoteSequence(String pea) throws InvalidWMSSRequestException, InvalidKeyException{
+	public static ArrayList<Note> createNoteSequence(String pae) throws InvalidWMSSRequestException, InvalidKeyException{
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		Set<String> notes = new HashSet();
@@ -166,9 +166,9 @@ public class Util {
 
 		ArrayList<Note> sequence = new ArrayList<Note>();
 
-		for (int i = 0; i < pea.length(); i++) {
+		for (int i = 0; i < pae.length(); i++) {
 
-			String element = Character.toString(pea.charAt(i));
+			String element = Character.toString(pae.charAt(i));
 			
 			if(element.equals("$")) {
 				keySegment = true;
@@ -267,17 +267,17 @@ public class Util {
 					note.setDotted(dots);
 					
 					if(!currentClef.equals("")) {
-						note.setClef(formatPEAclef(currentClef));
+						note.setClef(formatPAEclef(currentClef));
 						currentClef = "";						
 					}
 
 					if(!currentTimeSignature.equals("")) {
-						note.setTime(formatPEAtimeSignature(currentTimeSignature));
+						note.setTime(formatPAEtimeSignature(currentTimeSignature));
 						currentTimeSignature = "";
 					}
 
 					if(!currentKey.equals("")) {
-						note.setKey(formatPEAkey(currentKey));		
+						note.setKey(formatPAEkey(currentKey));		
 						currentKey = "";
 					} else {
 						note.setKey("");
@@ -286,7 +286,7 @@ public class Util {
 					if(!note.getAccidental().equals("x")&&!note.getAccidental().equals("xx")&&
 							!note.getAccidental().equals("b")&&!note.getAccidental().equals("bb")&&
 							!note.getAccidental().equals("")) {
-						throw new InvalidMelodyException(ErrorCodes.INVALID_MELODY_LENGTH_DESCRIPTION +" ["+pea+"]",ErrorCodes.INVALID_MELODY_LENGTH_CODE,"Invalid accidental!");
+						throw new InvalidMelodyException(ErrorCodes.INVALID_MELODY_LENGTH_DESCRIPTION +" ["+pae+"]",ErrorCodes.INVALID_MELODY_LENGTH_CODE,"Invalid accidental!");
 					}
 
 					sequence.add(note);
@@ -309,13 +309,13 @@ public class Util {
 		}
 		
 		if(sequence.size()<3) {
-			throw new InvalidMelodyException(ErrorCodes.INVALID_MELODY_LENGTH_DESCRIPTION +" ["+pea+"]",ErrorCodes.INVALID_MELODY_LENGTH_CODE,ErrorCodes.INVALID_MELODY_LENGTH_HINT);
+			throw new InvalidMelodyException(ErrorCodes.INVALID_MELODY_LENGTH_DESCRIPTION +" ["+pae+"]",ErrorCodes.INVALID_MELODY_LENGTH_CODE,ErrorCodes.INVALID_MELODY_LENGTH_HINT);
 		}
 
 		return sequence;
 	}
 
-	public static String formatPEAtimeSignature(String time) throws InvalidTimeSignatureException {
+	public static String formatPAEtimeSignature(String time) throws InvalidTimeSignatureException {
 
 		time = time.replace("@", "");
 
@@ -330,7 +330,7 @@ public class Util {
 		return time;
 	}
 
-	public static String formatPEAkey(String key) throws InvalidKeyException {
+	public static String formatPAEkey(String key) throws InvalidKeyException {
 		
 		if(key.length()>1) {
 			key = key.replace("$", "");
@@ -356,7 +356,7 @@ public class Util {
 		return key;
 	}
 
-	public static String formatPEAclef(String clef) throws InvalidClefException {
+	public static String formatPAEclef(String clef) throws InvalidClefException {
 		
 		clef = clef.replace("%", "");
 		
@@ -478,7 +478,7 @@ public class Util {
 		    for (String line = null; (line = reader.readLine()) != null;) {
 		        builder.append(line).append("\n");		        
 		    }
-		    
+
 		    result = builder.toString();
 		    System.out.println("ScoreListReport:\n " + result);
 		    

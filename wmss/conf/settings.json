@@ -9,7 +9,7 @@
   "title": "Web Music Score Service - University of Münster",
   "defaultProtocol": "1.0",
   "logpreview": "2500",
-  "defaultMelodyEncoding": "pea",
+  "defaultMelodyEncoding": "pae",
   "defaultScoreFormat": "musicxml",  
   "maxFileSize": "2000",
   "defaultRDFFormat": "N-Triples",

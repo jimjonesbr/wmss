@@ -1,16 +1,16 @@
 {
    "scoreIdentifier": "http://dbpedia.org/resource/Cello_Concerto_(Elgar)",
-   "title": "Cellokonzert e-Moll op. 85",
+   "scoreTitle": "Cellokonzert e-Moll op. 85",
    "thumbnail": "https://www.rcm.ac.uk/media/Elgar%20Cello%20Concerto%20maunscript%206x4.jpg",
    "issued": "1919",
    "collections": [       
       {
-         "collectionName": "Great Composers",
-         "collectionURL": "https://wwu.greatcomposers.de"
+         "collectionLabel": "Great Composers",
+         "collectionIdentifier": "https://wwu.greatcomposers.de"
       },
       {
-         "collectionName": "Digitale Sammlung der Universität und Landesbibliothek Münster",
-         "collectionURL": "https://sammlungen.ulb.uni-muenster.de"
+         "collectionLabel":"Digitale Sammlung der Universität und Landesbibliothek Münster",
+         "collectionIdentifier":"https://sammlungen.ulb.uni-muenster.de"
       }
    ],
    "persons": [
@@ -28,12 +28,12 @@
    "resources": [
       {
          "resourceURL": "https://musescore.com/score/152011/download/pdf",
-         "resourceDescription": "Print",
+         "resourceLabel": "Print",
          "resourceType": "application/pdf"
       },
       {
          "resourceURL": "https://en.wikipedia.org/wiki/Cello_Concerto_(Elgar)",
-         "resourceDescription": "Wikipedia Article",
+         "resourceLabel": "Wikipedia Article",
          "resourceType": "text/html"
       }
    ]

@@ -5,48 +5,50 @@
    "scoreTitle":"Cellokonzert e-Moll op. 85",
    "issued":"1919",
    "formats":[
-      {"format":"musicxml"}
+      {
+      	"formatIdentifier":"musicxml"
+      }
    ],
    "keys":[
       {
          "key":"xF",
-         "format":"pea"
+         "format":"pae"
       },
       {
          "key":"xFCGD",
-         "format":"pea"
+         "format":"pae"
       }
    ],
    "times":[
       {
          "time":"4/4",
-         "format":"pea"
+         "format":"pae"
       },
       {
          "time":"12/8",
-         "format":"pea"
+         "format":"pae"
       },
       {
          "time":"6/8",
-         "format":"pea"
+         "format":"pae"
       }
    ],
    "clefs":[
       {
          "clef":"F-4",
-         "format":"pea"
+         "format":"pae"
       },
       {
          "clef":"G-2",
-         "format":"pea"
+         "format":"pae"
       },
       {
          "clef":"C-4",
-         "format":"pea"
+         "format":"pae"
       }
    ],
    "melody":{
-      "format":"pea",
+      "format":"pae",
       "query":",8AB'CDxDE",
       "mediumCode":"strings.cello",
       "mediumType":"strings",

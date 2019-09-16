@@ -18,17 +18,17 @@ public class ImportElgarMusicXML_Metadata_JSONString {
 		String metadata = 
 				"{\n" + 
 				"   \"scoreIdentifier\": \"http://dbpedia.org/resource/Cello_Concerto_(Elgar)\",\n" + 
-				"   \"title\": \"Cellokonzert e-Moll op. 85\",\n" + 
+				"   \"scoreTitle\": \"Cellokonzert e-Moll op. 85\",\n" + 
 				"   \"thumbnail\": \"https://www.rcm.ac.uk/media/Elgar%20Cello%20Concerto%20maunscript%206x4.jpg\",\n" + 
 				"   \"issued\": \"1919\",\n" + 
 				"   \"collections\": [       \n" + 
 				"      {\n" + 
-				"         \"collectionName\": \"Great Composers\",\n" + 
-				"         \"collectionURL\": \"https://wwu.greatcomposers.de\"\n" + 
-				"      },"+
-				"	   {\n" + 
-				"         \"collectionName\": \"Digitale Sammlung der Universität und Landesbibliothek Münster\",\n" + 
-				"         \"collectionURL\": \"https://sammlungen.ulb.uni-muenster.de\"\n" + 
+				"         \"collectionLabel\": \"Great Composers\",\n" + 
+				"         \"collectionIdentifier\": \"https://wwu.greatcomposers.de\"\n" + 
+				"      },\n" + 
+				"      {\n" + 
+				"         \"collectionLabel\":\"Digitale Sammlung der Universität und Landesbibliothek Münster\",\n" + 
+				"         \"collectionIdentifier\":\"https://sammlungen.ulb.uni-muenster.de\"\n" + 
 				"      }\n" + 
 				"   ],\n" + 
 				"   \"persons\": [\n" + 
@@ -46,12 +46,12 @@ public class ImportElgarMusicXML_Metadata_JSONString {
 				"   \"resources\": [\n" + 
 				"      {\n" + 
 				"         \"resourceURL\": \"https://musescore.com/score/152011/download/pdf\",\n" + 
-				"         \"resourceDescription\": \"Print\",\n" + 
+				"         \"resourceLabel\": \"Print\",\n" + 
 				"         \"resourceType\": \"application/pdf\"\n" + 
 				"      },\n" + 
 				"      {\n" + 
 				"         \"resourceURL\": \"https://en.wikipedia.org/wiki/Cello_Concerto_(Elgar)\",\n" + 
-				"         \"resourceDescription\": \"Wikipedia Article\",\n" + 
+				"         \"resourceLabel\": \"Wikipedia Article\",\n" + 
 				"         \"resourceType\": \"text/html\"\n" + 
 				"      }\n" + 
 				"   ]\n" + 

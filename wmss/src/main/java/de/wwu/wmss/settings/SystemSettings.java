@@ -46,7 +46,7 @@ public class SystemSettings {
 
 	}
 
-	public static void loadSystemSettings(){
+	public static void loadSystemSettings(){ 
 
 		JSONParser parser = new JSONParser();
 

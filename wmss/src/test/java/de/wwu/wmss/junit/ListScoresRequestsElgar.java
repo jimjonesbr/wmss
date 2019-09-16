@@ -1,9 +1,15 @@
 package de.wwu.wmss.junit;
 
 import static org.junit.Assert.assertEquals;
+
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -518,96 +524,18 @@ public class ListScoresRequestsElgar {
 		location.setMovementName("Adagio");
 		location.setMelody(",8AB'CDxDE");
 		
-		String jsonQuery = "{\n" + 
-				"   \"request\":\"ListScores\",\n" + 
-				"   \"source\":\"neo4j_local\",\n" + 
-				"   \"scoreIdentifier\":\"http://dbpedia.org/resource/Cello_Concerto_(Elgar)\",\n" + 
-				"   \"scoreTitle\":\"cellokonzert\",\n" + 
-				"   \"issued\":\"1919\",\n" + 
-				"   \"formats\":[\n" + 
-				"      {\"format\":\"musicxml\"}\n" + 
-				"   ],\n" + 
-				"   \"keys\":[\n" + 
-				"      {\n" + 
-				"         \"key\":\"xF\",\n" + 
-				"         \"format\":\"pea\"\n" + 
-				"      },\n" + 
-				"      {\n" + 
-				"         \"key\":\"xFCGD\",\n" + 
-				"         \"format\":\"pea\"\n" + 
-				"      }\n" + 
-				"   ],\n" + 
-				"   \"times\":[\n" + 
-				"      {\n" + 
-				"         \"time\":\"4/4\",\n" + 
-				"         \"format\":\"pea\"\n" + 
-				"      },\n" + 
-				"      {\n" + 
-				"         \"time\":\"12/8\",\n" + 
-				"         \"format\":\"pea\"\n" + 
-				"      },\n" + 
-				"      {\n" + 
-				"         \"time\":\"6/8\",\n" + 
-				"         \"format\":\"pea\"\n" + 
-				"      }\n" + 
-				"   ],\n" + 
-				"   \"clefs\":[\n" + 
-				"      {\n" + 
-				"         \"clef\":\"F-4\",\n" + 
-				"         \"format\":\"pea\"\n" + 
-				"      },\n" + 
-				"      {\n" + 
-				"         \"clef\":\"G-2\",\n" + 
-				"         \"format\":\"pea\"\n" + 
-				"      },\n" + 
-				"      {\n" + 
-				"         \"clef\":\"C-4\",\n" + 
-				"         \"format\":\"pea\"\n" + 
-				"      }\n" + 
-				"   ],\n" + 
-				"   \"melody\":{\n" + 
-				"      \"format\":\"pea\",\n" + 
-				"      \"query\":\",8AB'CDxDE\",\n" + 
-				"      \"mediumCode\":\"strings.cello\",\n" + 
-				"      \"mediumType\":\"strings\",\n" + 
-				"      \"key\":\"xF\",\n" + 
-				"      \"time\":\"4/4\",\n" + 
-				"      \"clef\":\"C-4\"\n" + 
-				"   },\n" + 
-				"   \"mediums\":[\n" + 
-				"      {\n" + 
-				"         \"mediumType\":\"strings\",\n" + 
-				"         \"mediumCode\":\"strings.cello\"\n" + 
-				"      }\n" + 
-				"   ],\n" + 
-				"   \"collections\":[\n" + 
-				"      {\n" + 
-				"         \"collectionLabel\":\"great compo\",\n" + 
-				"         \"collectionIdentifier\":\"https://wwu.greatcomposers.de\"\n" + 
-				"      },\n" + 
-				"      {\n" + 
-				"         \"collectionLabel\":\"digitale sammlung\",\n" + 
-				"         \"collectionIdentifier\":\"https://sammlungen.ulb.uni-muenster.de\"\n" + 
-				"      }\n" + 
-				"   ],\n" + 
-				"   \"persons\":[\n" + 
-				"      {\n" + 
-				"         \"personIdentifier\":\"http://dbpedia.org/resource/Edward_Elgar\",\n" + 
-				"         \"personName\":\"elgar\",\n" + 
-				"         \"personRole\":\"Composer\"\n" + 
-				"      },\n" + 
-				"      {\n" + 
-				"         \"personIdentifier\":\"http://jimjones.de\",\n" + 
-				"         \"personName\":\"jim\",\n" + 
-				"         \"personRole\":\"Encoder\"\n" + 
-				"      }\n" + 
-				"   ],\n" + 
-				"   \"ignoreOctave\":\"false\",\n" + 
-				"   \"ignoreDuration\":\"false\",\n" + 
-				"   \"ignorePitch\":\"false\",\n" + 
-				"   \"ignoreChords\":\"true\"\n" + 
-				"}";
-		
+		String jsonQuery = "";
+		try {
+			
+			jsonQuery = FileUtils.readFileToString(new File(Paths.get(this.getClass().getResource("/query/listscore-request.json").toURI()).toString()), StandardCharsets.UTF_8);
+			
+			System.err.println(jsonQuery);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+				
 		assertEquals(true, this.listScorePostRequest(score, location, jsonQuery));
 		
 	}
@@ -635,10 +563,10 @@ public class ListScoresRequestsElgar {
 				"   \"scoreTitle\":\"cellokonzert\",\n" + 
 				"   \"issued\":\"1919\",\n" + 
 				"   \"formats\":[\n" + 
-				"      {\"format\":\"musicxml\"}\n" + 
+				"      {\"formatIdentifier\":\"musicxml\"}\n" + 
 				"   ], \n" + 
 				"   \"melody\":{\n" + 
-				"      \"format\":\"pea\",\n" + 
+				"      \"format\":\"pae\",\n" + 
 				"      \"query\":\",8AB'CDxDE\",\n" + 
 				"      \"mediumCode\":\"strings.cello\",\n" + 
 				"      \"mediumType\":\"strings\"\n" + 
@@ -669,7 +597,7 @@ public class ListScoresRequestsElgar {
 				"   \"request\":\"ListScores\",\n" + 
 				"   \"source\":\"neo4j_local\",\n" + 				
 				"   \"melody\":{\n" + 
-				"      \"format\":\"pea\",\n" + 
+				"      \"format\":\"pae\",\n" + 
 				"      \"query\":\",8AB'CDxDE\",\n" + 
 				"      \"mediumCode\":\"strings.cello\",\n" + 
 				"   }\n" + 

@@ -1096,7 +1096,7 @@ public class Neo4jEngine {
 		String times_query = "";
 		for (int i = 0; i < wmssRequest.getTimes().size(); i++) {
 			if(wmssRequest.getTimes().get(i).getFormat().toLowerCase().equals("pea") || wmssRequest.getTimes().get(i).getFormat().equals("")) {	
-				times_query = times_query + ":Time_" + Util.formatPEAtimeSignature(wmssRequest.getTimes().get(i).getTime()).replace("/", "_");
+				times_query = times_query + ":Time_" + Util.formatPAEtimeSignature(wmssRequest.getTimes().get(i).getTime()).replace("/", "_");
 			}
 		}
 		if(!times_query.equals("")) {
