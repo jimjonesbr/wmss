@@ -867,7 +867,7 @@ To send the MusicXML file and its metadata to the server using `curl` just add a
 ```shell
 curl -F file=@elgar_cello_concerto_op.85.xml \
      -F metadata=@metadata.xml \
-     "http://localhost:8285/wmss/import?source=neo4j_local&format=musicxml"
+     "http://localhost:8283/wmss/import?source=neo4j_local&format=musicxml"
 ```
 
 
