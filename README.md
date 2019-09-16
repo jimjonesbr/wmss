@@ -738,99 +738,7 @@ http://localhost:8295/wmss/?request=ListScores&source=neo4j_local&melody='4xF8G4
 
 ### [ListScores via POST](https://github.com/jimjonesbr/wmss/blob/master/README.md#listscores-via-post)
 
-POST requests can be sent using a JSON string (`application/json`). The following example shows a ListScores request containing all filters supported by ListScores Request:
-
-```json
-{
-   "request":"ListScores",
-   "source":"neo4j_local",
-   "scoreIdentifier":"http://dbpedia.org/resource/Cello_Concerto_(Elgar)",
-   "scoreTitle":"Cellokonzert e-Moll op. 85",
-   "issued":"1919",
-   "formats":[
-      {"format":"musicxml"}
-   ],
-   "keys":[
-      {
-         "key":"xF",
-         "format":"pea"
-      },
-      {
-         "key":"xFCGD",
-         "format":"pea"
-      }
-   ],
-   "times":[
-      {
-         "time":"4/4",
-         "format":"pea"
-      },
-      {
-         "time":"12/8",
-         "format":"pea"
-      },
-      {
-         "time":"6/8",
-         "format":"pea"
-      }
-   ],
-   "clefs":[
-      {
-         "clef":"F-4",
-         "format":"pea"
-      },
-      {
-         "clef":"G-2",
-         "format":"pea"
-      },
-      {
-         "clef":"C-4",
-         "format":"pea"
-      }
-   ],
-   "melody":{
-      "format":"pea",
-      "query":",8AB'CDxDE",
-      "mediumCode":"strings.cello",
-      "mediumType":"strings",
-      "key":"xF",
-      "time":"4/4",
-      "clef":"C-4"
-   },
-   "mediums":[
-      {
-         "mediumType":"strings",
-         "mediumCode":"strings.cello"
-      }
-   ],
-   "collections":[
-      {
-         "collectionName":"great compo",
-         "collectionIdentifier":"https://wwu.greatcomposers.de"
-      },
-      {
-         "collectionName":"digitale sammlung",
-         "collectionIdentifier":"https://sammlungen.ulb.uni-muenster.de"
-      }
-   ],
-   "persons":[
-      {
-         "personIdentifier":"http://dbpedia.org/resource/Edward_Elgar",
-         "personName":"elgar",
-         "personRole":"Composer"
-      },
-      {
-         "personIdentifier":"http://jimjones.de",
-         "personName":"jim",
-         "personRole":"Encoder"
-      }
-   ],
-   "ignoreOctave":"false",
-   "ignoreDuration":"false",
-   "ignorePitch":"false",
-   "ignoreChords":"true"
-}
-```
+POST requests can be sent using a JSON string (`application/json`). This [example](https://github.com/jimjonesbr/wmss/blob/master/wmss/src/test/resources/query/listscore-request.json) shows a ListScores request containing all filters supported by ListScores Request:
 
 The only obligatory fields are `request` and `source`. For instance, to retrieve a complete list of all available scores use the following json string:
 
@@ -840,9 +748,6 @@ The only obligatory fields are `request` and `source`. For instance, to retrieve
    "source":"neo4j_local"
 }
 ```
-
-
-
 
 #### [Score List Report](https://github.com/jimjonesbr/wmss/blob/master/README.md#score-list-report)
 The Score List Document is provided as JSON and is structured as follows:
@@ -871,95 +776,8 @@ Retrieves a specific score based on its identifier:
   
 Edits the metadata of an existing music score. `EditScore` requests can be performed via POST using a JSON string `application/json`:
 
-`EditScore` complete example
+This [example](https://github.com/jimjonesbr/wmss/blob/master/wmss/src/test/resources/query/editscore-request.json) shows all possible `EditScore` request attributes.
 
-```json
-{
-  "request": "EditScore",
-  "source": "neo4j_local",
-  "scoreIdentifier": "http://dbpedia.org/resource/Cello_Concerto_(Elgar)",
-  "scoreTitle": "score-title-updated",
-  "thumbnail":"https://www.designtagebuch.de/wp-content/uploads/mediathek//2017/01/wwu-logo-700x377.png",
-  "issued": "9999",
-  "collections": [
-    {
-      "collectionLabel": "Great Composers",
-      "collectionIdentifier": "https://wwu.greatcomposers.de",
-      "action": "delete"
-    },
-    {
-      "collectionLabel": "collection-sammlung-label-updated",
-      "collectionIdentifier": "https://sammlungen.ulb.uni-muenster.de",
-      "action": "update"
-    },
-    {
-      "collectionIdentifier": "https://github.com/jimjonesbr/wmss#collections",
-      "collectionLabel": "new-collection",
-      "action": "add"
-    }
-  ],
-  "persons": [
-    {
-      "personIdentifier": "http://dbpedia.org/resource/Edward_Elgar",
-      "personName": "elgar-updated",
-      "personRole": "elgar-role-updated",
-      "action": "update"
-    },
-    {
-      "personIdentifier": "http://jimjones.de",
-      "action": "delete"
-    },
-    {
-      "personIdentifier": "http://new.person.de",
-      "personName": "new-person",
-      "personRole": "new-person-role",
-      "action": "add"
-    }
-
-  ],
-  "resources": [
-    {
-      "resourceURL": "https://en.wikipedia.org/wiki/Cello_Concerto_(Elgar)",
-      "resourceLabel": "wikipedia-resource-updated",
-      "resourceType": "text/html",
-      "action": "update"
-    },
-    {
-      "resourceURL": "https://musescore.com/score/152011/download/pdf",
-      "action": "delete"
-    },    
-    {
-      "resourceURL": "http://new.resource.de/",
-      "resourceLabel": "new-resource",
-      "resourceType": "application/pdf",
-      "action": "add"
-    }    
-  ],
-  "mediums": [
-    {
-      "mediumIdentifier": "http://linkeddata.uni-muenster.de/node/21dde7d3-e280-44d5-900a-4660e91ba4f4_MOV1_PART_P1",
-      "mediumLabel": "medium-label-updated",
-      "mediumCode": "medium.code.updated",
-      "mediumScoreLabel": "medium-score-label-updated",
-      "mediumTypeIdentifier": "medium.type.identifier.updated",
-      "mediumTypeLabel": "medium-type-label-updated",      
-      "solo": true,
-      "ensemble": true,
-      "action":"update"
-    }
-  ], 
-  "movements": [
-    {
-      "movementIdentifier": "http://linkeddata.uni-muenster.de/node/e4d1f11f-b2b6-4c96-b926-4c034ba28088_MOV1",
-      "movementOrder": 1,
-      "movementLabel": "movement-label-updated",      
-      "beatUnit": "beat-unit-updated",
-      "beatsPerMinute": 999,
-      "action":"update"
-    }
-  ]
-}
-```
 `action`: This parameter expects one of the following values: `add`, `update` or `delete`.
 
 The `EditScore` request returns a `Score List Report` with the edited score.
@@ -1040,88 +858,8 @@ If everything goes well, you will recieve a `ImportReport`:
 
 #### [MusicXML](https://github.com/jimjonesbr/wmss/blob/master/README.md#musicxml)
 
-WMSS has an embedded Music2RDF Converter that enables direct MusicXML import. However, WMSS requests rely on metadata that aren't normally encoded in MusicXML files. This information can be provided using an XML document, which has to be sent to the server in an extra file using the parameter `metadata`. The metadata can be encoded as XML ..
+WMSS has an embedded Music2RDF Converter that enables direct MusicXML import. However, WMSS requests rely on metadata that aren't normally encoded in MusicXML files. This information can be provided using an XML document, which has to be sent to the server in an extra file using the parameter `metadata`. The metadata can be encoded as [XML](https://github.com/jimjonesbr/wmss/blob/master/wmss/src/test/resources/musicxml/elgar_cello_concerto_op.85-metadata.xml) or [JSON](https://github.com/jimjonesbr/wmss/blob/master/wmss/src/test/resources/musicxml/elgar_cello_concerto_op.85-metadata.json).
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<score>
-  <scoreIdentifier>http://dbpedia.org/resource/Cello_Concerto_(Elgar)</scoreIdentifier>
-  <title>Cellokonzert e-Moll op. 85</title>
-  <thumbnail>https://www.rcm.ac.uk/media/Elgar%20Cello%20Concerto%20maunscript%206x4.jpg</thumbnail>
-  <issued>1919</issued>
-  <collections>
-    <collection>
-      <collectionName>Great Composers</collectionName>
-      <collectionURL>https://wwu.greatcomposers.de</collectionURL>
-    </collection>
-  </collections>
-  <persons>
-    <person>
-      <personIdentifier>http://dbpedia.org/resource/Edward_Elgar</personIdentifier>
-      <personName>Sir Edward William Elgar</personName>
-      <personRole>Composer</personRole>
-    </person>
-    <person>
-      <personIdentifier>http://jimjones.de</personIdentifier>
-      <personName>Jim Jones</personName>
-      <personRole>Encoder</personRole>
-    </person>
-  </persons>
-  <resources>
-    <resource>
-      <resourceURL>https://musescore.com/score/152011/download/pdf</resourceURL>
-      <resourceDescription>Print</resourceDescription>
-      <resourceType>application/pdf</resourceType>
-    </resource>
-    <resource>
-      <resourceURL>https://en.wikipedia.org/wiki/Cello_Concerto_(Elgar)</resourceURL>
-      <resourceDescription>Wikipedia Article</resourceDescription>
-      <resourceType>text/html</resourceType>
-    </resource>
-  </resources>
-</score>
-```
-
-.. or JSON
-
-```json
-{
-   "scoreIdentifier": "http://dbpedia.org/resource/Cello_Concerto_(Elgar)",
-   "title": "Cellokonzert e-Moll op. 85",
-   "thumbnail": "https://www.rcm.ac.uk/media/Elgar%20Cello%20Concerto%20maunscript%206x4.jpg",
-   "issued": "1919",
-   "collections": [       
-      {
-         "collectionName": "Great Composers",
-         "collectionURL": "https://wwu.greatcomposers.de"
-      }
-   ],
-   "persons": [
-      {
-         "personIdentifier": "http://dbpedia.org/resource/Edward_Elgar",
-         "personName": "Sir Edward William Elgar",
-         "personRole": "Composer"
-      },
-      {
-         "personIdentifier": "http://jimjones.de",
-         "personName": "Jim Jones",
-         "personRole": "Encoder"
-      }
-   ],
-   "resources": [
-      {
-         "resourceURL": "https://musescore.com/score/152011/download/pdf",
-         "resourceDescription": "Print",
-         "resourceType": "application/pdf"
-      },
-      {
-         "resourceURL": "https://en.wikipedia.org/wiki/Cello_Concerto_(Elgar)",
-         "resourceDescription": "Wikipedia Article",
-         "resourceType": "text/html"
-      }
-   ]
-}
-```
 For more information on the metadata file see the [Music2RDF converter](https://github.com/jimjonesbr/musicowl) documentation.
 
 To send the MusicXML file and its metadata to the server using `curl` just add a second file parameter `-F`:
