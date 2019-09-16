@@ -344,17 +344,17 @@ The [Service Description Document](https://github.com/jimjonesbr/wmss/blob/maste
 
 &nbsp;&nbsp;&nbsp;&nbsp;`collections`&nbsp;  Collections available in a data source.
 
-&nbsp;&nbsp;&nbsp;&nbsp;`performanceMediums`&nbsp;  Performance mediums (instruments) available in a data source.
+&nbsp;&nbsp;&nbsp;&nbsp;`mediumTypes`&nbsp;  Performance mediums (instruments) available in a data source.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`mediumTypeId`&nbsp;  Identifier of the performance medium type
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`mediumTypeIdentifier`&nbsp;  Identifier of the performance medium type
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`mediumTypeDescription`&nbsp;  Description of the performance medium type
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`mediumTypeLabel`&nbsp;  Description of the performance medium type
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`mediums`&nbsp;  Performance mediums (instruments) available for a certain performance medium type
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`mediumId`&nbsp;  Performance medium identifier.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`mediumIdentifier`&nbsp;  Performance medium identifier.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`mediumDescription`&nbsp;  Performance medium description.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`mediumLabel`&nbsp;  Performance medium description.
 
 An example of a Service Description Report can be found [here](https://github.com/jimjonesbr/wmss/tree/master/wmss/data/system/reports/DescribeService.json).
 ### [ListScores](https://github.com/jimjonesbr/wmss/blob/master/README.md#listscores)
