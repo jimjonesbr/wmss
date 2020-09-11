@@ -369,12 +369,12 @@
 		        	for (j = 0; j < collections.length; j++) { 
 		        		var col = collections[j];
 		        		var opt_collection_url = document.createElement("option");
-		        		opt_collection_url.value = col["identifier"];
-		        		opt_collection_url.label = col["name"];		        	 	
+		        		opt_collection_url.value = col["collectionIdentifier"];
+		        		opt_collection_url.label = col["collectionLabel"];		        	 	
 		        	 	$('#collection-url-list').append(opt_collection_url); 
 		        	 	var opt_collection_description = document.createElement("option");
-		        		opt_collection_description.value = col["name"];
-		        		opt_collection_description.label = col["identifier"];		        	 	
+		        		opt_collection_description.value = col["collectionLabel"];
+		        		opt_collection_description.label = col["collectionIdentifier"];		        	 	
 		        	 	$('#collection-description-list').append(opt_collection_description); 
 
 		        	}
@@ -384,12 +384,12 @@
 		        		var col = persons[j];
 
 						var opt_person_url = document.createElement("option");
-		        		opt_person_url.value = col["url"];
-		        		opt_person_url.label = col["name"];		        	 			        	 	
+		        		opt_person_url.value = col["personIdentifier"];
+		        		opt_person_url.label = col["personName"];		        	 			        	 	
 		        	 	$('#persons-uri-list').append(opt_person_url); 
 						var opt_person_name = document.createElement("option");
-		        		opt_person_name.value = col["name"];
-		        		opt_person_name.label = col["url"];		        	 	
+		        		opt_person_name.value = col["personName"];
+		        		opt_person_name.label = col["personIdentifier"];		        	 	
 		        	 	$('#persons-name-list').append(opt_person_name); 
 		        	}
 		        	
