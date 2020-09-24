@@ -6,14 +6,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import de.wwu.wmss.core.DataSource;
 import de.wwu.wmss.settings.Util;
 
 public class PostgreSQLConnector {
 	
-	private static Logger logger = Logger.getLogger("PostgreSQL-Connector");
+	//private static Logger logger = Logger.getLogger("PostgreSQL-Connector");
+	private static Logger logger = LogManager.getLogger("PostgreSQL-Connector");
 	
 	public static ResultSet executeQuery(String SQL, DataSource ds){
 		

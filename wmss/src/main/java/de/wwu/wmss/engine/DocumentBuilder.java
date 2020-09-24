@@ -3,15 +3,14 @@ package de.wwu.wmss.engine;
 import java.util.ArrayList;
 import java.util.Date;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.StatementResult;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import de.wwu.wmss.connector.Neo4jConnector;
 import de.wwu.wmss.core.DataSource;
 import de.wwu.wmss.core.MusicScore;
@@ -23,7 +22,9 @@ import de.wwu.wmss.settings.Util;
 
 public class DocumentBuilder {
 
-	private static Logger logger = Logger.getLogger("ServiceExceptionHandler");
+	//private static Logger logger = LogManager.getLogger("ServiceExceptionHandler");
+	private static Logger logger = LogManager.getLogger(DocumentBuilder.class);
+	//private static Logger logger = Logger.getLogger("ServiceExceptionHandler");
 
 	@SuppressWarnings("unchecked")
 	public static String getServiceExceptionReport(String errorCode, String errorMessage, String hint){

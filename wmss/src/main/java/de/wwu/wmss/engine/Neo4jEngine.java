@@ -10,7 +10,8 @@ import java.io.InputStreamReader;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -48,8 +49,8 @@ import de.wwu.wmss.settings.Util;
 
 public class Neo4jEngine {
 
-	private static Logger logger = Logger.getLogger("Neo4j-Engine");
-
+	private static Logger logger = LogManager.getLogger(Neo4jEngine.class);
+//	private static Logger logger = Logger.getLogger("Neo4j-Engine");
 	
 	public static ArrayList<MusicScore> scoreExists(String scoreIdentifier, WMSSImportRequest importRequest) {
 		

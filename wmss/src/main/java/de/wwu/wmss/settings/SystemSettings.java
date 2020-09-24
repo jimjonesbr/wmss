@@ -6,7 +6,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.json.simple.JSONArray;
@@ -17,7 +18,8 @@ import de.wwu.wmss.core.DataSource;
 
 
 public class SystemSettings {
-	private static Logger logger = Logger.getLogger("System-Settings");
+	private static Logger logger = LogManager.getLogger(SystemSettings.class);
+	//private static Logger logger = Logger.getLogger("System-Settings");
 	private static int port;
 	private static String service;
 	private static String defaultMelodyEncoding;

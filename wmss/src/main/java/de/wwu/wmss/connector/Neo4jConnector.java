@@ -4,8 +4,10 @@ import de.wwu.wmss.core.DataSource;
 import de.wwu.wmss.settings.SystemSettings;
 import de.wwu.wmss.settings.Util;
 import java.util.Date;
-import java.util.logging.LogManager;
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+//import java.util.logging.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.neo4j.driver.v1.AuthTokens;
 import org.neo4j.driver.v1.GraphDatabase;
 import org.neo4j.driver.v1.Session;
@@ -13,7 +15,9 @@ import org.neo4j.driver.v1.StatementResult;
 
 public class Neo4jConnector {
 		
-	private static Logger logger = Logger.getLogger("Neo4j-Connector");
+	//private static Logger logger = Logger.getLogger("Neo4j-Connector");
+	private static Logger logger = LogManager.getLogger("Neo4j-Connector");
+
 	private static Neo4jConnector instance;
 	
 	public static Neo4jConnector getInstance() {
@@ -28,7 +32,7 @@ public class Neo4jConnector {
 		/**
 		 * Disables logging mechanism of neo4j
 		 */
-		LogManager.getLogManager().reset();
+		//TODO: LogManager.getLogManager().reset();
 
 		Date start = new Date();
 		

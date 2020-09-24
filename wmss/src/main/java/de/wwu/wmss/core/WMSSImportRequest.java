@@ -13,7 +13,8 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import de.wwu.wmss.exceptions.InvalidWMSSRequestException;
 import de.wwu.wmss.settings.SystemSettings;
 
@@ -29,7 +30,8 @@ public class WMSSImportRequest {
 	private File scoreFile;
 	private File metadataFile;
 	
-	private static Logger logger = Logger.getLogger("ImportRequestParser");
+	private static Logger logger = LogManager.getLogger(WMSSImportRequest.class);
+	//private static Logger logger = Logger.getLogger("ImportRequestParser");
 	
 	public WMSSImportRequest(HttpServletRequest httpRequest) throws InvalidWMSSRequestException{
 

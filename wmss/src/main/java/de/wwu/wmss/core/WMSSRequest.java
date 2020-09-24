@@ -15,7 +15,8 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -77,7 +78,8 @@ public class WMSSRequest {
 	private String responseHeaderName = "";
 	private String responseHeaderValue= "";
 	
-	private static Logger logger = Logger.getLogger("QueryRequestParser");
+	//private static Logger logger = Logger.getLogger("QueryRequestParser");
+	private static Logger logger = LogManager.getLogger(WMSSRequest.class);
 	private ArrayList<Person> persons = new ArrayList<Person>();
 	private ArrayList<PerformanceMedium> mediums = new ArrayList<PerformanceMedium>();
 	private ArrayList<Collection> collections = new ArrayList<Collection>();

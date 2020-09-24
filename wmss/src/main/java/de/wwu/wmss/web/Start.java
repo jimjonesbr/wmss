@@ -1,14 +1,16 @@
 package de.wwu.wmss.web;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import de.wwu.wmss.settings.SystemSettings;
 
 public class Start implements Runnable {
-
-	private static Logger logger = Logger.getLogger("WMSS-Servlet");
+	
+    private static final Logger logger = LogManager.getLogger(Start.class);
 	public static int port = 0;
 	
 	public int getPort() {
@@ -72,8 +74,6 @@ public class Start implements Runnable {
 			logger.fatal(e.getMessage() +". Shutting down ...");
 			System.exit(1);
 		}
-
-
 
 	}
 

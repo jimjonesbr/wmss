@@ -18,7 +18,8 @@ import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.RiotException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import de.wwu.music2rdf.converter.MetadataParser;
 import de.wwu.music2rdf.converter.MusicXML2RDF;
 import de.wwu.wmss.core.ErrorCodes;
@@ -35,7 +36,8 @@ import de.wwu.wmss.settings.SystemSettings;
 public class ServletImport extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	private static Logger logger = Logger.getLogger("ServletImport");
+	private static Logger logger = LogManager.getLogger(ServletImport.class);
+	//private static Logger logger = Logger.getLogger("ServletImport");
 
 	protected void doPost(HttpServletRequest httpRequest, HttpServletResponse response) throws ServletException, IOException{
 

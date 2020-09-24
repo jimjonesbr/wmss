@@ -9,15 +9,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.log4j.Logger;
-
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import de.wwu.wmss.settings.SystemSettings;
 
 
 public class ServletWebAdmin extends HttpServlet {
 
-	private static Logger logger = Logger.getLogger("Servlet-Admin");
+	//private static Logger logger = Logger.getLogger("Servlet-Admin");
+	private static Logger logger = LogManager.getLogger(ServletWebAdmin.class);//  Logger.getLogger("WMSS-Servlet");
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest httpRequest, HttpServletResponse response) throws ServletException, IOException {
